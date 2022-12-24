@@ -84,6 +84,7 @@ export class GameState {
   }
 
   enterGame() {
+    this.setUI.setShowInstructions(false);
     this.reset(true);
   }
 

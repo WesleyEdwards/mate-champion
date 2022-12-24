@@ -1,71 +1,60 @@
 import React, { useState } from "react";
 import "./App.css";
+import { HighScores } from "./Game/components/HighScores";
+import { Instructions } from "./Game/components/Instructions";
+import StatsDiv from "./Game/components/StatsDiv";
 import { doEverything } from "./Game/Main";
-
-
 
 function App() {
   const [disablePlay, setDisabledPlay] = useState(false);
+
+  const [showInstructions, setShowInstructions] = useState(true);
+  const [showHighScores, setShowHighScores] = useState<number>();
+
   const [level, setLevel] = useState<number>();
   const [lives, setLives] = useState<number>();
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState<number>();
 
   const handleClick = () => {
     setDisabledPlay(true);
-
+    setShowHighScores(undefined);
+    setShowInstructions(false);
     doEverything({
       setLevel,
       setLives,
       setScore,
       setDisabledPlay,
+      setShowInstructions,
+      setShowHighScores,
     });
   };
 
   return (
     <>
       <div className="container" id="main-div">
-        <h1 id="title-text">Mate Champion</h1>
-        <div id="instructions">
-          <p>
-            The objective of this game is to survive the wrath of all who seek
-            to
-            <br />
-            destroy the good reputation of mate. Try to make it as far as
-            <br />
-            you can without getting caught.
-          </p>
-          <ul>
-            <li>
-              <td>◂</td>
-              left
-            </li>
-            <li>
-              <td>▸</td>
-              right
-            </li>
-            <li>
-              <td>▴</td>
-              up
-            </li>
-            <li>(space) shank</li>
-          </ul>
-        </div>
+        <h1
+          style={{
+            fontSize: "2rem",
+            margin: "1rem",
+          }}
+          id="title-text"
+          className="green-text"
+        >
+          Mate Champion
+        </h1>
+        {showInstructions && <Instructions />}
+        {showHighScores !== undefined && <HighScores score={showHighScores} />}
         <div>
           <canvas id="canvas"></canvas>
-          <div id="stats-div">
-            <p className="stats" id="level-stats">
-              {level && `level: ${level}`}
-            </p>
-            <p className="stats" id="lives-stats">
-              {lives && `lives: ${lives}`}
-            </p>
-            <p className="stats" id="score-stats">
-              Score: {score}
-            </p>
-          </div>
+          <StatsDiv level={level} lives={lives} score={score} />
         </div>
-        <button id="play-game" disabled={disablePlay} onClick={handleClick}>
-          Play Game
+        <button
+          id="play-game"
+          className="btn"
+          disabled={disablePlay}
+          onClick={handleClick}
+        >
+          {showInstructions ? "Play Game" : "Play Again"}
         </button>
       </div>
     </>

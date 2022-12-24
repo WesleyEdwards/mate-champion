@@ -35,8 +35,12 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 export const emptyStats = {
   score: 0,
   lives: 3,
+  // lives: 1,
   level: 1,
 };
+
+export const firebaseCollection = "scores";
+// export const firebaseCollection = "scores-test";
 
 export const listOfColors = [
   "green",

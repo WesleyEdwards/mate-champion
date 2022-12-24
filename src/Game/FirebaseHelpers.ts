@@ -1,14 +1,15 @@
 import { addDoc, collection, getDocs } from "firebase/firestore";
+import { firebaseCollection } from "./constants";
 import { firebaseDb } from "./Firebase";
 import { PlayerScore } from "./models";
 
 export const handleSubmitName = async (name: string, score: number) => {
-  const scoresRef = collection(firebaseDb, "scores");
-  addDoc(scoresRef, { name, score })
+  const scoresRef = collection(firebaseDb, firebaseCollection);
+  return addDoc(scoresRef, { name, score });
 };
 
 export const fetchPlayerScores = async (): Promise<PlayerScore[]> => {
-  const scoresRef = collection(firebaseDb, "scores");
+  const scoresRef = collection(firebaseDb, firebaseCollection);
   const scoresSnapshot = await getDocs(scoresRef);
   const scoresList = scoresSnapshot.docs.map((doc) =>
     doc.data()

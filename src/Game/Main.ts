@@ -1,7 +1,6 @@
 import {
   handleStartPlaying,
   setupGame,
-  handleLose,
   addEventListeners,
 } from "./DomFunctions";
 import { GameState } from "./GameState";
@@ -12,11 +11,11 @@ export function doEverything(setUI: SetUI) {
   const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   let requestId: number | undefined = undefined;
-  const instructions = document.getElementById("instructions") as HTMLElement;
+
   const gameState = new GameState(setUI);
 
   const enterGameLoop = () => {
-    handleStartPlaying(canvas, instructions);
+    handleStartPlaying(canvas);
     gameState.enterGame();
     loop();
   };
@@ -27,9 +26,12 @@ export function doEverything(setUI: SetUI) {
     requestId = undefined;
 
     if (gameState.winState === "lose") {
-      handleLose(canvas, instructions, gameState.getScore(), () =>
-        setUI.setDisabledPlay(false)
-      );
+      canvas.height = 0;
+
+      const score = gameState.getScore();
+      setUI.setShowHighScores(score);
+      setUI.setDisabledPlay(false);
+
       stop();
       return;
     }

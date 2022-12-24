@@ -16,6 +16,8 @@ export interface SetUI {
   setLives: (lives: number | undefined) => void;
   setScore: (score: number) => void;
   setDisabledPlay: (disabled: boolean) => void;
+  setShowInstructions: (show: boolean) => void;
+  setShowHighScores: (score: number | undefined) => void;
 }
 
 export interface hasPosition {
