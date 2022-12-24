@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import { doEverything } from "./Game/Main";
 
-export interface SetUI {
-  setLevel: (level: number) => void;
-  setLives: (lives: number) => void;
-  setScore: (score: number) => void;
-  setDisabledPlay: (disabled: boolean) => void;
-}
+
 
 function App() {
   const [disablePlay, setDisabledPlay] = useState(false);

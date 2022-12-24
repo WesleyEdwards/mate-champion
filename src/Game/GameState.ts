@@ -1,4 +1,3 @@
-import { SetUI } from "../App";
 import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "./constants";
 import {
   drawComponents,
@@ -7,7 +6,7 @@ import {
   updateLiveStatus,
   checkIfCaught,
 } from "./GameStateFunctions";
-import { Keys, GameStats } from "./models";
+import { Keys, GameStats, SetUI } from "./models";
 import { Opponent } from "./Opponent";
 import { Platform } from "./Platform";
 import Player from "./Player";
@@ -138,8 +137,12 @@ export class GameState {
 
   drawStats() {
     this.setUI.setLevel(this.stats.level);
-    this.setUI.setLives(this.stats.lives);
     this.setUI.setScore(this.stats.score);
+    if (this.stats.lives === 0) {
+      this.setUI.setLives(undefined);
+    } else {
+      this.setUI.setLives(this.stats.lives);
+    }
   }
 
   getScrollOffset() {

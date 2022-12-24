@@ -11,6 +11,13 @@ export interface Coordinates {
   y: number;
 }
 
+export interface SetUI {
+  setLevel: (level: number) => void;
+  setLives: (lives: number | undefined) => void;
+  setScore: (score: number) => void;
+  setDisabledPlay: (disabled: boolean) => void;
+}
+
 export interface hasPosition {
   position: Coordinates;
 }

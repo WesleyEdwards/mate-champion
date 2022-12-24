@@ -1,4 +1,3 @@
-import { SetUI } from "../App";
 import {
   handleStartPlaying,
   setupGame,
@@ -6,6 +5,7 @@ import {
   addEventListeners,
 } from "./DomFunctions";
 import { GameState } from "./GameState";
+import { SetUI } from "./models";
 
 export function doEverything(setUI: SetUI) {
   const canvas = setupGame();
