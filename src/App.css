@@ -24,14 +24,12 @@
 #submit-box {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   font-size: 1rem;
-  margin: 1rem 2rem;
 }
 #submit-score {
   padding: 0.5rem;
-  margin: 1rem 2rem;
 }
 #play-game {
   padding: 1rem 2rem; 

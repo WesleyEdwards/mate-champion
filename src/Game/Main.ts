@@ -30,7 +30,6 @@ export function doEverything(setUI: SetUI) {
 
       const score = gameState.getScore();
       setUI.setShowHighScores(score);
-      setUI.setDisabledPlay(false);
 
       stop();
       return;

@@ -29,6 +29,11 @@ function App() {
     });
   };
 
+  const onSubmittedName = () => {
+    setShowInstructions(false);
+    setDisabledPlay(false);
+  };
+
   return (
     <>
       <div className="container" id="main-div">
@@ -43,7 +48,9 @@ function App() {
           Mate Champion
         </h1>
         {showInstructions && <Instructions />}
-        {showHighScores !== undefined && <HighScores score={showHighScores} />}
+        {showHighScores !== undefined && (
+          <HighScores score={showHighScores} enablePlay={onSubmittedName} />
+        )}
         <div>
           <canvas id="canvas"></canvas>
           <StatsDiv level={level} lives={lives} score={score} />

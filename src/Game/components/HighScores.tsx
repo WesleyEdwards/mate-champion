@@ -12,16 +12,19 @@ interface ScoreListItemProps {
 }
 
 const ScoreListItem: FC<ScoreListItemProps> = (props) => {
-  const { score } = props;
+  const { score, num } = props;
   return (
-    <p className="green-text">
-      {score.name} - {score.score}
-    </p>
+    <p className="green-text">{`${num} - ${score.name} (${score.score})`}</p>
   );
 };
 
-export const HighScores: FC<{ score: number }> = (props) => {
-  const { score } = props;
+interface HighScoresProps {
+  score: number;
+  enablePlay: () => void;
+}
+
+export const HighScores: FC<HighScoresProps> = (props) => {
+  const { score, enablePlay } = props;
   const [scores, setScores] = useState<PlayerScore[]>();
   const [gotHighScore, setGotHighScore] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(false);
@@ -30,15 +33,22 @@ export const HighScores: FC<{ score: number }> = (props) => {
 
   const handleSubmit = () => {
     setDisableSubmit(true);
+
     if (!name) return;
     handleSubmitName(name, score).then(() => {
+      fetchPlayerScores().then(setScores);
       setGotHighScore(false);
+      enablePlay();
     });
   };
 
   useEffect(() => {
+    if (!gotHighScore) {
+      enablePlay();
+    }
     fetchPlayerScores().then(setScores);
     isHighScore(score).then(setGotHighScore);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [score]);
 
   if (!scores) {
@@ -50,7 +60,7 @@ export const HighScores: FC<{ score: number }> = (props) => {
       {gotHighScore ? (
         <div>
           <h2>Game Over!</h2>
-          <p>
+          <p className="green-text">
             You got a high score!
             <br />
             To receive credit, Enter your name:
@@ -74,12 +84,12 @@ export const HighScores: FC<{ score: number }> = (props) => {
           </div>
         </div>
       ) : (
-        <>
-          <h2 className="green-text">High Scores:</h2>
+        <div>
+          <h2 className="green-text">Score Board:</h2>
           {scores.map((score, i) => (
-            <ScoreListItem num={i} score={score} key={i} />
+            <ScoreListItem num={i + 1} score={score} key={i} />
           ))}
-        </>
+        </div>
       )}
     </>
   );

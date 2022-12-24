@@ -33,7 +33,7 @@ const ListItem: FC<ListItemProps> = (props) => {
 
 export const Instructions: FC = () => {
   return (
-    <div id="instructions">
+    <div id="instructions" className="green-text">
       <p>
         The objective of this game is to survive the wrath of all who seek to
         <br />
