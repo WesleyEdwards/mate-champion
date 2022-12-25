@@ -3,6 +3,7 @@ import {
   fetchPlayerScores,
   handleSubmitName,
   isHighScore,
+  trySaveScore,
 } from "../FirebaseHelpers";
 import { PlayerScore } from "../models";
 
@@ -26,33 +27,54 @@ interface HighScoresProps {
 export const HighScores: FC<HighScoresProps> = (props) => {
   const { score, enablePlay } = props;
   const [scores, setScores] = useState<PlayerScore[]>();
-  const [gotHighScore, setGotHighScore] = useState(false);
+  const [gotHighScore, setGotHighScore] = useState<boolean>();
   const [disableSubmit, setDisableSubmit] = useState(false);
+  const [congratulations, setCongratulations] = useState(false);
 
   const [name, setName] = useState<string>("");
 
+  const fetchScores = () => {
+    setScores(undefined);
+    fetchPlayerScores().then(setScores);
+  };
+
   const handleSubmit = () => {
     setDisableSubmit(true);
+    localStorage.setItem("name", name);
 
     if (!name) return;
     handleSubmitName(name, score).then(() => {
-      fetchPlayerScores().then(setScores);
+      fetchScores();
       setGotHighScore(false);
       enablePlay();
     });
   };
 
-  useEffect(() => {
-    if (!gotHighScore) {
-      enablePlay();
-    }
-    fetchPlayerScores().then(setScores);
-    isHighScore(score).then(setGotHighScore);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [score]);
+  // const useMountEffect = (initiate: () => void) => useEffect(initiate, []);
 
-  if (!scores) {
-    return <p>Loading...</p>;
+  // useMountEffect(initiate);
+
+  useEffect(() => {
+    fetchScores();
+    isHighScore(score).then((isHigh) => {
+      if (isHigh) {
+        trySaveScore(score).then((saved) => {
+          if (saved) {
+            setGotHighScore(false);
+            setCongratulations(true);
+            enablePlay();
+            fetchScores();
+          }
+        });
+      } else {
+        enablePlay();
+      }
+      setGotHighScore(isHigh);
+    });
+  }, []);
+
+  if (!scores || gotHighScore === undefined) {
+    return <p className="green-text">Loading...</p>;
   }
 
   return (
@@ -86,6 +108,11 @@ export const HighScores: FC<HighScoresProps> = (props) => {
       ) : (
         <div>
           <h2 className="green-text">Score Board:</h2>
+          {congratulations && (
+            <h3 className="green-text">
+              Congratulations! You got a new high score!
+            </h3>
+          )}
           {scores.map((score, i) => (
             <ScoreListItem num={i + 1} score={score} key={i} />
           ))}

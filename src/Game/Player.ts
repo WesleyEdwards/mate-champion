@@ -39,7 +39,7 @@ export class Player {
     if (keys.right && this.position.x >= 400) this.move("StopX");
 
     if (keys.left && this.position.x >= 100) this.move("MoveLeft");
-    if (keys.left && this.position.x < 100) this.move("StopX");
+    if (keys.left && this.position.x < 250) this.move("StopX");
 
     if (!keys.right && !keys.left) this.move("StopX");
 
