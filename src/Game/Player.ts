@@ -85,7 +85,7 @@ export class Player {
       if (this.facing === "right") {
         canvas.drawImage(
           this.knifeImage,
-          this.position.x + this.width / 2,
+          this.position.x + this.width / 1.4,
           this.position.y,
           this.width,
           this.height

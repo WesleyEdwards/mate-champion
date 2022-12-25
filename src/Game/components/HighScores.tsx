@@ -29,7 +29,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
   const [scores, setScores] = useState<PlayerScore[]>();
   const [gotHighScore, setGotHighScore] = useState<boolean>();
   const [disableSubmit, setDisableSubmit] = useState(false);
-  const [congratulations, setCongratulations] = useState(false);
+  const [congratulations, setCongratulations] = useState<boolean>();
 
   const [name, setName] = useState<string>("");
 
