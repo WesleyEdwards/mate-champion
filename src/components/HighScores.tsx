@@ -5,6 +5,9 @@ import {
   isHighScore,
 } from "../Firebase/FirebaseHelpers";
 import { PlayerScore } from "../Game/models";
+import { H2, StackVert } from "./MHComponents.tsx/Components";
+import { MHButton } from "./MHComponents.tsx/MHButton";
+import { MHTypography } from "./MHComponents.tsx/MHTypography";
 import { NewHighScore } from "./NewHighScore";
 
 interface ScoreListItemProps {
@@ -15,7 +18,7 @@ interface ScoreListItemProps {
 const ScoreListItem: FC<ScoreListItemProps> = (props) => {
   const { score, num } = props;
   return (
-    <p className="green-text">{`${num} - ${score.name} (${score.score})`}</p>
+    <MHTypography>{`${num} - ${score.name} (${score.score})`}</MHTypography>
   );
 };
 
@@ -58,7 +61,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
       }
       fetchScores();
     });
-  }, []);
+  }, [enablePlay, score]);
 
   return (
     <>
@@ -66,7 +69,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
         if (savedScore || gotHighScore === false) {
           if (scores === undefined) {
             return (
-              <p className="green-text">
+              <div>
                 {new Array(10).fill(null).map((_, i) => (
                   <ScoreListItem
                     num={i + 1}
@@ -74,13 +77,13 @@ export const HighScores: FC<HighScoresProps> = (props) => {
                     key={i}
                   />
                 ))}
-              </p>
+              </div>
             );
           }
 
           return (
             <div>
-              <h2 className="green-text">Score Board:</h2>
+              <H2>Score Board:</H2>
               {scores.map((score, i) => (
                 <ScoreListItem num={i + 1} score={score} key={i} />
               ))}
@@ -89,31 +92,25 @@ export const HighScores: FC<HighScoresProps> = (props) => {
         }
 
         if (gotHighScore && originalName === null) {
-          <NewHighScore
-            score={score}
-            enablePlay={enablePlay}
-            onSubmit={handleSubmit}
-          />;
+          return (
+            <NewHighScore
+              score={score}
+              enablePlay={enablePlay}
+              onSubmit={handleSubmit}
+            />
+          );
         }
 
         return (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h2 className="green-text">New High Score! {score}</h2>
-            <button
-              id="view-scores"
-              className="btn"
+          <StackVert>
+            <H2>New High Score! {score}</H2>
+            <MHButton
               style={{ padding: "1rem" }}
               onClick={() => handleSubmit(originalName ?? "")}
             >
               View Scores
-            </button>
-          </div>
+            </MHButton>
+          </StackVert>
         );
       })()}
     </>

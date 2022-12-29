@@ -1,5 +1,6 @@
 import React, { FC, useState } from "react";
 import { userExists } from "../Firebase/FirebaseHelpers";
+import { MHButton } from "./MHComponents.tsx/MHButton";
 
 interface NewHighScoreProps {
   score: number;
@@ -63,17 +64,16 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
             value={name || ""}
             onChange={(e) => setName(e.target.value)}
           />
-          <button
+          <MHButton
             style={{
               padding: "0.5rem",
             }}
-            type="submit"
-            className="btn"
             disabled={disableSubmit}
             onClick={handleSubmitNew}
+            type="submit"
           >
             Submit
-          </button>
+          </MHButton>
         </div>
         {error && <p className="red-text">{error}</p>}
       </div>
