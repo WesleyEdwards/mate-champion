@@ -5,6 +5,7 @@ import {
   DocumentData,
   getDocs,
   query,
+  QuerySnapshot,
   where,
 } from "firebase/firestore";
 import { firebaseCollection } from "./constants";
@@ -13,33 +14,23 @@ import { PlayerScore } from "./models";
 
 const scoresRef = collection(firebaseDb, firebaseCollection);
 
-const userExists = async (name: string): Promise<DocumentData[]> => {
+async function getUsers(name: string): Promise<QuerySnapshot<DocumentData>> {
   const q = query(scoresRef, where("name", "==", name));
   const querySnapshot = await getDocs(q);
+  return querySnapshot;
+}
 
+export const userExists = async (name: string): Promise<DocumentData[]> => {
+  const querySnapshot = await getUsers(name);
   const docs = querySnapshot.docs.map((doc) => doc.data());
   return docs;
-};
-
-const checkDuplicates = async (
-  name: string,
-  score: number
-): Promise<boolean> => {
-  const q = query(
-    scoresRef,
-    where("name", "==", name),
-    where("score", "==", score)
-  );
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.size > 0;
 };
 
 export const handleSubmitName = async (
   newName: string,
   score: number
 ): Promise<unknown> => {
-  const q = query(scoresRef, where("name", "==", newName));
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getUsers(newName);
 
   querySnapshot.forEach((doc) => {
     if (doc.data().score <= score) {
@@ -57,21 +48,7 @@ export const fetchPlayerScores = async (): Promise<PlayerScore[]> => {
     doc.data()
   ) as PlayerScore[];
 
-  const sorted = scoresList
-    .sort((a, b) => b.score - a.score)
-    .reduce((acc, cur) => {
-      if (acc.length < 10) {
-        const found = acc.find(
-          (a) => a.score === cur.score && a.name === cur.name
-        );
-        if (!found) {
-          acc.push(cur);
-        }
-      }
-      return acc;
-    }, [] as PlayerScore[])
-    .splice(0, 10);
-  return sorted;
+  return scoresList.sort((a, b) => b.score - a.score).splice(0, 10);
 };
 
 export const isHighScore = async (score: number): Promise<boolean> => {
@@ -90,13 +67,4 @@ export const isHighScore = async (score: number): Promise<boolean> => {
   }
 
   return scores.some((playerScore) => playerScore.score < score);
-};
-
-export const trySaveScore = async (score: number): Promise<boolean> => {
-  const foundName = localStorage.getItem("name");
-  if (foundName) {
-    await handleSubmitName(foundName, score);
-    return true;
-  }
-  return false;
 };

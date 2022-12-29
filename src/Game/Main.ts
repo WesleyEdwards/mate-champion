@@ -29,7 +29,7 @@ export function doEverything(setUI: SetUI) {
       canvas.height = 0;
 
       const score = gameState.getScore();
-      setUI.setShowHighScores(score);
+      setUI.setShowHighScoreDiv(score);
 
       stop();
       return;

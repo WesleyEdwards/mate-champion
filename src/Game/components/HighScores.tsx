@@ -3,9 +3,9 @@ import {
   fetchPlayerScores,
   handleSubmitName,
   isHighScore,
-  trySaveScore,
 } from "../FirebaseHelpers";
 import { PlayerScore } from "../models";
+import { NewHighScore } from "./NewHighScore";
 
 interface ScoreListItemProps {
   score: PlayerScore;
@@ -27,97 +27,97 @@ interface HighScoresProps {
 export const HighScores: FC<HighScoresProps> = (props) => {
   const { score, enablePlay } = props;
   const [scores, setScores] = useState<PlayerScore[]>();
-  const [gotHighScore, setGotHighScore] = useState<boolean>();
-  const [disableSubmit, setDisableSubmit] = useState(false);
-  const [congratulations, setCongratulations] = useState<boolean>();
+  const [gotHighScore, setGotHighScore] = useState<boolean>(false);
 
-  const [name, setName] = useState<string>("");
+  const [savedScore, setSavedScore] = useState<boolean>(false);
+
+  const originalName = localStorage.getItem("name");
 
   const fetchScores = () => {
     setScores(undefined);
     fetchPlayerScores().then(setScores);
   };
 
-  const handleSubmit = () => {
-    setDisableSubmit(true);
+  const handleSubmit = (name: string) => {
     localStorage.setItem("name", name);
-
-    if (!name) return;
-    handleSubmitName(name, score).then(() => {
+    return handleSubmitName(name, score).then(() => {
       fetchScores();
       setGotHighScore(false);
       enablePlay();
+      setSavedScore(true);
     });
   };
 
-  // const useMountEffect = (initiate: () => void) => useEffect(initiate, []);
-
-  // useMountEffect(initiate);
-
   useEffect(() => {
-    fetchScores();
     isHighScore(score).then((isHigh) => {
+      setGotHighScore(isHigh);
       if (isHigh) {
-        trySaveScore(score).then((saved) => {
-          if (saved) {
-            setGotHighScore(false);
-            setCongratulations(true);
-            enablePlay();
-            fetchScores();
-          }
-        });
+        setSavedScore(false);
       } else {
         enablePlay();
       }
-      setGotHighScore(isHigh);
+      fetchScores();
     });
   }, []);
 
-  if (!scores || gotHighScore === undefined) {
-    return <p className="green-text">Loading...</p>;
-  }
-
   return (
     <>
-      {gotHighScore ? (
-        <div>
-          <h2>Game Over!</h2>
-          <p className="green-text">
-            You got a high score!
-            <br />
-            To receive credit, Enter your name:
-          </p>
-          <div id="submit-box">
-            <input
-              id="submit-score"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+      {(() => {
+        if (savedScore || gotHighScore === false) {
+          if (scores === undefined) {
+            return (
+              <p className="green-text">
+                {new Array(10).fill(null).map((_, i) => (
+                  <ScoreListItem
+                    num={i + 1}
+                    score={{ name: "...", score: 0 }}
+                    key={i}
+                  />
+                ))}
+              </p>
+            );
+          }
+
+          return (
+            <div>
+              <h2 className="green-text">Score Board:</h2>
+              {scores.map((score, i) => (
+                <ScoreListItem num={i + 1} score={score} key={i} />
+              ))}
+            </div>
+          );
+        }
+
+        if (gotHighScore && originalName === null) {
+          <NewHighScore
+            score={score}
+            enablePlay={enablePlay}
+            onSubmit={handleSubmit}
+          />;
+        }
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <h2 className="green-text">New High Score! {score}</h2>
             <button
-              type="submit"
-              id="submit-score"
+              id="view-scores"
               className="btn"
-              disabled={disableSubmit}
-              onClick={handleSubmit}
+              style={{ padding: "1rem" }}
+              onClick={() => handleSubmit(originalName ?? "")}
             >
-              Submit
+              View Scores
             </button>
           </div>
-        </div>
-      ) : (
-        <div>
-          <h2 className="green-text">Score Board:</h2>
-          {congratulations && (
-            <h3 className="green-text">
-              Congratulations! You got a new high score!
-            </h3>
-          )}
-          {scores.map((score, i) => (
-            <ScoreListItem num={i + 1} score={score} key={i} />
-          ))}
-        </div>
-      )}
+        );
+      })()}
     </>
   );
 };
+
+export default HighScores;

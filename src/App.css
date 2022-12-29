@@ -21,19 +21,11 @@
   font-family: "Courier New", Courier, monospace;
 }
 
-#submit-box {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 1rem;
+.red-text {
+  color: red;
+  font-family: "Courier New", Courier, monospace;
 }
-#submit-score {
-  padding: 0.5rem;
-}
-#play-game {
-  padding: 1rem 2rem; 
-}
+
 #instructions {
   display: flex;
   flex-direction: column;

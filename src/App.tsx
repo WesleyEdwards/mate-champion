@@ -25,13 +25,18 @@ function App() {
       setScore,
       setDisabledPlay,
       setShowInstructions,
-      setShowHighScores,
+      setShowHighScoreDiv,
     });
   };
 
-  const onSubmittedName = () => {
+  const onEnablePlay = () => {
     setShowInstructions(false);
     setDisabledPlay(false);
+  };
+
+  const setShowHighScoreDiv = (score: number | undefined) => {
+    setDisabledPlay(true);
+    setShowHighScores(score);
   };
 
   return (
@@ -49,7 +54,7 @@ function App() {
         </h1>
         {showInstructions && <Instructions />}
         {showHighScores !== undefined && (
-          <HighScores score={showHighScores} enablePlay={onSubmittedName} />
+          <HighScores score={showHighScores} enablePlay={onEnablePlay} />
         )}
         <div>
           <canvas id="canvas"></canvas>
@@ -57,6 +62,7 @@ function App() {
         </div>
         <button
           id="play-game"
+          style={{ padding: "1rem 2rem" }}
           className="btn"
           disabled={disablePlay}
           onClick={handleClick}
