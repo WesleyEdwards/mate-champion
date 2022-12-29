@@ -3,8 +3,8 @@ import {
   fetchPlayerScores,
   handleSubmitName,
   isHighScore,
-} from "../FirebaseHelpers";
-import { PlayerScore } from "../models";
+} from "../Firebase/FirebaseHelpers";
+import { PlayerScore } from "../Game/models";
 import { NewHighScore } from "./NewHighScore";
 
 interface ScoreListItemProps {

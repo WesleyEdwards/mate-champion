@@ -8,9 +8,9 @@ import {
   QuerySnapshot,
   where,
 } from "firebase/firestore";
-import { firebaseCollection } from "./constants";
+import { firebaseCollection } from "../Game/constants";
+import { PlayerScore } from "../Game/models";
 import { firebaseDb } from "./Firebase";
-import { PlayerScore } from "./models";
 
 const scoresRef = collection(firebaseDb, firebaseCollection);
 

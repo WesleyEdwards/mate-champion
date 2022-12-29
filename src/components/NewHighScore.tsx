@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { userExists } from "../FirebaseHelpers";
+import { userExists } from "../Firebase/FirebaseHelpers";
 
 interface NewHighScoreProps {
   score: number;

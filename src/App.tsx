@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./App.css";
-import { HighScores } from "./Game/components/HighScores";
-import { Instructions } from "./Game/components/Instructions";
-import StatsDiv from "./Game/components/StatsDiv";
+import { HighScores } from "./components/HighScores";
+import { Instructions } from "./components/Instructions";
+import StatsDiv from "./components/StatsDiv";
 import { doEverything } from "./Game/Main";
 
 function App() {
