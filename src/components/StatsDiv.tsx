@@ -1,33 +1,25 @@
 import React, { FC } from "react";
-import {
-  StackHor,
-  StackVert,
-  Typography,
-} from "./MHComponents.tsx/Components";
-
-interface StatsListItemProps {
-  label: string;
-  value: number | undefined;
-}
-
-const StatsListItem: FC<StatsListItemProps> = (props) => {
-  const { label, value } = props;
-  return (
-    <Typography style={{ margin: 0, fontSize: "1.5rem" }}>
-      {value !== undefined && `${label}: ${value}`}
-    </Typography>
-  );
-};
+import { emptyStats } from "../Game/constants";
+import { lifeImage } from "./constants";
+import { StackHor } from "./MHComponents.tsx/Components";
+import { MHButton } from "./MHComponents.tsx/MHButton";
+import { ScoreStats } from "./ScoreStats";
 
 interface StatsDivProps {
   level: number | undefined;
   lives: number | undefined;
   score: number | undefined;
   ammo: number | undefined;
+  disablePlay: boolean;
+  handleClick: () => void;
+  BtnText: string;
 }
 
+const widthOfDiv = 50 * emptyStats.lives;
+
 export const StatsDiv: FC<StatsDivProps> = (props) => {
-  const { level, lives, score, ammo } = props;
+  const { level, lives, score, ammo, disablePlay, handleClick, BtnText } =
+    props;
 
   return (
     <StackHor
@@ -36,11 +28,16 @@ export const StatsDiv: FC<StatsDivProps> = (props) => {
         paddingBlock: "10px",
       }}
     >
-      <StackHor>
+      <StackHor
+        style={{
+          minWidth: `${widthOfDiv}px`,
+          justifyContent: "start",
+        }}
+      >
         {lives &&
           new Array(lives).fill(null).map((_, i) => (
             <img
-              src="https://user-images.githubusercontent.com/97990557/209986272-22157ab1-35ba-4ff1-9173-f72696174670.png"
+              src={lifeImage}
               style={{
                 objectFit: "contain",
               }}
@@ -51,15 +48,14 @@ export const StatsDiv: FC<StatsDivProps> = (props) => {
             />
           ))}
       </StackHor>
-      <StackVert
-        style={{
-          alignItems: "end",
-        }}
+      <MHButton
+        disabled={disablePlay}
+        style={{ padding: "1rem 2rem" }}
+        onClick={handleClick}
       >
-        <StatsListItem label="ammo" value={ammo} />
-        <StatsListItem label="level" value={level} />
-        <StatsListItem label="score" value={score} />
-      </StackVert>
+        {BtnText}
+      </MHButton>
+      <ScoreStats level={level} score={score} ammo={ammo} />
     </StackHor>
   );
 };

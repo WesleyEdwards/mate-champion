@@ -67,15 +67,16 @@ function App() {
         )}
         <div>
           <canvas id="canvas"></canvas>
-          <StatsDiv level={level} lives={lives} score={score} ammo={ammo} />
+          <StatsDiv
+            level={level}
+            lives={lives}
+            score={score}
+            ammo={ammo}
+            disablePlay={disablePlay}
+            handleClick={handleClick}
+            BtnText={showInstructions ? "Play Game" : "Play Again"}
+          />
         </div>
-        <MHButton
-          disabled={disablePlay}
-          style={{ padding: "1rem 2rem" }}
-          onClick={handleClick}
-        >
-          {showInstructions ? "Play Game" : "Play Again"}
-        </MHButton>
       </div>
     </>
   );
