@@ -7,9 +7,9 @@ import {
   checkIfCaught,
 } from "./GameStateFunctions";
 import { Keys, GameStats, SetUI } from "./models";
-import { Opponent } from "./Opponent";
+import { Opponent } from "./Opponent/Opponent";
 import { Platform } from "./Platform";
-import Player from "./Player";
+import Player from "./Player/Player";
 import { Pot } from "./Pot";
 import { createOpponents, createPlatforms } from "./utils";
 
@@ -89,7 +89,7 @@ export class GameState {
   }
 
   updateEverything() {
-    this.player.update(this.keys, this.getScrollOffset());
+    this.player.update(this.keys);
     this.opponents.forEach((opponent) => opponent.update());
   }
 
@@ -139,6 +139,7 @@ export class GameState {
   drawStats() {
     this.setUI.setLevel(this.stats.level);
     this.setUI.setScore(this.stats.score);
+    this.setUI.setAmmo(this.stats.ammo);
     if (this.stats.lives === 0) {
       this.setUI.setLives(undefined);
     } else {

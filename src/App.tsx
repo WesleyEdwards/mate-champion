@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./App.css";
 import { HighScores } from "./components/HighScores";
 import { Instructions } from "./components/Instructions";
-import { MHButton } from "./components/MHComponents.tsx/MHButton";
 import { StatsDiv } from "./components/StatsDiv";
 import { doEverything } from "./Game/Main";
 import { H1 } from "./components/MHComponents.tsx/Components";
@@ -16,7 +15,7 @@ function App() {
   const [level, setLevel] = useState<number>();
   const [lives, setLives] = useState<number>();
   const [score, setScore] = useState<number>();
-  const [ammo, setAmmo] = useState<number>(0);
+  const [ammo, setAmmo] = useState<number>();
 
   const handleClick = () => {
     setDisabledPlay(true);
@@ -26,6 +25,7 @@ function App() {
       setLevel,
       setLives,
       setScore,
+      setAmmo,
       setDisabledPlay,
       setShowInstructions,
       setShowHighScoreDiv,

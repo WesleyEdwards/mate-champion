@@ -8,7 +8,7 @@ import {
   MAX_CANVAS_HEIGHT,
 } from "./constants";
 import { GameState } from "./GameState";
-import { Opponent } from "./Opponent";
+import { Opponent } from "./Opponent/Opponent";
 import { Platform } from "./Platform";
 
 export function createPlatforms(level: number): Platform[] {

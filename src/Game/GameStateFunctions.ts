@@ -5,9 +5,9 @@ import {
   MAX_CANVAS_HEIGHT,
 } from "./constants";
 import { hasPosition, Keys, Character } from "./models";
-import { Opponent } from "./Opponent";
+import { Opponent } from "./Opponent/Opponent";
 import { Platform } from "./Platform";
-import Player from "./Player";
+import Player from "./Player/Player";
 import { Pot } from "./Pot";
 
 export function updateWithPlayer<T extends hasPosition>(

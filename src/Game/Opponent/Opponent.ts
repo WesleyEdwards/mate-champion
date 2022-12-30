@@ -1,23 +1,21 @@
-import { MAX_CANVAS_HEIGHT, GRAVITY } from "./constants";
-import { makeImage } from "./drawingUtils";
-import { Coordinates, PlayerAction } from "./models";
-import { randomOutOf } from "./utils";
+import { MAX_CANVAS_HEIGHT, GRAVITY, oppConstants } from "../constants";
+import { OppImages, oppImages } from "../Drawing/ImageRepos";
+import { Character, Coordinates, OppDirections, CharAction } from "../models";
+import { randomOutOf } from "../utils";
 
-export class Opponent {
+export class Opponent implements Character {
   position: Coordinates;
   velocity: Coordinates;
   width: number;
   height: number;
-  image: HTMLImageElement;
-  facing: "left" | "right";
+  images: OppImages;
 
   constructor(xPos: number, moveSpeed: number) {
     this.position = { x: xPos, y: 100 };
     this.velocity = { x: moveSpeed, y: 0 };
-    this.width = 50;
-    this.height = 50;
-    this.image = makeImage(this.width, this.height, "opponent");
-    this.facing = "right";
+    this.width = oppConstants.radius * 2;
+    this.height = oppConstants.radius * 2;
+    this.images = oppImages;
   }
 
   update() {
@@ -36,7 +34,7 @@ export class Opponent {
     else this.velocity.y += GRAVITY;
   }
 
-  move(action: PlayerAction) {
+  move(action: CharAction) {
     if (action === "StopY") {
       this.velocity.y = 0;
       this.position.y = MAX_CANVAS_HEIGHT - this.height;
@@ -48,11 +46,11 @@ export class Opponent {
 
   draw(canvas: CanvasRenderingContext2D) {
     canvas.drawImage(
-      this.image,
+      this.images[this.facing].image,
       this.position.x,
       this.position.y,
-      this.width,
-      this.height
+      this.images[this.facing].width,
+      this.images[this.facing].height
     );
   }
 
@@ -61,5 +59,10 @@ export class Opponent {
   }
   get rightPos() {
     return this.position.x + this.width;
+  }
+
+  get facing(): OppDirections {
+    if (this.velocity.x > 0) return "right";
+    return "left";
   }
 }

@@ -1,10 +1,11 @@
-export type PlayerAction =
-  | "MoveRight"
-  | "MoveLeft"
-  | "Jump"
-  | "Duck"
-  | "StopX"
-  | "StopY";
+
+export type CharAction =
+| "MoveRight"
+| "MoveLeft"
+| "Jump"
+| "Duck"
+| "StopX"
+| "StopY";
 
 export interface Coordinates {
   x: number;
@@ -15,6 +16,7 @@ export interface SetUI {
   setLevel: (level: number) => void;
   setLives: (lives: number | undefined) => void;
   setScore: (score: number) => void;
+  setAmmo: (ammo: number) => void;
   setDisabledPlay: (disabled: boolean) => void;
   setShowInstructions: (show: boolean) => void;
   setShowHighScoreDiv: (score: number | undefined) => void;
@@ -30,7 +32,7 @@ export interface Character {
   bottomPos: number;
   rightPos: number;
   height: number;
-  move: (action: PlayerAction) => void;
+  move: (action: CharAction) => void;
 }
 
 export interface Keys {
@@ -44,9 +46,13 @@ export interface GameStats {
   level: number;
   score: number;
   lives: number;
+  ammo: number;
 }
 
 export interface PlayerScore {
   name: string;
   score: number;
 }
+
+
+export type OppDirections = "left" | "right";

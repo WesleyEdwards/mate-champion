@@ -1,5 +1,5 @@
 import { END_POS } from "./constants";
-import { makeImage } from "./drawingUtils";
+import { potImage } from "./Drawing/ImageRepos";
 import { Coordinates } from "./models";
 
 export class Pot {
@@ -14,10 +14,10 @@ export class Pot {
       x: END_POS + 750,
       y: 50,
     };
-    this.width = 500;
-    this.height = 750;
+    this.width = potImage.width;
+    this.height = potImage.height;
     this.color = "green";
-    this.image = makeImage(500, 750, "matePot");
+    this.image = potImage.image;
   }
   draw(canvas: CanvasRenderingContext2D) {
     canvas.drawImage(this.image, this.position.x, this.position.y);

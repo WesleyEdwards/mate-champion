@@ -1,20 +1,19 @@
-import { playerConstants, MAX_CANVAS_HEIGHT, GRAVITY } from "./constants";
-import { makeImage } from "./drawingUtils";
-import { Coordinates, Keys, PlayerAction } from "./models";
+import { playerConstants, MAX_CANVAS_HEIGHT, GRAVITY } from "../constants";
+import { Coordinates, Keys, CharAction, Character } from "../models";
+import { PlayerDirection } from "./models";
+import { PlayerImager } from "./PlayerImager";
 
 const { shankTime, shankCoolDown, moveSpeed, radius } = playerConstants;
 
-export class Player {
+export class Player implements Character {
   position: Coordinates;
   velocity: Coordinates;
   jumps: number;
   width: number;
   height: number;
-  image: HTMLImageElement;
-  knifeImage: HTMLImageElement;
-  knifeLeft: HTMLImageElement;
+  imager: PlayerImager;
   shank: number;
-  facing: "left" | "right";
+  facing: PlayerDirection;
 
   constructor() {
     this.position = { x: 100, y: 100 };
@@ -22,14 +21,12 @@ export class Player {
     this.jumps = 0;
     this.width = radius * 2;
     this.height = radius * 2;
-    this.image = makeImage(this.width, this.height, "player");
-    this.knifeImage = makeImage(this.width, this.height, "knifeRight");
-    this.knifeLeft = makeImage(this.width, this.height, "knifeLeft");
+    this.imager = new PlayerImager();
     this.shank = 0;
     this.facing = "right";
   }
 
-  update(keys: Keys, xOffset: number) {
+  update(keys: Keys) {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
@@ -51,7 +48,7 @@ export class Player {
     else this.velocity.y += GRAVITY;
   }
 
-  move(action: PlayerAction) {
+  move(action: CharAction) {
     if (action === "MoveRight") {
       this.velocity.x = moveSpeed;
       this.facing = "right";
@@ -74,32 +71,7 @@ export class Player {
   }
 
   draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(
-      this.image,
-      this.position.x,
-      this.position.y,
-      this.width,
-      this.height
-    );
-    if (this.shanking) {
-      if (this.facing === "right") {
-        canvas.drawImage(
-          this.knifeImage,
-          this.position.x + this.width / 1.4,
-          this.position.y,
-          this.width,
-          this.height
-        );
-      } else {
-        canvas.drawImage(
-          this.knifeLeft,
-          this.position.x - this.width / 1.4,
-          this.position.y,
-          this.width,
-          this.height
-        );
-      }
-    }
+    this.imager.draw(this.facing, this.shanking, this.position, canvas);
   }
 
   get shanking() {
