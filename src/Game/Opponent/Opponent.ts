@@ -6,15 +6,13 @@ import { randomOutOf } from "../utils";
 export class Opponent implements Character {
   position: Coordinates;
   velocity: Coordinates;
-  width: number;
-  height: number;
+  radius: number;
   images: OppImages;
 
   constructor(xPos: number, moveSpeed: number) {
     this.position = { x: xPos, y: 100 };
     this.velocity = { x: moveSpeed, y: 0 };
-    this.width = oppConstants.radius * 2;
-    this.height = oppConstants.radius * 2;
+    this.radius = oppConstants.radius;
     this.images = oppImages;
   }
 
@@ -57,8 +55,20 @@ export class Opponent implements Character {
   get bottomPos() {
     return this.position.y + this.height;
   }
+  
   get rightPos() {
-    return this.position.x + this.width;
+    return this.position.x + this.radius * 2;
+  }
+
+  get height() {
+    return this.images[this.facing].height;
+  }
+
+  get posCenter() {
+    return {
+      x: this.position.x + oppConstants.radius,
+      y: this.position.y + oppConstants.radius,
+    };
   }
 
   get facing(): OppDirections {

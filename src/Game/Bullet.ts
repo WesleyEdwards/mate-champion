@@ -1,52 +1,54 @@
 import { makeImage, MCImage } from "./Drawing/drawingUtils";
-import { Coordinates } from "./models";
+import { Coordinates, HasPosition, VagueFacing } from "./models";
 
-const bulletWidth = 25;
-const bulletHeight = 25;
-type BulletDirection = "left" | "right" | "up";
+const bulletRadius = 15;
 
-function getDirection(dir: BulletDirection): Coordinates {
+function getDirection(dir: VagueFacing): Coordinates {
   if (dir === "left") return { x: -10, y: 0 };
   if (dir === "right") return { x: 10, y: 0 };
   return { x: 0, y: -10 };
 }
 
-export class Bullet {
+function calcImage(dir: VagueFacing): MCImage {
+  const widthHeight = bulletRadius * 2;
+  if (dir === "left" || dir === "right") {
+    return makeImage(widthHeight, widthHeight, "bullet-hor");
+  }
+  return makeImage(widthHeight, widthHeight, "bullet-vert");
+}
+
+export class Bullet implements HasPosition {
   position: Coordinates;
   velocity: Coordinates;
-  images: { horizontal: MCImage; vertical: MCImage };
+  bulletImage: MCImage;
+  radius: number;
 
-  constructor(pos: Coordinates, direction: BulletDirection) {
+  constructor(pos: Coordinates, direction: VagueFacing) {
     this.position = pos;
     this.velocity = getDirection(direction);
-    this.images = {
-      horizontal: makeImage(bulletWidth, bulletHeight, "bullet-hor"),
-      vertical: makeImage(bulletWidth, bulletHeight, "bullet-vert"),
-    };
+    this.bulletImage = calcImage(direction);
+    this.radius = bulletRadius;
   }
 
   draw(canvas: CanvasRenderingContext2D) {
-    if (this.velocity.x === 0) {
-      canvas.drawImage(
-        this.images.vertical.image,
-        this.position.x,
-        this.position.y,
-        this.images.vertical.width,
-        this.images.vertical.height
-      );
-      return;
-    }
     canvas.drawImage(
-      this.images.horizontal.image,
+      this.bulletImage.image,
       this.position.x,
       this.position.y,
-      this.images.horizontal.width,
-      this.images.horizontal.height
+      this.bulletImage.width,
+      this.bulletImage.height
     );
   }
 
   update() {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+  }
+
+  get posCenter() {
+    return {
+      x: this.position.x + bulletRadius,
+      y: this.position.y + bulletRadius,
+    };
   }
 }

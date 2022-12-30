@@ -21,11 +21,12 @@ export interface SetUI {
   setShowHighScoreDiv: (score: number | undefined) => void;
 }
 
-export interface hasPosition {
+export interface HasPosition {
   position: Coordinates;
+  posCenter: Coordinates;
 }
 
-export interface Character {
+export interface Character extends HasPosition {
   position: Coordinates;
   velocity: Coordinates;
   bottomPos: number;
@@ -57,3 +58,5 @@ export interface PlayerScore {
 }
 
 export type OppDirections = "left" | "right";
+
+export type VagueFacing = "left" | "right" | "up";

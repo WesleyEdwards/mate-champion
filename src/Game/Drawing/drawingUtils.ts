@@ -39,7 +39,7 @@ const images: Record<imageObjects, string> = {
   "bullet-hor":
     "https://user-images.githubusercontent.com/97990557/210044411-c18b7c57-3883-46df-95a4-b9c21e8379ed.png",
   "bullet-vert":
-    "https://user-images.githubusercontent.com/97990557/210044411-c18b7c57-3883-46df-95a4-b9c21e8379ed.png",
+    "https://user-images.githubusercontent.com/97990557/210044402-0ea81fd0-730b-444d-a7d1-29e5a2fe561b.png",
 };
 
 export interface MCImage {

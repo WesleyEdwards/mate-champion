@@ -20,7 +20,7 @@ export const oppSpeedBase = 2;
 export const playerConstants = {
   shankTime: 200,
   shankCoolDown: 100,
-  shootCoolDown: 1000,
+  shootCoolDown: 100,
   radius: 25,
   moveSpeed: 10,
 };
@@ -52,7 +52,7 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const emptyStats = {
   score: 0,
-  lives: 3,
+  lives: 1,
   level: 1,
   ammo: 100,
 };

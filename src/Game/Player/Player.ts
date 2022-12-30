@@ -1,6 +1,11 @@
 import { playerConstants, MAX_CANVAS_HEIGHT, GRAVITY } from "../constants";
-import { Coordinates, Keys, CharAction, Character } from "../models";
-import { debounceLog } from "../utils";
+import {
+  Coordinates,
+  Keys,
+  CharAction,
+  Character,
+  VagueFacing,
+} from "../models";
 import { PlayerDirection } from "./models";
 import { PlayerImager } from "./PlayerImager";
 
@@ -12,7 +17,7 @@ export class Player implements Character {
   velocity: Coordinates;
   jumps: number;
   width: number;
-  height: number;
+  radius: number;
   imager: PlayerImager;
   shank: number;
   shoot: number;
@@ -24,7 +29,7 @@ export class Player implements Character {
     this.velocity = { x: 0, y: 0 };
     this.jumps = 0;
     this.width = radius * 2;
-    this.height = radius * 2;
+    this.radius = radius;
     this.imager = new PlayerImager();
     this.shank = 0;
     this.shoot = 0;
@@ -50,7 +55,11 @@ export class Player implements Character {
       this.shank = Date.now();
     }
 
-    if (keys.shoot && Date.now() - this.shoot > shootCoolDown) {
+    if (
+      keys.shoot &&
+      Date.now() - this.shoot > shootCoolDown &&
+      !this.shanking
+    ) {
       this.shoot = Date.now();
       this.shot = true;
     }
@@ -98,6 +107,13 @@ export class Player implements Character {
     }
   }
 
+  get weaponPosCurr(): Coordinates | undefined {
+    if (!this.shanking) return undefined;
+    if (this.vagueFacing === "right") return this.posRightWeapon;
+    if (this.vagueFacing === "left") return this.posLeftWeapon;
+    return this.posUpWeapon;
+  }
+
   get shanking() {
     return Date.now() - this.shank < shankTime;
   }
@@ -109,11 +125,54 @@ export class Player implements Character {
     return false;
   }
 
+  get height() {
+    return this.radius * 2;
+  }
+
   get bottomPos() {
     return this.position.y + this.height;
   }
   get rightPos() {
     return this.position.x + this.width;
+  }
+
+  get centerX() {
+    return this.position.x + this.width / 2;
+  }
+  get centerY() {
+    return this.position.y + this.height / 2;
+  }
+
+  get posCenter() {
+    return {
+      x: this.centerX,
+      y: this.centerY,
+    };
+  }
+
+  get posRightWeapon() {
+    return {
+      x: this.position.x + this.width * 1.5,
+      y: this.centerY,
+    };
+  }
+  get posLeftWeapon() {
+    return {
+      x: this.position.x - this.width / 2,
+      y: this.centerY,
+    };
+  }
+  get posUpWeapon() {
+    return {
+      x: this.centerX,
+      y: this.position.y - this.height / 2,
+    };
+  }
+
+  get vagueFacing(): VagueFacing {
+    if (this.facing === "rightUp") return "up";
+    if (this.facing === "leftUp") return "up";
+    return this.facing;
   }
 }
 

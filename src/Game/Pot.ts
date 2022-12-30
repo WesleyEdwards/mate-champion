@@ -22,4 +22,11 @@ export class Pot {
   draw(canvas: CanvasRenderingContext2D) {
     canvas.drawImage(this.image, this.position.x, this.position.y);
   }
+
+  get posCenter() {
+    return {
+      x: this.position.x + this.width / 2,
+      y: this.position.y + this.height / 2,
+    };
+  }
 }

@@ -1,32 +1,13 @@
-import { Bullet } from "./Bullet";
 import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "./constants";
-import {
-  drawComponents,
-  calcPlatColl,
-  updateLiveStatus,
-  checkIfCaught,
-  updateItemsWithPlayer,
-} from "./GameStateFunctions";
+import { drawComponents, updateWithPlayer } from "./GameStateFunctions";
 import { Keys, GameStats, SetUI } from "./models";
-import { Opponent } from "./Opponent/Opponent";
-import { Platform } from "./Platform";
-import Player from "./Player/Player";
-import { Pot } from "./Pot";
-import { createOpponents, createPlatforms } from "./utils";
+import { ObjectManager } from "./ObjectManager/ObjectManager";
 
 type winState = "win" | "lose" | "playing";
 
-export interface GameObjects {
-  player: Player;
-  platforms: Platform[];
-  opponents: Opponent[];
-  pot: Pot;
-  bullets: Bullet[];
-}
-
 export class GameState {
   winState: winState;
-  objects: GameObjects;
+  objectManager: ObjectManager;
   keys: Keys;
   private scrollOffset: number;
   private stats: GameStats;
@@ -36,19 +17,9 @@ export class GameState {
     this.scrollOffset = 0;
     this.winState = "playing";
     this.keys = initialKeyStatus;
-    this.objects = {
-      player: new Player(),
-      platforms: createPlatforms(1),
-      opponents: createOpponents(1),
-      pot: new Pot(),
-      bullets: [],
-    };
+    this.objectManager = new ObjectManager();
     this.stats = { ...emptyStats };
     this.setUI = setUI;
-  }
-
-  private incrementScrollOffset(num: number) {
-    this.scrollOffset -= num;
   }
 
   private setGameState(state: winState) {
@@ -61,10 +32,7 @@ export class GameState {
     }
     this.setGameState("playing");
     this.scrollOffset = 0;
-    this.objects.player = new Player();
-    this.objects.opponents = createOpponents(this.stats.level);
-    this.objects.platforms = createPlatforms(this.stats.level);
-    this.objects.pot = new Pot();
+    this.objectManager.reset(this.stats.level);
     this.drawStats();
   }
 
@@ -72,7 +40,6 @@ export class GameState {
     this.stats.level++;
     this.stats.score += 100;
     this.reset();
-    this.drawStats();
   }
 
   private handleLose() {
@@ -86,22 +53,6 @@ export class GameState {
       this.handleLose();
     }
   }
-  private killOpponent(opp: Opponent) {
-    this.stats.score += 10;
-    this.objects.opponents.splice(this.objects.opponents.indexOf(opp), 1);
-    this.drawStats();
-  }
-
-  private shootBullet() {
-    const bullet = new Bullet(
-      {
-        x: this.objects.player.position.x + 100,
-        y: this.objects.player.position.y,
-      },
-      "right"
-    );
-    this.objects.bullets.push(bullet);
-  }
 
   enterGame() {
     this.setUI.setShowInstructions(false);
@@ -109,59 +60,54 @@ export class GameState {
   }
 
   updateEverything() {
-    this.objects.player.update(this.keys);
-    this.objects.opponents.forEach((opponent) => opponent.update());
-    this.objects.bullets.forEach((bullet) => bullet.update());
+    this.objectManager.updateAll(this.keys);
   }
 
   drawEverything(context: CanvasRenderingContext2D) {
-    drawComponents(context, this.objects);
+    drawComponents(context, this.objectManager);
   }
 
   calcInteractions() {
-    this.objects.platforms.forEach((platform) => {
-      this.objects.opponents.forEach((opp) => calcPlatColl(platform, opp));
-      calcPlatColl(platform, this.objects.player);
-    });
-
-    updateItemsWithPlayer(
-      this.keys,
-      this.objects.player,
-      this.scrollOffset,
-      this.objects
-    );
-
-    if (this.objects.player.shooting) {
-      this.shootBullet();
-    }
-
-    const removeOpp = updateLiveStatus(
-      this.objects.player,
-      this.objects.opponents
-    );
-    removeOpp && this.killOpponent(removeOpp);
-
-    if (checkIfCaught(this.objects.player, this.objects.opponents)) {
+    if (this.objectManager.isCaught()) {
       this.handleLoseLife();
     }
 
-    if (this.objects.player.position.x > this.objects.pot.position.x) {
-      this.nextLevel();
-    }
-
-    if (this.keys.right && this.objects.player.velocity.x === 0) {
+    if (this.keys.right && !this.objectManager.playerXMoving) {
       this.incrementScrollOffset(-INCREMENT_VALUE);
     }
+
     if (
       this.keys.left &&
-      this.objects.player.velocity.x === 0 &&
+      !this.objectManager.playerXMoving &&
       this.scrollOffset > 0
     ) {
       this.incrementScrollOffset(INCREMENT_VALUE);
     }
+
+    this.objectManager.calcInteractions();
+
+    const killedOpp = this.objectManager.getKilledOpponents();
+    if (killedOpp) this.stats.score += 10;
+
+    const shot = this.objectManager.calcBullets();
+    if (shot) this.stats.ammo--;
+
+    const nextLevel = this.objectManager.nextLevel;
+    if (nextLevel) this.nextLevel();
+
+    if (nextLevel || killedOpp || shot) {
+      this.drawStats();
+    }
+
+    updateWithPlayer(
+      this.keys,
+      this.objectManager.player,
+      this.scrollOffset,
+      this.objectManager.objectsToUpdatePos
+    );
   }
 
-  drawStats() {
+  private drawStats() {
     this.setUI.setLevel(this.stats.level);
     this.setUI.setScore(this.stats.score);
     this.setUI.setAmmo(this.stats.ammo);
@@ -172,6 +118,9 @@ export class GameState {
     }
   }
 
+  private incrementScrollOffset(num: number) {
+    this.scrollOffset -= num;
+  }
   getScrollOffset() {
     return this.scrollOffset;
   }
