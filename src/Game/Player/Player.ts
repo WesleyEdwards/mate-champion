@@ -67,6 +67,9 @@ export class Player implements Character {
     if (keys.up) this.setUpPos();
     else this.setUpPos(false);
 
+    if (keys.down) this.setDownPos();
+    else this.setDownPos(false);
+
     if (this.bottomPos > MAX_CANVAS_HEIGHT) this.move("StopY");
     else this.velocity.y += GRAVITY;
   }
@@ -107,11 +110,29 @@ export class Player implements Character {
     }
   }
 
+  private setDownPos(down: boolean = true) {
+    if (down) {
+      if (this.facing === "right") this.facing = "rightDown";
+      if (this.facing === "left") this.facing = "leftDown";
+    } else {
+      if (this.facing === "rightDown") this.facing = "right";
+      if (this.facing === "leftDown") this.facing = "left";
+    }
+  }
+
   get weaponPosCurr(): Coordinates | undefined {
     if (!this.shanking) return undefined;
     if (this.vagueFacing === "right") return this.posRightWeapon;
     if (this.vagueFacing === "left") return this.posLeftWeapon;
     return this.posUpWeapon;
+  }
+
+  setPosY(newY: number) {
+    this.position.y = newY;
+  }
+
+  get moveDown() {
+    return this.facing === "leftDown" || this.facing === "rightDown";
   }
 
   get shanking() {
@@ -170,8 +191,8 @@ export class Player implements Character {
   }
 
   get vagueFacing(): VagueFacing {
-    if (this.facing === "rightUp") return "up";
-    if (this.facing === "leftUp") return "up";
+    if (this.facing === "rightUp" || this.facing === "rightDown") return "up";
+    if (this.facing === "leftUp" || this.facing === "leftDown") return "up";
     return this.facing;
   }
 }

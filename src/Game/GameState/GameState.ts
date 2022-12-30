@@ -1,14 +1,18 @@
-import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "./constants";
-import { drawComponents, updateWithPlayer } from "./GameStateFunctions";
-import { Keys, GameStats, SetUI } from "./models";
-import { ObjectManager } from "./ObjectManager/ObjectManager";
+import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "../constants";
+import {
+  addEventListeners,
+  drawComponents,
+  updateWithPlayer,
+} from "./GameStateFunctions";
+import { Keys, GameStats, SetUI } from "../models";
+import { ObjectManager } from "../ObjectManager/ObjectManager";
 
 type winState = "win" | "lose" | "playing";
 
 export class GameState {
   winState: winState;
   objectManager: ObjectManager;
-  keys: Keys;
+  private keys: Keys;
   private scrollOffset: number;
   private stats: GameStats;
   private setUI: SetUI;
@@ -20,6 +24,8 @@ export class GameState {
     this.objectManager = new ObjectManager();
     this.stats = { ...emptyStats };
     this.setUI = setUI;
+
+    addEventListeners(this.keys);
   }
 
   private setGameState(state: winState) {
@@ -38,6 +44,7 @@ export class GameState {
 
   private nextLevel() {
     this.stats.level++;
+    this.stats.ammo += 20;
     this.stats.score += 100;
     this.reset();
   }
@@ -89,7 +96,7 @@ export class GameState {
     const killedOpp = this.objectManager.getKilledOpponents();
     if (killedOpp) this.stats.score += 10;
 
-    const shot = this.objectManager.calcBullets();
+    const shot = this.objectManager.calcBullets(this.stats.ammo);
     if (shot) this.stats.ammo--;
 
     const nextLevel = this.objectManager.nextLevel;

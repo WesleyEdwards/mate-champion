@@ -27,12 +27,13 @@ export interface HasPosition {
 }
 
 export interface Character extends HasPosition {
-  position: Coordinates;
   velocity: Coordinates;
   bottomPos: number;
   rightPos: number;
   height: number;
+  moveDown: boolean
   move: (action: CharAction) => void;
+  setPosY: (newY: number) => void;
 }
 
 export interface Keys {

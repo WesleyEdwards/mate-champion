@@ -52,10 +52,14 @@ export class Opponent implements Character {
     );
   }
 
+  setPosY(newY: number) {
+    this.position.y = newY;
+  }
+
   get bottomPos() {
     return this.position.y + this.height;
   }
-  
+
   get rightPos() {
     return this.position.x + this.radius * 2;
   }
@@ -74,5 +78,9 @@ export class Opponent implements Character {
   get facing(): OppDirections {
     if (this.velocity.x > 0) return "right";
     return "left";
+  }
+
+  get moveDown() {
+    return false;
   }
 }

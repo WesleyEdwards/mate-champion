@@ -1,15 +1,15 @@
-import { Bullet } from "./Bullet";
+import { Bullet } from "../Bullet";
 import {
   INCREMENT_VALUE,
   playerConstants,
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
-} from "./constants";
-import { HasPosition, Keys, Character, Coordinates } from "./models";
-import { ObjectManager } from "./ObjectManager/ObjectManager";
-import { Opponent } from "./Opponent/Opponent";
-import { Platform } from "./Platform";
-import Player from "./Player/Player";
+} from "../constants";
+import { HasPosition, Keys, Character, Coordinates } from "../models";
+import { ObjectManager } from "../ObjectManager/ObjectManager";
+import { Opponent } from "../Opponent/Opponent";
+import { Platform } from "../Platform";
+import Player from "../Player/Player";
 
 export function updateWithPlayer<T extends HasPosition>(
   keys: Keys,
@@ -33,13 +33,17 @@ export function updateWithPlayer<T extends HasPosition>(
 
 export function calcPlatColl<T extends Character>(platform: Platform, char: T) {
   if (
-    char.bottomPos <= platform.position.y &&
+    char.bottomPos <= platform.posTop &&
     char.bottomPos + char.velocity.y >= platform.position.y &&
     char.rightPos >= platform.position.x &&
     char.position.x <= platform.rightPos
   ) {
+    if (char.moveDown) {
+      console.log("moveDown");
+      return;
+    }
     char.move("StopY");
-    char.position.y = platform.position.y - char.height;
+    char.setPosY(platform.position.y - char.height);
   }
 }
 
@@ -107,4 +111,26 @@ export function drawComponents(
   bullets.forEach((bullet) => bullet.draw(context));
 
   pot.draw(context);
+}
+
+export function addEventListeners(keys: Keys) {
+  window.addEventListener("keydown", ({ code }) => {
+    if (code === "KeyW") keys.up = true;
+    if (code === "KeyD") keys.right = true;
+    if (code === "KeyA") keys.left = true;
+    if (code === "KeyS") keys.down = true;
+    if (code === "Space") keys.jump = true;
+    if (code === "KeyJ") keys.shoot = true;
+    if (code === "KeyK") keys.shank = true;
+  });
+
+  window.addEventListener("keyup", ({ code }) => {
+    if (code === "KeyW") keys.up = false;
+    if (code === "KeyD") keys.right = false;
+    if (code === "KeyA") keys.left = false;
+    if (code === "KeyS") keys.down = false;
+    if (code === "Space") keys.jump = false;
+    if (code === "KeyJ") keys.shoot = false;
+    if (code === "KeyK") keys.shank = false;
+  });
 }

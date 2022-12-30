@@ -20,6 +20,8 @@ interface MateShankingImages {
   right: MCImage;
   leftUp: MCImage;
   rightUp: MCImage;
+  rightDown: MCImage;
+  leftDown: MCImage;
 }
 
 export interface MateImages {
@@ -27,6 +29,8 @@ export interface MateImages {
   right: MCImage;
   leftUp: MCImage;
   rightUp: MCImage;
+  rightDown: MCImage;
+  leftDown: MCImage;
   shanking: MateShankingImages;
 }
 
@@ -37,9 +41,13 @@ export const mateImages: MateImages = {
   right: makeImage(playerWidth, playerWidth, "mate-right"),
   leftUp: makeImage(playerWidth, playerWidth, "mate-left-up"),
   rightUp: makeImage(playerWidth, playerWidth, "mate-right-up"),
+  rightDown: makeImage(playerWidth, playerWidth, "mate-right"),
+  leftDown: makeImage(playerWidth, playerWidth, "mate-left"),
   shanking: {
     left: makeImage(playerWidth * 1.5, playerWidth, "shank-left"),
+    leftDown: makeImage(playerWidth * 1.5, playerWidth, "shank-left"),
     right: makeImage(playerWidth * 1.5, playerWidth, "shank-right"),
+    rightDown: makeImage(playerWidth * 1.5, playerWidth * 1.5, "shank-right"),
     leftUp: makeImage(playerWidth, playerWidth * 1.5, "shank-left-up"),
     rightUp: makeImage(playerWidth, playerWidth * 1.5, "shank-right-up"),
   },

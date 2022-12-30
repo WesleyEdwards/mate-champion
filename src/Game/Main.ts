@@ -1,9 +1,5 @@
-import {
-  handleStartPlaying,
-  setupGame,
-  addEventListeners,
-} from "./DomFunctions";
-import { GameState } from "./GameState";
+import { handleStartPlaying, setupGame } from "./DomFunctions";
+import { GameState } from "./GameState/GameState";
 import { SetUI } from "./models";
 
 export function doEverything(setUI: SetUI) {
@@ -54,6 +50,4 @@ export function doEverything(setUI: SetUI) {
       requestId = undefined;
     }
   }
-
-  addEventListeners(gameState);
 }

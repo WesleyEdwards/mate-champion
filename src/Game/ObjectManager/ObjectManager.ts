@@ -3,7 +3,7 @@ import {
   calcPlatColl,
   updateLiveStatus,
   checkIfCaught,
-} from "../GameStateFunctions";
+} from "../GameState/GameStateFunctions";
 import { HasPosition, Keys } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import { Platform } from "../Platform";
@@ -62,8 +62,8 @@ export class ObjectManager {
     });
   }
 
-  calcBullets(): boolean {
-    if (this.player.shooting) {
+  calcBullets(ammo: number): boolean {
+    if (this.player.shooting && ammo > 0) {
       this.shootBullet();
       return true;
     }

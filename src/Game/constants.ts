@@ -19,8 +19,8 @@ export const oppSpeedBase = 2;
 // Player
 export const playerConstants = {
   shankTime: 200,
-  shankCoolDown: 100,
-  shootCoolDown: 100,
+  shankCoolDown: 250,
+  shootCoolDown: 150,
   radius: 25,
   moveSpeed: 10,
 };
@@ -54,7 +54,7 @@ export const emptyStats = {
   score: 0,
   lives: 1,
   level: 1,
-  ammo: 100,
+  ammo: 50,
 };
 
 export const firebaseCollection = "scores-test";

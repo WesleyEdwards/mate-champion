@@ -46,8 +46,11 @@ export class Platform {
   get posCenter() {
     return {
       x: this.position.x + this.width / 2,
-      y: this.position.y + this.height / 2,
+      y: this.posTop + this.height / 2,
     };
+  }
+  get posTop() {
+    return this.position.y;
   }
 }
 
