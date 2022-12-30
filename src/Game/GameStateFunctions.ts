@@ -59,7 +59,12 @@ function knifeStatus(player: Player, opp: Opponent) {
     return true;
   if (player.facing === "left" && player.position.x > opp.position.x)
     return true;
-
+  if (
+    (player.facing === "leftUp" || player.facing === "rightUp") &&
+    player.position.y > opp.position.y
+  ) {
+    return true;
+  }
   return false;
 }
 

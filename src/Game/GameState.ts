@@ -1,3 +1,4 @@
+import { Bullet } from "./Bullet";
 import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "./constants";
 import {
   drawComponents,
@@ -15,13 +16,18 @@ import { createOpponents, createPlatforms } from "./utils";
 
 type winState = "win" | "lose" | "playing";
 
-export class GameState {
-  winState: winState;
+export interface GameObjects {
   player: Player;
   platforms: Platform[];
   opponents: Opponent[];
-  keys: Keys;
   pot: Pot;
+  bullets: Bullet[];
+}
+
+export class GameState {
+  winState: winState;
+  objects: GameObjects;
+  keys: Keys;
   private scrollOffset: number;
   private stats: GameStats;
   private setUI: SetUI;
@@ -30,10 +36,13 @@ export class GameState {
     this.scrollOffset = 0;
     this.winState = "playing";
     this.keys = initialKeyStatus;
-    this.player = new Player();
-    this.opponents = createOpponents(1);
-    this.platforms = createPlatforms(1);
-    this.pot = new Pot();
+    this.objects = {
+      player: new Player(),
+      platforms: createPlatforms(1),
+      opponents: createOpponents(1),
+      pot: new Pot(),
+      bullets: [],
+    };
     this.stats = { ...emptyStats };
     this.setUI = setUI;
   }
@@ -52,10 +61,10 @@ export class GameState {
     }
     this.setGameState("playing");
     this.scrollOffset = 0;
-    this.player = new Player();
-    this.opponents = createOpponents(this.stats.level);
-    this.platforms = createPlatforms(this.stats.level);
-    this.pot = new Pot();
+    this.objects.player = new Player();
+    this.objects.opponents = createOpponents(this.stats.level);
+    this.objects.platforms = createPlatforms(this.stats.level);
+    this.objects.pot = new Pot();
     this.drawStats();
   }
 
@@ -79,7 +88,7 @@ export class GameState {
   }
   private killOpponent(opp: Opponent) {
     this.stats.score += 10;
-    this.opponents.splice(this.opponents.indexOf(opp), 1);
+    this.objects.opponents.splice(this.objects.opponents.indexOf(opp), 1);
     this.drawStats();
   }
 
@@ -89,47 +98,62 @@ export class GameState {
   }
 
   updateEverything() {
-    this.player.update(this.keys);
-    this.opponents.forEach((opponent) => opponent.update());
+    this.objects.player.update(this.keys);
+    this.objects.opponents.forEach((opponent) => opponent.update());
   }
 
   drawEverything(context: CanvasRenderingContext2D) {
     drawComponents(
       context,
-      this.platforms,
-      this.opponents,
-      this.player,
-      this.pot
+      this.objects.platforms,
+      this.objects.opponents,
+      this.objects.player,
+      this.objects.pot
     );
   }
 
   calcInteractions() {
-    this.platforms.forEach((platform) => {
-      this.opponents.forEach((opp) => calcPlatColl(platform, opp));
-      calcPlatColl(platform, this.player);
+    this.objects.platforms.forEach((platform) => {
+      this.objects.opponents.forEach((opp) => calcPlatColl(platform, opp));
+      calcPlatColl(platform, this.objects.player);
     });
 
-    updateWithPlayer(this.keys, this.player, this.scrollOffset, this.platforms);
-    updateWithPlayer(this.keys, this.player, this.scrollOffset, this.opponents);
-    updateWithPlayer(this.keys, this.player, this.scrollOffset, [this.pot]);
+    updateWithPlayer(
+      this.keys,
+      this.objects.player,
+      this.scrollOffset,
+      this.objects.platforms
+    );
+    updateWithPlayer(
+      this.keys,
+      this.objects.player,
+      this.scrollOffset,
+      this.objects.opponents
+    );
+    updateWithPlayer(this.keys, this.objects.player, this.scrollOffset, [
+      this.objects.pot,
+    ]);
 
-    const removeOpp = updateLiveStatus(this.player, this.opponents);
+    const removeOpp = updateLiveStatus(
+      this.objects.player,
+      this.objects.opponents
+    );
     removeOpp && this.killOpponent(removeOpp);
 
-    if (checkIfCaught(this.player, this.opponents)) {
+    if (checkIfCaught(this.objects.player, this.objects.opponents)) {
       this.handleLoseLife();
     }
 
-    if (this.player.position.x > this.pot.position.x) {
+    if (this.objects.player.position.x > this.objects.pot.position.x) {
       this.nextLevel();
     }
 
-    if (this.keys.right && this.player.velocity.x === 0) {
+    if (this.keys.right && this.objects.player.velocity.x === 0) {
       this.incrementScrollOffset(-INCREMENT_VALUE);
     }
     if (
       this.keys.left &&
-      this.player.velocity.x === 0 &&
+      this.objects.player.velocity.x === 0 &&
       this.scrollOffset > 0
     ) {
       this.incrementScrollOffset(INCREMENT_VALUE);

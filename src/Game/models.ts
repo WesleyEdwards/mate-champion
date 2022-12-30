@@ -1,11 +1,10 @@
-
 export type CharAction =
-| "MoveRight"
-| "MoveLeft"
-| "Jump"
-| "Duck"
-| "StopX"
-| "StopY";
+  | "MoveRight"
+  | "MoveLeft"
+  | "Jump"
+  | "Duck"
+  | "StopX"
+  | "StopY";
 
 export interface Coordinates {
   x: number;
@@ -39,7 +38,10 @@ export interface Keys {
   up: boolean;
   right: boolean;
   left: boolean;
-  space: boolean;
+  down: boolean;
+  jump: boolean;
+  shoot: boolean;
+  shank: boolean;
 }
 
 export interface GameStats {
@@ -53,6 +55,5 @@ export interface PlayerScore {
   name: string;
   score: number;
 }
-
 
 export type OppDirections = "left" | "right";

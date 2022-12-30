@@ -24,30 +24,39 @@ export const playerConstants = {
   moveSpeed: 10,
 };
 
+export const oppConstants = {
+  radius: 25,
+  baseMoveSpeed: .01,
+};
+
 export const initialKeyStatus: Record<keyof Keys, boolean> = {
   up: false,
   right: false,
   left: false,
-  space: false,
+  down: false,
+  jump: false,
+  shoot: false,
+  shank: false,
 };
+
+// export const emptyStats = {
+//   score: 0,
+//   lives: 3,
+//   level: 1,
+// };
+
+// export const firebaseCollection = "scores";
+
+// For Development
 
 export const emptyStats = {
   score: 0,
   lives: 3,
   level: 1,
+  ammo: 100,
 };
 
-export const firebaseCollection = "scores";
-
-// For Development
-
-// export const emptyStats = {
-//   score: 0,
-//   lives: 1,
-//   level: 1,
-// };
-
-// export const firebaseCollection = "scores-test";
+export const firebaseCollection = "scores-test";
 
 export const listOfColors = [
   "green",

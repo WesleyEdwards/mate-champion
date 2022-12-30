@@ -14,16 +14,22 @@ export function handleStartPlaying(canvas: HTMLCanvasElement) {
 
 export function addEventListeners(gameState: GameState) {
   window.addEventListener("keydown", ({ code }) => {
-    if (code === "ArrowUp") gameState.keys.up = true;
-    if (code === "ArrowRight") gameState.keys.right = true;
-    if (code === "ArrowLeft") gameState.keys.left = true;
-    if (code === "Space") gameState.keys.space = true;
+    if (code === "KeyW") gameState.keys.up = true;
+    if (code === "KeyD") gameState.keys.right = true;
+    if (code === "KeyA") gameState.keys.left = true;
+    if (code === "KeyS") gameState.keys.down = true;
+    if (code === "Space") gameState.keys.jump = true;
+    if (code === "KeyJ") gameState.keys.shoot = true;
+    if (code === "KeyK") gameState.keys.shank = true;
   });
 
   window.addEventListener("keyup", ({ code }) => {
-    if (code === "ArrowUp") gameState.keys.up = false;
-    if (code === "ArrowRight") gameState.keys.right = false;
-    if (code === "ArrowLeft") gameState.keys.left = false;
-    if (code === "Space") gameState.keys.space = false;
+    if (code === "KeyW") gameState.keys.up = false;
+    if (code === "KeyD") gameState.keys.right = false;
+    if (code === "KeyA") gameState.keys.left = false;
+    if (code === "KeyS") gameState.keys.down = false;
+    if (code === "Space") gameState.keys.jump = false;
+    if (code === "KeyJ") gameState.keys.shoot = false;
+    if (code === "KeyK") gameState.keys.shank = false;
   });
 }

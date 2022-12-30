@@ -30,7 +30,7 @@ export class Player implements Character {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
-    if (keys.up) this.move("Jump");
+    if (keys.jump) this.move("Jump");
 
     if (keys.right && this.position.x < 400) this.move("MoveRight");
     if (keys.right && this.position.x >= 400) this.move("StopX");
@@ -40,9 +40,12 @@ export class Player implements Character {
 
     if (!keys.right && !keys.left) this.move("StopX");
 
-    if (keys.space && Date.now() - this.shank > shankTime + shankCoolDown) {
+    if (keys.shank && Date.now() - this.shank > shankTime + shankCoolDown) {
       this.shank = Date.now();
     }
+
+    if (keys.up) this.setUpPos();
+    else this.setUpPos(false);
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) this.move("StopY");
     else this.velocity.y += GRAVITY;
@@ -72,6 +75,16 @@ export class Player implements Character {
 
   draw(canvas: CanvasRenderingContext2D) {
     this.imager.draw(this.facing, this.shanking, this.position, canvas);
+  }
+
+  private setUpPos(up: boolean = true) {
+    if (up) {
+      if (this.facing === "right") this.facing = "rightUp";
+      if (this.facing === "left") this.facing = "leftUp";
+    } else {
+      if (this.facing === "rightUp") this.facing = "right";
+      if (this.facing === "leftUp") this.facing = "left";
+    }
   }
 
   get shanking() {

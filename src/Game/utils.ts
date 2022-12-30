@@ -7,7 +7,7 @@ import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
 } from "./constants";
-import { GameState } from "./GameState";
+import { GameObjects } from "./GameState";
 import { Opponent } from "./Opponent/Opponent";
 import { Platform } from "./Platform";
 
@@ -28,9 +28,9 @@ export function createOpponents(level: number): Opponent[] {
 
 export function drawEverything(
   context: CanvasRenderingContext2D,
-  gameState: GameState
+  objects: GameObjects
 ) {
-  const { platforms, opponents, player, pot } = gameState;
+  const { platforms, opponents, player, pot } = objects;
 
   context.fillStyle = "white";
   context.fillRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);

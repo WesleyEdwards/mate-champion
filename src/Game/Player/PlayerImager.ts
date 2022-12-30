@@ -18,8 +18,8 @@ export class PlayerImager {
     const findImage = this.findImage(facing, shanking);
     canvas.drawImage(
       findImage.image.image,
-      position.x + (findImage.xOffset || 0),
-      position.y,
+      position.x - (findImage.xOffset || 0),
+      position.y - (findImage.yOffset || 0),
       findImage.image.width,
       findImage.image.height
     );
@@ -36,7 +36,13 @@ export class PlayerImager {
     if (facing === "left") {
       return {
         image: this.images.shanking[facing],
-        xOffset: -(this.images.shanking[facing].width - this.images.left.width),
+        xOffset: this.images.shanking[facing].width - this.images.left.width,
+      };
+    }
+    if (facing === "rightUp" || facing === "leftUp") {
+      return {
+        image: this.images.shanking[facing],
+        yOffset: this.images.shanking[facing].height - this.images.right.height,
       };
     }
     return {
