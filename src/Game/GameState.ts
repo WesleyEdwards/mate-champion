@@ -3,9 +3,9 @@ import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "./constants";
 import {
   drawComponents,
   calcPlatColl,
-  updateWithPlayer,
   updateLiveStatus,
   checkIfCaught,
+  updateItemsWithPlayer,
 } from "./GameStateFunctions";
 import { Keys, GameStats, SetUI } from "./models";
 import { Opponent } from "./Opponent/Opponent";
@@ -92,6 +92,17 @@ export class GameState {
     this.drawStats();
   }
 
+  private shootBullet() {
+    const bullet = new Bullet(
+      {
+        x: this.objects.player.position.x + 100,
+        y: this.objects.player.position.y,
+      },
+      "right"
+    );
+    this.objects.bullets.push(bullet);
+  }
+
   enterGame() {
     this.setUI.setShowInstructions(false);
     this.reset(true);
@@ -100,16 +111,11 @@ export class GameState {
   updateEverything() {
     this.objects.player.update(this.keys);
     this.objects.opponents.forEach((opponent) => opponent.update());
+    this.objects.bullets.forEach((bullet) => bullet.update());
   }
 
   drawEverything(context: CanvasRenderingContext2D) {
-    drawComponents(
-      context,
-      this.objects.platforms,
-      this.objects.opponents,
-      this.objects.player,
-      this.objects.pot
-    );
+    drawComponents(context, this.objects);
   }
 
   calcInteractions() {
@@ -118,21 +124,16 @@ export class GameState {
       calcPlatColl(platform, this.objects.player);
     });
 
-    updateWithPlayer(
+    updateItemsWithPlayer(
       this.keys,
       this.objects.player,
       this.scrollOffset,
-      this.objects.platforms
+      this.objects
     );
-    updateWithPlayer(
-      this.keys,
-      this.objects.player,
-      this.scrollOffset,
-      this.objects.opponents
-    );
-    updateWithPlayer(this.keys, this.objects.player, this.scrollOffset, [
-      this.objects.pot,
-    ]);
+
+    if (this.objects.player.shooting) {
+      this.shootBullet();
+    }
 
     const removeOpp = updateLiveStatus(
       this.objects.player,

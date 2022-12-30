@@ -4,13 +4,13 @@ import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
 } from "./constants";
+import { GameObjects } from "./GameState";
 import { hasPosition, Keys, Character } from "./models";
 import { Opponent } from "./Opponent/Opponent";
 import { Platform } from "./Platform";
 import Player from "./Player/Player";
-import { Pot } from "./Pot";
 
-export function updateWithPlayer<T extends hasPosition>(
+function updateWithPlayer<T extends hasPosition>(
   keys: Keys,
   player: Player,
   scrollOffset: number,
@@ -26,6 +26,19 @@ export function updateWithPlayer<T extends hasPosition>(
       object.position.x += INCREMENT_VALUE;
     });
   }
+}
+
+export function updateItemsWithPlayer(
+  keys: Keys,
+  player: Player,
+  scrollOffset: number,
+  objects: GameObjects
+) {
+  const { platforms, pot, opponents, bullets } = objects;
+  updateWithPlayer(keys, player, scrollOffset, platforms);
+  updateWithPlayer(keys, player, scrollOffset, opponents);
+  updateWithPlayer(keys, player, scrollOffset, bullets);
+  updateWithPlayer(keys, player, scrollOffset, [pot]);
 }
 
 export function calcPlatColl<T extends Character>(platform: Platform, char: T) {
@@ -86,17 +99,16 @@ export function updateLiveStatus(
 
 export function drawComponents(
   context: CanvasRenderingContext2D,
-  platforms: Platform[],
-  opponents: Opponent[],
-  player: Player,
-  pot: Pot
+  objects: GameObjects
 ) {
+  const { platforms, opponents, player, pot, bullets } = objects;
   context.fillStyle = "white";
   context.fillRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
 
   platforms.forEach((plat) => plat.draw(context));
   opponents.forEach((opponent) => opponent.draw(context));
   player.draw(context);
+  bullets.forEach((bullet) => bullet.draw(context));
 
   pot.draw(context);
 }

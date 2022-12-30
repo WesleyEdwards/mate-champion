@@ -1,9 +1,11 @@
 import { playerConstants, MAX_CANVAS_HEIGHT, GRAVITY } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
+import { debounceLog } from "../utils";
 import { PlayerDirection } from "./models";
 import { PlayerImager } from "./PlayerImager";
 
-const { shankTime, shankCoolDown, moveSpeed, radius } = playerConstants;
+const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
+  playerConstants;
 
 export class Player implements Character {
   position: Coordinates;
@@ -13,6 +15,8 @@ export class Player implements Character {
   height: number;
   imager: PlayerImager;
   shank: number;
+  shoot: number;
+  shot: boolean;
   facing: PlayerDirection;
 
   constructor() {
@@ -23,6 +27,8 @@ export class Player implements Character {
     this.height = radius * 2;
     this.imager = new PlayerImager();
     this.shank = 0;
+    this.shoot = 0;
+    this.shot = false;
     this.facing = "right";
   }
 
@@ -42,6 +48,11 @@ export class Player implements Character {
 
     if (keys.shank && Date.now() - this.shank > shankTime + shankCoolDown) {
       this.shank = Date.now();
+    }
+
+    if (keys.shoot && Date.now() - this.shoot > shootCoolDown) {
+      this.shoot = Date.now();
+      this.shot = true;
     }
 
     if (keys.up) this.setUpPos();
@@ -89,6 +100,13 @@ export class Player implements Character {
 
   get shanking() {
     return Date.now() - this.shank < shankTime;
+  }
+  get shooting() {
+    if (this.shot) {
+      this.shot = false;
+      return true;
+    }
+    return false;
   }
 
   get bottomPos() {

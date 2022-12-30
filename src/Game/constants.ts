@@ -20,13 +20,14 @@ export const oppSpeedBase = 2;
 export const playerConstants = {
   shankTime: 200,
   shankCoolDown: 100,
+  shootCoolDown: 1000,
   radius: 25,
   moveSpeed: 10,
 };
 
 export const oppConstants = {
   radius: 25,
-  baseMoveSpeed: .01,
+  baseMoveSpeed: 2,
 };
 
 export const initialKeyStatus: Record<keyof Keys, boolean> = {
