@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "./App.css";
-import { HighScores } from "./Game/components/HighScores";
-import { Instructions } from "./Game/components/Instructions";
-import StatsDiv from "./Game/components/StatsDiv";
+import { HighScores } from "./components/HighScores";
+import { Instructions } from "./components/Instructions";
+import { StatsDiv } from "./components/StatsDiv";
 import { doEverything } from "./Game/Main";
+import { H1 } from "./components/MHComponents.tsx/Components";
 
 function App() {
   const [disablePlay, setDisabledPlay] = useState(false);
@@ -14,6 +15,7 @@ function App() {
   const [level, setLevel] = useState<number>();
   const [lives, setLives] = useState<number>();
   const [score, setScore] = useState<number>();
+  const [ammo, setAmmo] = useState<number>();
 
   const handleClick = () => {
     setDisabledPlay(true);
@@ -23,6 +25,7 @@ function App() {
       setLevel,
       setLives,
       setScore,
+      setAmmo,
       setDisabledPlay,
       setShowInstructions,
       setShowHighScoreDiv,
@@ -41,34 +44,39 @@ function App() {
 
   return (
     <>
-      <div className="container" id="main-div">
-        <h1
+      <div
+        style={{
+          backgroundColor: "#000000",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <H1
           style={{
-            fontSize: "2rem",
             margin: "1rem",
           }}
-          id="title-text"
-          className="green-text"
         >
           Mate Champion
-        </h1>
+        </H1>
         {showInstructions && <Instructions />}
         {showHighScores !== undefined && (
           <HighScores score={showHighScores} enablePlay={onEnablePlay} />
         )}
         <div>
           <canvas id="canvas"></canvas>
-          <StatsDiv level={level} lives={lives} score={score} />
+          <StatsDiv
+            level={level}
+            lives={lives}
+            score={score}
+            ammo={ammo}
+            disablePlay={disablePlay}
+            handleClick={handleClick}
+            BtnText={showInstructions ? "Play Game" : "Play Again"}
+          />
         </div>
-        <button
-          id="play-game"
-          style={{ padding: "1rem 2rem" }}
-          className="btn"
-          disabled={disablePlay}
-          onClick={handleClick}
-        >
-          {showInstructions ? "Play Game" : "Play Again"}
-        </button>
       </div>
     </>
   );

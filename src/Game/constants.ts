@@ -19,35 +19,45 @@ export const oppSpeedBase = 2;
 // Player
 export const playerConstants = {
   shankTime: 200,
-  shankCoolDown: 100,
+  shankCoolDown: 250,
+  shootCoolDown: 150,
   radius: 25,
   moveSpeed: 10,
+};
+
+export const oppConstants = {
+  radius: 25,
+  baseMoveSpeed: 2,
 };
 
 export const initialKeyStatus: Record<keyof Keys, boolean> = {
   up: false,
   right: false,
   left: false,
-  space: false,
+  down: false,
+  jump: false,
+  shoot: false,
+  shank: false,
 };
-
-export const emptyStats = {
-  score: 0,
-  lives: 3,
-  level: 1,
-};
-
-export const firebaseCollection = "scores";
-
-// For Development
 
 // export const emptyStats = {
 //   score: 0,
-//   lives: 1,
+//   lives: 3,
 //   level: 1,
 // };
 
-// export const firebaseCollection = "scores-test";
+// export const firebaseCollection = "scores";
+
+// For Development
+
+export const emptyStats = {
+  score: 0,
+  lives: 1,
+  level: 1,
+  ammo: 50,
+};
+
+export const firebaseCollection = "scores-test";
 
 export const listOfColors = [
   "green",

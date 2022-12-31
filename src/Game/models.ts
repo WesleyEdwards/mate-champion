@@ -1,4 +1,4 @@
-export type PlayerAction =
+export type CharAction =
   | "MoveRight"
   | "MoveLeft"
   | "Jump"
@@ -15,38 +15,53 @@ export interface SetUI {
   setLevel: (level: number) => void;
   setLives: (lives: number | undefined) => void;
   setScore: (score: number) => void;
+  setAmmo: (ammo: number) => void;
   setDisabledPlay: (disabled: boolean) => void;
   setShowInstructions: (show: boolean) => void;
   setShowHighScoreDiv: (score: number | undefined) => void;
 }
 
-export interface hasPosition {
+export interface HasPosition {
   position: Coordinates;
+  posCenter: Coordinates;
 }
 
-export interface Character {
-  position: Coordinates;
+export interface VectorMan {
   velocity: Coordinates;
   bottomPos: number;
   rightPos: number;
   height: number;
-  move: (action: PlayerAction) => void;
+  isMovingDown: boolean;
+}
+
+export interface Character extends HasPosition {
+  vector: VectorMan;
+  move: (action: CharAction) => void;
+  setPosY: (newY: number) => void;
 }
 
 export interface Keys {
   up: boolean;
   right: boolean;
   left: boolean;
-  space: boolean;
+  down: boolean;
+  jump: boolean;
+  shoot: boolean;
+  shank: boolean;
 }
 
 export interface GameStats {
   level: number;
   score: number;
   lives: number;
+  ammo: number;
 }
 
 export interface PlayerScore {
   name: string;
   score: number;
 }
+
+export type OppDirections = "left" | "right";
+
+export type VagueFacing = "left" | "right" | "up";

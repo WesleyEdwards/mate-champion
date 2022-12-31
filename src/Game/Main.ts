@@ -1,9 +1,5 @@
-import {
-  handleStartPlaying,
-  setupGame,
-  addEventListeners,
-} from "./DomFunctions";
-import { GameState } from "./GameState";
+import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "./constants";
+import { GameState } from "./GameState/GameState";
 import { SetUI } from "./models";
 
 export function doEverything(setUI: SetUI) {
@@ -15,8 +11,8 @@ export function doEverything(setUI: SetUI) {
   const gameState = new GameState(setUI);
 
   const enterGameLoop = () => {
-    handleStartPlaying(canvas);
     gameState.enterGame();
+    canvas.height = MAX_CANVAS_HEIGHT;
     loop();
   };
 
@@ -54,6 +50,10 @@ export function doEverything(setUI: SetUI) {
       requestId = undefined;
     }
   }
+}
 
-  addEventListeners(gameState);
+function setupGame(): HTMLCanvasElement {
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  canvas.width = MAX_CANVAS_WIDTH;
+  return canvas;
 }

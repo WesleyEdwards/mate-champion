@@ -42,6 +42,16 @@ export class Platform {
   get rightPos() {
     return this.position.x + this.width;
   }
+
+  get posCenter() {
+    return {
+      x: this.position.x + this.width / 2,
+      y: this.posTop + this.height / 2,
+    };
+  }
+  get posTop() {
+    return this.position.y;
+  }
 }
 
 export function getYPos(sectionY: PlatPosition) {
