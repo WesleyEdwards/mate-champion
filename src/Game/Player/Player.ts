@@ -1,40 +1,25 @@
-import { playerConstants, MAX_CANVAS_HEIGHT, GRAVITY } from "../constants";
-import {
-  Coordinates,
-  Keys,
-  CharAction,
-  Character,
-  VagueFacing,
-} from "../models";
-import { PlayerDirection } from "./models";
+import { playerConstants, GRAVITY } from "../constants";
+import { Coordinates, Keys, CharAction, Character } from "../models";
 import { PlayerImager } from "./PlayerImager";
+import { PlayerVectorManager } from "./PlayerVectorManager";
 
-const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
-  playerConstants;
+const { shankTime, shankCoolDown, shootCoolDown, radius } = playerConstants;
 
 export class Player implements Character {
-  position: Coordinates;
-  velocity: Coordinates;
   jumps: number;
-  width: number;
-  radius: number;
   imager: PlayerImager;
   shank: number;
   shoot: number;
   shot: boolean;
-  facing: PlayerDirection;
+  vector: PlayerVectorManager;
 
   constructor() {
-    this.position = { x: 100, y: 100 };
-    this.velocity = { x: 0, y: 0 };
     this.jumps = 0;
-    this.width = radius * 2;
-    this.radius = radius;
     this.imager = new PlayerImager();
     this.shank = 0;
     this.shoot = 0;
     this.shot = false;
-    this.facing = "right";
+    this.vector = new PlayerVectorManager({ x: 100, y: 100 }, radius);
   }
 
   update(keys: Keys) {
@@ -70,69 +55,30 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    if (this.bottomPos > MAX_CANVAS_HEIGHT) this.move("StopY");
-    else this.velocity.y += GRAVITY;
+    this.velocity.y += GRAVITY;
   }
 
   move(action: CharAction) {
-    if (action === "MoveRight") {
-      this.velocity.x = moveSpeed;
-      this.facing = "right";
-    }
-    if (action === "MoveLeft") {
-      this.velocity.x = -moveSpeed;
-      this.facing = "left";
-    }
-    if (action === "StopX") this.velocity.x = 0;
-    if (action === "StopY") {
-      this.velocity.y = 0;
-      this.position.y = MAX_CANVAS_HEIGHT - this.height;
-    }
-
-    if (action === "Jump" && this.velocity.y === 0 && this.jumps < 1) {
-      this.velocity.y = -15;
-      this.jumps++;
-    }
-    if (this.velocity.y > 0) this.jumps = 0;
+    this.vector.move(action, this.jumps, (num) => (this.jumps = num));
   }
 
   draw(canvas: CanvasRenderingContext2D) {
-    this.imager.draw(this.facing, this.shanking, this.position, canvas);
+    this.imager.draw(this.vector.facing, this.shanking, this.position, canvas);
   }
 
   private setUpPos(up: boolean = true) {
-    if (up) {
-      if (this.facing === "right") this.facing = "rightUp";
-      if (this.facing === "left") this.facing = "leftUp";
-    } else {
-      if (this.facing === "rightUp") this.facing = "right";
-      if (this.facing === "leftUp") this.facing = "left";
-    }
+    this.vector.setUpPos(up);
   }
 
   private setDownPos(down: boolean = true) {
-    if (down) {
-      if (this.facing === "right") this.facing = "rightDown";
-      if (this.facing === "left") this.facing = "leftDown";
-    } else {
-      if (this.facing === "rightDown") this.facing = "right";
-      if (this.facing === "leftDown") this.facing = "left";
-    }
+    this.vector.setDownPos(down);
   }
 
   get weaponPosCurr(): Coordinates | undefined {
     if (!this.shanking) return undefined;
-    if (this.vagueFacing === "right") return this.posRightWeapon;
-    if (this.vagueFacing === "left") return this.posLeftWeapon;
-    return this.posUpWeapon;
-  }
-
-  setPosY(newY: number) {
-    this.position.y = newY;
-  }
-
-  get moveDown() {
-    return this.facing === "leftDown" || this.facing === "rightDown";
+    if (this.vector.isVagueFacing("right")) return this.vector.posRightWeapon;
+    if (this.vector.isVagueFacing("left")) return this.vector.posLeftWeapon;
+    return this.vector.posUpWeapon;
   }
 
   get shanking() {
@@ -146,54 +92,23 @@ export class Player implements Character {
     return false;
   }
 
-  get height() {
-    return this.radius * 2;
+  get position() {
+    return this.vector.position;
   }
-
-  get bottomPos() {
-    return this.position.y + this.height;
+  get posCenter() {
+    return this.vector.posCenter;
+  }
+  get velocity() {
+    return this.vector.velocity;
   }
   get rightPos() {
-    return this.position.x + this.width;
+    return this.vector.rightPos;
   }
-
-  get centerX() {
-    return this.position.x + this.width / 2;
+  get isMovingDown() {
+    return this.vector.isMovingDown;
   }
-  get centerY() {
-    return this.position.y + this.height / 2;
-  }
-
-  get posCenter() {
-    return {
-      x: this.centerX,
-      y: this.centerY,
-    };
-  }
-
-  get posRightWeapon() {
-    return {
-      x: this.position.x + this.width * 1.5,
-      y: this.centerY,
-    };
-  }
-  get posLeftWeapon() {
-    return {
-      x: this.position.x - this.width / 2,
-      y: this.centerY,
-    };
-  }
-  get posUpWeapon() {
-    return {
-      x: this.centerX,
-      y: this.position.y - this.height / 2,
-    };
-  }
-
-  get vagueFacing(): VagueFacing {
-    if (this.facing === "rightUp" || this.facing === "rightDown") return "up";
-    if (this.facing === "leftUp" || this.facing === "leftDown") return "up";
-    return this.facing;
+  setPosY(num: number) {
+    return this.vector.stopY(num);
   }
 }
 

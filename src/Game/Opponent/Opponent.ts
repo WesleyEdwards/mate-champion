@@ -1,45 +1,35 @@
-import { MAX_CANVAS_HEIGHT, GRAVITY, oppConstants } from "../constants";
+import { GRAVITY, MAX_CANVAS_HEIGHT, oppConstants } from "../constants";
 import { OppImages, oppImages } from "../Drawing/ImageRepos";
-import { Character, Coordinates, OppDirections, CharAction } from "../models";
+import { Character, OppDirections, CharAction } from "../models";
 import { randomOutOf } from "../utils";
+import { OpponentVectorManager } from "./OpponentVectorManager";
 
 export class Opponent implements Character {
-  position: Coordinates;
-  velocity: Coordinates;
-  radius: number;
   images: OppImages;
+  vector: OpponentVectorManager;
 
   constructor(xPos: number, moveSpeed: number) {
-    this.position = { x: xPos, y: 100 };
-    this.velocity = { x: moveSpeed, y: 0 };
-    this.radius = oppConstants.radius;
+    this.vector = new OpponentVectorManager(
+      { x: xPos, y: 100 },
+      moveSpeed,
+      oppConstants.radius
+    );
     this.images = oppImages;
   }
 
   update() {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+    this.velocity.y += GRAVITY;
 
-    if (randomOutOf(150)) {
-      this.velocity.y = -15;
+    if (this.bottomPos > MAX_CANVAS_HEIGHT) {
+      this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
 
-    if (randomOutOf(150)) {
-      this.velocity.x = -this.velocity.x;
-    }
-
-    if (this.bottomPos > MAX_CANVAS_HEIGHT) this.move("StopY");
-    else this.velocity.y += GRAVITY;
+    if (randomOutOf(200)) this.move("Jump");
   }
-
   move(action: CharAction) {
-    if (action === "StopY") {
-      this.velocity.y = 0;
-      this.position.y = MAX_CANVAS_HEIGHT - this.height;
-    }
-    if (action === "Jump") {
-      this.velocity.y = -15;
-    }
+    this.vector.move(action);
   }
 
   draw(canvas: CanvasRenderingContext2D) {
@@ -52,31 +42,32 @@ export class Opponent implements Character {
     );
   }
 
-  setPosY(newY: number) {
-    this.position.y = newY;
+  setPosY(num: number) {
+    return this.vector.stopY(num);
   }
 
   get bottomPos() {
     return this.position.y + this.height;
   }
 
-  get rightPos() {
-    return this.position.x + this.radius * 2;
-  }
-
   get height() {
-    return this.images[this.facing].height;
+    return this.vector.height;
   }
 
   get posCenter() {
-    return {
-      x: this.position.x + oppConstants.radius,
-      y: this.position.y + oppConstants.radius,
-    };
+    return this.vector.posCenter;
+  }
+
+  get position() {
+    return this.vector.position;
+  }
+
+  get velocity() {
+    return this.vector.velocity;
   }
 
   get facing(): OppDirections {
-    if (this.velocity.x > 0) return "right";
+    if (this.vector.velocity.x > 0) return "right";
     return "left";
   }
 

@@ -26,12 +26,16 @@ export interface HasPosition {
   posCenter: Coordinates;
 }
 
-export interface Character extends HasPosition {
+export interface VectorMan {
   velocity: Coordinates;
   bottomPos: number;
   rightPos: number;
   height: number;
-  moveDown: boolean
+  isMovingDown: boolean;
+}
+
+export interface Character extends HasPosition {
+  vector: VectorMan;
   move: (action: CharAction) => void;
   setPosY: (newY: number) => void;
 }

@@ -33,17 +33,15 @@ export function updateWithPlayer<T extends HasPosition>(
 
 export function calcPlatColl<T extends Character>(platform: Platform, char: T) {
   if (
-    char.bottomPos <= platform.posTop &&
-    char.bottomPos + char.velocity.y >= platform.position.y &&
-    char.rightPos >= platform.position.x &&
+    char.vector.bottomPos <= platform.posTop &&
+    char.vector.bottomPos + char.vector.velocity.y >= platform.posTop &&
+    char.vector.rightPos >= platform.position.x &&
     char.position.x <= platform.rightPos
   ) {
-    if (char.moveDown) {
-      console.log("moveDown");
+    if (char.vector.isMovingDown) {
       return;
     }
-    char.move("StopY");
-    char.setPosY(platform.position.y - char.height);
+    char.setPosY(platform.posTop - char.vector.height);
   }
 }
 
@@ -81,13 +79,23 @@ export function updateLiveStatus(
   opponents.forEach((opp) => {
     if (
       player.weaponPosCurr &&
-      areTouching(opp, player.weaponPosCurr, player.radius + opp.radius + 30)
+      areTouching(
+        opp,
+        player.weaponPosCurr,
+        player.vector.radius + opp.vector.radius + 30
+      )
     ) {
       shanked.push(opp);
       return;
     }
     bullets.forEach((bullet) => {
-      if (areTouching(opp, bullet.posCenter, bullet.radius + opp.radius + 10)) {
+      if (
+        areTouching(
+          opp,
+          bullet.posCenter,
+          bullet.radius + opp.vector.radius + 10
+        )
+      ) {
         shanked.push(opp);
         spentBullets.push(bullet);
       }

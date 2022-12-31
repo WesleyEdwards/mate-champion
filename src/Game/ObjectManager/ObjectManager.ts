@@ -43,16 +43,15 @@ export class ObjectManager {
   }
 
   private shootBullet() {
-    const facing = this.player.vagueFacing;
-    if (facing === "right") {
-      this.bullets.push(new Bullet(this.player.posRightWeapon, facing));
+    if (this.player.vector.isVagueFacing("right")) {
+      this.bullets.push(new Bullet(this.player.vector.posRightWeapon, "right"));
       return;
     }
-    if (facing === "left") {
-      this.bullets.push(new Bullet(this.player.posLeftWeapon, facing));
+    if (this.player.vector.isVagueFacing("left")) {
+      this.bullets.push(new Bullet(this.player.vector.posLeftWeapon, "left"));
       return;
     }
-    this.bullets.push(new Bullet(this.player.posUpWeapon, facing));
+    this.bullets.push(new Bullet(this.player.vector.posUpWeapon, "up"));
   }
 
   calcInteractions() {
