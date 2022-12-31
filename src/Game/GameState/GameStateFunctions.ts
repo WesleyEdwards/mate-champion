@@ -19,12 +19,12 @@ export function updateWithPlayer<T extends HasPosition>(
 ): void {
   const objList = objects.flat();
 
-  if (keys.right && player.velocity.x === 0) {
+  if (keys.right && player.vector.velocityX === 0) {
     objList.forEach((object) => {
       object.position.x -= INCREMENT_VALUE;
     });
   }
-  if (keys.left && player.velocity.x === 0 && scrollOffset > 0) {
+  if (keys.left && player.vector.velocityX === 0 && scrollOffset > 0) {
     objList.forEach((object) => {
       object.position.x += INCREMENT_VALUE;
     });

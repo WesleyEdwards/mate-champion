@@ -1,9 +1,11 @@
 import { playerConstants, GRAVITY } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
+import { debounceLog } from "../utils";
 import { PlayerImager } from "./PlayerImager";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
-const { shankTime, shankCoolDown, shootCoolDown, radius } = playerConstants;
+const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
+  playerConstants;
 
 export class Player implements Character {
   jumps: number;
@@ -19,12 +21,17 @@ export class Player implements Character {
     this.shank = 0;
     this.shoot = 0;
     this.shot = false;
-    this.vector = new PlayerVectorManager({ x: 100, y: 100 }, radius);
+    this.vector = new PlayerVectorManager(
+      { x: 100, y: 100 },
+      radius,
+      moveSpeed
+    );
   }
 
   update(keys: Keys) {
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
+    debounceLog(this.position.x.toString());
+    this.position.x += this.vector.velocityX;
+    this.position.y += this.vector.velocityY;
 
     if (keys.jump) this.move("Jump");
 
@@ -55,7 +62,7 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    this.velocity.y += GRAVITY;
+    this.vector.setVelocityY(this.vector.velocityY + GRAVITY);
   }
 
   move(action: CharAction) {
@@ -97,15 +104,6 @@ export class Player implements Character {
   }
   get posCenter() {
     return this.vector.posCenter;
-  }
-  get velocity() {
-    return this.vector.velocity;
-  }
-  get rightPos() {
-    return this.vector.rightPos;
-  }
-  get isMovingDown() {
-    return this.vector.isMovingDown;
   }
   setPosY(num: number) {
     return this.vector.stopY(num);

@@ -1,43 +1,35 @@
-import { MAX_CANVAS_HEIGHT, playerConstants } from "../constants";
-import { CharAction, Coordinates, VagueFacing, VectorMan } from "../models";
+import { MAX_CANVAS_HEIGHT } from "../constants";
+import { CharAction, Coordinates, VagueFacing } from "../models";
+import { VectorManager } from "../VectorManager";
 import { PlayerDirection } from "./models";
 
-const { moveSpeed } = playerConstants;
-
-export class PlayerVectorManager implements VectorMan {
-  position: Coordinates;
-  velocity: Coordinates;
-  radius: number;
+export class PlayerVectorManager extends VectorManager {
   facing: PlayerDirection;
-  constructor(initPos: Coordinates, radius: number) {
-    this.position = initPos;
-    this.velocity = { x: 0, y: 0 };
-    this.radius = radius;
+  constructor(pos: Coordinates, radius: number, moveSpeed: number) {
+    super(pos, moveSpeed, radius);
     this.facing = "right";
   }
 
   move(action: CharAction, jumps: number, setJumps: (add: number) => void) {
     if (action === "MoveRight") {
-      this.velocity.x = moveSpeed;
+      this.setVelocityX(this.moveSpeed);
       this.setFacing("right");
     }
     if (action === "MoveLeft") {
-      this.velocity.x = -moveSpeed;
+      this.setVelocityX(-this.moveSpeed);
       this.setFacing("left");
     }
-    if (action === "StopX") this.velocity.x = 0;
+    if (action === "StopX") this.setVelocityX(0);
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
       this.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
-    if (action === "Jump" && this.velocity.y === 0 && jumps < 1) {
-      this.velocity.y = -15;
+    if (action === "Jump" && this.velocityY === 0 && jumps < 1) {
+      this.setVelocityY(-15);
       setJumps((jumps += 1));
     }
-    if (this.velocity.y > 0) setJumps(0);
+    if (this.velocityY > 0) setJumps(0);
   }
-
-
 
   isFacing(direction: PlayerDirection) {
     return this.facing === direction;
@@ -76,58 +68,26 @@ export class PlayerVectorManager implements VectorMan {
     }
   }
 
-  stopY(yPos: number) {
-    this.velocity.y = 0;
-    this.position.y = yPos;
-  }
-
   get isMovingDown() {
     return this.facing === "leftDown" || this.facing === "rightDown";
-  }
-  get height() {
-    return this.radius * 2;
-  }
-  get width() {
-    return this.radius * 2;
-  }
-
-  get bottomPos() {
-    return this.position.y + this.height;
-  }
-  get rightPos() {
-    return this.position.x + this.width;
-  }
-
-  get centerX() {
-    return this.position.x + this.width / 2;
-  }
-  get centerY() {
-    return this.position.y + this.height / 2;
-  }
-
-  get posCenter() {
-    return {
-      x: this.centerX,
-      y: this.centerY,
-    };
   }
 
   get posRightWeapon() {
     return {
-      x: this.position.x + this.width * 1.5,
+      x: this.positionX + this.width * 1.5,
       y: this.centerY,
     };
   }
   get posLeftWeapon() {
     return {
-      x: this.position.x - this.width / 2,
+      x: this.positionX - this.width / 2,
       y: this.centerY,
     };
   }
   get posUpWeapon() {
     return {
       x: this.centerX,
-      y: this.position.y - this.height / 2,
+      y: this.positionY - this.height / 2,
     };
   }
 }

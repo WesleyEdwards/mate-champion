@@ -97,6 +97,6 @@ export class ObjectManager {
   }
 
   get playerXMoving(): boolean {
-    return this.player.velocity.x !== 0;
+    return this.player.vector.velocityX !== 0;
   }
 }
