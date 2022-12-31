@@ -12,23 +12,23 @@ export class PlayerVectorManager extends VectorManager {
 
   move(action: CharAction, jumps: number, setJumps: (add: number) => void) {
     if (action === "MoveRight") {
-      this.setVelocityX(this.moveSpeed);
+      this.setVelX(this.moveSpeed);
       this.setFacing("right");
     }
     if (action === "MoveLeft") {
-      this.setVelocityX(-this.moveSpeed);
+      this.setVelX(-this.moveSpeed);
       this.setFacing("left");
     }
-    if (action === "StopX") this.setVelocityX(0);
+    if (action === "StopX") this.setVelX(0);
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
       this.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
-    if (action === "Jump" && this.velocityY === 0 && jumps < 1) {
-      this.setVelocityY(-15);
+    if (action === "Jump" && this.velY === 0 && jumps < 1) {
+      this.setVelY(-15);
       setJumps((jumps += 1));
     }
-    if (this.velocityY > 0) setJumps(0);
+    if (this.velY > 0) setJumps(0);
   }
 
   isFacing(direction: PlayerDirection) {
@@ -74,20 +74,20 @@ export class PlayerVectorManager extends VectorManager {
 
   get posRightWeapon() {
     return {
-      x: this.positionX + this.width * 1.5,
+      x: this.posX + this.width * 1.5,
       y: this.centerY,
     };
   }
   get posLeftWeapon() {
     return {
-      x: this.positionX - this.width / 2,
+      x: this.posX - this.width / 2,
       y: this.centerY,
     };
   }
   get posUpWeapon() {
     return {
       x: this.centerX,
-      y: this.positionY - this.height / 2,
+      y: this.posY - this.height / 2,
     };
   }
 }

@@ -5,7 +5,7 @@ import {
   updateWithPlayer,
 } from "./GameStateFunctions";
 import { Keys, GameStats, SetUI } from "../models";
-import { ObjectManager } from "../ObjectManager/ObjectManager";
+import { ObjectManager } from "./ObjectManager";
 
 type winState = "win" | "lose" | "playing";
 

@@ -1,6 +1,5 @@
 import { playerConstants, GRAVITY } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { debounceLog } from "../utils";
 import { PlayerImager } from "./PlayerImager";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
@@ -29,9 +28,8 @@ export class Player implements Character {
   }
 
   update(keys: Keys) {
-    debounceLog(this.position.x.toString());
-    this.position.x += this.vector.velocityX;
-    this.position.y += this.vector.velocityY;
+    this.position.x += this.vector.velX;
+    this.position.y += this.vector.velY;
 
     if (keys.jump) this.move("Jump");
 
@@ -62,7 +60,7 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    this.vector.setVelocityY(this.vector.velocityY + GRAVITY);
+    this.vector.setVelY(this.vector.velY + GRAVITY);
   }
 
   move(action: CharAction) {

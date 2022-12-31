@@ -3,7 +3,7 @@ import {
   calcPlatColl,
   updateLiveStatus,
   checkIfCaught,
-} from "../GameState/GameStateFunctions";
+} from "./GameStateFunctions";
 import { HasPosition, Keys } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import { Platform } from "../Platform";
@@ -97,6 +97,6 @@ export class ObjectManager {
   }
 
   get playerXMoving(): boolean {
-    return this.player.vector.velocityX !== 0;
+    return this.player.vector.velX !== 0;
   }
 }

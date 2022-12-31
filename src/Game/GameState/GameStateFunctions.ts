@@ -6,7 +6,7 @@ import {
   MAX_CANVAS_HEIGHT,
 } from "../constants";
 import { HasPosition, Keys, Character, Coordinates } from "../models";
-import { ObjectManager } from "../ObjectManager/ObjectManager";
+import { ObjectManager } from "./ObjectManager";
 import { Opponent } from "../Opponent/Opponent";
 import { Platform } from "../Platform";
 import Player from "../Player/Player";
@@ -19,12 +19,12 @@ export function updateWithPlayer<T extends HasPosition>(
 ): void {
   const objList = objects.flat();
 
-  if (keys.right && player.vector.velocityX === 0) {
+  if (keys.right && player.vector.velX === 0) {
     objList.forEach((object) => {
       object.position.x -= INCREMENT_VALUE;
     });
   }
-  if (keys.left && player.vector.velocityX === 0 && scrollOffset > 0) {
+  if (keys.left && player.vector.velX === 0 && scrollOffset > 0) {
     objList.forEach((object) => {
       object.position.x += INCREMENT_VALUE;
     });

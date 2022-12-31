@@ -14,28 +14,31 @@ export class VectorManager implements VectorMan {
 
   stopY(yPos: number) {
     this.velocity.y = 0;
-    this.position.y = yPos;
+    this.setPosY(yPos);
   }
-  setVelocityX(x: number) {
+  setVelX(x: number) {
     this.velocity.x = x;
   }
-  setVelocityY(y: number) {
+  setVelY(y: number) {
     this.velocity.y = y;
   }
-  setPositionX(x: number) {
+  setPosX(x: number) {
     this.position.x = x;
   }
+  setPosY(y: number) {
+    this.position.y = y;
+  }
 
-  get positionX() {
+  get posX() {
     return this.position.x;
   }
-  get positionY() {
+  get posY() {
     return this.position.y;
   }
-  get velocityX() {
+  get velX() {
     return this.velocity.x;
   }
-  get velocityY() {
+  get velY() {
     return this.velocity.y;
   }
   get bottomPos() {

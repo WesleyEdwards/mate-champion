@@ -7,7 +7,7 @@ import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
 } from "./constants";
-import { ObjectManager } from "./ObjectManager/ObjectManager";
+import { ObjectManager } from "./GameState/ObjectManager";
 import { Opponent } from "./Opponent/Opponent";
 import { Platform } from "./Platform";
 
