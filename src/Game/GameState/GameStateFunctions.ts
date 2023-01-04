@@ -5,10 +5,15 @@ import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
 } from "../constants";
-import { HasPosition, Keys, Character, Coordinates } from "../models";
+import {
+  HasPosition,
+  Keys,
+  Character,
+  Coordinates,
+  StaticObject,
+} from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { Opponent } from "../Opponent/Opponent";
-import { Platform } from "../Platform";
 import Player from "../Player/Player";
 
 export function updateWithPlayer<T extends HasPosition>(
@@ -21,33 +26,36 @@ export function updateWithPlayer<T extends HasPosition>(
 
   if (keys.right && player.vector.velX === 0) {
     objList.forEach((object) => {
-      object.position.x -= INCREMENT_VALUE;
+      object.vector.setPosX(object.vector.posX - INCREMENT_VALUE);
     });
   }
   if (keys.left && player.vector.velX === 0 && scrollOffset > 0) {
     objList.forEach((object) => {
-      object.position.x += INCREMENT_VALUE;
+      object.vector.setPosX(object.vector.posX + INCREMENT_VALUE);
     });
   }
 }
 
-export function calcPlatColl<T extends Character>(platform: Platform, char: T) {
+export function calcPlatColl<T extends Character>(
+  platform: StaticObject,
+  char: T
+) {
   if (
-    char.vector.bottomPos <= platform.posTop &&
-    char.vector.bottomPos + char.vector.velocity.y >= platform.posTop &&
-    char.vector.rightPos >= platform.position.x &&
-    char.position.x <= platform.rightPos
+    char.vector.bottomPos <= platform.vector.posY &&
+    char.vector.bottomPos + char.vector.velY >= platform.vector.posY &&
+    char.vector.rightPos >= platform.vector.posX &&
+    char.vector.posX <= platform.vector.posX + platform.vector.width
   ) {
-    if (char.vector.isMovingDown) {
+    if (platform.canMoveBelow && char.vector.isMovingDown) {
       return;
     }
-    char.setPosY(platform.posTop - char.vector.height);
+    char.setPosY(platform.vector.posY - char.vector.height);
   }
 }
 
 export function checkIfCaught(player: Player, opponents: Character[]): boolean {
   return opponents.some((opp) =>
-    areTouching(player, opp.posCenter, playerConstants.radius * 2)
+    areTouching(player, opp.vector.posCenter, playerConstants.radius * 2)
   );
 }
 
@@ -57,8 +65,8 @@ function areTouching<T extends HasPosition>(
   dist: number
 ): boolean {
   const distBetween = Math.sqrt(
-    Math.pow(objectA.posCenter.x - where.x, 2) +
-      Math.pow(objectA.posCenter.y - where.y, 2)
+    Math.pow(objectA.vector.posCenter.x - where.x, 2) +
+      Math.pow(objectA.vector.posCenter.y - where.y, 2)
   );
   return distBetween < dist;
 }

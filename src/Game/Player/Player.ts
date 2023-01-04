@@ -42,7 +42,14 @@ export class Player implements Character {
     if (!keys.right && !keys.left) this.move("StopX");
 
     if (keys.shank && Date.now() - this.shank > shankTime + shankCoolDown) {
-      this.shank = Date.now();
+      if (
+        this.vector.isFacing("right") ||
+        this.vector.isFacing("rightUp") ||
+        this.vector.isFacing("leftUp") ||
+        this.vector.isFacing("left")
+      ) {
+        this.shank = Date.now();
+      }
     }
 
     if (
@@ -105,6 +112,9 @@ export class Player implements Character {
   }
   setPosY(num: number) {
     return this.vector.stopY(num);
+  }
+  get facing() {
+    return this.vector.vagueFacing;
   }
 }
 

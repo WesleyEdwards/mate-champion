@@ -22,22 +22,40 @@ export interface SetUI {
 }
 
 export interface HasPosition {
-  position: Coordinates;
-  posCenter: Coordinates;
+  vector: VectorMan;
 }
 
 export interface VectorMan {
-  velocity: Coordinates;
+  position: Coordinates;
   bottomPos: number;
   rightPos: number;
+  width: number;
   height: number;
+  posX: number;
+  posY: number;
+  setPosX: (newX: number) => void;
+  setPosY: (newY: number) => void;
+  posCenter: Coordinates;
+}
+
+export interface ObjVectorMan extends VectorMan {}
+export interface CharVectorMan extends VectorMan {
+  velocity: Coordinates;
+  velY: number;
+  velX: number;
   isMovingDown: boolean;
 }
 
-export interface Character extends HasPosition {
-  vector: VectorMan;
+export interface Character {
+  vector: CharVectorMan;
+  facing: VagueFacing;
   move: (action: CharAction) => void;
   setPosY: (newY: number) => void;
+}
+
+export interface StaticObject extends HasPosition {
+  draw: (ctx: CanvasRenderingContext2D) => void;
+  canMoveBelow: boolean;
 }
 
 export interface Keys {
@@ -64,4 +82,4 @@ export interface PlayerScore {
 
 export type OppDirections = "left" | "right";
 
-export type VagueFacing = "left" | "right" | "up";
+export type VagueFacing = "left" | "right" | "up" | "down";

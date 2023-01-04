@@ -16,6 +16,8 @@ export const INCREMENT_VALUE = 5;
 export const oppPerLevel = 5;
 export const oppSpeedBase = 2;
 
+export const bulletSpeed = 10;
+
 // Player
 export const playerConstants = {
   shankTime: 200,
@@ -60,7 +62,7 @@ export const emptyStats = {
 export const firebaseCollection = "scores-test";
 
 export const listOfColors = [
-  "green",
+  "springgreen",
   "red",
   "blue",
   "yellow",

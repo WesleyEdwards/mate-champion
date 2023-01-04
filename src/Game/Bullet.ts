@@ -1,3 +1,5 @@
+import { BulletVector } from "./BulletVector";
+import { bulletSpeed } from "./constants";
 import { makeImage, MCImage } from "./Drawing/drawingUtils";
 import { Coordinates, HasPosition, VagueFacing } from "./models";
 
@@ -18,12 +20,14 @@ function calcImage(dir: VagueFacing): MCImage {
 }
 
 export class Bullet implements HasPosition {
+  vector: BulletVector;
   position: Coordinates;
   velocity: Coordinates;
   bulletImage: MCImage;
   radius: number;
 
   constructor(pos: Coordinates, direction: VagueFacing) {
+    this.vector = new BulletVector(pos, bulletSpeed, bulletRadius);
     this.position = pos;
     this.velocity = getDirection(direction);
     this.bulletImage = calcImage(direction);
@@ -33,8 +37,8 @@ export class Bullet implements HasPosition {
   draw(canvas: CanvasRenderingContext2D) {
     canvas.drawImage(
       this.bulletImage.image,
-      this.position.x,
-      this.position.y,
+      this.position.x - this.radius,
+      this.position.y - this.radius,
       this.bulletImage.width,
       this.bulletImage.height
     );

@@ -33,7 +33,7 @@ export class PlayerImager {
   }
 
   getShankingImage(facing: PlayerDirection): DrawImageInfo {
-    if (facing === "left") {
+    if (facing === "left" || facing === "leftDown" || facing === "rightDown") {
       return {
         image: this.images.shanking[facing],
         xOffset: this.images.shanking[facing].width - this.images.left.width,

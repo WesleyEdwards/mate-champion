@@ -4,22 +4,21 @@ import {
   updateLiveStatus,
   checkIfCaught,
 } from "./GameStateFunctions";
-import { HasPosition, Keys } from "../models";
+import { HasPosition, Keys, StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
-import { Platform } from "../Platform";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
-import { createPlatforms, createOpponents } from "../utils";
+import { createBlocks, createOpponents } from "../utils";
 
 export class ObjectManager {
   player: Player;
-  platforms: Platform[];
+  platforms: StaticObject[];
   opponents: Opponent[];
   pot: Pot;
   bullets: Bullet[];
   constructor() {
     this.player = new Player();
-    this.platforms = createPlatforms(1);
+    this.platforms = createBlocks(1);
     this.opponents = createOpponents(1);
     this.pot = new Pot();
     this.bullets = [];
@@ -28,8 +27,9 @@ export class ObjectManager {
   reset(level: number) {
     this.player = new Player();
     this.opponents = createOpponents(level);
-    this.platforms = createPlatforms(level);
+    this.platforms = createBlocks(level);
     this.pot = new Pot();
+    this.bullets = [];
   }
 
   updateAll(keys: Keys) {
@@ -51,7 +51,9 @@ export class ObjectManager {
       this.bullets.push(new Bullet(this.player.vector.posLeftWeapon, "left"));
       return;
     }
-    this.bullets.push(new Bullet(this.player.vector.posUpWeapon, "up"));
+    if (this.player.vector.isVagueFacing("up")) {
+      this.bullets.push(new Bullet(this.player.vector.posUpWeapon, "up"));
+    }
   }
 
   calcInteractions() {
@@ -89,7 +91,7 @@ export class ObjectManager {
   }
 
   get nextLevel() {
-    return this.player.position.x > this.pot.position.x;
+    return this.player.position.x > this.pot.vector.posX;
   }
 
   get objectsToUpdatePos(): Array<HasPosition[]> {

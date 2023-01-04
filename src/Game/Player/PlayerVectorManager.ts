@@ -1,9 +1,9 @@
 import { MAX_CANVAS_HEIGHT } from "../constants";
 import { CharAction, Coordinates, VagueFacing } from "../models";
-import { VectorManager } from "../VectorManager";
+import { CharVectorManager } from "../CharVectorManager";
 import { PlayerDirection } from "./models";
 
-export class PlayerVectorManager extends VectorManager {
+export class PlayerVectorManager extends CharVectorManager {
   facing: PlayerDirection;
   constructor(pos: Coordinates, radius: number, moveSpeed: number) {
     super(pos, moveSpeed, radius);
@@ -43,8 +43,9 @@ export class PlayerVectorManager extends VectorManager {
   }
 
   get vagueFacing(): VagueFacing {
-    if (this.facing === "rightUp" || this.facing === "rightDown") return "up";
-    if (this.facing === "leftUp" || this.facing === "leftDown") return "up";
+    if (this.facing === "rightUp" || this.facing === "leftUp") return "up";
+    if (this.facing === "rightDown" || this.facing === "leftDown")
+      return "down";
     return this.facing;
   }
 
