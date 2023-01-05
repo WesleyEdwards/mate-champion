@@ -26,6 +26,8 @@ export class Opponent implements Character {
     }
 
     if (randomOutOf(120)) this.move("Jump");
+    if (randomOutOf(120)) this.move("MoveRight");
+    if (randomOutOf(120)) this.move("MoveLeft");
   }
   move(action: CharAction) {
     this.vector.move(action);

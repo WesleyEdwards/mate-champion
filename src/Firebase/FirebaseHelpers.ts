@@ -13,6 +13,7 @@ import { PlayerScore } from "../Game/models";
 import { firebaseDb } from "./Firebase";
 
 const scoresRef = collection(firebaseDb, firebaseCollection);
+const numberDisplayed = 15;
 
 async function getUsers(name: string): Promise<QuerySnapshot<DocumentData>> {
   const q = query(scoresRef, where("name", "==", name));
@@ -48,13 +49,18 @@ export const fetchPlayerScores = async (): Promise<PlayerScore[]> => {
     doc.data()
   ) as PlayerScore[];
 
-  return scoresList.sort((a, b) => b.score - a.score).splice(0, 10);
+  return scoresList
+    .sort((a, b) => b.score - a.score)
+    .splice(0, numberDisplayed);
 };
 
 export const isHighScore = async (score: number): Promise<boolean> => {
   const scores = await fetchPlayerScores();
 
-  if (scores.every((playerScore) => playerScore.score > score)) {
+  if (
+    scores.every((playerScore) => playerScore.score > score) &&
+    scores.length >= numberDisplayed
+  ) {
     return false;
   }
 
@@ -66,5 +72,8 @@ export const isHighScore = async (score: number): Promise<boolean> => {
     }
   }
 
-  return scores.some((playerScore) => playerScore.score < score);
+  return (
+    scores.some((playerScore) => playerScore.score < score) &&
+    scores.length < numberDisplayed
+  );
 };

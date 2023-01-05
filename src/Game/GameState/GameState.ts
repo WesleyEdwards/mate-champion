@@ -1,4 +1,9 @@
-import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "../constants";
+import {
+  initialKeyStatus,
+  emptyStats,
+  INCREMENT_VALUE,
+  packageWorth,
+} from "../constants";
 import {
   addEventListeners,
   drawComponents,
@@ -98,7 +103,7 @@ export class GameState {
 
     const packagesReceived = this.objectManager.getReceivedPackages();
     if (packagesReceived) {
-      this.stats.ammo += packagesReceived * 10;
+      this.stats.ammo += packagesReceived * packageWorth;
     }
 
     if (nextLevel || killedOpp || shot || packagesReceived) {

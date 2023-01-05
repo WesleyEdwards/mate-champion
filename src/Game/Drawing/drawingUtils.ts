@@ -42,7 +42,7 @@ const images: Record<imageObjects, string> = {
   "bullet-vert":
     "https://user-images.githubusercontent.com/97990557/210044402-0ea81fd0-730b-444d-a7d1-29e5a2fe561b.png",
   package:
-    "https://user-images.githubusercontent.com/97990557/210677079-5b56ddc9-d326-4fdc-82cf-95830bd328d0.png",
+    "https://user-images.githubusercontent.com/97990557/210724150-d78ce97f-94ac-4bdd-98c2-91182af9877c.png",
 };
 
 export interface MCImage {

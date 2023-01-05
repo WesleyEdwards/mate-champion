@@ -42,6 +42,8 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
   shank: false,
 };
 
+export const packageWorth = 5;
+
 // export const emptyStats = {
 //   score: 0,
 //   lives: 1,
@@ -57,10 +59,10 @@ export const emptyStats = {
   score: 0,
   lives: 3,
   level: 1,
-  ammo: 50,
+  ammo: 20,
 };
 
-export const firebaseCollection = "scores-test";
+export const firebaseCollection = "scores";
 
 export const listOfColors = [
   "springgreen",

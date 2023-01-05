@@ -107,7 +107,7 @@ export function updateLiveStatus(
       areTouching(
         opp,
         player.weaponPosCurr,
-        player.vector.radius + opp.vector.radius + 30
+        player.vector.radius + opp.vector.radius + 15
       )
     ) {
       shanked.push(opp);
