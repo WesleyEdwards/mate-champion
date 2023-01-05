@@ -1,32 +1,27 @@
+import { BaseVectorMan } from "./BaseVectorMan";
 import { END_POS } from "./constants";
 import { potImage } from "./Drawing/ImageRepos";
-import { Coordinates } from "./models";
+import { StaticObject } from "./models";
 
-export class Pot {
-  position: Coordinates;
-  width: number;
-  height: number;
-  color: string;
-  image: HTMLImageElement;
+export class Pot implements StaticObject {
+  vector: PotVector;
+  color: string = "green";
+  image: HTMLImageElement = potImage.image;
+  canMoveBelow: boolean = false;
 
   constructor() {
-    this.position = {
-      x: END_POS + 750,
-      y: 50,
-    };
-    this.width = potImage.width;
-    this.height = potImage.height;
-    this.color = "green";
-    this.image = potImage.image;
+    this.vector = new PotVector(
+      {
+        x: END_POS + 750,
+        y: 50,
+      },
+      potImage.width,
+      potImage.height
+    );
   }
   draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(this.image, this.position.x, this.position.y);
-  }
-
-  get posCenter() {
-    return {
-      x: this.position.x + this.width / 2,
-      y: this.position.y + this.height / 2,
-    };
+    canvas.drawImage(this.image, this.vector.posX, this.vector.posY);
   }
 }
+
+class PotVector extends BaseVectorMan {}

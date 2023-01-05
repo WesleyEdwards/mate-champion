@@ -15,6 +15,8 @@ export const oppImages: OppImages = {
   right: makeImage(oppWidth, oppWidth, "opponent-right"),
 };
 
+export const packageImage: MCImage = makeImage(60, 75, "package");
+
 interface MateShankingImages {
   left: MCImage;
   right: MCImage;

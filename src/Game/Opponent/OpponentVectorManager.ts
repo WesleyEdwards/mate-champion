@@ -1,7 +1,7 @@
+import { CharVectorManager } from "../CharVectorManager";
 import { CharAction, Coordinates } from "../models";
-import { VectorManager } from "../VectorManager";
 
-export class OpponentVectorManager extends VectorManager {
+export class OpponentVectorManager extends CharVectorManager {
   constructor(pos: Coordinates, moveSpeed: number, radius: number) {
     super(pos, moveSpeed, radius);
     this.setVelX(moveSpeed);

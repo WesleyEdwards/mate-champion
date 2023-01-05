@@ -1,4 +1,9 @@
-import { initialKeyStatus, emptyStats, INCREMENT_VALUE } from "../constants";
+import {
+  initialKeyStatus,
+  emptyStats,
+  INCREMENT_VALUE,
+  packageWorth,
+} from "../constants";
 import {
   addEventListeners,
   drawComponents,
@@ -10,21 +15,15 @@ import { ObjectManager } from "./ObjectManager";
 type winState = "win" | "lose" | "playing";
 
 export class GameState {
-  winState: winState;
-  objectManager: ObjectManager;
-  private keys: Keys;
-  private scrollOffset: number;
-  private stats: GameStats;
+  winState: winState = "playing";
+  objectManager: ObjectManager = new ObjectManager();
+  private keys: Keys = initialKeyStatus;
+  private scrollOffset: number = 0;
+  private stats: GameStats = { ...emptyStats };
   private setUI: SetUI;
 
   constructor(setUI: SetUI) {
-    this.scrollOffset = 0;
-    this.winState = "playing";
-    this.keys = initialKeyStatus;
-    this.objectManager = new ObjectManager();
-    this.stats = { ...emptyStats };
     this.setUI = setUI;
-
     addEventListeners(this.keys);
   }
 
@@ -102,7 +101,12 @@ export class GameState {
     const nextLevel = this.objectManager.nextLevel;
     if (nextLevel) this.nextLevel();
 
-    if (nextLevel || killedOpp || shot) {
+    const packagesReceived = this.objectManager.getReceivedPackages();
+    if (packagesReceived) {
+      this.stats.ammo += packagesReceived * packageWorth;
+    }
+
+    if (nextLevel || killedOpp || shot || packagesReceived) {
       this.drawStats();
     }
 

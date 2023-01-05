@@ -26,6 +26,7 @@ export const ScoreStats: FC<ScoreStatsProps> = (props) => {
   return (
     <StackVert
       style={{
+        minWidth: "150px",
         alignItems: "end",
       }}
     >

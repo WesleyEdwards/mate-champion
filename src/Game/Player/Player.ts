@@ -7,25 +7,16 @@ const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
   playerConstants;
 
 export class Player implements Character {
-  jumps: number;
-  imager: PlayerImager;
-  shank: number;
-  shoot: number;
-  shot: boolean;
-  vector: PlayerVectorManager;
-
-  constructor() {
-    this.jumps = 0;
-    this.imager = new PlayerImager();
-    this.shank = 0;
-    this.shoot = 0;
-    this.shot = false;
-    this.vector = new PlayerVectorManager(
-      { x: 100, y: 100 },
-      radius,
-      moveSpeed
-    );
-  }
+  jumps: number = 0;
+  imager: PlayerImager = new PlayerImager();
+  shank: number = 0;
+  shoot: number = 0;
+  shot: boolean = false;
+  vector: PlayerVectorManager = new PlayerVectorManager(
+    { x: 100, y: 100 },
+    radius,
+    moveSpeed
+  );
 
   update(keys: Keys) {
     this.position.x += this.vector.velX;
@@ -42,7 +33,14 @@ export class Player implements Character {
     if (!keys.right && !keys.left) this.move("StopX");
 
     if (keys.shank && Date.now() - this.shank > shankTime + shankCoolDown) {
-      this.shank = Date.now();
+      if (
+        this.vector.isFacing("right") ||
+        this.vector.isFacing("rightUp") ||
+        this.vector.isFacing("leftUp") ||
+        this.vector.isFacing("left")
+      ) {
+        this.shank = Date.now();
+      }
     }
 
     if (
@@ -105,6 +103,9 @@ export class Player implements Character {
   }
   setPosY(num: number) {
     return this.vector.stopY(num);
+  }
+  get facing() {
+    return this.vector.vagueFacing;
   }
 }
 

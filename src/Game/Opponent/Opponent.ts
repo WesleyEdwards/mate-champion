@@ -5,7 +5,7 @@ import { randomOutOf } from "../utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
 
 export class Opponent implements Character {
-  images: OppImages;
+  images: OppImages = oppImages;
   vector: OpponentVectorManager;
 
   constructor(xPos: number, moveSpeed: number) {
@@ -14,7 +14,6 @@ export class Opponent implements Character {
       moveSpeed,
       oppConstants.radius
     );
-    this.images = oppImages;
   }
 
   update() {
@@ -26,7 +25,9 @@ export class Opponent implements Character {
       this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
 
-    if (randomOutOf(200)) this.move("Jump");
+    if (randomOutOf(120)) this.move("Jump");
+    if (randomOutOf(120)) this.move("MoveRight");
+    if (randomOutOf(120)) this.move("MoveLeft");
   }
   move(action: CharAction) {
     this.vector.move(action);

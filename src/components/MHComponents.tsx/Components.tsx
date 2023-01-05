@@ -14,9 +14,16 @@ export const H1: FC<hProps> = (props) => {
 
 export const H2: FC<hProps> = (props) => {
   return (
-    <h1 className="green-text" {...props}>
+    <h2 className="green-text" {...props}>
       {props.children}
-    </h1>
+    </h2>
+  );
+};
+export const H3: FC<hProps> = (props) => {
+  return (
+    <h3 className="green-text" {...props}>
+      {props.children}
+    </h3>
   );
 };
 export const Typography: FC<Typography> = (props) => {

@@ -16,6 +16,8 @@ export const INCREMENT_VALUE = 5;
 export const oppPerLevel = 5;
 export const oppSpeedBase = 2;
 
+export const bulletSpeed = 10;
+
 // Player
 export const playerConstants = {
   shankTime: 200,
@@ -40,10 +42,13 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
   shank: false,
 };
 
+export const packageWorth = 5;
+
 // export const emptyStats = {
 //   score: 0,
-//   lives: 3,
+//   lives: 1,
 //   level: 1,
+//   ammo: 50,
 // };
 
 // export const firebaseCollection = "scores";
@@ -52,15 +57,15 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const emptyStats = {
   score: 0,
-  lives: 1,
+  lives: 3,
   level: 1,
-  ammo: 50,
+  ammo: 20,
 };
 
-export const firebaseCollection = "scores-test";
+export const firebaseCollection = "scores";
 
 export const listOfColors = [
-  "green",
+  "springgreen",
   "red",
   "blue",
   "yellow",
