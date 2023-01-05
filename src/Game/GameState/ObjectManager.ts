@@ -3,12 +3,15 @@ import {
   calcPlatColl,
   updateLiveStatus,
   checkIfCaught,
+  calcPlatPackageColl,
+  updatePackageStatus,
 } from "./GameStateFunctions";
 import { HasPosition, Keys, StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
-import { createBlocks, createOpponents } from "../utils";
+import { createBlocks, createMatePackages, createOpponents } from "../utils";
+import { Package } from "../Package";
 
 export class ObjectManager {
   player: Player;
@@ -16,18 +19,21 @@ export class ObjectManager {
   opponents: Opponent[];
   pot: Pot;
   bullets: Bullet[];
+  matePackages: Package[];
   constructor() {
     this.player = new Player();
     this.platforms = createBlocks(1);
     this.opponents = createOpponents(1);
     this.pot = new Pot();
     this.bullets = [];
+    this.matePackages = createMatePackages(1);
   }
 
   reset(level: number) {
     this.player = new Player();
     this.opponents = createOpponents(level);
     this.platforms = createBlocks(level);
+    this.matePackages = createMatePackages(level);
     this.pot = new Pot();
     this.bullets = [];
   }
@@ -36,6 +42,7 @@ export class ObjectManager {
     this.player.update(keys);
     this.opponents.forEach((opponent) => opponent.update());
     this.bullets.forEach((bullet) => bullet.update());
+    this.matePackages.forEach((p) => p.update());
   }
 
   isCaught() {
@@ -60,6 +67,9 @@ export class ObjectManager {
     this.platforms.forEach((platform) => {
       this.opponents.forEach((opp) => calcPlatColl(platform, opp));
       calcPlatColl(platform, this.player);
+      this.matePackages.forEach((p) => {
+        calcPlatPackageColl(platform, p);
+      });
     });
   }
 
@@ -90,12 +100,26 @@ export class ObjectManager {
     return opponents.length || undefined;
   }
 
+  getReceivedPackages(): number | undefined {
+    const matePackages = updatePackageStatus(this.player, this.matePackages);
+    matePackages.forEach((m) => {
+      this.matePackages.splice(this.matePackages.indexOf(m), 1);
+    });
+    return matePackages.length || undefined;
+  }
+
   get nextLevel() {
     return this.player.position.x > this.pot.vector.posX;
   }
 
   get objectsToUpdatePos(): Array<HasPosition[]> {
-    return [this.platforms, this.opponents, this.bullets, [this.pot]];
+    return [
+      this.platforms,
+      this.opponents,
+      this.bullets,
+      [this.pot],
+      this.matePackages,
+    ];
   }
 
   get playerXMoving(): boolean {

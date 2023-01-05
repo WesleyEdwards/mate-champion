@@ -16,15 +16,31 @@ export class Platform implements StaticObject {
   vector: ObjVectorManager;
   canMoveBelow: boolean = true;
 
-  constructor(xPos: number, sectionY: PlatPosition, color?: string) {
-    this.vector = new ObjVectorManager(
-      {
-        x: getXPos(xPos),
-        y: getYPos(sectionY),
-      },
-      generateRandomInt(PLAT_WIDTH_MIN, PLAT_WIDTH_MAX),
-      40
-    );
+  constructor(
+    xPos: number,
+    sectionY: PlatPosition,
+    color?: string,
+    special?: boolean
+  ) {
+    if (special) {
+      this.vector = new ObjVectorManager(
+        {
+          x: 100,
+          y: 150,
+        },
+        75,
+        40
+      );
+    } else {
+      this.vector = new ObjVectorManager(
+        {
+          x: getXPos(xPos),
+          y: getYPos(sectionY),
+        },
+        generateRandomInt(PLAT_WIDTH_MIN, PLAT_WIDTH_MAX),
+        40
+      );
+    }
     this.color = color ?? "green";
   }
   draw(canvas: CanvasRenderingContext2D) {
@@ -45,20 +61,6 @@ export class Platform implements StaticObject {
       this.vector.height
     );
   }
-
-  // get rightPos() {
-  //   return this.vector.posX + this.vector.width;
-  // }
-
-  // get posCenter() {
-  //   return {
-  //     x: this.vector.posX + this.vector.width / 2,
-  //     y: this.posTop + this.vector.height / 2,
-  //   };
-  // }
-  // get posTop() {
-  //   return this.vector.posY;
-  // }
 }
 
 export function getYPos(sectionY: PlatPosition) {

@@ -10,6 +10,7 @@ import {
 import { ObjectManager } from "./GameState/ObjectManager";
 import { StaticObject } from "./models";
 import { Opponent } from "./Opponent/Opponent";
+import { Package } from "./Package";
 import { Floor } from "./Platform/Floor";
 import { Platform } from "./Platform/Platform";
 
@@ -21,17 +22,20 @@ export function createBlocks(level: number): StaticObject[] {
 
 function createPlatforms(level: number): Platform[] {
   const platColor = listOfColors[(level - 1) % listOfColors.length];
-  return new Array(NUM_PLATFORMS).fill(null).map((_, i) => {
+  const plats = new Array(NUM_PLATFORMS).fill(null).map((_, i) => {
     const sectionY = i % 2 === 0 ? "top" : "middle";
     return new Platform(END_POS - i * 150, sectionY, platColor);
   });
+  return plats.concat(
+    new Platform(END_POS - NUM_PLATFORMS * 150, "top", platColor, true)
+  );
 }
 
 function createFloor(level: number): Floor[] {
   let temp = END_POS + 2000;
   const list: Floor[] = [];
   while (temp > -1000) {
-    const width = generateRandomInt(800, 900);
+    const width = generateRandomInt(650, 900);
     list.push(new Floor(temp, width));
     temp -= 1000;
   }
@@ -43,6 +47,11 @@ export function createOpponents(level: number): Opponent[] {
   return new Array(oppPerLevel * level)
     .fill(null)
     .map(() => new Opponent(generateRandomInt(500, END_POS), moveSpeed));
+}
+export function createMatePackages(level: number): Package[] {
+  return new Array(3)
+    .fill(null)
+    .map(() => new Package(generateRandomInt(500, END_POS)));
 }
 
 export function drawEverything(

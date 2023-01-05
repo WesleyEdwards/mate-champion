@@ -4,6 +4,7 @@ import {
   playerConstants,
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
+  END_POS,
 } from "../constants";
 import {
   HasPosition,
@@ -15,6 +16,7 @@ import {
 import { ObjectManager } from "./ObjectManager";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
+import { Package } from "../Package";
 
 export function updateWithPlayer<T extends HasPosition>(
   keys: Keys,
@@ -52,8 +54,23 @@ export function calcPlatColl<T extends Character>(
     char.setPosY(platform.vector.posY - char.vector.height);
   }
 }
+export function calcPlatPackageColl(
+  platform: StaticObject,
+  matePackage: Package
+) {
+  if (
+    matePackage.vector.bottomPos <= platform.vector.posY &&
+    matePackage.vector.bottomPos + matePackage.velocity.y >=
+      platform.vector.posY &&
+    matePackage.vector.rightPos >= platform.vector.posX &&
+    matePackage.vector.posX <= platform.vector.posX + platform.vector.width
+  ) {
+    matePackage.setPosY(platform.vector.posY - matePackage.vector.height);
+  }
+}
 
 export function checkIfCaught(player: Player, opponents: Character[]): boolean {
+  if (player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
   return opponents.some((opp) =>
     areTouching(player, opp.vector.posCenter, playerConstants.radius * 2)
   );
@@ -113,18 +130,42 @@ export function updateLiveStatus(
   return { opponents: shanked, bullets: spentBullets };
 }
 
+export function updatePackageStatus(
+  player: Player,
+  packages: Package[]
+): Package[] {
+  return packages.filter((p) => {
+    if (
+      areTouching(
+        player,
+        {
+          x: p.vector.posCenter.x + 30,
+          y: p.vector.posCenter.y,
+        },
+        40
+      )
+    ) {
+      return true;
+    }
+    return false;
+  });
+}
+
 export function drawComponents(
   context: CanvasRenderingContext2D,
   objects: ObjectManager
 ) {
-  const { platforms, opponents, player, pot, bullets } = objects;
+  const { platforms, opponents, player, pot, bullets, matePackages } = objects;
   context.fillStyle = "white";
   context.fillRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
+  context.fillStyle = "red";
+  context.fillRect(-100, MAX_CANVAS_HEIGHT - 5, END_POS + 100, 5);
 
   platforms.forEach((plat) => plat.draw(context));
   opponents.forEach((opponent) => opponent.draw(context));
   player.draw(context);
   bullets.forEach((bullet) => bullet.draw(context));
+  matePackages.forEach((p) => p.draw(context));
 
   pot.draw(context);
 }

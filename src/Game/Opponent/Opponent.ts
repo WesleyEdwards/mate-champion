@@ -26,7 +26,7 @@ export class Opponent implements Character {
       this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
 
-    if (randomOutOf(200)) this.move("Jump");
+    if (randomOutOf(120)) this.move("Jump");
   }
   move(action: CharAction) {
     this.vector.move(action);

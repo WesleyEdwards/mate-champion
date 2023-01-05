@@ -44,8 +44,9 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 // export const emptyStats = {
 //   score: 0,
-//   lives: 3,
+//   lives: 1,
 //   level: 1,
+//   ammo: 50,
 // };
 
 // export const firebaseCollection = "scores";
@@ -54,7 +55,7 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const emptyStats = {
   score: 0,
-  lives: 1,
+  lives: 3,
   level: 1,
   ammo: 50,
 };

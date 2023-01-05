@@ -11,7 +11,8 @@ type imageObjects =
   | "opponent-left"
   | "opponent-right"
   | "bullet-vert"
-  | "bullet-hor";
+  | "bullet-hor"
+  | "package";
 
 const images: Record<imageObjects, string> = {
   "mate-left":
@@ -40,6 +41,8 @@ const images: Record<imageObjects, string> = {
     "https://user-images.githubusercontent.com/97990557/210044411-c18b7c57-3883-46df-95a4-b9c21e8379ed.png",
   "bullet-vert":
     "https://user-images.githubusercontent.com/97990557/210044402-0ea81fd0-730b-444d-a7d1-29e5a2fe561b.png",
+  package:
+    "https://user-images.githubusercontent.com/97990557/210677079-5b56ddc9-d326-4fdc-82cf-95830bd328d0.png",
 };
 
 export interface MCImage {
