@@ -14,20 +14,12 @@ import { createBlocks, createMatePackages, createOpponents } from "../utils";
 import { Package } from "../Package";
 
 export class ObjectManager {
-  player: Player;
-  platforms: StaticObject[];
-  opponents: Opponent[];
-  pot: Pot;
-  bullets: Bullet[];
-  matePackages: Package[];
-  constructor() {
-    this.player = new Player();
-    this.platforms = createBlocks(1);
-    this.opponents = createOpponents(1);
-    this.pot = new Pot();
-    this.bullets = [];
-    this.matePackages = createMatePackages(1);
-  }
+  player: Player = new Player();
+  platforms: StaticObject[] = createBlocks(1);
+  opponents: Opponent[] = createOpponents(1);
+  pot: Pot = new Pot();
+  bullets: Bullet[] = [];
+  matePackages: Package[] = createMatePackages(1);
 
   reset(level: number) {
     this.player = new Player();

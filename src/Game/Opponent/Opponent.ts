@@ -5,7 +5,7 @@ import { randomOutOf } from "../utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
 
 export class Opponent implements Character {
-  images: OppImages;
+  images: OppImages = oppImages;
   vector: OpponentVectorManager;
 
   constructor(xPos: number, moveSpeed: number) {
@@ -14,7 +14,6 @@ export class Opponent implements Character {
       moveSpeed,
       oppConstants.radius
     );
-    this.images = oppImages;
   }
 
   update() {
