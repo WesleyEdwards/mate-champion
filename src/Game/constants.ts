@@ -44,16 +44,18 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const packageWorth = 5;
 
-// export const emptyStats = {
-//   score: 0,
-//   lives: 1,
-//   level: 1,
-//   ammo: 50,
-// };
+/* For Development
 
-// export const firebaseCollection = "scores";
+export const emptyStats = {
+  score: 0,
+  lives: 1,
+  level: 1,
+  ammo: 50,
+};
 
-// For Development
+export const firebaseCollection = "scores-test";
+
+**/
 
 export const emptyStats = {
   score: 0,

@@ -1,7 +1,7 @@
 import { PLAT_FREQUENCY } from "../constants";
 import { StaticObject } from "../models";
 import { generateRandomInt } from "../utils";
-import { ObjVectorManager } from "../ObjVectorManager";
+import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
 
 const PLAT_Y_MIN = 100;
 const PLAT_Y_MAX = 576 - 30;

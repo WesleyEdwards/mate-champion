@@ -10,7 +10,7 @@ import {
 import { ObjectManager } from "./GameState/ObjectManager";
 import { StaticObject } from "./models";
 import { Opponent } from "./Opponent/Opponent";
-import { Package } from "./Package";
+import { Package } from "./Bullet/Package";
 import { Floor } from "./Platform/Floor";
 import { Platform } from "./Platform/Platform";
 

@@ -1,4 +1,4 @@
-import { CharVectorManager } from "../CharVectorManager";
+import { CharVectorManager } from "../VectorManager/CharVectorManager";
 import { CharAction, Coordinates } from "../models";
 
 export class OpponentVectorManager extends CharVectorManager {

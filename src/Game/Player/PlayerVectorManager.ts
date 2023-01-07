@@ -1,6 +1,6 @@
 import { MAX_CANVAS_HEIGHT } from "../constants";
 import { CharAction, Coordinates, VagueFacing } from "../models";
-import { CharVectorManager } from "../CharVectorManager";
+import { CharVectorManager } from "../VectorManager/CharVectorManager";
 import { PlayerDirection } from "./models";
 
 export class PlayerVectorManager extends CharVectorManager {

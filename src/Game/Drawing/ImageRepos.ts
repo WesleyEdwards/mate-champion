@@ -1,7 +1,7 @@
 import { oppConstants, playerConstants } from "../constants";
 import { makeImage, MCImage } from "./drawingUtils";
 
-export const potImage = makeImage(500, 750, "mate-pot");
+export const potImage = makeImage(500, 750, "matePot");
 
 export interface OppImages {
   left: MCImage;
@@ -11,8 +11,8 @@ export interface OppImages {
 const oppWidth = oppConstants.radius * 2;
 
 export const oppImages: OppImages = {
-  left: makeImage(oppWidth, oppWidth, "opponent-left"),
-  right: makeImage(oppWidth, oppWidth, "opponent-right"),
+  left: makeImage(oppWidth, oppWidth, "opponentLeft"),
+  right: makeImage(oppWidth, oppWidth, "opponentRight"),
 };
 
 export const packageImage: MCImage = makeImage(60, 75, "package");
@@ -39,19 +39,19 @@ export interface MateImages {
 const playerWidth = playerConstants.radius * 2;
 
 export const mateImages: MateImages = {
-  left: makeImage(playerWidth, playerWidth, "mate-left"),
-  right: makeImage(playerWidth, playerWidth, "mate-right"),
-  leftUp: makeImage(playerWidth, playerWidth, "mate-left-up"),
-  rightUp: makeImage(playerWidth, playerWidth, "mate-right-up"),
-  rightDown: makeImage(playerWidth, playerWidth, "mate-right"),
-  leftDown: makeImage(playerWidth, playerWidth, "mate-left"),
+  left: makeImage(playerWidth, playerWidth, "mateLeft"),
+  right: makeImage(playerWidth, playerWidth, "mateRight"),
+  leftUp: makeImage(playerWidth, playerWidth, "mateLeftUp"),
+  rightUp: makeImage(playerWidth, playerWidth, "mateRightUp"),
+  rightDown: makeImage(playerWidth, playerWidth, "mateRight"),
+  leftDown: makeImage(playerWidth, playerWidth, "mateLeft"),
   shanking: {
-    left: makeImage(playerWidth * 1.5, playerWidth, "shank-left"),
-    leftDown: makeImage(playerWidth * 1.5, playerWidth, "shank-left"),
-    right: makeImage(playerWidth * 1.5, playerWidth, "shank-right"),
-    rightDown: makeImage(playerWidth * 1.5, playerWidth * 1.5, "shank-right"),
-    leftUp: makeImage(playerWidth, playerWidth * 1.5, "shank-left-up"),
-    rightUp: makeImage(playerWidth, playerWidth * 1.5, "shank-right-up"),
+    left: makeImage(playerWidth * 1.5, playerWidth, "shankLeft"),
+    leftDown: makeImage(playerWidth * 1.5, playerWidth, "shankLeft"),
+    right: makeImage(playerWidth * 1.5, playerWidth, "shankRight"),
+    rightDown: makeImage(playerWidth * 1.5, playerWidth * 1.5, "shankRight"),
+    leftUp: makeImage(playerWidth, playerWidth * 1.5, "shankLeftUp"),
+    rightUp: makeImage(playerWidth, playerWidth * 1.5, "shankRightUp"),
   },
 };
 

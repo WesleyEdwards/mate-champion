@@ -1,6 +1,6 @@
-import { Coordinates, VectorMan } from "./models";
+import { Coordinates, VectorMan } from "../models";
 
-export class BaseVectorMan implements VectorMan {
+export class ObjVectorManager implements VectorMan {
   position: Coordinates;
   width: number;
   height: number;

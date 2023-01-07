@@ -2,7 +2,7 @@ import React, { FC } from "react";
 
 interface hProps extends React.HTMLAttributes<HTMLHeadingElement> {}
 interface Stack extends React.HTMLAttributes<HTMLDivElement> {}
-interface Typography extends React.HTMLAttributes<HTMLParagraphElement> {}
+interface typography extends React.HTMLAttributes<HTMLParagraphElement> {}
 
 export const H1: FC<hProps> = (props) => {
   return (
@@ -26,7 +26,7 @@ export const H3: FC<hProps> = (props) => {
     </h3>
   );
 };
-export const Typography: FC<Typography> = (props) => {
+export const Typography: FC<typography> = (props) => {
   return (
     <p className="green-text" {...props}>
       {props.children}

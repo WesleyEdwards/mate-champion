@@ -1,8 +1,8 @@
-import { Bullet } from "../Bullet";
+import { Bullet } from "../Bullet/Bullet";
 import {
   calcPlatColl,
   updateLiveStatus,
-  checkIfCaught,
+  checkIfPlayerDies,
   calcPlatPackageColl,
   updatePackageStatus,
 } from "./GameStateFunctions";
@@ -11,7 +11,7 @@ import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { createBlocks, createMatePackages, createOpponents } from "../utils";
-import { Package } from "../Package";
+import { Package } from "../Bullet/Package";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -38,7 +38,7 @@ export class ObjectManager {
   }
 
   isCaught() {
-    return checkIfCaught(this.player, this.opponents);
+    return checkIfPlayerDies(this.player, this.opponents);
   }
 
   private shootBullet() {

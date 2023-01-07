@@ -1,6 +1,6 @@
 import { MAX_CANVAS_HEIGHT } from "../constants";
 import { StaticObject } from "../models";
-import { ObjVectorManager } from "../ObjVectorManager";
+import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
 
 export class Floor implements StaticObject {
   color: string;

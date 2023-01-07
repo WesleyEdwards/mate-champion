@@ -1,8 +1,8 @@
-import { BaseVectorMan } from "./BaseVectorMan";
-import { GRAVITY } from "./constants";
-import { MCImage } from "./Drawing/drawingUtils";
-import { packageImage } from "./Drawing/ImageRepos";
-import { HasPosition } from "./models";
+import { BaseVectorMan } from "../VectorManager/BaseVectorMan";
+import { GRAVITY } from "../constants";
+import { MCImage } from "../Drawing/drawingUtils";
+import { packageImage } from "../Drawing/ImageRepos";
+import { HasPosition } from "../models";
 
 export class Package implements HasPosition {
   vector: PackageVector;

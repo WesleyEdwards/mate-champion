@@ -1,5 +1,5 @@
-import { BaseVectorMan } from "./BaseVectorMan";
-import { Coordinates } from "./models";
+import { BaseVectorMan } from "../VectorManager/BaseVectorMan";
+import { Coordinates } from "../models";
 
 export class BulletVector extends BaseVectorMan {
   velocity: Coordinates;

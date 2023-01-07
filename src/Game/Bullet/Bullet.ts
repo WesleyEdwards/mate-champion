@@ -1,7 +1,7 @@
 import { BulletVector } from "./BulletVector";
-import { bulletSpeed } from "./constants";
-import { makeImage, MCImage } from "./Drawing/drawingUtils";
-import { Coordinates, HasPosition, VagueFacing } from "./models";
+import { bulletSpeed } from "../constants";
+import { makeImage, MCImage } from "../Drawing/drawingUtils";
+import { Coordinates, HasPosition, VagueFacing } from "../models";
 
 const bulletRadius = 15;
 
@@ -14,9 +14,9 @@ function getDirection(dir: VagueFacing): Coordinates {
 function calcImage(dir: VagueFacing): MCImage {
   const widthHeight = bulletRadius * 2;
   if (dir === "left" || dir === "right") {
-    return makeImage(widthHeight, widthHeight, "bullet-hor");
+    return makeImage(widthHeight, widthHeight, "bulletHor");
   }
-  return makeImage(widthHeight, widthHeight, "bullet-vert");
+  return makeImage(widthHeight, widthHeight, "bulletVert");
 }
 
 export class Bullet implements HasPosition {

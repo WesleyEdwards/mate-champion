@@ -1,4 +1,4 @@
-import { Bullet } from "../Bullet";
+import { Bullet } from "../Bullet/Bullet";
 import {
   INCREMENT_VALUE,
   playerConstants,
@@ -16,7 +16,7 @@ import {
 import { ObjectManager } from "./ObjectManager";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
-import { Package } from "../Package";
+import { Package } from "../Bullet/Package";
 
 export function updateWithPlayer<T extends HasPosition>(
   keys: Keys,
@@ -69,7 +69,7 @@ export function calcPlatPackageColl(
   }
 }
 
-export function checkIfCaught(player: Player, opponents: Character[]): boolean {
+export function checkIfPlayerDies(player: Player, opponents: Character[]): boolean {
   if (player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
   return opponents.some((opp) =>
     areTouching(player, opp.vector.posCenter, playerConstants.radius * 2)

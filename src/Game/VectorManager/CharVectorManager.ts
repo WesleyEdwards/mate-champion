@@ -1,5 +1,5 @@
 import { BaseVectorMan } from "./BaseVectorMan";
-import { Coordinates } from "./models";
+import { Coordinates } from "../models";
 
 export class CharVectorManager extends BaseVectorMan {
   velocity: Coordinates;

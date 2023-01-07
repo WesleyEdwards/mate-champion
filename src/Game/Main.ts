@@ -3,7 +3,9 @@ import { GameState } from "./GameState/GameState";
 import { SetUI } from "./models";
 
 export function doEverything(setUI: SetUI) {
-  const canvas = setupGame();
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  canvas.width = MAX_CANVAS_WIDTH;
+
   const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
   let requestId: number | undefined = undefined;
@@ -21,7 +23,7 @@ export function doEverything(setUI: SetUI) {
   function loop() {
     requestId = undefined;
 
-    if (gameState.winState === "lose") {
+    if (gameState.isLost()) {
       canvas.height = 0;
 
       const score = gameState.getScore();
@@ -50,10 +52,4 @@ export function doEverything(setUI: SetUI) {
       requestId = undefined;
     }
   }
-}
-
-function setupGame(): HTMLCanvasElement {
-  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-  canvas.width = MAX_CANVAS_WIDTH;
-  return canvas;
 }

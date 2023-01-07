@@ -15,8 +15,8 @@ import { ObjectManager } from "./ObjectManager";
 type winState = "win" | "lose" | "playing";
 
 export class GameState {
-  winState: winState = "playing";
-  objectManager: ObjectManager = new ObjectManager();
+  private winState: winState = "playing";
+  private objectManager: ObjectManager = new ObjectManager();
   private keys: Keys = initialKeyStatus;
   private scrollOffset: number = 0;
   private stats: GameStats = { ...emptyStats };
@@ -60,6 +60,20 @@ export class GameState {
     }
   }
 
+  private drawStats() {
+    this.setUI.setLevel(this.stats.level);
+    this.setUI.setScore(this.stats.score);
+    this.setUI.setAmmo(this.stats.ammo);
+    if (this.stats.lives === 0) {
+      this.setUI.setLives(undefined);
+    } else {
+      this.setUI.setLives(this.stats.lives);
+    }
+  }
+
+  private incrementScrollOffset(num: number) {
+    this.scrollOffset -= num;
+  }
   enterGame() {
     this.setUI.setShowInstructions(false);
     this.reset(true);
@@ -118,24 +132,14 @@ export class GameState {
     );
   }
 
-  private drawStats() {
-    this.setUI.setLevel(this.stats.level);
-    this.setUI.setScore(this.stats.score);
-    this.setUI.setAmmo(this.stats.ammo);
-    if (this.stats.lives === 0) {
-      this.setUI.setLives(undefined);
-    } else {
-      this.setUI.setLives(this.stats.lives);
-    }
-  }
-
-  private incrementScrollOffset(num: number) {
-    this.scrollOffset -= num;
-  }
   getScrollOffset() {
     return this.scrollOffset;
   }
   getScore() {
     return this.stats.score;
+  }
+
+  isLost(): boolean {
+    return this.winState === "lose";
   }
 }

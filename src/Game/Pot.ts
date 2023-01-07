@@ -1,4 +1,4 @@
-import { BaseVectorMan } from "./BaseVectorMan";
+import { BaseVectorMan } from "./VectorManager/BaseVectorMan";
 import { END_POS } from "./constants";
 import { potImage } from "./Drawing/ImageRepos";
 import { StaticObject } from "./models";
