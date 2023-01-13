@@ -1,5 +1,6 @@
 import { playerConstants, GRAVITY } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
+import { vagueFacing } from "../utils";
 import { PlayerImager } from "./PlayerImager";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
@@ -79,8 +80,12 @@ export class Player implements Character {
 
   get weaponPosCurr(): Coordinates | undefined {
     if (!this.shanking) return undefined;
-    if (this.vector.isVagueFacing("right")) return this.vector.posRightWeapon;
-    if (this.vector.isVagueFacing("left")) return this.vector.posLeftWeapon;
+    if (this.vector.isFacing("right") || this.vector.isFacing("rightDown")) {
+      return this.vector.posRightWeapon;
+    }
+    if (this.vector.isFacing("left") || this.vector.isFacing("leftDown")) {
+      return this.vector.posLeftWeapon;
+    }
     return this.vector.posUpWeapon;
   }
 
@@ -105,7 +110,7 @@ export class Player implements Character {
     return this.vector.stopY(num);
   }
   get facing() {
-    return this.vector.vagueFacing;
+    return vagueFacing(this.vector.facing);
   }
 }
 

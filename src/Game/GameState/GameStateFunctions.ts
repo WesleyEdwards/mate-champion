@@ -69,7 +69,10 @@ export function calcPlatPackageColl(
   }
 }
 
-export function checkIfPlayerDies(player: Player, opponents: Character[]): boolean {
+export function checkIfPlayerDies(
+  player: Player,
+  opponents: Character[]
+): boolean {
   if (player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
   return opponents.some((opp) =>
     areTouching(player, opp.vector.posCenter, playerConstants.radius * 2)
@@ -81,9 +84,10 @@ function areTouching<T extends HasPosition>(
   where: Coordinates,
   dist: number
 ): boolean {
+  // For some reason, 'where' was coming in as undefined here (from looping through opponents)
   const distBetween = Math.sqrt(
-    Math.pow(objectA.vector.posCenter.x - where.x, 2) +
-      Math.pow(objectA.vector.posCenter.y - where.y, 2)
+    Math.pow(objectA.vector.posCenter.x - (where?.x ?? 0), 2) +
+      Math.pow(objectA.vector.posCenter.y - (where?.y ?? 0), 2)
   );
   return distBetween < dist;
 }

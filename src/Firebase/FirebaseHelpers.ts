@@ -72,8 +72,5 @@ export const isHighScore = async (score: number): Promise<boolean> => {
     }
   }
 
-  return (
-    scores.some((playerScore) => playerScore.score < score) &&
-    scores.length < numberDisplayed
-  );
+  return scores.some((playerScore) => playerScore.score < score);
 };

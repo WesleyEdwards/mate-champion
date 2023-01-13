@@ -8,11 +8,12 @@ import {
   MAX_CANVAS_HEIGHT,
 } from "./constants";
 import { ObjectManager } from "./GameState/ObjectManager";
-import { StaticObject } from "./models";
+import { StaticObject, VagueFacing } from "./models";
 import { Opponent } from "./Opponent/Opponent";
 import { Package } from "./Bullet/Package";
 import { Floor } from "./Platform/Floor";
 import { Platform } from "./Platform/Platform";
+import { PlayerDirection } from "./Player/models";
 
 export function createBlocks(level: number): StaticObject[] {
   const blocks = createPlatforms(level);
@@ -82,4 +83,10 @@ export function debounceLog(val: string) {
   if (generateRandomInt(0, 100) === 1) {
     console.log(val);
   }
+}
+
+export function vagueFacing(facing: PlayerDirection): VagueFacing {
+  if (facing === "rightUp" || facing === "leftUp") return "up";
+  if (facing === "rightDown" || facing === "leftDown") return "down";
+  return facing;
 }

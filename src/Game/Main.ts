@@ -12,24 +12,37 @@ export function doEverything(setUI: SetUI) {
 
   const gameState = new GameState(setUI);
 
-  const enterGameLoop = () => {
+  function enterGameLoop(first?: boolean) {
+    gameState.reset(first);
     gameState.enterGame();
+    gameState.setGameState("playing");
     canvas.height = MAX_CANVAS_HEIGHT;
     loop();
   };
 
-  enterGameLoop();
+  enterGameLoop(true);
 
   function loop() {
     requestId = undefined;
 
     if (gameState.isLost()) {
       canvas.height = 0;
-
       const score = gameState.getScore();
       setUI.setShowHighScoreDiv(score);
-
       stop();
+      return;
+    }
+
+    if (gameState.isNextLevel()) {
+      context.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
+      context.font = "60px Courier";
+      context.fillText(
+        `Level ${gameState.getLevel()}`,
+        MAX_CANVAS_WIDTH / 3,
+        MAX_CANVAS_HEIGHT / 2
+      );
+      stop();
+      handleNextLevel();
       return;
     }
 
@@ -51,5 +64,12 @@ export function doEverything(setUI: SetUI) {
       window.cancelAnimationFrame(requestId);
       requestId = undefined;
     }
+  }
+
+  function handleNextLevel() {
+    setTimeout(() => {
+      enterGameLoop();
+      start();
+    }, 2000);
   }
 }

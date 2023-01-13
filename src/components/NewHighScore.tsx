@@ -20,11 +20,13 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
     setError(null);
     if (!name) {
       setError("Name is required");
+      setDisableSubmit(false);
       return;
     }
     const sameUsers = await userExists(name);
     if (sameUsers.length > 0) {
       setError("Name is already exists");
+      setDisableSubmit(false);
       return;
     }
     return onSubmit(name).then(() => {

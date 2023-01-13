@@ -12,7 +12,7 @@ import {
 import { Keys, GameStats, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 
-type winState = "win" | "lose" | "playing";
+type winState = "win" | "lose" | "playing" | "nextLevel";
 
 export class GameState {
   private winState: winState = "playing";
@@ -27,15 +27,14 @@ export class GameState {
     addEventListeners(this.keys);
   }
 
-  private setGameState(state: winState) {
+  setGameState(state: winState) {
     this.winState = state;
   }
 
-  private reset(all?: boolean) {
+  reset(all?: boolean) {
     if (all) {
       this.stats = { ...emptyStats };
     }
-    this.setGameState("playing");
     this.scrollOffset = 0;
     this.objectManager.reset(this.stats.level);
     this.drawStats();
@@ -45,6 +44,7 @@ export class GameState {
     this.stats.level++;
     this.stats.ammo += 20;
     this.stats.score += 100;
+    this.setGameState("nextLevel");
     this.reset();
   }
 
@@ -76,7 +76,6 @@ export class GameState {
   }
   enterGame() {
     this.setUI.setShowInstructions(false);
-    this.reset(true);
   }
 
   updateEverything() {
@@ -138,8 +137,14 @@ export class GameState {
   getScore() {
     return this.stats.score;
   }
+  getLevel() {
+    return this.stats.level;
+  }
 
   isLost(): boolean {
     return this.winState === "lose";
+  }
+  isNextLevel(): boolean {
+    return this.winState === "nextLevel";
   }
 }

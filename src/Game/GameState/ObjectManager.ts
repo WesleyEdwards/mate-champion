@@ -42,15 +42,24 @@ export class ObjectManager {
   }
 
   private shootBullet() {
-    if (this.player.vector.isVagueFacing("right")) {
+    if (
+      this.player.vector.isFacing("right") ||
+      this.player.vector.isFacing("rightDown")
+    ) {
       this.bullets.push(new Bullet(this.player.vector.posRightWeapon, "right"));
       return;
     }
-    if (this.player.vector.isVagueFacing("left")) {
+    if (
+      this.player.vector.isFacing("left") ||
+      this.player.vector.isFacing("leftDown")
+    ) {
       this.bullets.push(new Bullet(this.player.vector.posLeftWeapon, "left"));
       return;
     }
-    if (this.player.vector.isVagueFacing("up")) {
+    if (
+      this.player.vector.isFacing("rightUp") ||
+      this.player.vector.isFacing("leftUp")
+    ) {
       this.bullets.push(new Bullet(this.player.vector.posUpWeapon, "up"));
     }
   }
