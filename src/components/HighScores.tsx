@@ -18,7 +18,13 @@ interface ScoreListItemProps {
 const ScoreListItem: FC<ScoreListItemProps> = (props) => {
   const { score, num } = props;
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        gap: "1rem",
+      }}
+    >
       <MHTypography
         style={{
           maxWidth: "24rem",
@@ -26,11 +32,12 @@ const ScoreListItem: FC<ScoreListItemProps> = (props) => {
           textOverflow: "ellipsis",
           flexDirection: "row",
           overflow: "hidden",
-          minWidth: "3rem",
           flex: "1",
         }}
-      >{`${num} - ${score.name} (${score.score})`}</MHTypography>
-    </>
+        title={score.name}
+      >{`${num} - ${score.name}`}</MHTypography>
+      <MHTypography>{`(${score.score})`}</MHTypography>
+    </div>
   );
 };
 
@@ -82,7 +89,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
           if (scores === undefined) {
             return (
               <div>
-                {new Array(10).fill(null).map((_, i) => (
+                {new Array(15).fill(null).map((_, i) => (
                   <ScoreListItem
                     num={i + 1}
                     score={{ name: "...", score: 0 }}
@@ -98,10 +105,9 @@ export const HighScores: FC<HighScoresProps> = (props) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                maxWidth: "12rem",
               }}
             >
-              <H2>Score Board:</H2>
+              <H2 style={{ alignSelf: "center" }}>Score Board:</H2>
               {scores.map((score, i) => (
                 <ScoreListItem num={i + 1} score={score} key={i} />
               ))}

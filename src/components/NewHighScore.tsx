@@ -23,6 +23,11 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
       setDisableSubmit(false);
       return;
     }
+    if (name.length > 300) {
+      setError("Name is too long");
+      setDisableSubmit(false);
+      return;
+    }
     const sameUsers = await userExists(name);
     if (sameUsers.length > 0) {
       setError("Name is already exists");
