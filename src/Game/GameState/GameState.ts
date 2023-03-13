@@ -12,7 +12,7 @@ import {
 import { Keys, GameStats, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 
-type winState = "win" | "lose" | "playing" | "nextLevel";
+type winState = "win" | "lose" | "playing";
 
 export class GameState {
   private winState: winState = "playing";
@@ -44,7 +44,6 @@ export class GameState {
     this.stats.level++;
     this.stats.ammo += 20;
     this.stats.score += 100;
-    this.setGameState("nextLevel");
     this.reset();
   }
 
@@ -78,7 +77,7 @@ export class GameState {
     this.setUI.setShowInstructions(false);
   }
 
-  updateEverything() {
+  updateEverything(elapsedTime: number) {
     this.objectManager.updateAll(this.keys);
   }
 
@@ -86,7 +85,7 @@ export class GameState {
     drawComponents(context, this.objectManager);
   }
 
-  calcInteractions() {
+  calcInteractions(setNewLevel: () => void) {
     if (this.objectManager.isCaught()) {
       this.handleLoseLife();
     }
@@ -112,7 +111,10 @@ export class GameState {
     if (shot) this.stats.ammo--;
 
     const nextLevel = this.objectManager.nextLevel;
-    if (nextLevel) this.nextLevel();
+    if (nextLevel) {
+      setNewLevel();
+      this.nextLevel();
+    }
 
     const packagesReceived = this.objectManager.getReceivedPackages();
     if (packagesReceived) {
@@ -143,8 +145,5 @@ export class GameState {
 
   isLost(): boolean {
     return this.winState === "lose";
-  }
-  isNextLevel(): boolean {
-    return this.winState === "nextLevel";
   }
 }
