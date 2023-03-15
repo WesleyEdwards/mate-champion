@@ -1,4 +1,5 @@
-import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "./constants";
+import { MAX_CANVAS_WIDTH } from "./constants";
+import { displayCanvas, displayNextLevel } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
 import { GameStatsManager } from "./GameState/GameStatsManager";
 import { SetUI } from "./models";
@@ -31,13 +32,14 @@ export function doEverything(setUI: SetUI) {
   function render() {
     if (!gameState) return;
     if (stats.showNextLevel) {
-      displayNextLevel();
+      displayNextLevel(context, gameState?.stats.level);
       return;
     }
     gameState?.drawEverything(context);
   }
 
   function gameLoop(timeStamp: number) {
+    if (!gameState) return;
     const elapsedTime = initial ? 0 : timeStamp - prevTime;
     initial = false;
 
@@ -50,31 +52,20 @@ export function doEverything(setUI: SetUI) {
   }
 
   function handleWin() {
-    canvas.height = 0;
+    displayCanvas(false, canvas);
     const score = gameState?.getScore();
     gameState = undefined;
     setUI.setShowHighScoreDiv(score);
   }
 
   function startGame(first?: boolean) {
-    canvas.height = MAX_CANVAS_HEIGHT;
+    displayCanvas(true, canvas);
     initial = true;
     gameState = new GameState(setUI);
     gameState.reset(first);
     gameState.enterGame();
     gameState.setGameState("playing");
     requestAnimationFrame(gameLoop);
-  }
-
-  function displayNextLevel() {
-    context.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
-    context.font = "60px Courier";
-    context.fillStyle = "green";
-    context.fillText(
-      `Level ${gameState?.getLevel()}`,
-      MAX_CANVAS_WIDTH / 3,
-      MAX_CANVAS_HEIGHT / 2
-    );
   }
 
   startGame(true);

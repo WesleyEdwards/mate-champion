@@ -68,13 +68,6 @@ export interface Keys {
   shank: boolean;
 }
 
-export interface GameStats {
-  level: number;
-  score: number;
-  lives: number;
-  ammo: number;
-}
-
 export interface PlayerScore {
   name: string;
   score: number;

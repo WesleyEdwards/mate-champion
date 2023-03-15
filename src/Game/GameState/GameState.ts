@@ -1,16 +1,12 @@
-import {
-  initialKeyStatus,
-  emptyStats,
-  INCREMENT_VALUE,
-  packageWorth,
-} from "../constants";
+import { initialKeyStatus, INCREMENT_VALUE, packageWorth } from "../constants";
 import {
   addEventListeners,
   drawComponents,
   updateWithPlayer,
 } from "./GameStateFunctions";
-import { Keys, GameStats, SetUI } from "../models";
+import { Keys, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
+import { GameStatsManager } from "./GameStatsManager";
 
 type winState = "win" | "lose" | "playing";
 
@@ -19,7 +15,7 @@ export class GameState {
   private objectManager: ObjectManager = new ObjectManager();
   private keys: Keys = initialKeyStatus;
   private scrollOffset: number = 0;
-  private stats: GameStats = { ...emptyStats };
+  stats: GameStatsManager = new GameStatsManager();
   private setUI: SetUI;
 
   constructor(setUI: SetUI) {
@@ -33,7 +29,7 @@ export class GameState {
 
   reset(all?: boolean) {
     if (all) {
-      this.stats = { ...emptyStats };
+      this.stats.resetAll();
     }
     this.scrollOffset = 0;
     this.objectManager.reset(this.stats.level);

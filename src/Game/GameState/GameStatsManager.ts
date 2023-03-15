@@ -5,10 +5,10 @@ export class GameStatsManager {
   initial: boolean = true;
   totalTime: number = 0;
   lives: number = emptyStats.lives;
-  totalScore: number = 0;
-  pointsToNewBall: number = 0;
-  paused: boolean = false;
-  //   newBall: boolean = false;
+  level: number = emptyStats.level;
+  ammo: number = emptyStats.ammo;
+  score: number = emptyStats.score;
+
   constructor() {}
 
   addElapsedTime(elapsedTime: number) {
@@ -28,7 +28,6 @@ export class GameStatsManager {
 
   loseLife() {
     this.lives--;
-    this.totalScore = 0;
     this.prevTime = 0;
     this.initial = true;
     this.totalTime = 0;
@@ -41,13 +40,19 @@ export class GameStatsManager {
   }
 
   incrementScore(points: number) {
-    this.totalScore += points;
-    this.pointsToNewBall += points;
+    this.score += points;
   }
   startGame() {
     this.initial = true;
   }
-  togglePause() {
-    this.paused = !this.paused;
+
+  resetAll() {
+    this.lives = emptyStats.lives;
+    this.level = emptyStats.level;
+    this.ammo = emptyStats.ammo;
+    this.score = emptyStats.score;
+    this.prevTime = 0;
+    this.initial = true;
+    this.totalTime = 0;
   }
 }
