@@ -1,5 +1,14 @@
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../constants";
 
+export function getCanvasContext(): {
+  canvas: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+} {
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+  return { canvas, context };
+}
+
 export function displayNextLevel(
   context: CanvasRenderingContext2D,
   level: number

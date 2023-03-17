@@ -1,58 +1,81 @@
 import { emptyStats } from "../constants";
 
+type PlayInfo = {
+  lives: number;
+  level: number;
+  ammo: number;
+  score: number;
+};
+
 export class GameStatsManager {
-  prevTime: number = 0;
+  timeInLevel: number = 0;
   initial: boolean = true;
   totalTime: number = 0;
-  lives: number = emptyStats.lives;
-  level: number = emptyStats.level;
-  ammo: number = emptyStats.ammo;
-  score: number = emptyStats.score;
+  uiInfo: PlayInfo = { ...emptyStats };
+  prevTime: number = 0;
+  elapsedTime: number = 0;
+  scrollOffset: number = 0;
 
   constructor() {}
 
-  addElapsedTime(elapsedTime: number) {
-    this.totalTime += elapsedTime;
-  }
+  updateTime(timeStamp: number) {
+    if (this.initial) {
+      this.prevTime = timeStamp;
+      this.initial = false;
+    }
 
-  get showNextLevel() {
-    return this.totalTime < 3000;
-  }
-
-  elapsedTime(timeStamp: number): number {
-    const elapsed = this.initial ? 0 : timeStamp - this.prevTime;
-    this.initial = false;
+    this.elapsedTime = timeStamp - this.prevTime;
     this.prevTime = timeStamp;
-    return elapsed;
+    this.timeInLevel += this.elapsedTime;
   }
 
   loseLife() {
-    this.lives--;
-    this.prevTime = 0;
-    this.initial = true;
+    this.uiInfo.lives--;
+    this.timeInLevel = 0;
     this.totalTime = 0;
   }
 
   nextLevel() {
-    this.prevTime = 0;
-    this.initial = true;
-    this.totalTime = 0;
+    this.uiInfo.level++;
+    this.uiInfo.ammo += 20;
+    this.uiInfo.score += 100;
+    this.resetLevel();
   }
 
   incrementScore(points: number) {
-    this.score += points;
+    this.uiInfo.score += points;
   }
-  startGame() {
+
+  resetLevel() {
+    this.scrollOffset = 0;
+    this.timeInLevel = 0;
     this.initial = true;
   }
 
-  resetAll() {
-    this.lives = emptyStats.lives;
-    this.level = emptyStats.level;
-    this.ammo = emptyStats.ammo;
-    this.score = emptyStats.score;
-    this.prevTime = 0;
-    this.initial = true;
-    this.totalTime = 0;
+  incrementScrollOffset(num: number) {
+    this.scrollOffset -= num;
+  }
+
+  get ammo() {
+    return this.uiInfo.ammo;
+  }
+  get score() {
+    return this.uiInfo.score;
+  }
+  get level() {
+    return this.uiInfo.level;
+  }
+  get lives() {
+    return this.uiInfo.lives;
+  }
+
+  addAmmo(num: number) {
+    this.uiInfo.ammo += num;
+  }
+  addScore(num: number) {
+    this.uiInfo.score += num;
+  }
+  addLives(num: number) {
+    this.uiInfo.lives += num;
   }
 }

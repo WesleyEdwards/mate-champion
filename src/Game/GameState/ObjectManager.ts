@@ -30,7 +30,7 @@ export class ObjectManager {
     this.bullets = [];
   }
 
-  updateAll(keys: Keys) {
+  updateAll(keys: Keys, elapsedTime: number) {
     this.player.update(keys);
     this.opponents.forEach((opponent) => opponent.update());
     this.bullets.forEach((bullet) => bullet.update());

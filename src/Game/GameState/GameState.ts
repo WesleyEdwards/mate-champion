@@ -14,32 +14,26 @@ export class GameState {
   private winState: winState = "playing";
   private objectManager: ObjectManager = new ObjectManager();
   private keys: Keys = initialKeyStatus;
-  private scrollOffset: number = 0;
+
   stats: GameStatsManager = new GameStatsManager();
   private setUI: SetUI;
 
   constructor(setUI: SetUI) {
     this.setUI = setUI;
     addEventListeners(this.keys);
+    this.enterGame();
+    this.setGameState("playing");
+    this.drawStats();
   }
 
-  setGameState(state: winState) {
-    this.winState = state;
-  }
-
-  reset(all?: boolean) {
-    if (all) {
-      this.stats.resetAll();
-    }
-    this.scrollOffset = 0;
+  reset() {
+    this.stats.resetLevel();
     this.objectManager.reset(this.stats.level);
     this.drawStats();
   }
 
   private nextLevel() {
-    this.stats.level++;
-    this.stats.ammo += 20;
-    this.stats.score += 100;
+    this.stats.nextLevel();
     this.reset();
   }
 
@@ -48,7 +42,7 @@ export class GameState {
   }
 
   private handleLoseLife() {
-    this.stats.lives--;
+    this.stats.addLives(-1);
     this.reset();
     if (this.stats.lives === 0) {
       this.handleLose();
@@ -66,55 +60,43 @@ export class GameState {
     }
   }
 
-  private incrementScrollOffset(num: number) {
-    this.scrollOffset -= num;
-  }
   enterGame() {
     this.setUI.setShowInstructions(false);
   }
 
-  updateEverything(elapsedTime: number) {
-    this.objectManager.updateAll(this.keys);
-  }
+  updateEverything() {
+    this.objectManager.updateAll(this.keys, this.stats.elapsedTime);
 
-  drawEverything(context: CanvasRenderingContext2D) {
-    drawComponents(context, this.objectManager);
-  }
-
-  calcInteractions(setNewLevel: () => void) {
     if (this.objectManager.isCaught()) {
       this.handleLoseLife();
     }
 
     if (this.keys.right && !this.objectManager.playerXMoving) {
-      this.incrementScrollOffset(-INCREMENT_VALUE);
+      this.stats.incrementScrollOffset(-INCREMENT_VALUE);
     }
 
     if (
       this.keys.left &&
       !this.objectManager.playerXMoving &&
-      this.scrollOffset > 0
+      this.stats.scrollOffset > 0
     ) {
-      this.incrementScrollOffset(INCREMENT_VALUE);
+      this.stats.incrementScrollOffset(INCREMENT_VALUE);
     }
 
     this.objectManager.calcInteractions();
 
     const killedOpp = this.objectManager.getKilledOpponents();
-    if (killedOpp) this.stats.score += 10;
+    if (killedOpp) this.stats.addScore(10);
 
     const shot = this.objectManager.calcBullets(this.stats.ammo);
-    if (shot) this.stats.ammo--;
+    if (shot) this.stats.addAmmo(-1);
 
     const nextLevel = this.objectManager.nextLevel;
-    if (nextLevel) {
-      setNewLevel();
-      this.nextLevel();
-    }
+    if (nextLevel) this.nextLevel();
 
     const packagesReceived = this.objectManager.getReceivedPackages();
     if (packagesReceived) {
-      this.stats.ammo += packagesReceived * packageWorth;
+      this.stats.addAmmo(packagesReceived * packageWorth);
     }
 
     if (nextLevel || killedOpp || shot || packagesReceived) {
@@ -124,22 +106,32 @@ export class GameState {
     updateWithPlayer(
       this.keys,
       this.objectManager.player,
-      this.scrollOffset,
+      this.stats.scrollOffset,
       this.objectManager.objectsToUpdatePos
     );
   }
 
-  getScrollOffset() {
-    return this.scrollOffset;
+  drawEverything(context: CanvasRenderingContext2D) {
+    drawComponents(context, this.objectManager);
   }
+
+  setGameState(state: winState) {
+    this.winState = state;
+  }
+
   getScore() {
     return this.stats.score;
-  }
-  getLevel() {
-    return this.stats.level;
   }
 
   isLost(): boolean {
     return this.winState === "lose";
+  }
+
+  get showNextLevel() {
+    return this.stats.timeInLevel < 3000;
+  }
+
+  get level(): number {
+    return this.stats.level;
   }
 }
