@@ -8,7 +8,8 @@ export const GRAVITY = 0.65;
 export const PLAT_FREQUENCY = 350;
 
 export const NUM_PLATFORMS = 30;
-export const END_POS = 4500;
+export const END_POS = 1000;
+// export const END_POS = 4500;
 
 export const INCREMENT_VALUE = 5;
 
@@ -44,27 +45,23 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const packageWorth = 5;
 
-/* For Development
-
 export const emptyStats = {
   score: 0,
-  lives: 1,
+  lives: 3,
   level: 1,
   ammo: 50,
 };
 
 export const firebaseCollection = "scores-test";
 
-**/
+// export const emptyStats = {
+//   score: 0,
+//   lives: 3,
+//   level: 1,
+//   ammo: 20,
+// };
 
-export const emptyStats = {
-  score: 0,
-  lives: 3,
-  level: 1,
-  ammo: 20,
-};
-
-export const firebaseCollection = "scores";
+// export const firebaseCollection = "scores";
 
 export const listOfColors = [
   "springgreen",
