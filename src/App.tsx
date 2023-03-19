@@ -3,7 +3,7 @@ import "./App.css";
 import { HighScores } from "./components/HighScores";
 import { Instructions } from "./components/Instructions";
 import { StatsDiv } from "./components/StatsDiv";
-import { doEverything } from "./Game/Main";
+import { enterGameLoop } from "./Game/Main";
 import { H1 } from "./components/MHComponents.tsx/Components";
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
     setDisabledPlay(true);
     setShowHighScores(undefined);
     setShowInstructions(false);
-    doEverything({
+    enterGameLoop({
       setLevel,
       setLives,
       setScore,

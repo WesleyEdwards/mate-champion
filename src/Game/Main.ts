@@ -2,29 +2,27 @@ import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
 import { SetUI } from "./models";
 
-export function doEverything(setUI: SetUI) {
+export function enterGameLoop(setUI: SetUI) {
   const { canvas, context } = getCanvasContext();
   let gameState: GameState = new GameState(setUI, context);
 
   function gameLoop(timeStamp: number) {
     if (gameState.isWinState("lose")) {
-      return handleWin();
+      return handleLose();
     }
-    gameState.updateTime(timeStamp);
 
-    gameState.update();
-    gameState.drawEverything(context);
+    gameState.update(timeStamp);
+    gameState.render(context);
 
     requestAnimationFrame(gameLoop);
   }
 
-  function handleWin() {
+  function handleLose() {
     displayCanvas(false, canvas);
   }
 
   function startGame() {
     displayCanvas(true, canvas);
-    gameState = new GameState(setUI, context);
     requestAnimationFrame(gameLoop);
   }
 

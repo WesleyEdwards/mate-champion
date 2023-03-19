@@ -77,4 +77,9 @@ export const listOfColors = [
 export const BULLET_RADIUS = 15;
 export const BULLET_SPEED = 0.7;
 
-export type winState = "lose" | "playing" | "initial" | "nextLevel";
+export type winState =
+  | "lose"
+  | "playing"
+  | "initial"
+  | "nextLevel"
+  | "loseLife";

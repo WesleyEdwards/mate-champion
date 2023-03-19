@@ -11,7 +11,6 @@ import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
 import { drawBackground, drawLava } from "../Drawing/drawer";
 import { displayNextLevel } from "../Drawing/uiHelpers";
-import { debounceLog } from "../utils";
 
 export class GameState {
   private winState: winState = "initial";
@@ -29,34 +28,10 @@ export class GameState {
     setUI.setShowInstructions(false);
   }
 
-  reset() {
-    this.stats.resetLevel();
-    this.winState = "nextLevel";
-    this.objectManager.reset(this.stats.level);
-    this.drawStats();
-  }
-
-  private handleLoseLife() {
-    this.stats.addLives(-1);
-    this.reset();
-    if (this.stats.lives === 0) {
-      this.winState = "lose";
-    }
-  }
-
-  private drawStats() {
-    this.setUI.setLevel(this.stats.level);
-    this.setUI.setScore(this.stats.score);
-    this.setUI.setAmmo(this.stats.ammo);
-    if (this.stats.lives === 0) {
-      this.setUI.setLives(undefined);
-    } else {
-      this.setUI.setLives(this.stats.lives);
-    }
-  }
-
-  update() {
+  update(timeStamp: number) {
+    this.stats.updateTime(timeStamp);
     if (!this.isWinState("playing")) return;
+
     this.objectManager.updateAll(this.keys, this.stats.elapsedTime);
 
     if (this.objectManager.isCaught()) {
@@ -103,9 +78,9 @@ export class GameState {
     );
   }
 
-  drawEverything(context: CanvasRenderingContext2D) {
-    if (this.showNextLevel) {
-      displayNextLevel(context, this.level);
+  render(context: CanvasRenderingContext2D) {
+    if (this.showMessage) {
+      displayNextLevel(context, this.winState, this.stats.level);
       return;
     }
 
@@ -114,27 +89,46 @@ export class GameState {
     this.objectManager.drawObjects(context);
   }
 
-  private nextLevel() {
-    this.winState = "nextLevel";
-    this.stats.nextLevel();
-    this.reset();
-  }
-
   isWinState(state: winState): boolean {
     return this.winState === state;
   }
 
-  get showNextLevel() {
-    const showNext = this.stats.timeInLevel < DISPLAY_LEVEL_TIME;
-    if (!showNext) this.winState = "playing";
-    return showNext;
+  private resetLevel() {
+    this.stats.resetLevel();
+    this.objectManager.reset(this.stats.level);
+    this.drawStats();
   }
 
-  get level(): number {
-    return this.stats.level;
+  private handleLoseLife() {
+    this.winState = "loseLife";
+    this.stats.addLives(-1);
+    this.resetLevel();
+    if (this.stats.lives === 0) {
+      this.winState = "lose";
+      this.setUI.setShowHighScoreDiv(this.stats.score);
+    }
   }
 
-  updateTime(timeStamp: number) {
-    this.stats.updateTime(timeStamp);
+  private drawStats() {
+    this.setUI.setLevel(this.stats.level);
+    this.setUI.setScore(this.stats.score);
+    this.setUI.setAmmo(this.stats.ammo);
+    if (this.stats.lives === 0) {
+      this.setUI.setLives(undefined);
+    } else {
+      this.setUI.setLives(this.stats.lives);
+    }
+  }
+
+  private nextLevel() {
+    this.winState = "nextLevel";
+    this.stats.nextLevel();
+    this.resetLevel();
+  }
+
+  private get showMessage() {
+    const showMessage = this.stats.timeInLevel < DISPLAY_LEVEL_TIME;
+    if (!showMessage) this.winState = "playing";
+    return showMessage;
   }
 }
