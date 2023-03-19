@@ -23,14 +23,7 @@ export class Platform implements StaticObject {
     special?: boolean
   ) {
     if (special) {
-      this.vector = new ObjVectorManager(
-        {
-          x: 100,
-          y: 150,
-        },
-        75,
-        40
-      );
+      this.vector = new ObjVectorManager({ x: 100, y: 150 }, 75, 40);
     } else {
       this.vector = new ObjVectorManager(
         {

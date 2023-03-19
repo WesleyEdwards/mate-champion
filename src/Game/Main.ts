@@ -1,45 +1,30 @@
-import {
-  displayCanvas,
-  displayNextLevel,
-  getCanvasContext,
-} from "./Drawing/uiHelpers";
+import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
 import { SetUI } from "./models";
 
 export function doEverything(setUI: SetUI) {
-  let gameState: GameState | undefined;
-
   const { canvas, context } = getCanvasContext();
+  let gameState: GameState = new GameState(setUI, context);
 
   function gameLoop(timeStamp: number) {
-    if (!gameState) return;
-    gameState.stats.updateTime(timeStamp);
-
-    if (gameState.isLost()) {
+    if (gameState.isWinState("lose")) {
       return handleWin();
     }
+    gameState.updateTime(timeStamp);
 
-    gameState.updateEverything(); // Update
-
-    if (gameState.showNextLevel) {
-      displayNextLevel(context, gameState.level);
-    } else {
-      gameState.drawEverything(context); // Render
-    }
+    gameState.update();
+    gameState.drawEverything(context);
 
     requestAnimationFrame(gameLoop);
   }
 
   function handleWin() {
     displayCanvas(false, canvas);
-    const score = gameState?.getScore();
-    gameState = undefined;
-    setUI.setShowHighScoreDiv(score);
   }
 
   function startGame() {
     displayCanvas(true, canvas);
-    gameState = new GameState(setUI);
+    gameState = new GameState(setUI, context);
     requestAnimationFrame(gameLoop);
   }
 

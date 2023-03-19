@@ -2,9 +2,8 @@ import { Bullet } from "../Bullet/Bullet";
 import {
   INCREMENT_VALUE,
   playerConstants,
-  MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
-  END_POS,
+  BULLET_RADIUS,
 } from "../constants";
 import {
   HasPosition,
@@ -20,8 +19,8 @@ import { Package } from "../Bullet/Package";
 
 export function updateWithPlayer<T extends HasPosition>(
   keys: Keys,
-  player: Player,
   scrollOffset: number,
+  player: Player,
   objects: Array<T[]>
 ): void {
   const objList = objects.flat();
@@ -52,20 +51,6 @@ export function calcPlatColl<T extends Character>(
       return;
     }
     char.setPosY(platform.vector.posY - char.vector.height);
-  }
-}
-export function calcPlatPackageColl(
-  platform: StaticObject,
-  matePackage: Package
-) {
-  if (
-    matePackage.vector.bottomPos <= platform.vector.posY &&
-    matePackage.vector.bottomPos + matePackage.velocity.y >=
-      platform.vector.posY &&
-    matePackage.vector.rightPos >= platform.vector.posX &&
-    matePackage.vector.posX <= platform.vector.posX + platform.vector.width
-  ) {
-    matePackage.setPosY(platform.vector.posY - matePackage.vector.height);
   }
 }
 
@@ -122,7 +107,7 @@ export function updateLiveStatus(
         areTouching(
           opp,
           bullet.posCenter,
-          bullet.radius + opp.vector.radius + 10
+          BULLET_RADIUS + opp.vector.radius + 10
         )
       ) {
         shanked.push(opp);
@@ -153,25 +138,6 @@ export function updatePackageStatus(
     }
     return false;
   });
-}
-
-export function drawComponents(
-  context: CanvasRenderingContext2D,
-  objects: ObjectManager
-) {
-  const { platforms, opponents, player, pot, bullets, matePackages } = objects;
-  context.fillStyle = "white";
-  context.fillRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
-  context.fillStyle = "red";
-  context.fillRect(-100, MAX_CANVAS_HEIGHT - 5, END_POS + 100, 5);
-
-  platforms.forEach((plat) => plat.draw(context));
-  opponents.forEach((opponent) => opponent.draw(context));
-  player.draw(context);
-  bullets.forEach((bullet) => bullet.draw(context));
-  matePackages.forEach((p) => p.draw(context));
-
-  pot.draw(context);
 }
 
 export function addEventListeners(keys: Keys) {

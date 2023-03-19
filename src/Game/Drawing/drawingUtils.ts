@@ -45,7 +45,7 @@ const images: Record<imageObjects, string> = {
     "https://user-images.githubusercontent.com/97990557/210724150-d78ce97f-94ac-4bdd-98c2-91182af9877c.png",
 };
 
-export interface MCImage {
+export type MCImage = {
   image: HTMLImageElement;
   width: number;
   height: number;

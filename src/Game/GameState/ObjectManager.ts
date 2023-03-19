@@ -3,37 +3,50 @@ import {
   calcPlatColl,
   updateLiveStatus,
   checkIfPlayerDies,
-  calcPlatPackageColl,
   updatePackageStatus,
 } from "./GameStateFunctions";
 import { HasPosition, Keys, StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
-import { createBlocks, createMatePackages, createOpponents } from "../utils";
 import { Package } from "../Bullet/Package";
+import {
+  createBlocks,
+  createMatePackages,
+  createOpponents,
+} from "../constructors";
+import { BulletManager } from "../Bullet/BulletManager";
 
 export class ObjectManager {
   player: Player = new Player();
   platforms: StaticObject[] = createBlocks(1);
   opponents: Opponent[] = createOpponents(1);
-  pot: Pot = new Pot();
-  bullets: Bullet[] = [];
-  matePackages: Package[] = createMatePackages(1);
+  pot: Pot;
+  matePackages: Package[];
+  bulletManager: BulletManager;
+
+  constructor(context: CanvasRenderingContext2D) {
+    this.bulletManager = new BulletManager(context);
+    this.pot = new Pot(context);
+    this.platforms = createBlocks(1);
+    this.matePackages = createMatePackages(1, this.platforms);
+  }
 
   reset(level: number) {
+    const plats = createBlocks(level);
+    this.platforms = plats;
+    this.matePackages = createMatePackages(level, plats);
+    
     this.player = new Player();
     this.opponents = createOpponents(level);
-    this.platforms = createBlocks(level);
-    this.matePackages = createMatePackages(level);
-    this.pot = new Pot();
-    this.bullets = [];
+    this.pot.reset();
+    this.bulletManager.reset();
   }
 
   updateAll(keys: Keys, elapsedTime: number) {
     this.player.update(keys);
     this.opponents.forEach((opponent) => opponent.update());
-    this.bullets.forEach((bullet) => bullet.update());
+    this.bulletManager.update(elapsedTime);
     this.matePackages.forEach((p) => p.update());
   }
 
@@ -41,42 +54,16 @@ export class ObjectManager {
     return checkIfPlayerDies(this.player, this.opponents);
   }
 
-  private shootBullet() {
-    if (
-      this.player.vector.isFacing("right") ||
-      this.player.vector.isFacing("rightDown")
-    ) {
-      this.bullets.push(new Bullet(this.player.vector.posRightWeapon, "right"));
-      return;
-    }
-    if (
-      this.player.vector.isFacing("left") ||
-      this.player.vector.isFacing("leftDown")
-    ) {
-      this.bullets.push(new Bullet(this.player.vector.posLeftWeapon, "left"));
-      return;
-    }
-    if (
-      this.player.vector.isFacing("rightUp") ||
-      this.player.vector.isFacing("leftUp")
-    ) {
-      this.bullets.push(new Bullet(this.player.vector.posUpWeapon, "up"));
-    }
-  }
-
   calcInteractions() {
     this.platforms.forEach((platform) => {
       this.opponents.forEach((opp) => calcPlatColl(platform, opp));
       calcPlatColl(platform, this.player);
-      this.matePackages.forEach((p) => {
-        calcPlatPackageColl(platform, p);
-      });
     });
   }
 
   calcBullets(ammo: number): boolean {
     if (this.player.shooting && ammo > 0) {
-      this.shootBullet();
+      this.bulletManager.addBullet(this.player.vector);
       return true;
     }
     return false;
@@ -88,16 +75,12 @@ export class ObjectManager {
       this.opponents,
       this.bullets
     );
-    if (opponents.length > 0) {
-      opponents.forEach((opp) => {
-        this.opponents.splice(this.opponents.indexOf(opp), 1);
-      });
-    }
-    if (bullets.length > 0) {
-      bullets.forEach((bullet) => {
-        this.bullets.splice(this.bullets.indexOf(bullet), 1);
-      });
-    }
+    opponents.forEach((opp) => {
+      this.opponents.splice(this.opponents.indexOf(opp), 1);
+    });
+    bullets.forEach((bullet) => {
+      this.bullets.splice(this.bullets.indexOf(bullet), 1);
+    });
     return opponents.length || undefined;
   }
 
@@ -123,7 +106,20 @@ export class ObjectManager {
     ];
   }
 
+  drawObjects(context: CanvasRenderingContext2D) {
+    this.pot.draw();
+    this.bulletManager.draw();
+    this.platforms.forEach((platform) => platform.draw(context));
+    this.opponents.forEach((opponent) => opponent.draw(context));
+    this.matePackages.forEach((p) => p.draw(context));
+    this.player.draw(context);
+  }
+
   get playerXMoving(): boolean {
     return this.player.vector.velX !== 0;
+  }
+
+  get bullets(): Bullet[] {
+    return this.bulletManager.bullets;
   }
 }
