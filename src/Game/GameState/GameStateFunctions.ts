@@ -1,8 +1,5 @@
 import { Bullet } from "../Bullet/Bullet";
-import {
-  INCREMENT_VALUE,
-  BULLET_RADIUS,
-} from "../constants";
+import { INCREMENT_VALUE, BULLET_RADIUS } from "../constants";
 import {
   HasPosition,
   Keys,
@@ -10,7 +7,6 @@ import {
   Coordinates,
   StaticObject,
 } from "../models";
-import { ObjectManager } from "./ObjectManager";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Package } from "../Bullet/Package";

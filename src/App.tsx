@@ -7,7 +7,7 @@ import { enterGameLoop } from "./Game/Main";
 import { H1 } from "./components/MHComponents.tsx/Components";
 
 function App() {
-  const [disablePlay, setDisabledPlay] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   const [showInstructions, setShowInstructions] = useState(true);
   const [showHighScores, setShowHighScores] = useState<number>();
@@ -17,8 +17,14 @@ function App() {
   const [score, setScore] = useState<number>();
   const [ammo, setAmmo] = useState<number>();
 
+  const darkColors = {
+    black: "#000000",
+    darkGrey: "#212121",
+    grey: "#212121",
+  } as const;
+
   const handleClick = () => {
-    setDisabledPlay(true);
+    setPlaying(true);
     setShowHighScores(undefined);
     setShowInstructions(false);
     enterGameLoop({
@@ -26,7 +32,7 @@ function App() {
       setLives,
       setScore,
       setAmmo,
-      setDisabledPlay,
+      setPlaying,
       setShowInstructions,
       setShowHighScoreDiv,
     });
@@ -34,11 +40,11 @@ function App() {
 
   const onEnablePlay = () => {
     setShowInstructions(false);
-    setDisabledPlay(false);
+    setPlaying(false);
   };
 
   const setShowHighScoreDiv = (score: number | undefined) => {
-    setDisabledPlay(true);
+    setPlaying(true);
     setShowHighScores(score);
   };
 
@@ -46,36 +52,47 @@ function App() {
     <>
       <div
         style={{
-          backgroundColor: "#000000",
+          backgroundColor: darkColors.black,
           display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
         }}
       >
-        <H1 style={{ margin: "1rem" }}>Mate Champion</H1>
+        <div
+          style={{
+            backgroundColor: playing ? undefined : darkColors.darkGrey,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            paddingBlock: "1rem",
+            paddingInline: "16rem",
+            borderRadius: "1rem",
+          }}
+        >
+          <H1 style={{ margin: "1rem" }}>Mate Champion</H1>
 
-        {showInstructions && <Instructions />}
-        {showHighScores !== undefined && (
-          <HighScores score={showHighScores} enablePlay={onEnablePlay} />
-        )}
-        <div>
-          <canvas
-            style={{
-              height: disablePlay ? undefined : "0px",
-            }}
-            id="canvas"
-          ></canvas>
-          <StatsDiv
-            level={level}
-            lives={lives}
-            score={score}
-            ammo={ammo}
-            disablePlay={disablePlay}
-            handleClick={handleClick}
-            BtnText={showInstructions ? "Play Game" : "Play Again"}
-          />
+          {showInstructions && <Instructions />}
+          {showHighScores !== undefined && (
+            <HighScores score={showHighScores} enablePlay={onEnablePlay} />
+          )}
+          <div>
+            <canvas
+              style={{
+                height: playing ? undefined : "0px",
+              }}
+              id="canvas"
+            ></canvas>
+            <StatsDiv
+              level={level}
+              lives={lives}
+              score={score}
+              ammo={ammo}
+              disablePlay={playing}
+              handleClick={handleClick}
+              BtnText={showInstructions ? "Play Game" : "Play Again"}
+            />
+          </div>
         </div>
       </div>
     </>

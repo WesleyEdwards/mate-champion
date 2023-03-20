@@ -16,7 +16,7 @@ export interface SetUI {
   setLives: (lives: number | undefined) => void;
   setScore: (score: number) => void;
   setAmmo: (ammo: number) => void;
-  setDisabledPlay: (disabled: boolean) => void;
+  setPlaying: (disabled: boolean) => void;
   setShowInstructions: (show: boolean) => void;
   setShowHighScoreDiv: (score: number | undefined) => void;
 }
