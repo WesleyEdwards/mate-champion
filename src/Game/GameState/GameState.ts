@@ -1,27 +1,23 @@
-import {
-  initialKeyStatus,
-  INCREMENT_VALUE,
-  packageWorth,
-  winState,
-  DISPLAY_LEVEL_TIME,
-} from "../constants";
+import { initialKeyStatus, winState, DISPLAY_LEVEL_TIME } from "../constants";
 import { addEventListeners, updateWithPlayer } from "./GameStateFunctions";
 import { Keys, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
-import { drawBackground, drawLava } from "../Drawing/drawer";
 import { displayNextLevel } from "../Drawing/uiHelpers";
+import { GameDrawer } from "./GameDrawer";
 
 export class GameState {
   private winState: winState = "initial";
   private objectManager: ObjectManager;
   private keys: Keys = initialKeyStatus;
   private setUI: SetUI;
+  private gameDrawer: GameDrawer;
   private stats: GameStatsManager = new GameStatsManager();
 
   constructor(setUI: SetUI, context: CanvasRenderingContext2D) {
     this.objectManager = new ObjectManager(context);
     this.setUI = setUI;
+    this.gameDrawer = new GameDrawer(context);
 
     this.drawStats();
     addEventListeners(this.keys);
@@ -32,43 +28,18 @@ export class GameState {
     this.stats.updateTime(timeStamp);
     if (!this.isWinState("playing")) return;
 
-    this.objectManager.updateAll(this.keys, this.stats.elapsedTime);
+    const { statsInfo, levelInfo } = this.objectManager.updateAll(
+      this.keys,
+      this.stats.elapsedTime,
+      this.stats.ammo
+    );
 
-    if (this.objectManager.isCaught()) {
-      this.handleLoseLife();
-    }
+    const statsRes = this.stats.update(statsInfo);
 
-    if (this.keys.right && !this.objectManager.playerXMoving) {
-      this.stats.incrementScrollOffset(-INCREMENT_VALUE);
-    }
+    if (levelInfo.isCaught) this.handleLoseLife();
+    if (levelInfo.nextLevel) this.nextLevel();
 
-    if (
-      this.keys.left &&
-      !this.objectManager.playerXMoving &&
-      this.stats.scrollOffset > 0
-    ) {
-      this.stats.incrementScrollOffset(INCREMENT_VALUE);
-    }
-
-    this.objectManager.calcInteractions();
-
-    const killedOpp = this.objectManager.getKilledOpponents();
-    if (killedOpp) this.stats.addScore(10);
-
-    const shot = this.objectManager.calcBullets(this.stats.ammo);
-    if (shot) this.stats.addAmmo(-1);
-
-    const nextLevel = this.objectManager.nextLevel;
-    if (nextLevel) this.nextLevel();
-
-    const packagesReceived = this.objectManager.getReceivedPackages();
-    if (packagesReceived) {
-      this.stats.addAmmo(packagesReceived * packageWorth);
-    }
-
-    if (nextLevel || killedOpp || shot || packagesReceived) {
-      this.drawStats();
-    }
+    if (levelInfo.nextLevel || statsRes) this.drawStats();
 
     updateWithPlayer(
       this.keys,
@@ -79,14 +50,10 @@ export class GameState {
   }
 
   render(context: CanvasRenderingContext2D) {
-    if (this.showMessage) {
-      displayNextLevel(context, this.winState, this.stats.level);
-      return;
+    this.gameDrawer.draw(this.showMessage, this.winState, this.stats.level);
+    if (!this.showMessage) {
+      this.objectManager.drawObjects(context);
     }
-
-    drawBackground(context);
-    drawLava(context);
-    this.objectManager.drawObjects(context);
   }
 
   isWinState(state: winState): boolean {

@@ -5,7 +5,6 @@ import { StaticObject } from "./models";
 
 export class Pot implements StaticObject {
   vector: PotVector;
-  color: string = "green";
   image: HTMLImageElement = potImage.image;
   canMoveBelow: boolean = false;
   context: CanvasRenderingContext2D;

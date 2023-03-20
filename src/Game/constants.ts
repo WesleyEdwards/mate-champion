@@ -20,13 +20,13 @@ export const oppPerLevel = 5;
 export const oppSpeedBase = 2;
 
 // Player
-export const playerConstants = {
+export const PLAYER_CONST = {
   shankTime: 200,
   shankCoolDown: 250,
   shootCoolDown: 150,
   radius: 25,
   moveSpeed: 10,
-};
+} as const;
 
 export const oppConstants = {
   radius: 25,
@@ -43,7 +43,7 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
   shank: false,
 };
 
-export const packageWorth = 5;
+export const PACKAGE_WORTH = 5;
 
 export const emptyStats = {
   score: 0,
@@ -72,7 +72,7 @@ export const listOfColors = [
   "purple",
   "pink",
   "brown",
-];
+] as const;
 
 export const BULLET_RADIUS = 15;
 export const BULLET_SPEED = 0.7;
@@ -83,3 +83,21 @@ export type winState =
   | "initial"
   | "nextLevel"
   | "loseLife";
+
+export type StatsManagerInfo = {
+  killedOpp: number;
+  packagesReceived: boolean;
+  moveScreenLeft: boolean;
+  moveScreenRight: boolean;
+  shot: boolean;
+};
+
+export type LevelInfo = {
+  isCaught: boolean;
+  nextLevel: boolean;
+};
+
+export type UpdateStatus = {
+  statsInfo: StatsManagerInfo;
+  levelInfo: LevelInfo;
+};

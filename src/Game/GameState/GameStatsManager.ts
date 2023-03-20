@@ -1,4 +1,9 @@
-import { emptyStats } from "../constants";
+import {
+  emptyStats,
+  INCREMENT_VALUE,
+  PACKAGE_WORTH,
+  StatsManagerInfo,
+} from "../constants";
 
 type PlayInfo = {
   lives: number;
@@ -17,6 +22,24 @@ export class GameStatsManager {
   scrollOffset: number = 0;
 
   constructor() {}
+
+  update(updates: StatsManagerInfo): boolean {
+    const {
+      moveScreenLeft,
+      moveScreenRight,
+      killedOpp,
+      shot,
+      packagesReceived,
+    } = updates;
+    if (moveScreenLeft) this.moveScreenLeft();
+    if (moveScreenRight && this.scrollOffset > 0) {
+      this.moveScreenRight();
+    }
+    if (killedOpp) this.addScore(10);
+    if (shot) this.shotAmmo();
+    if (packagesReceived) this.addAmmo();
+    return !!killedOpp || shot || packagesReceived;
+  }
 
   updateTime(timeStamp: number) {
     if (this.initial) {
@@ -52,8 +75,12 @@ export class GameStatsManager {
     this.initial = true;
   }
 
-  incrementScrollOffset(num: number) {
-    this.scrollOffset -= num;
+  moveScreenRight() {
+    this.scrollOffset -= INCREMENT_VALUE;
+  }
+
+  moveScreenLeft() {
+    this.scrollOffset += INCREMENT_VALUE;
   }
 
   get ammo() {
@@ -69,8 +96,11 @@ export class GameStatsManager {
     return this.uiInfo.lives;
   }
 
-  addAmmo(num: number) {
-    this.uiInfo.ammo += num;
+  addAmmo() {
+    this.uiInfo.ammo += PACKAGE_WORTH;
+  }
+  shotAmmo() {
+    this.uiInfo.ammo -= 1;
   }
   addScore(num: number) {
     this.uiInfo.score += num;

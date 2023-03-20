@@ -1,8 +1,6 @@
 import { Bullet } from "../Bullet/Bullet";
 import {
   INCREMENT_VALUE,
-  playerConstants,
-  MAX_CANVAS_HEIGHT,
   BULLET_RADIUS,
 } from "../constants";
 import {
@@ -54,17 +52,7 @@ export function calcPlatColl<T extends Character>(
   }
 }
 
-export function checkIfPlayerDies(
-  player: Player,
-  opponents: Character[]
-): boolean {
-  if (player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
-  return opponents.some((opp) =>
-    areTouching(player, opp.vector.posCenter, playerConstants.radius * 2)
-  );
-}
-
-function areTouching<T extends HasPosition>(
+export function areTouching<T extends HasPosition>(
   objectA: T,
   where: Coordinates,
   dist: number
@@ -122,8 +110,8 @@ export function updateLiveStatus(
 export function updatePackageStatus(
   player: Player,
   packages: Package[]
-): Package[] {
-  return packages.filter((p) => {
+): Package | undefined {
+  return packages.find((p) => {
     if (
       areTouching(
         player,

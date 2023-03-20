@@ -2,8 +2,8 @@ import { Bullet } from "../Bullet/Bullet";
 import {
   calcPlatColl,
   updateLiveStatus,
-  checkIfPlayerDies,
   updatePackageStatus,
+  areTouching,
 } from "./GameStateFunctions";
 import { HasPosition, Keys, StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
@@ -16,6 +16,7 @@ import {
   createOpponents,
 } from "../constructors";
 import { BulletManager } from "../Bullet/BulletManager";
+import { MAX_CANVAS_HEIGHT, PLAYER_CONST, UpdateStatus } from "../constants";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -36,32 +37,39 @@ export class ObjectManager {
     const plats = createBlocks(level);
     this.platforms = plats;
     this.matePackages = createMatePackages(level, plats);
-    
+
     this.player = new Player();
     this.opponents = createOpponents(level);
     this.pot.reset();
     this.bulletManager.reset();
   }
 
-  updateAll(keys: Keys, elapsedTime: number) {
+  updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
     this.player.update(keys);
     this.opponents.forEach((opponent) => opponent.update());
     this.bulletManager.update(elapsedTime);
     this.matePackages.forEach((p) => p.update());
-  }
-
-  isCaught() {
-    return checkIfPlayerDies(this.player, this.opponents);
-  }
-
-  calcInteractions() {
+    // Calc Interactions
     this.platforms.forEach((platform) => {
       this.opponents.forEach((opp) => calcPlatColl(platform, opp));
       calcPlatColl(platform, this.player);
     });
+    return {
+      statsInfo: {
+        moveScreenLeft: keys.right && this.playerStopped,
+        moveScreenRight: keys.left && this.playerStopped,
+        killedOpp: this.getKilledOpponents(),
+        shot: this.calcBullets(ammo),
+        packagesReceived: this.getReceivedPackages(),
+      },
+      levelInfo: {
+        isCaught: this.playerDies,
+        nextLevel: this.nextLevel,
+      },
+    };
   }
 
-  calcBullets(ammo: number): boolean {
+  private calcBullets(ammo: number): boolean {
     if (this.player.shooting && ammo > 0) {
       this.bulletManager.addBullet(this.player.vector);
       return true;
@@ -69,7 +77,7 @@ export class ObjectManager {
     return false;
   }
 
-  getKilledOpponents(): number | undefined {
+  private getKilledOpponents(): number {
     const { opponents, bullets } = updateLiveStatus(
       this.player,
       this.opponents,
@@ -81,15 +89,21 @@ export class ObjectManager {
     bullets.forEach((bullet) => {
       this.bullets.splice(this.bullets.indexOf(bullet), 1);
     });
-    return opponents.length || undefined;
+    return opponents.length;
   }
 
-  getReceivedPackages(): number | undefined {
-    const matePackages = updatePackageStatus(this.player, this.matePackages);
-    matePackages.forEach((m) => {
-      this.matePackages.splice(this.matePackages.indexOf(m), 1);
-    });
-    return matePackages.length || undefined;
+  private getReceivedPackages(): boolean {
+    const matePackage = updatePackageStatus(this.player, this.matePackages);
+    if (!matePackage) return false;
+    this.matePackages.splice(this.matePackages.indexOf(matePackage), 1);
+    return true;
+  }
+
+  private get playerDies() {
+    if (this.player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
+    return this.opponents.some((opp) =>
+      areTouching(this.player, opp.vector.posCenter, PLAYER_CONST.radius * 2)
+    );
   }
 
   get nextLevel() {
@@ -107,19 +121,19 @@ export class ObjectManager {
   }
 
   drawObjects(context: CanvasRenderingContext2D) {
+    this.platforms.forEach((platform) => platform.draw(context));
     this.pot.draw();
     this.bulletManager.draw();
-    this.platforms.forEach((platform) => platform.draw(context));
     this.opponents.forEach((opponent) => opponent.draw(context));
     this.matePackages.forEach((p) => p.draw(context));
     this.player.draw(context);
   }
 
-  get playerXMoving(): boolean {
-    return this.player.vector.velX !== 0;
+  get playerStopped(): boolean {
+    return this.player.vector.velX === 0;
   }
 
-  get bullets(): Bullet[] {
+  private get bullets(): Bullet[] {
     return this.bulletManager.bullets;
   }
 }

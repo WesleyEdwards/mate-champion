@@ -1,11 +1,11 @@
-import { playerConstants, GRAVITY } from "../constants";
+import { PLAYER_CONST, GRAVITY } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
 import { vagueFacing } from "../utils";
 import { PlayerImager } from "./PlayerImager";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
 const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
-  playerConstants;
+PLAYER_CONST;
 
 export class Player implements Character {
   jumps: number = 0;
