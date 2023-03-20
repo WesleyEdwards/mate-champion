@@ -54,19 +54,19 @@ function App() {
           height: "100vh",
         }}
       >
-        <H1
-          style={{
-            margin: "1rem",
-          }}
-        >
-          Mate Champion
-        </H1>
+        <H1 style={{ margin: "1rem" }}>Mate Champion</H1>
+
         {showInstructions && <Instructions />}
         {showHighScores !== undefined && (
           <HighScores score={showHighScores} enablePlay={onEnablePlay} />
         )}
         <div>
-          <canvas id="canvas"></canvas>
+          <canvas
+            style={{
+              height: disablePlay ? undefined : "0px",
+            }}
+            id="canvas"
+          ></canvas>
           <StatsDiv
             level={level}
             lives={lives}

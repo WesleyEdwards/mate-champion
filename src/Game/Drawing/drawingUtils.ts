@@ -49,7 +49,7 @@ export type MCImage = {
   image: HTMLImageElement;
   width: number;
   height: number;
-}
+};
 
 export function makeImage(
   width: number,
