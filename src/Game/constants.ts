@@ -5,7 +5,7 @@ export const MAX_CANVAS_HEIGHT = 576;
 
 export const DISPLAY_LEVEL_TIME = 2000;
 
-export const GRAVITY = 0.65;
+export const GRAVITY = 0.0025;
 
 export const PLAT_FREQUENCY = 350;
 
@@ -16,8 +16,8 @@ export const END_POS = 1000;
 export const INCREMENT_VALUE = 5;
 
 // Opponent
-export const oppPerLevel = 5;
-export const oppSpeedBase = 2;
+export const OPP_PER_LEVEL = 5;
+export const OPP_SPEED_BASE = 0.05;
 
 // Player
 export const PLAYER_CONST = {

@@ -5,7 +5,7 @@ import { PlayerImager } from "./PlayerImager";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
 const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
-PLAYER_CONST;
+  PLAYER_CONST;
 
 export class Player implements Character {
   jumps: number = 0;
@@ -18,6 +18,23 @@ export class Player implements Character {
     radius,
     moveSpeed
   );
+  context: CanvasRenderingContext2D;
+
+  constructor(context: CanvasRenderingContext2D) {
+    this.context = context;
+  }
+
+  reset() {
+    this.jumps = 0;
+    this.shank = 0;
+    this.shoot = 0;
+    this.shot = false;
+    this.vector = new PlayerVectorManager(
+      { x: 100, y: 100 },
+      radius,
+      moveSpeed
+    );
+  }
 
   update(keys: Keys) {
     this.position.x += this.vector.velX;
@@ -66,8 +83,13 @@ export class Player implements Character {
     this.vector.move(action, this.jumps, (num) => (this.jumps = num));
   }
 
-  draw(canvas: CanvasRenderingContext2D) {
-    this.imager.draw(this.vector.facing, this.shanking, this.position, canvas);
+  draw() {
+    this.imager.draw(
+      this.vector.facing,
+      this.shanking,
+      this.position,
+      this.context
+    );
   }
 
   private setUpPos(up: boolean = true) {

@@ -17,16 +17,29 @@ export class BulletDrawer {
 
   draw(bullets: Bullet[]) {
     bullets.forEach((b) => {
-      const image =
-        b.imageType === "bulletHor" ? this.imageHor : this.imageVert;
-
-      this.canvas.drawImage(
-        image.image,
-        b.position.x - BULLET_RADIUS,
-        b.position.y - BULLET_RADIUS,
-        image.width,
-        image.height
-      );
+      if (b.imageType === "bulletHor")
+        this.drawHorBullet(b.position.x, b.position.y);
+      if (b.imageType === "bulletVert")
+        this.drawVertBullet(b.position.x, b.position.y);
     });
+  }
+
+  drawHorBullet(xPos: number, yPos: number) {
+    this.canvas.drawImage(
+      this.imageHor.image,
+      xPos - BULLET_RADIUS,
+      yPos - BULLET_RADIUS,
+      this.imageHor.width,
+      this.imageHor.height
+    );
+  }
+  drawVertBullet(xPos: number, yPos: number) {
+    this.canvas.drawImage(
+      this.imageVert.image,
+      xPos - BULLET_RADIUS,
+      yPos - BULLET_RADIUS,
+      this.imageVert.width,
+      this.imageVert.height
+    );
   }
 }

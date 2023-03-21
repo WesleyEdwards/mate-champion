@@ -17,7 +17,7 @@ export class OpponentVectorManager extends CharVectorManager {
     if (action === "StopX") this.velocity.x = 0;
 
     if (action === "Jump") {
-      this.velocity.y = -15;
+      this.velocity.y = -0.75;
     }
   }
 }

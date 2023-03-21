@@ -49,10 +49,14 @@ export class GameState {
     );
   }
 
-  render(context: CanvasRenderingContext2D) {
-    this.gameDrawer.draw(this.showMessage, this.winState, this.stats.level);
+  render() {
+    this.gameDrawer.drawBackground(
+      this.showMessage,
+      this.winState,
+      this.stats.level
+    );
     if (!this.showMessage) {
-      this.objectManager.drawObjects(context);
+      this.objectManager.drawObjects();
     }
   }
 

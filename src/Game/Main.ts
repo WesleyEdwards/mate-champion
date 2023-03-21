@@ -12,7 +12,7 @@ export function enterGameLoop(setUI: SetUI) {
     }
 
     gameState.update(timeStamp);
-    gameState.render(context);
+    gameState.render();
 
     requestAnimationFrame(gameLoop);
   }

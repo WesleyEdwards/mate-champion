@@ -15,20 +15,11 @@ export class Package implements HasPosition {
     this.platform = Math.min(...platsUnder);
   }
 
-  update() {
+  update(elapsedTime: number) {
     if (this.bottomPos >= this.platform) return;
 
-    this.position.y += this.velocity.y;
-    this.velocity.y += GRAVITY;
-  }
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(
-      this.image.image,
-      this.position.x,
-      this.position.y,
-      this.image.width,
-      this.image.height
-    );
+    this.position.y += this.velocity.y * elapsedTime;
+    this.velocity.y += GRAVITY * elapsedTime;
   }
 
   get bottomPos() {

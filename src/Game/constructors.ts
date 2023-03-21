@@ -1,13 +1,6 @@
 import { Package } from "./Bullet/Package";
-import {
-  listOfColors,
-  NUM_PLATFORMS,
-  END_POS,
-  oppSpeedBase,
-  oppPerLevel,
-} from "./constants";
+import { listOfColors, NUM_PLATFORMS, END_POS } from "./constants";
 import { StaticObject } from "./models";
-import { Opponent } from "./Opponent/Opponent";
 import { Floor } from "./Platform/Floor";
 import { Platform } from "./Platform/Platform";
 import { generateRandomInt } from "./utils";
@@ -38,29 +31,4 @@ function createFloor(level: number): Floor[] {
     temp -= 1000;
   }
   return list;
-}
-
-export function createOpponents(level: number): Opponent[] {
-  const moveSpeed = oppSpeedBase + level * 0.3;
-  return new Array(oppPerLevel * level)
-    .fill(null)
-    .map(() => new Opponent(generateRandomInt(500, END_POS), moveSpeed));
-}
-
-export function createMatePackages(
-  level: number,
-  plats: StaticObject[]
-): Package[] {
-  const placement = generateRandomInt(500, END_POS);
-  const platsUnder = plats.filter(
-    (p) =>
-      p.vector.posX < placement && p.vector.posX + p.vector.width > placement
-  );
-  return new Array(3).fill(null).map(
-    () =>
-      new Package(
-        placement,
-        platsUnder.map((p) => p.vector.posY)
-      )
-  );
 }

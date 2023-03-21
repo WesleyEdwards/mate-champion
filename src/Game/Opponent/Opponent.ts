@@ -16,10 +16,10 @@ export class Opponent implements Character {
     );
   }
 
-  update() {
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-    this.velocity.y += GRAVITY;
+  update(elapsedTime: number) {
+    this.position.x += this.velocity.x * elapsedTime;
+    this.position.y += this.velocity.y * elapsedTime;
+    this.velocity.y += GRAVITY * elapsedTime;
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
       this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);

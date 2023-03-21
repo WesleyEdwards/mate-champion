@@ -2,65 +2,62 @@ import { Bullet } from "../Bullet/Bullet";
 import {
   calcPlatColl,
   updateLiveStatus,
-  updatePackageStatus,
   areTouching,
 } from "./GameStateFunctions";
-import { HasPosition, Keys, StaticObject } from "../models";
+import { HasPosition, Keys } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
-import { Package } from "../Bullet/Package";
-import {
-  createBlocks,
-  createMatePackages,
-  createOpponents,
-} from "../constructors";
 import { BulletManager } from "../Bullet/BulletManager";
 import { MAX_CANVAS_HEIGHT, PLAYER_CONST, UpdateStatus } from "../constants";
+import { MatePackageManager } from "../Platform/MatePackageManager";
+import { OpponentManager } from "../Opponent/OpponentManager";
+import { PlatformManager } from "../Platform/PlatformManager";
 
 export class ObjectManager {
-  player: Player = new Player();
-  platforms: StaticObject[] = createBlocks(1);
-  opponents: Opponent[] = createOpponents(1);
+  player: Player;
+  opponentManager: OpponentManager;
   pot: Pot;
-  matePackages: Package[];
+  matePackManager: MatePackageManager;
   bulletManager: BulletManager;
+  platformManager: PlatformManager;
 
   constructor(context: CanvasRenderingContext2D) {
+    this.player = new Player(context);
     this.bulletManager = new BulletManager(context);
+    this.opponentManager = new OpponentManager(context);
     this.pot = new Pot(context);
-    this.platforms = createBlocks(1);
-    this.matePackages = createMatePackages(1, this.platforms);
+    this.platformManager = new PlatformManager(context);
+    this.matePackManager = new MatePackageManager(
+      this.platformManager.platforms,
+      context
+    );
   }
 
   reset(level: number) {
-    const plats = createBlocks(level);
-    this.platforms = plats;
-    this.matePackages = createMatePackages(level, plats);
-
-    this.player = new Player();
-    this.opponents = createOpponents(level);
+    this.platformManager.reset();
+    this.matePackManager.reset(this.platformManager.platforms);
+    this.player.reset();
+    this.opponentManager.reset(level);
     this.pot.reset();
     this.bulletManager.reset();
   }
 
   updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
     this.player.update(keys);
-    this.opponents.forEach((opponent) => opponent.update());
+    this.opponentManager.update(elapsedTime);
     this.bulletManager.update(elapsedTime);
-    this.matePackages.forEach((p) => p.update());
+    this.matePackManager.update(elapsedTime);
     // Calc Interactions
-    this.platforms.forEach((platform) => {
-      this.opponents.forEach((opp) => calcPlatColl(platform, opp));
-      calcPlatColl(platform, this.player);
-    });
+    this.platformManager.calcPersonColl(this.player, this.opponents);
+
     return {
       statsInfo: {
         moveScreenLeft: keys.right && this.playerStopped,
         moveScreenRight: keys.left && this.playerStopped,
         killedOpp: this.getKilledOpponents(),
         shot: this.calcBullets(ammo),
-        packagesReceived: this.getReceivedPackages(),
+        packagesReceived: this.matePackManager.getReceivedPackages(this.player),
       },
       levelInfo: {
         isCaught: this.playerDies,
@@ -92,13 +89,6 @@ export class ObjectManager {
     return opponents.length;
   }
 
-  private getReceivedPackages(): boolean {
-    const matePackage = updatePackageStatus(this.player, this.matePackages);
-    if (!matePackage) return false;
-    this.matePackages.splice(this.matePackages.indexOf(matePackage), 1);
-    return true;
-  }
-
   private get playerDies() {
     if (this.player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
     return this.opponents.some((opp) =>
@@ -112,21 +102,21 @@ export class ObjectManager {
 
   get objectsToUpdatePos(): Array<HasPosition[]> {
     return [
-      this.platforms,
+      this.platformManager.platforms,
       this.opponents,
       this.bullets,
       [this.pot],
-      this.matePackages,
+      this.matePackManager.packages,
     ];
   }
 
-  drawObjects(context: CanvasRenderingContext2D) {
-    this.platforms.forEach((platform) => platform.draw(context));
+  drawObjects() {
+    this.platformManager.draw();
     this.pot.draw();
     this.bulletManager.draw();
-    this.opponents.forEach((opponent) => opponent.draw(context));
-    this.matePackages.forEach((p) => p.draw(context));
-    this.player.draw(context);
+    this.opponentManager.draw();
+    this.matePackManager.draw();
+    this.player.draw();
   }
 
   get playerStopped(): boolean {
@@ -135,5 +125,9 @@ export class ObjectManager {
 
   private get bullets(): Bullet[] {
     return this.bulletManager.bullets;
+  }
+
+  private get opponents(): Opponent[] {
+    return this.opponentManager.opponents;
   }
 }
