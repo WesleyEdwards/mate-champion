@@ -1,5 +1,6 @@
 import { Bullet } from "../Bullet/Bullet";
 import { INCREMENT_VALUE, BULLET_RADIUS } from "../constants";
+import { debounceLog } from "../utils";
 import {
   HasPosition,
   Keys,
@@ -35,15 +36,18 @@ export function calcPlatColl<T extends Character>(
   platform: StaticObject,
   char: T
 ) {
+  const charBelow = char.vector.bottomPos <= platform.vector.posY;
+  const entering = char.vector.bottomPos >= platform.vector.posY - 20;
   if (
-    char.vector.bottomPos <= platform.vector.posY &&
-    char.vector.bottomPos + char.vector.velY >= platform.vector.posY &&
-    char.vector.rightPos >= platform.vector.posX &&
-    char.vector.posX <= platform.vector.posX + platform.vector.width
+    char.vector.rightPos < platform.vector.posX ||
+    char.vector.posX > platform.vector.posX + platform.vector.width
   ) {
-    if (platform.canMoveBelow && char.vector.isMovingDown) {
-      return;
-    }
+    return;
+  }
+  if (charBelow && entering && char.vector.velY > 0) {
+    // if (platform.canMoveBelow && char.vector.isMovingDown) {
+    //   return;
+    // }
     char.setPosY(platform.vector.posY - char.vector.height);
   }
 }

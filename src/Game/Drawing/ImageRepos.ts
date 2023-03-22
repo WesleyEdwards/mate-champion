@@ -1,4 +1,4 @@
-import { oppConstants, PLAYER_CONST } from "../constants";
+import { oppConstants, PLAYER_RADIUS } from "../constants";
 import { makeImage, MCImage } from "./drawingUtils";
 
 export const potImage = makeImage(500, 750, "matePot");
@@ -36,7 +36,7 @@ export interface MateImages {
   shanking: MateShankingImages;
 }
 
-const playerWidth = PLAYER_CONST.radius * 2;
+const playerWidth = PLAYER_RADIUS * 2;
 
 export const mateImages: MateImages = {
   left: makeImage(playerWidth, playerWidth, "mateLeft"),

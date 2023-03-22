@@ -1,11 +1,13 @@
-import { PLAYER_CONST, GRAVITY } from "../constants";
+import {
+  GRAVITY,
+  SHANK_COOL_DOWN,
+  SHANK_TIME,
+  SHOOT_COOL_DOWN,
+} from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { vagueFacing } from "../utils";
+import { debounceLog, vagueFacing } from "../utils";
 import { PlayerImager } from "./PlayerImager";
 import { PlayerVectorManager } from "./PlayerVectorManager";
-
-const { shankTime, shankCoolDown, shootCoolDown, moveSpeed, radius } =
-  PLAYER_CONST;
 
 export class Player implements Character {
   jumps: number = 0;
@@ -13,11 +15,7 @@ export class Player implements Character {
   shank: number = 0;
   shoot: number = 0;
   shot: boolean = false;
-  vector: PlayerVectorManager = new PlayerVectorManager(
-    { x: 100, y: 100 },
-    radius,
-    moveSpeed
-  );
+  vector: PlayerVectorManager = new PlayerVectorManager();
   context: CanvasRenderingContext2D;
 
   constructor(context: CanvasRenderingContext2D) {
@@ -29,16 +27,13 @@ export class Player implements Character {
     this.shank = 0;
     this.shoot = 0;
     this.shot = false;
-    this.vector = new PlayerVectorManager(
-      { x: 100, y: 100 },
-      radius,
-      moveSpeed
-    );
+    this.vector = new PlayerVectorManager();
   }
 
-  update(keys: Keys) {
-    this.position.x += this.vector.velX;
-    this.position.y += this.vector.velY;
+  update(keys: Keys, elapsedTime: number) {
+    this.position.x += this.vector.velX * elapsedTime;
+    this.position.y += this.vector.velY * elapsedTime;
+    // debounceLog("player", this.vector.velY, this.vector.velX);
 
     if (keys.jump) this.move("Jump");
 
@@ -50,7 +45,7 @@ export class Player implements Character {
 
     if (!keys.right && !keys.left) this.move("StopX");
 
-    if (keys.shank && Date.now() - this.shank > shankTime + shankCoolDown) {
+    if (keys.shank && Date.now() - this.shank > SHANK_TIME + SHANK_COOL_DOWN) {
       if (
         this.vector.isFacing("right") ||
         this.vector.isFacing("rightUp") ||
@@ -63,7 +58,7 @@ export class Player implements Character {
 
     if (
       keys.shoot &&
-      Date.now() - this.shoot > shootCoolDown &&
+      Date.now() - this.shoot > SHOOT_COOL_DOWN &&
       !this.shanking
     ) {
       this.shoot = Date.now();
@@ -76,7 +71,7 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    this.vector.setVelY(this.vector.velY + GRAVITY);
+    this.vector.setVelY(this.vector.velY + GRAVITY * elapsedTime);
   }
 
   move(action: CharAction) {
@@ -112,7 +107,7 @@ export class Player implements Character {
   }
 
   get shanking() {
-    return Date.now() - this.shank < shankTime;
+    return Date.now() - this.shank < SHANK_TIME;
   }
   get shooting() {
     if (this.shot) {

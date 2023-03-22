@@ -1,5 +1,6 @@
 import { CharVectorManager } from "../VectorManager/CharVectorManager";
 import { CharAction, Coordinates } from "../models";
+import { OPP_JUMP_SPEED } from "../constants";
 
 export class OpponentVectorManager extends CharVectorManager {
   constructor(pos: Coordinates, moveSpeed: number, radius: number) {
@@ -17,7 +18,7 @@ export class OpponentVectorManager extends CharVectorManager {
     if (action === "StopX") this.velocity.x = 0;
 
     if (action === "Jump") {
-      this.velocity.y = -0.75;
+      this.velocity.y = OPP_JUMP_SPEED;
     }
   }
 }

@@ -9,7 +9,7 @@ import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
-import { MAX_CANVAS_HEIGHT, PLAYER_CONST, UpdateStatus } from "../constants";
+import { MAX_CANVAS_HEIGHT, PLAYER_RADIUS, UpdateStatus } from "../constants";
 import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
@@ -44,7 +44,7 @@ export class ObjectManager {
   }
 
   updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
-    this.player.update(keys);
+    this.player.update(keys, elapsedTime);
     this.opponentManager.update(elapsedTime);
     this.bulletManager.update(elapsedTime);
     this.matePackManager.update(elapsedTime);
@@ -92,7 +92,7 @@ export class ObjectManager {
   private get playerDies() {
     if (this.player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
     return this.opponents.some((opp) =>
-      areTouching(this.player, opp.vector.posCenter, PLAYER_CONST.radius * 2)
+      areTouching(this.player, opp.vector.posCenter, PLAYER_RADIUS * 2)
     );
   }
 
