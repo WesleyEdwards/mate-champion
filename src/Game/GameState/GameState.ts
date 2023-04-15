@@ -5,6 +5,7 @@ import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
 import { displayNextLevel } from "../Drawing/uiHelpers";
 import { GameDrawer } from "./GameDrawer";
+import { debounceLog } from "../utils";
 
 export class GameState {
   private winState: winState = "initial";

@@ -3,8 +3,7 @@ import { Keys } from "./models";
 export const MAX_CANVAS_WIDTH = 1024;
 export const MAX_CANVAS_HEIGHT = 576;
 
-export const DISPLAY_LEVEL_TIME = 0;
-// export const DISPLAY_LEVEL_TIME = 2000;
+export const DISPLAY_LEVEL_TIME = 2000;
 
 export const GRAVITY = 0.0025;
 
@@ -17,8 +16,7 @@ export const END_POS = 1000;
 export const INCREMENT_VALUE = 5;
 
 // Opponent
-// export const OPP_PER_LEVEL = 0;
-export const OPP_PER_LEVEL = 0;
+export const OPP_PER_LEVEL = 5;
 export const OPP_SPEED_BASE = 0.05;
 export const OPP_JUMP_SPEED = -0.8;
 

@@ -1,9 +1,5 @@
 import { Bullet } from "../Bullet/Bullet";
-import {
-  calcPlatColl,
-  updateLiveStatus,
-  areTouching,
-} from "./GameStateFunctions";
+import { updateLiveStatus, areTouching } from "./GameStateFunctions";
 import { HasPosition, Keys } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";

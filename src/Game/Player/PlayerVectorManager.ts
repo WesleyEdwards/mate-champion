@@ -12,7 +12,7 @@ import { PlayerDirection } from "./models";
 export class PlayerVectorManager extends CharVectorManager {
   facing: PlayerDirection;
   constructor() {
-    super(PLAYER_INIT_POS, PLAYER_MOVE_SPEED, PLAYER_RADIUS);
+    super({ ...PLAYER_INIT_POS }, PLAYER_MOVE_SPEED, PLAYER_RADIUS);
     this.facing = "right";
   }
 
