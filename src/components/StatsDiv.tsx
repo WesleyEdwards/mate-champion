@@ -20,7 +20,6 @@ const widthOfDiv = 50 * emptyStats.lives;
 export const StatsDiv: FC<StatsDivProps> = (props) => {
   const { level, lives, score, ammo, disablePlay, handleClick, BtnText } =
     props;
-
   return (
     <StackHor
       style={{

@@ -18,13 +18,14 @@ export const INCREMENT_VALUE = 5;
 
 // Opponent
 // export const OPP_PER_LEVEL = 0;
-export const OPP_PER_LEVEL = 5;
+export const OPP_PER_LEVEL = 0;
 export const OPP_SPEED_BASE = 0.05;
-export const OPP_JUMP_SPEED = -0.75;
+export const OPP_JUMP_SPEED = -0.8;
 
 // Player
 export const PLAYER_RADIUS = 25;
 export const PLAYER_MOVE_SPEED = 0.5;
+export const PLAYER_JUMP_SPEED = -0.85;
 export const SHANK_TIME = 200;
 export const SHANK_COOL_DOWN = 250;
 export const SHOOT_COOL_DOWN = 150;

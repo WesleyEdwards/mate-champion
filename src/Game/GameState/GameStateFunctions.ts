@@ -36,19 +36,33 @@ export function calcPlatColl<T extends Character>(
   platform: StaticObject,
   char: T
 ) {
-  const charBelow = char.vector.bottomPos <= platform.vector.posY;
-  const entering = char.vector.bottomPos >= platform.vector.posY - 20;
+  if (platform.canMoveBelow && char.vector.isMovingDown) {
+    return;
+  }
   if (
     char.vector.rightPos < platform.vector.posX ||
     char.vector.posX > platform.vector.posX + platform.vector.width
   ) {
     return;
   }
-  if (charBelow && entering && char.vector.velY > 0) {
-    // if (platform.canMoveBelow && char.vector.isMovingDown) {
-    //   return;
-    // }
-    char.setPosY(platform.vector.posY - char.vector.height);
+  const charAbove = char.vector.bottomPos < platform.vector.posY + 1;
+  if (!charAbove) return;
+  if (
+    char.vector.velY > 0 &&
+    char.vector.bottomPos < platform.vector.posY + 2 &&
+    char.vector.bottomPos > platform.vector.posY - 2
+  ) {
+    return char.setPosY(platform.vector.posY - char.vector.height - 1);
+  }
+
+  const distAboveThreshold = 25 * char.vector.velY;
+
+  if (
+    char.vector.velY > 0.3 &&
+    char.vector.bottomPos < platform.vector.posY + distAboveThreshold &&
+    char.vector.bottomPos > platform.vector.posY - distAboveThreshold
+  ) {
+    char.setPosY(platform.vector.posY - char.vector.height - 1);
   }
 }
 
@@ -130,20 +144,20 @@ export function updatePackageStatus(
 
 export function addEventListeners(keys: Keys) {
   window.addEventListener("keydown", ({ code }) => {
-    if (code === "KeyW") keys.up = true;
-    if (code === "KeyD") keys.right = true;
-    if (code === "KeyA") keys.left = true;
-    if (code === "KeyS") keys.down = true;
+    if (code === "KeyW" || code === "ArrowUp") keys.up = true;
+    if (code === "KeyD" || code === "ArrowRight") keys.right = true;
+    if (code === "KeyA" || code === "ArrowLeft") keys.left = true;
+    if (code === "KeyS" || code === "ArrowDown") keys.down = true;
     if (code === "Space") keys.jump = true;
     if (code === "KeyJ") keys.shoot = true;
     if (code === "KeyK") keys.shank = true;
   });
 
   window.addEventListener("keyup", ({ code }) => {
-    if (code === "KeyW") keys.up = false;
-    if (code === "KeyD") keys.right = false;
-    if (code === "KeyA") keys.left = false;
-    if (code === "KeyS") keys.down = false;
+    if (code === "KeyW" || code === "ArrowUp") keys.up = false;
+    if (code === "KeyD" || code === "ArrowRight") keys.right = false;
+    if (code === "KeyA" || code === "ArrowLeft") keys.left = false;
+    if (code === "KeyS" || code === "ArrowDown") keys.down = false;
     if (code === "Space") keys.jump = false;
     if (code === "KeyJ") keys.shoot = false;
     if (code === "KeyK") keys.shank = false;

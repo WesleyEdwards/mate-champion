@@ -1,6 +1,7 @@
 import {
   MAX_CANVAS_HEIGHT,
   PLAYER_INIT_POS,
+  PLAYER_JUMP_SPEED,
   PLAYER_MOVE_SPEED,
   PLAYER_RADIUS,
 } from "../constants";
@@ -30,7 +31,7 @@ export class PlayerVectorManager extends CharVectorManager {
       this.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
     if (action === "Jump" && this.velY === 0 && jumps < 1) {
-      this.setVelY(-15);
+      this.setVelY(PLAYER_JUMP_SPEED);
       setJumps((jumps += 1));
     }
     if (this.velY > 0) setJumps(0);
