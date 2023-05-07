@@ -10,8 +10,8 @@ export const GRAVITY = 0.0025;
 export const PLAT_FREQUENCY = 350;
 
 export const NUM_PLATFORMS = 30;
-export const END_POS = 1000;
-// export const END_POS = 4500;
+// export const END_POS = 1000;
+export const END_POS = 4500;
 
 export const INCREMENT_VALUE = 5;
 

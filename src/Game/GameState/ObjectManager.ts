@@ -31,7 +31,7 @@ export class ObjectManager {
   }
 
   reset(level: number) {
-    this.platformManager.reset();
+    this.platformManager.reset(level);
     this.matePackManager.reset(this.platformManager.platforms);
     this.player.reset();
     this.opponentManager.reset(level);

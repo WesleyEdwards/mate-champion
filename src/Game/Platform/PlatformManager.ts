@@ -15,8 +15,8 @@ export class PlatformManager {
     this.platforms.forEach((p) => p.draw(this.context));
   }
 
-  reset() {
-    this.platforms = createBlocks(1);
+  reset(level: number) {
+    this.platforms = createBlocks(level);
   }
 
   calcPersonColl(player: Player, opponents: Opponent[]) {

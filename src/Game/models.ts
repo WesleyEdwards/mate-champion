@@ -38,7 +38,6 @@ export interface VectorMan {
   posCenter: Coordinates;
 }
 
-export interface ObjVectorMan extends VectorMan {}
 export interface CharVectorMan extends VectorMan {
   velocity: Coordinates;
   velY: number;

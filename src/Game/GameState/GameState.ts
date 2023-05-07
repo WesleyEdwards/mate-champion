@@ -54,7 +54,8 @@ export class GameState {
     this.gameDrawer.drawBackground(
       this.showMessage,
       this.winState,
-      this.stats.level
+      this.stats.level,
+      this.stats.scrollOffset
     );
     if (!this.showMessage) {
       this.objectManager.drawObjects();
@@ -85,11 +86,8 @@ export class GameState {
     this.setUI.setLevel(this.stats.level);
     this.setUI.setScore(this.stats.score);
     this.setUI.setAmmo(this.stats.ammo);
-    if (this.stats.lives === 0) {
-      this.setUI.setLives(undefined);
-    } else {
-      this.setUI.setLives(this.stats.lives);
-    }
+    if (this.stats.lives === 0) this.setUI.setLives(undefined);
+    else this.setUI.setLives(this.stats.lives);
   }
 
   private nextLevel() {
