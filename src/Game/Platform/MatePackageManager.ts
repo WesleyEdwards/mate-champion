@@ -44,17 +44,22 @@ export class MatePackageManager {
   }
 
   private createMatePackages(plats: StaticObject[]): Package[] {
+    const packages: Package[] = [];
+    for (let i = 0; i < 3; i++) {
+      packages.push(this.createMatePackage(plats));
+    }
+    return packages;
+  }
+
+  private createMatePackage(plats: StaticObject[]): Package {
     const placement = generateRandomInt(500, END_POS);
     const platsUnder = plats.filter(
       (p) =>
         p.vector.posX < placement && p.vector.posX + p.vector.width > placement
     );
-    return new Array(3).fill(null).map(
-      () =>
-        new Package(
-          placement,
-          platsUnder.map((p) => p.vector.posY)
-        )
+    return new Package(
+      placement,
+      platsUnder.map((p) => p.vector.posY)
     );
   }
 }

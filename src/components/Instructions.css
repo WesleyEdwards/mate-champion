@@ -1,0 +1,9 @@
+.original-game {
+  margin: 1rem;
+  color: white;
+  transition: 0.3s;
+}
+
+.original-game:hover {
+  color: blue;
+}

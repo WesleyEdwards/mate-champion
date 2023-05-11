@@ -44,7 +44,7 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
   shank: false,
 };
 
-export const PACKAGE_WORTH = 5;
+export const PACKAGE_WORTH = 3;
 
 export const emptyStats = {
   score: 0,

@@ -47,13 +47,23 @@ export const StatsDiv: FC<StatsDivProps> = (props) => {
             />
           ))}
       </StackHor>
-      <MHButton
-        disabled={disablePlay}
-        style={{ padding: "1rem 2rem" }}
-        onClick={handleClick}
-      >
-        {BtnText}
-      </MHButton>
+      {!disablePlay && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            height: "3rem",
+          }}
+        >
+          <MHButton
+            disabled={disablePlay}
+            style={{ padding: "1rem 2rem" }}
+            onClick={handleClick}
+          >
+            {BtnText}
+          </MHButton>
+        </div>
+      )}
       <ScoreStats level={level} score={score} ammo={ammo} />
     </StackHor>
   );

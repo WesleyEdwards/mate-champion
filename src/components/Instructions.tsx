@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { StackVert, Typography } from "./MHComponents.tsx/Components";
 import { MHButton } from "./MHComponents.tsx/MHButton";
+import "./Instructions.css";
 
 export const Instructions: FC = () => {
   return (
@@ -22,7 +23,7 @@ export const Instructions: FC = () => {
         style={{ width: 250, height: 200 }}
       />
       <a href="https://server-project-3a101.web.app">
-        <MHButton style={{ margin: "1rem" }}>original game</MHButton>
+        <div className="original-game">original game</div>
       </a>
     </>
   );
