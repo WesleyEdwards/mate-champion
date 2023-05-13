@@ -1,47 +1,40 @@
 import React, { FC, useState } from "react";
-import { userExists } from "../Firebase/FirebaseHelpers";
 import { MHButton } from "./MHComponents.tsx/MHButton";
+import { userAlreadyExists } from "../Firebase/FirebaseHelpers";
 
 interface NewHighScoreProps {
   score: number;
-  scoreSubmitted: () => void;
   onSubmit: (name: string) => Promise<void>;
 }
 
 export const NewHighScore: FC<NewHighScoreProps> = (props) => {
-  const { onSubmit, scoreSubmitted } = props;
+  const { onSubmit } = props;
 
   const [error, setError] = useState<string | null>(null);
   const [disableSubmit, setDisableSubmit] = useState(false);
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("");
 
   const handleSubmitNew = async () => {
     setDisableSubmit(true);
     setError(null);
-    if (!name) {
-      setError("Name is required");
-      setDisableSubmit(false);
-      return;
-    }
+    if (!name) return;
     if (name.length > 300) {
       setError("Name is too long");
-      setDisableSubmit(false);
-      return;
+      return setDisableSubmit(false);
     }
-    const sameUsers = await userExists(name);
-    if (sameUsers.length > 0) {
+    const sameUsers = await userAlreadyExists(name);
+
+    if (sameUsers) {
       setError("Name is already exists");
       setDisableSubmit(false);
       return;
     }
-    return onSubmit(name).then(() => {
-      scoreSubmitted();
-    });
+    return onSubmit(name);
   };
 
   return (
     <div>
-      <h2>Game Over!</h2>
+      <h2 className="green-text">Game Over!</h2>
       <h3 className="green-text">
         You got a high score!
         <br />
@@ -71,16 +64,17 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
             value={name || ""}
             onChange={(e) => setName(e.target.value)}
           />
-          <MHButton
-            style={{
-              padding: "0.5rem",
-            }}
-            disabled={disableSubmit}
+          <button
+            className={
+              name?.length === 0 || disableSubmit ? "btn-disabled" : "btn"
+            }
+            style={{ padding: "0.5rem" }}
+            disabled={name?.length === 0 || disableSubmit}
             onClick={handleSubmitNew}
             type="submit"
           >
             Submit
-          </MHButton>
+          </button>
         </div>
         {error && <p className="red-text">{error}</p>}
       </div>

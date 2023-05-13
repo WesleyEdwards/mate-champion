@@ -7,6 +7,8 @@ import { enterGameLoop } from "./Game/Main";
 import { H1 } from "./components/MHComponents.tsx/Components";
 import { Controls } from "./components/Controls";
 import { PlayStats, emptyStats } from "./Game/constants";
+import { PlayerScore } from "./Game/models";
+import { useScoreData } from "./hooks/useScoreInfo";
 
 type Screen = "game" | "home" | "highScores" | "newHighScore";
 
@@ -14,6 +16,7 @@ function App() {
   const [screen, setScreen] = useState<Screen>("home");
 
   const [stats, setStats] = useState<PlayStats>({ ...emptyStats });
+  const { scores, refreshScores, playerScore } = useScoreData();
 
   const modifyStats = (newStats: Partial<PlayStats>) => {
     setStats((prev) => ({ ...prev, ...newStats }));
@@ -22,20 +25,15 @@ function App() {
   const playing = screen === "game";
 
   const handleClickPlay = () => {
-    console.log("handleClickPlay");
+    setStats({ ...emptyStats });
     setScreen("game");
     enterGameLoop({
       modifyStats,
       handleLose: () => {
-        console.log("handleLose");
         setScreen("highScores");
       },
     });
   };
-
-  useEffect(() => {
-    console.log("screen", screen);
-  }, [screen]);
 
   return (
     <>
@@ -54,6 +52,9 @@ function App() {
             <>
               <Instructions />
               <Controls />
+              <button className="btn" onClick={() => setScreen("highScores")}>
+                High Scores
+              </button>
               <button className="btn" onClick={() => handleClickPlay()}>
                 Play Game
               </button>
@@ -63,7 +64,8 @@ function App() {
           {screen === "highScores" && (
             <HighScores
               score={stats.score}
-              play={() => handleClickPlay()}
+              scores={scores}
+              playerPrevScore={playerScore}
               mainMenu={() => setScreen("home")}
             />
           )}
