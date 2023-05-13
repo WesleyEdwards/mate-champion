@@ -4,50 +4,22 @@ import {
   handleSubmitName,
   isHighScore,
 } from "../Firebase/FirebaseHelpers";
+import "material-icons/iconfont/material-icons.css";
 import { PlayerScore } from "../Game/models";
-import { H2, StackVert } from "./MHComponents.tsx/Components";
+import "./HighScores.css";
+import { H2, StackHor, StackVert } from "./MHComponents.tsx/Components";
 import { MHButton } from "./MHComponents.tsx/MHButton";
-import { MHTypography } from "./MHComponents.tsx/MHTypography";
 import { NewHighScore } from "./NewHighScore";
-
-interface ScoreListItemProps {
-  score: PlayerScore;
-  num: number;
-}
-
-const ScoreListItem: FC<ScoreListItemProps> = (props) => {
-  const { score, num } = props;
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        gap: "1rem",
-      }}
-    >
-      <MHTypography
-        style={{
-          maxWidth: "24rem",
-          whiteSpace: "nowrap",
-          textOverflow: "ellipsis",
-          flexDirection: "row",
-          overflow: "hidden",
-          flex: "1",
-        }}
-        title={score.name}
-      >{`${num} - ${score.name}`}</MHTypography>
-      <MHTypography>{`(${score.score})`}</MHTypography>
-    </div>
-  );
-};
+import { ScoreListItem } from "./ScoreListItem";
 
 interface HighScoresProps {
   score: number;
-  enablePlay: () => void;
+  play: () => void;
+  mainMenu: () => void;
 }
 
 export const HighScores: FC<HighScoresProps> = (props) => {
-  const { score, enablePlay } = props;
+  const { score, play, mainMenu } = props;
   const [scores, setScores] = useState<PlayerScore[]>();
   const [gotHighScore, setGotHighScore] = useState<boolean>(false);
 
@@ -65,7 +37,6 @@ export const HighScores: FC<HighScoresProps> = (props) => {
     return handleSubmitName(name, score).then(() => {
       fetchScores();
       setGotHighScore(false);
-      enablePlay();
       setSavedScore(true);
     });
   };
@@ -75,12 +46,10 @@ export const HighScores: FC<HighScoresProps> = (props) => {
       setGotHighScore(isHigh);
       if (isHigh) {
         setSavedScore(false);
-      } else {
-        enablePlay();
       }
       fetchScores();
     });
-  }, [enablePlay, score]);
+  }, [score]);
 
   return (
     <>
@@ -107,7 +76,24 @@ export const HighScores: FC<HighScoresProps> = (props) => {
                 flexDirection: "column",
               }}
             >
-              <H2 style={{ alignSelf: "center" }}>Score Board:</H2>
+              <StackHor
+                style={{
+                  justifyContent: "space-between",
+                }}
+              >
+                <span className="material-icons back-button" onClick={mainMenu}>
+                  {"arrow_back"}
+                </span>
+                <H2 style={{ alignSelf: "center" }}>Score Board:</H2>
+                <div style={{ width: "2rem" }}></div>
+              </StackHor>
+              <hr
+                style={{
+                  width: "100%",
+                  borderColor: "green",
+                  marginBottom: "1rem",
+                }}
+              />
               {scores.map((score, i) => (
                 <ScoreListItem num={i + 1} score={score} key={i} />
               ))}
@@ -119,7 +105,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
           return (
             <NewHighScore
               score={score}
-              enablePlay={enablePlay}
+              scoreSubmitted={() => setGotHighScore(false)}
               onSubmit={handleSubmit}
             />
           );

@@ -22,7 +22,6 @@ export class GameState {
 
     this.drawStats();
     addEventListeners(this.keys);
-    setUI.setShowInstructions(false);
   }
 
   update(timeStamp: number) {
@@ -78,16 +77,16 @@ export class GameState {
     this.resetLevel();
     if (this.stats.lives === 0) {
       this.winState = "lose";
-      this.setUI.setShowHighScoreDiv(this.stats.score);
     }
   }
 
   private drawStats() {
-    this.setUI.setLevel(this.stats.level);
-    this.setUI.setScore(this.stats.score);
-    this.setUI.setAmmo(this.stats.ammo);
-    if (this.stats.lives === 0) this.setUI.setLives(undefined);
-    else this.setUI.setLives(this.stats.lives);
+    this.setUI.modifyStats({
+      level: this.stats.level,
+      score: this.stats.score,
+      ammo: this.stats.ammo,
+      lives: this.stats.lives,
+    });
   }
 
   private nextLevel() {

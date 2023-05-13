@@ -1,81 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { HighScores } from "./components/HighScores";
 import { Instructions } from "./components/Instructions";
 import { StatsDiv } from "./components/StatsDiv";
 import { enterGameLoop } from "./Game/Main";
 import { H1 } from "./components/MHComponents.tsx/Components";
+import { Controls } from "./components/Controls";
+import { PlayStats, emptyStats } from "./Game/constants";
+
+type Screen = "game" | "home" | "highScores" | "newHighScore";
 
 function App() {
-  const [playing, setPlaying] = useState(false);
+  const [screen, setScreen] = useState<Screen>("home");
 
-  const [showInstructions, setShowInstructions] = useState(true);
-  const [showHighScores, setShowHighScores] = useState<number>();
+  const [stats, setStats] = useState<PlayStats>({ ...emptyStats });
 
-  const [level, setLevel] = useState<number>();
-  const [lives, setLives] = useState<number>();
-  const [score, setScore] = useState<number>();
-  const [ammo, setAmmo] = useState<number>();
+  const modifyStats = (newStats: Partial<PlayStats>) => {
+    setStats((prev) => ({ ...prev, ...newStats }));
+  };
 
-  const darkColors = {
-    black: "#000000",
-    darkGrey: "#212121",
-    grey: "#212121",
-  } as const;
+  const playing = screen === "game";
 
-  const handleClick = () => {
-    setPlaying(true);
-    setShowHighScores(undefined);
-    setShowInstructions(false);
+  const handleClickPlay = () => {
+    console.log("handleClickPlay");
+    setScreen("game");
     enterGameLoop({
-      setLevel,
-      setLives,
-      setScore,
-      setAmmo,
-      setPlaying,
-      setShowInstructions,
-      setShowHighScoreDiv,
+      modifyStats,
+      handleLose: () => {
+        console.log("handleLose");
+        setScreen("highScores");
+      },
     });
   };
 
-  const onEnablePlay = () => {
-    setShowInstructions(false);
-    setPlaying(false);
-  };
-
-  const setShowHighScoreDiv = (score: number | undefined) => {
-    setPlaying(true);
-    setShowHighScores(score);
-  };
+  useEffect(() => {
+    console.log("screen", screen);
+  }, [screen]);
 
   return (
     <>
-      <div
-        style={{
-          backgroundColor: darkColors.black,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
+      <div id="root-div">
         <div
+          id={"game-div"}
           style={{
-            backgroundColor: playing ? undefined : darkColors.darkGrey,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            paddingBlock: "1rem",
-            paddingInline: "16rem",
-            borderRadius: "1rem",
+            backgroundColor: playing ? "#000000" : "#212121",
           }}
         >
-          <H1 style={{ margin: "1rem" }}>Mate Champion</H1>
+          <h1 className="green-text" style={{ margin: "1rem" }}>
+            Mate Champion
+          </h1>
 
-          {showInstructions && <Instructions />}
-          {showHighScores !== undefined && (
-            <HighScores score={showHighScores} enablePlay={onEnablePlay} />
+          {screen === "home" && (
+            <>
+              <Instructions />
+              <Controls />
+              <button className="btn" onClick={() => handleClickPlay()}>
+                Play Game
+              </button>
+            </>
           )}
+
+          {screen === "highScores" && (
+            <HighScores
+              score={stats.score}
+              play={() => handleClickPlay()}
+              mainMenu={() => setScreen("home")}
+            />
+          )}
+
           <div>
             <canvas
               style={{
@@ -83,15 +75,8 @@ function App() {
               }}
               id="canvas"
             ></canvas>
-            <StatsDiv
-              level={level}
-              lives={lives}
-              score={score}
-              ammo={ammo}
-              disablePlay={playing}
-              handleClick={handleClick}
-              BtnText={showInstructions ? "Play Game" : "Play Again"}
-            />
+
+            {playing && <StatsDiv stats={stats} />}
           </div>
         </div>
       </div>

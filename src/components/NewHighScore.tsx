@@ -4,12 +4,12 @@ import { MHButton } from "./MHComponents.tsx/MHButton";
 
 interface NewHighScoreProps {
   score: number;
-  enablePlay: () => void;
+  scoreSubmitted: () => void;
   onSubmit: (name: string) => Promise<void>;
 }
 
 export const NewHighScore: FC<NewHighScoreProps> = (props) => {
-  const { onSubmit, enablePlay } = props;
+  const { onSubmit, scoreSubmitted } = props;
 
   const [error, setError] = useState<string | null>(null);
   const [disableSubmit, setDisableSubmit] = useState(false);
@@ -35,7 +35,7 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
       return;
     }
     return onSubmit(name).then(() => {
-      enablePlay();
+      scoreSubmitted();
     });
   };
 

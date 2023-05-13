@@ -33,7 +33,6 @@ export class Player implements Character {
   update(keys: Keys, elapsedTime: number) {
     this.position.x += this.vector.velX * elapsedTime;
     this.position.y += this.vector.velY * elapsedTime;
-    // debounceLog("player", this.vector.velY, this.vector.velX);
 
     if (keys.jump) this.move("Jump");
 

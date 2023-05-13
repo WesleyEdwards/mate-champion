@@ -1,25 +1,15 @@
 import React, { FC } from "react";
-import { emptyStats } from "../Game/constants";
+import { PlayStats, emptyStats } from "../Game/constants";
 import { lifeImage } from "./constants";
 import { StackHor } from "./MHComponents.tsx/Components";
 import { MHButton } from "./MHComponents.tsx/MHButton";
 import { ScoreStats } from "./ScoreStats";
 
-interface StatsDivProps {
-  level: number | undefined;
-  lives: number | undefined;
-  score: number | undefined;
-  ammo: number | undefined;
-  disablePlay: boolean;
-  handleClick: () => void;
-  BtnText: string;
-}
-
 const widthOfDiv = 50 * emptyStats.lives;
 
-export const StatsDiv: FC<StatsDivProps> = (props) => {
-  const { level, lives, score, ammo, disablePlay, handleClick, BtnText } =
-    props;
+export const StatsDiv: FC<{ stats: PlayStats }> = ({ stats }) => {
+  const { lives, level, score, ammo } = stats;
+
   return (
     <StackHor
       style={{
@@ -47,23 +37,6 @@ export const StatsDiv: FC<StatsDivProps> = (props) => {
             />
           ))}
       </StackHor>
-      {!disablePlay && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            height: "3rem",
-          }}
-        >
-          <MHButton
-            disabled={disablePlay}
-            style={{ padding: "1rem 2rem" }}
-            onClick={handleClick}
-          >
-            {BtnText}
-          </MHButton>
-        </div>
-      )}
       <ScoreStats level={level} score={score} ammo={ammo} />
     </StackHor>
   );

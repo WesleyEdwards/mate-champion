@@ -4,12 +4,10 @@ import { SetUI } from "./models";
 
 export function enterGameLoop(setUI: SetUI) {
   const { canvas, context } = getCanvasContext();
-  let gameState: GameState = new GameState(setUI, context);
+  const gameState: GameState = new GameState(setUI, context);
 
   function gameLoop(timeStamp: number) {
-    if (gameState.isWinState("lose")) {
-      return handleLose();
-    }
+    if (gameState.isWinState("lose")) return handleLose();
 
     gameState.update(timeStamp);
     gameState.render();
@@ -18,6 +16,7 @@ export function enterGameLoop(setUI: SetUI) {
   }
 
   function handleLose() {
+    setUI.handleLose();
     displayCanvas(false, canvas);
   }
 
