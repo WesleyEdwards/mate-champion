@@ -1,5 +1,5 @@
 import { Bullet } from "../Bullet/Bullet";
-import { INCREMENT_VALUE, BULLET_RADIUS } from "../constants";
+import { INCREMENT_VALUE, BULLET_RADIUS, initialKeyStatus } from "../constants";
 import { debounceLog } from "../utils";
 import {
   HasPosition,
@@ -45,25 +45,32 @@ export function calcPlatColl<T extends Character>(
   ) {
     return;
   }
-  const charAbove = char.vector.bottomPos < platform.vector.posY + 1;
-  if (!charAbove) return;
-  if (
-    char.vector.velY > 0 &&
-    char.vector.bottomPos < platform.vector.posY + 2 &&
-    char.vector.bottomPos > platform.vector.posY - 2
-  ) {
+
+  const previous = char.vector.prevPosY + char.vector.height;
+  const recent = char.vector.posY + char.vector.height;
+  if (previous > recent) return;
+  if (recent > platform.vector.posY && previous < platform.vector.posY) {
     return char.setPosY(platform.vector.posY - char.vector.height - 1);
   }
+  // const charAbove = char.vector.bottomPos < platform.vector.posY;
+  // if (!charAbove) return;
+  // if (
+  //   char.vector.velY > 0 &&
+  //   char.vector.bottomPos < platform.vector.posY + 2 &&
+  //   char.vector.bottomPos > platform.vector.posY - 2
+  // ) {
+  //   return char.setPosY(platform.vector.posY - char.vector.height - 1);
+  // }
 
-  const distAboveThreshold = 25 * char.vector.velY;
+  // const distAboveThreshold = 25 * char.vector.velY;
 
-  if (
-    char.vector.velY > 0.3 &&
-    char.vector.bottomPos < platform.vector.posY + distAboveThreshold &&
-    char.vector.bottomPos > platform.vector.posY - distAboveThreshold
-  ) {
-    char.setPosY(platform.vector.posY - char.vector.height - 1);
-  }
+  // if (
+  //   char.vector.velY > 0.3 &&
+  //   char.vector.bottomPos < platform.vector.posY + distAboveThreshold &&
+  //   char.vector.bottomPos > platform.vector.posY - distAboveThreshold
+  // ) {
+  //   char.setPosY(platform.vector.posY - char.vector.height - 1);
+  // }
 }
 
 export function areTouching<T extends HasPosition>(
@@ -142,7 +149,8 @@ export function updatePackageStatus(
   });
 }
 
-export function addEventListeners(keys: Keys) {
+export function addEventListeners(): Keys {
+  const keys = { ...initialKeyStatus };
   window.addEventListener("keydown", ({ code }) => {
     if (code === "KeyW" || code === "ArrowUp") keys.up = true;
     if (code === "KeyD" || code === "ArrowRight") keys.right = true;
@@ -162,4 +170,5 @@ export function addEventListeners(keys: Keys) {
     if (code === "KeyJ") keys.shoot = false;
     if (code === "KeyK") keys.shank = false;
   });
+  return keys;
 }

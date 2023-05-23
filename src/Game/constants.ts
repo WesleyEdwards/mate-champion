@@ -27,7 +27,7 @@ export const PLAYER_JUMP_SPEED = -0.85;
 export const SHANK_TIME = 200;
 export const SHANK_COOL_DOWN = 250;
 export const SHOOT_COOL_DOWN = 150;
-export const PLAYER_INIT_POS = { x: 100, y: 100 };
+export const PLAYER_INIT_POS = { x: 100, y: 99 };
 
 export const oppConstants = {
   radius: 25,

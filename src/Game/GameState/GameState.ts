@@ -1,33 +1,30 @@
-import { initialKeyStatus, winState, DISPLAY_LEVEL_TIME } from "../constants";
+import { winState, DISPLAY_LEVEL_TIME } from "../constants";
 import { addEventListeners, updateWithPlayer } from "./GameStateFunctions";
 import { Keys, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
-import { displayNextLevel } from "../Drawing/uiHelpers";
 import { GameDrawer } from "./GameDrawer";
-import { debounceLog } from "../utils";
 
 export class GameState {
   private winState: winState = "initial";
   private objectManager: ObjectManager;
-  private keys: Keys = initialKeyStatus;
+  private keys: Keys;
   private setUI: SetUI;
   private gameDrawer: GameDrawer;
   private stats: GameStatsManager = new GameStatsManager();
 
   constructor(setUI: SetUI, context: CanvasRenderingContext2D) {
+    this.keys = addEventListeners();
     this.objectManager = new ObjectManager(context);
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer(context);
 
     this.drawStats();
-    addEventListeners(this.keys);
   }
 
   update(timeStamp: number) {
     this.stats.updateTime(timeStamp);
     if (!this.isWinState("playing")) return;
-
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
       this.stats.elapsedTime,

@@ -39,6 +39,8 @@ export interface CharVectorMan extends VectorMan {
   velocity: Coordinates;
   velY: number;
   velX: number;
+  prevPosX: number;
+  prevPosY: number;
   isMovingDown: boolean;
 }
 
