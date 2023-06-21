@@ -1,38 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { HighScores } from "./components/HighScores";
 import { Instructions } from "./components/Instructions";
 import { StatsDiv } from "./components/StatsDiv";
 import { enterGameLoop } from "./Game/Main";
-import { H1 } from "./components/MHComponents.tsx/Components";
 import { Controls } from "./components/Controls";
 import { PlayStats, emptyStats } from "./Game/constants";
-import { PlayerScore } from "./Game/models";
 import { useScoreData } from "./hooks/useScoreInfo";
 
-type Screen = "game" | "home" | "highScores" | "newHighScore";
+type Screen = "game" | "home" | "highScores" | "newHighScore" | "controls";
 
 function App() {
   const [screen, setScreen] = useState<Screen>("home");
 
   const [stats, setStats] = useState<PlayStats>({ ...emptyStats });
-  const { scores, refreshScores, playerScore } = useScoreData();
+  const { scores, playerScore } = useScoreData();
 
   const modifyStats = (newStats: Partial<PlayStats>) => {
     setStats((prev) => ({ ...prev, ...newStats }));
   };
+
+  const handleLose = () => setScreen("highScores");
 
   const playing = screen === "game";
 
   const handleClickPlay = () => {
     setStats({ ...emptyStats });
     setScreen("game");
-    enterGameLoop({
-      modifyStats,
-      handleLose: () => {
-        setScreen("highScores");
-      },
-    });
+    enterGameLoop({ modifyStats, handleLose });
   };
 
   return (
@@ -51,13 +46,20 @@ function App() {
           {screen === "home" && (
             <>
               <Instructions />
-              <Controls />
-              <button className="btn" onClick={() => setScreen("highScores")}>
-                High Scores
-              </button>
-              <button className="btn" onClick={() => handleClickPlay()}>
-                Play Game
-              </button>
+              <div className="horizontal-flex">
+                <button className="btn" onClick={() => setScreen("highScores")}>
+                  High Scores
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleClickPlay()}
+                >
+                  Play Game
+                </button>
+                <button className="btn" onClick={() => setScreen("controls")}>
+                  Controls
+                </button>
+              </div>
             </>
           )}
 
@@ -68,6 +70,9 @@ function App() {
               playerPrevScore={playerScore}
               mainMenu={() => setScreen("home")}
             />
+          )}
+          {screen === "controls" && (
+            <Controls mainMenu={() => setScreen("home")} />
           )}
 
           <div>

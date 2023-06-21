@@ -48,29 +48,9 @@ export function calcPlatColl<T extends Character>(
 
   const previous = char.vector.prevPosY + char.vector.height;
   const recent = char.vector.posY + char.vector.height;
-  if (previous > recent) return;
-  if (recent > platform.vector.posY && previous < platform.vector.posY) {
-    return char.setPosY(platform.vector.posY - char.vector.height - 1);
+  if (recent >= platform.vector.posY && previous <= platform.vector.posY) {
+    char.setPosY(platform.vector.posY - char.vector.height);
   }
-  // const charAbove = char.vector.bottomPos < platform.vector.posY;
-  // if (!charAbove) return;
-  // if (
-  //   char.vector.velY > 0 &&
-  //   char.vector.bottomPos < platform.vector.posY + 2 &&
-  //   char.vector.bottomPos > platform.vector.posY - 2
-  // ) {
-  //   return char.setPosY(platform.vector.posY - char.vector.height - 1);
-  // }
-
-  // const distAboveThreshold = 25 * char.vector.velY;
-
-  // if (
-  //   char.vector.velY > 0.3 &&
-  //   char.vector.bottomPos < platform.vector.posY + distAboveThreshold &&
-  //   char.vector.bottomPos > platform.vector.posY - distAboveThreshold
-  // ) {
-  //   char.setPosY(platform.vector.posY - char.vector.height - 1);
-  // }
 }
 
 export function areTouching<T extends HasPosition>(

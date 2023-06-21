@@ -1,13 +1,25 @@
 import { FC, useState } from "react";
+import { H2, StackHor } from "./MHComponents.tsx/Components";
+import "./HighScores.css";
 
-interface ControlsProps {}
-export const Controls: FC<ControlsProps> = (props) => {
-  const [showControls, setShowControls] = useState(false);
+type ControlsProps = { mainMenu: () => void };
 
+export const Controls: FC<ControlsProps> = ({ mainMenu }) => {
   return (
-    <button className="btn" onClick={() => setShowControls(!showControls)}>
-      Controls
-    </button>
+    <>
+      <StackHor style={{ justifyContent: "space-between" }}>
+        <span className="material-icons back-button" onClick={mainMenu}>
+          {"arrow_back"}
+        </span>
+        <H2 style={{ alignSelf: "center" }}>Controls:</H2>
+        <div style={{ width: "2rem" }}></div>
+      </StackHor>
+      <img
+        src="https://user-images.githubusercontent.com/97990557/210724055-8d8862af-16b0-442e-ba70-e89a389578cd.png"
+        alt="instructions"
+        style={{ width: 250, height: 200 }}
+      />
+    </>
   );
 };
 

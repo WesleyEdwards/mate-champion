@@ -32,6 +32,7 @@ export class PlayerVectorManager extends CharVectorManager {
     }
     if (action === "Jump" && this.velY === 0 && jumps < 1) {
       this.setVelY(PLAYER_JUMP_SPEED);
+      this.setPosY(this.posY - 1);
       setJumps((jumps += 1));
     }
     if (this.velY > 0) setJumps(0);
