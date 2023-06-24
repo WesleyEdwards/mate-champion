@@ -7,8 +7,15 @@ import { enterGameLoop } from "./Game/Main";
 import { Controls } from "./components/Controls";
 import { PlayStats, emptyStats } from "./Game/constants";
 import { useScoreData } from "./hooks/useScoreInfo";
+import Settings from "./components/Settings";
 
-type Screen = "game" | "home" | "highScores" | "newHighScore" | "controls";
+type Screen =
+  | "game"
+  | "home"
+  | "highScores"
+  | "newHighScore"
+  | "controls"
+  | "settings";
 
 function App() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -46,20 +53,26 @@ function App() {
           {screen === "home" && (
             <>
               <Instructions />
+              <button
+                className="btn btn-primary"
+                onClick={() => handleClickPlay()}
+              >
+                Play Game
+              </button>
               <div className="horizontal-flex">
                 <button className="btn" onClick={() => setScreen("highScores")}>
                   High Scores
                 </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleClickPlay()}
-                >
-                  Play Game
+                <button className="btn" onClick={() => setScreen("settings")}>
+                  Settings
                 </button>
                 <button className="btn" onClick={() => setScreen("controls")}>
                   Controls
                 </button>
               </div>
+              <a href="https://server-project-3a101.web.app">
+                <div className="original-game">original game</div>
+              </a>
             </>
           )}
 
@@ -73,6 +86,9 @@ function App() {
           )}
           {screen === "controls" && (
             <Controls mainMenu={() => setScreen("home")} />
+          )}
+          {screen === "settings" && (
+            <Settings mainMenu={() => setScreen("home")} />
           )}
 
           <div>

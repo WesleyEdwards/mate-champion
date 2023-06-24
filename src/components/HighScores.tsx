@@ -61,7 +61,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
             marginBottom: "1rem",
           }}
         />
-        {(scores ?? new Array(15).fill(null)).map((score, i) => (
+        {(scores ?? Array.from({ length: 15 })).map((score, i) => (
           <ScoreListItem num={i + 1} score={score} key={i} />
         ))}
       </div>
@@ -69,12 +69,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
   }
 
   if (!playerPrevScore) {
-    return (
-      <NewHighScore
-        score={score}
-        onSubmit={handleSubmit}
-      />
-    );
+    return <NewHighScore score={score} onSubmit={handleSubmit} />;
   }
 
   return (

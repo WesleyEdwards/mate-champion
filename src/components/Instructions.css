@@ -1,9 +1,0 @@
-.original-game {
-  margin: 1rem;
-  color: grey;
-  transition: 0.3s;
-}
-
-.original-game:hover {
-  color: purple;
-}

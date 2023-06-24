@@ -17,6 +17,13 @@ export class CharVectorManager extends BaseVectorMan {
     this.moveSpeed = moveSpeed;
   }
 
+  update(elapsedTime: number) {
+    this.prevPosX = this.position.x;
+    this.prevPosY = this.position.y;
+    this.position.x += this.velX * elapsedTime;
+    this.position.y += this.velY * elapsedTime;
+  }
+
   stopY(yPos: number) {
     this.velocity.y = 0;
     this.setPosY(yPos);

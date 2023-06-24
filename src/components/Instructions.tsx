@@ -1,7 +1,5 @@
 import React, { FC } from "react";
 import { StackVert, Typography } from "./MHComponents.tsx/Components";
-import { MHButton } from "./MHComponents.tsx/MHButton";
-import "./Instructions.css";
 
 export const Instructions: FC = () => {
   return (
@@ -17,10 +15,6 @@ export const Instructions: FC = () => {
           careful. Good luck.
         </Typography>
       </StackVert>
-      
-      <a href="https://server-project-3a101.web.app">
-        <div className="original-game">original game</div>
-      </a>
     </>
   );
 };

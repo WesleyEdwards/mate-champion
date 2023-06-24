@@ -5,7 +5,7 @@ import {
   PLAYER_MOVE_SPEED,
   PLAYER_RADIUS,
 } from "../constants";
-import { CharAction, Coordinates } from "../models";
+import { CharAction } from "../models";
 import { CharVectorManager } from "../VectorManager/CharVectorManager";
 import { PlayerDirection } from "./models";
 

@@ -1,12 +1,10 @@
+import { bgImageUrl } from "../Drawing/drawingUtils";
 import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
   END_POS,
   winState,
 } from "../constants";
-
-const bgImageUrl =
-  "https://media.istockphoto.com/id/874254690/vector/brick-wall-background-vector-pattern-illustration-texture-of-brick-wall.jpg?s=170667a&w=0&k=20&c=sbRKBZcfGZOwR5xth4ry6vPWzkWUZNf44d0Cm69aC-A=";
 
 export class GameDrawer {
   context: CanvasRenderingContext2D;

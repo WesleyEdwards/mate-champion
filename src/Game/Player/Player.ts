@@ -31,10 +31,7 @@ export class Player implements Character {
   }
 
   update(keys: Keys, elapsedTime: number) {
-    this.vector.prevPosX = this.position.x;
-    this.vector.prevPosY = this.position.y;
-    this.position.x += this.vector.velX * elapsedTime;
-    this.position.y += this.vector.velY * elapsedTime;
+    this.vector.update(elapsedTime)
 
     if (keys.jump) this.move("Jump");
 

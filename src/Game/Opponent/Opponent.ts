@@ -17,8 +17,7 @@ export class Opponent implements Character {
   }
 
   update(elapsedTime: number) {
-    this.position.x += this.velocity.x * elapsedTime;
-    this.position.y += this.velocity.y * elapsedTime;
+    this.vector.update(elapsedTime);
     this.velocity.y += GRAVITY * elapsedTime;
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {

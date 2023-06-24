@@ -14,6 +14,12 @@ type imageObjects =
   | "bulletHor"
   | "package";
 
+export const bgImageUrl =
+  "https://user-images.githubusercontent.com/97990557/248499280-acb227ae-0645-4850-b6c5-8ab578b37eee.jpg";
+
+export const instructionsUrl =
+  "https://user-images.githubusercontent.com/97990557/210724055-8d8862af-16b0-442e-ba70-e89a389578cd.png";
+
 const images: Record<imageObjects, string> = {
   mateLeft:
     "https://user-images.githubusercontent.com/97990557/210005713-6be27cfb-fb8f-4f60-9b19-28231e0f1145.png",
