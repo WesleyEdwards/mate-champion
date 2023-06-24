@@ -9,14 +9,18 @@ body {
 
 .btn {
   background-color: green;
-  min-width: 12rem;
-  min-height: 3rem;
   border-radius: 0.5rem;
   cursor: pointer;
   font-size: 1rem;
   border: 1px solid black;
   font-family: "Courier New", Courier, monospace;
   transition: 0.3s;
+}
+
+.btn-primary {
+  min-width: 12rem;
+  min-height: 3rem;
+  margin: 1rem
 }
 
 .btn:hover {

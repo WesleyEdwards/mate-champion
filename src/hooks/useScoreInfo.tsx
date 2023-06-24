@@ -28,5 +28,3 @@ export const useScoreData = () => {
 
   return { scores, refreshScores, playerScore };
 };
-
-// type ScoreData = ReturnType<typeof useScoreData>;

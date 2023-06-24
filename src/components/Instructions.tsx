@@ -17,11 +17,7 @@ export const Instructions: FC = () => {
           careful. Good luck.
         </Typography>
       </StackVert>
-      <img
-        src="https://user-images.githubusercontent.com/97990557/210724055-8d8862af-16b0-442e-ba70-e89a389578cd.png"
-        alt="instructions"
-        style={{ width: 250, height: 200 }}
-      />
+      
       <a href="https://server-project-3a101.web.app">
         <div className="original-game">original game</div>
       </a>
