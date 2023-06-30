@@ -3,11 +3,12 @@ import { generateRandomInt } from "../utils";
 import { Opponent } from "./Opponent";
 
 export class OpponentManager {
-  opponents: Opponent[] = this.createOpponents(1);
+  opponents: Opponent[];
   context: CanvasRenderingContext2D;
 
   constructor(context: CanvasRenderingContext2D) {
     this.context = context;
+    this.opponents = this.createOpponents(context, 1);
   }
 
   update(elapsedTime: number) {
@@ -15,17 +16,19 @@ export class OpponentManager {
   }
 
   draw() {
-    this.opponents.forEach((o) => o.draw(this.context));
+    this.opponents.forEach((o) => o.draw());
   }
 
-  reset(level: number) {
-    this.opponents = this.createOpponents(level);
+  reset(canvas: CanvasRenderingContext2D, level: number) {
+    this.opponents = this.createOpponents(canvas, level);
   }
 
-  createOpponents(level: number): Opponent[] {
+  createOpponents(canvas: CanvasRenderingContext2D, level: number): Opponent[] {
     const moveSpeed = OPP_SPEED_BASE + level * 0.1;
     return new Array(OPP_PER_LEVEL * level)
       .fill(null)
-      .map(() => new Opponent(generateRandomInt(500, END_POS), moveSpeed));
+      .map(
+        () => new Opponent(canvas, generateRandomInt(500, END_POS), moveSpeed)
+      );
   }
 }

@@ -21,16 +21,16 @@ export const OPP_SPEED_BASE = 0.05;
 export const OPP_JUMP_SPEED = -0.8;
 
 // Player
-export const PLAYER_RADIUS = 25;
+export const PLAYER_RADIUS = 32;
 export const PLAYER_MOVE_SPEED = 0.5;
 export const PLAYER_JUMP_SPEED = -0.85;
 export const SHANK_TIME = 200;
 export const SHANK_COOL_DOWN = 250;
 export const SHOOT_COOL_DOWN = 150;
-export const PLAYER_INIT_POS = { x: 100, y: 99 };
+export const PLAYER_INIT_POS = { x: 100, y: 10 };
 
 export const oppConstants = {
-  radius: 25,
+  radius: 32,
   baseMoveSpeed: 2,
 };
 

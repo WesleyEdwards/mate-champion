@@ -1,4 +1,5 @@
 import { GRAVITY, MAX_CANVAS_HEIGHT, oppConstants } from "../constants";
+import { DrawManager } from "../Drawing/DrawManager";
 import { OppImages, oppImages } from "../Drawing/ImageRepos";
 import { Character, OppDirections, CharAction } from "../models";
 import { randomOutOf } from "../utils";
@@ -7,12 +8,23 @@ import { OpponentVectorManager } from "./OpponentVectorManager";
 export class Opponent implements Character {
   images: OppImages = oppImages;
   vector: OpponentVectorManager;
+  drawManager: DrawManager;
 
-  constructor(xPos: number, moveSpeed: number) {
+  constructor(
+    context: CanvasRenderingContext2D,
+    xPos: number,
+    moveSpeed: number
+  ) {
     this.vector = new OpponentVectorManager(
       { x: xPos, y: 100 },
       moveSpeed,
       oppConstants.radius
+    );
+    this.drawManager = new DrawManager(
+      context,
+      "opponent",
+      oppConstants.radius * 2,
+      oppConstants.radius * 2
     );
   }
 
@@ -32,14 +44,8 @@ export class Opponent implements Character {
     this.vector.move(action);
   }
 
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(
-      this.images[this.facing].image,
-      this.position.x,
-      this.position.y,
-      this.images[this.facing].width,
-      this.images[this.facing].height
-    );
+  draw() {
+    this.drawManager.draw(this.position, this.facing);
   }
 
   setPosY(num: number) {

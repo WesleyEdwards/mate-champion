@@ -17,6 +17,7 @@ export class ObjectManager {
   matePackManager: MatePackageManager;
   bulletManager: BulletManager;
   platformManager: PlatformManager;
+  canvas: CanvasRenderingContext2D;
 
   constructor(context: CanvasRenderingContext2D) {
     this.player = new Player(context);
@@ -28,13 +29,14 @@ export class ObjectManager {
       this.platformManager.platforms,
       context
     );
+    this.canvas = context;
   }
 
   reset(level: number) {
     this.platformManager.reset(level);
     this.matePackManager.reset(this.platformManager.platforms);
     this.player.reset();
-    this.opponentManager.reset(level);
+    this.opponentManager.reset(this.canvas, level);
     this.pot.reset();
     this.bulletManager.reset();
   }

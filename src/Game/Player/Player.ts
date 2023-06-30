@@ -1,5 +1,9 @@
+import { DrawManager } from "../Drawing/DrawManager";
+import { DrawImageInfo } from "../Drawing/ImageRepos";
+import { SpriteOption } from "../Drawing/drawingUtils";
 import {
   GRAVITY,
+  PLAYER_RADIUS,
   SHANK_COOL_DOWN,
   SHANK_TIME,
   SHOOT_COOL_DOWN,
@@ -17,9 +21,16 @@ export class Player implements Character {
   shot: boolean = false;
   vector: PlayerVectorManager = new PlayerVectorManager();
   context: CanvasRenderingContext2D;
+  drawManager: DrawManager;
 
   constructor(context: CanvasRenderingContext2D) {
     this.context = context;
+    this.drawManager = new DrawManager(
+      context,
+      "player",
+      PLAYER_RADIUS * 2,
+      PLAYER_RADIUS * 2
+    );
   }
 
   reset() {
@@ -31,7 +42,7 @@ export class Player implements Character {
   }
 
   update(keys: Keys, elapsedTime: number) {
-    this.vector.update(elapsedTime)
+    this.vector.update(elapsedTime);
 
     if (keys.jump) this.move("Jump");
 
@@ -77,12 +88,18 @@ export class Player implements Character {
   }
 
   draw() {
-    this.imager.draw(
+    //   this.imager.draw(
+    //     this.vector.facing,
+    //     this.shanking,
+    //     this.position,
+    //     this.context
+    //   );
+    const direction: SpriteOption = this.imager.otherShankingImage(
       this.vector.facing,
-      this.shanking,
-      this.position,
-      this.context
+      this.shanking
     );
+
+    this.drawManager.draw(this.position, direction);
   }
 
   private setUpPos(up: boolean = true) {

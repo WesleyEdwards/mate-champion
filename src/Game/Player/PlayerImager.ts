@@ -1,4 +1,5 @@
 import { DrawImageInfo, mateImages, MateImages } from "../Drawing/ImageRepos";
+import { SpriteOption } from "../Drawing/drawingUtils";
 import { Coordinates } from "../models";
 import { PlayerDirection } from "./models";
 
@@ -48,5 +49,18 @@ export class PlayerImager {
     return {
       image: this.images.shanking[facing],
     };
+  }
+
+  otherShankingImage(facing: PlayerDirection, shanking: boolean): SpriteOption {
+    if (!shanking) {
+      if (facing === "rightDown") return "right";
+      if (facing === "leftDown") return "left";
+      return facing;
+    }
+    if (facing === "leftUp") return "leftUpAttack";
+    if (facing === "left") return "leftAttack";
+    if (facing === "rightUp") return "rightUpAttack";
+    if (facing === "right") return "rightAttack";
+    throw new Error("Not implemented");
   }
 }

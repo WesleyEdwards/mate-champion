@@ -41,8 +41,7 @@ const images: Record<imageObjects, string> = {
     "https://user-images.githubusercontent.com/97990557/209984096-f821db2f-2f59-4599-976f-feb1b6295194.png",
   opponentLeft:
     "https://user-images.githubusercontent.com/97990557/210022545-8ad89050-eb77-4acf-960c-ef0a727da23d.png",
-  opponentRight:
-    "https://user-images.githubusercontent.com/97990557/210022551-968ab0ed-5598-4ef1-b1d7-4afd1d6c8995.png",
+  opponentRight: "./public/sprites/opp-1-sprites-1.png",
   bulletHor:
     "https://user-images.githubusercontent.com/97990557/210044411-c18b7c57-3883-46df-95a4-b9c21e8379ed.png",
   bulletVert:
@@ -67,4 +66,55 @@ export function makeImage(
   image.src = images[object];
 
   return { image, width, height };
+}
+
+export type Drawable = "opponent" | "player";
+
+export const drawableMap: Record<Drawable, string> = {
+  opponent: "./public/sprites/opp-1-sprites-1.png",
+  player: "./public/sprites/mate-player.png",
+};
+
+export type SpriteOption =
+  | "forward"
+  | "right"
+  | "left"
+  | "rightUp"
+  | "leftUp"
+  | "rightAttack"
+  | "leftAttack"
+  | "rightUpAttack"
+  | "leftUpAttack";
+
+// Most of the sprites will be 32x32 and only one row. The others require more specificity.
+export type SpriteMap = Partial<Record<SpriteOption, number | SpritePicInfo>>;
+
+export const spriteMap = {
+  opponent: {
+    forward: 0,
+    right: 1,
+    left: 2,
+    rightAttack: 3,
+    leftAttack: 4,
+  },
+  player: {
+    right: 0,
+    left: 1,
+    rightUp: 2,
+    leftUp: 3,
+    rightAttack: 3,
+    leftAttack: 4.5,
+    rightUpAttack: { x: 0, y: 1, height: 1.5 },
+    leftUpAttack: { x: 1, y: 1, height: 1.5 },
+  },
+} satisfies Record<Drawable, SpriteMap>;
+
+type SpritePicInfo = { x: number; y: number; height: number };
+
+export function isSpritePicInfo(x: any): x is SpritePicInfo {
+  return (
+    typeof x.x === "number" &&
+    typeof x.y === "number" &&
+    typeof x.height === "number"
+  );
 }
