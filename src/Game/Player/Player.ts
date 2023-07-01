@@ -10,12 +10,11 @@ import {
 } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
 import { debounceLog, vagueFacing } from "../utils";
-import { PlayerImager } from "./PlayerImager";
+import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
 export class Player implements Character {
   jumps: number = 0;
-  imager: PlayerImager = new PlayerImager();
   shank: number = 0;
   shoot: number = 0;
   shot: boolean = false;
@@ -88,13 +87,7 @@ export class Player implements Character {
   }
 
   draw() {
-    //   this.imager.draw(
-    //     this.vector.facing,
-    //     this.shanking,
-    //     this.position,
-    //     this.context
-    //   );
-    const direction: SpriteOption = this.imager.otherShankingImage(
+    const direction: SpriteOption = shankingImage(
       this.vector.facing,
       this.shanking
     );
