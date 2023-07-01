@@ -6,6 +6,11 @@ export function getCanvasContext(): {
 } {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+  context.imageSmoothingEnabled = false;
+  context.imageSmoothingQuality = "high";
+
+  
   return { canvas, context };
 }
 

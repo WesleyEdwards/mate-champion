@@ -36,14 +36,14 @@ export class DrawManager {
     this.image.src = drawableMap[drawable];
     this.image.width = width;
     this.image.height = height;
-    this.context = context;
     this.spriteInfo = spriteMap[drawable];
     this.width = width;
     this.height = height;
+
+    this.context = context;
   }
 
   draw(point: Coordinates, sprite: SpriteOption) {
-    this.context.save();
     const { x, y } = point;
 
     const spritePic = this.spriteInfo[sprite];
@@ -55,13 +55,12 @@ export class DrawManager {
         : this.spritePicInfo(x, y, spritePic);
 
     this.drawSpriteImage(info);
-    // this.context.strokeStyle = "red";
-    // this.context.lineWidth = 2;
-    // this.context.strokeRect(x, y, this.image.width, this.image.height);
-    this.context.restore();
   }
 
   drawSpriteImage(info: DrawInfo) {
+    this.context.imageSmoothingEnabled = false;
+    this.context.imageSmoothingQuality = "high";
+    // this.context.save();
     this.context.drawImage(
       this.image,
       info.xOffset,
@@ -73,6 +72,7 @@ export class DrawManager {
       info.spriteWidth,
       info.spriteHeight
     );
+    // this.context.restore();
   }
 
   normalSpriteInfo(x: number, y: number, spriteX: number): DrawInfo {
