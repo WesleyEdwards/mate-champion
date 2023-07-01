@@ -12,6 +12,8 @@ export class DrawManager {
   image: HTMLImageElement;
   context: CanvasRenderingContext2D;
   spriteInfo: SpriteMap;
+  width: number;
+  height: number;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -25,28 +27,44 @@ export class DrawManager {
     this.image.height = height;
     this.context = context;
     this.spriteInfo = spriteMap[drawable];
+    this.width = width;
+    this.height = height;
   }
 
   draw(point: Coordinates, sprite: SpriteOption) {
     this.context.save();
     const { x, y } = point;
+
     const spritePic = this.spriteInfo[sprite];
     if (spritePic === undefined) throw new Error("Sprite not found");
 
     if (isSpritePicInfo(spritePic)) {
-      const spriteXOffset = spritePic.x * 32;
-      const spriteYOffset = spritePic.y * 32;
-      const spriteHeight = spritePic.height * 32;
+      // const canvasX = x - (spritePic.width * this.width - this.width) / 2;
+      // const canvasY = y - (spritePic.height * this.height - this.height) / 2;
+
+      const xOffset = spritePic.x * 32;
+      const yOffset = spritePic.y * 32;
+      const height = spritePic.height * 32;
+      const width = spritePic.width * 32;
+      const spriteHeight = spritePic.height * this.height;
+      const spriteWidth = spritePic.width * this.width;
+
+      const canvasX = this.canvasX(x, this.width / 2, spritePic.extra);
+      const canvasY = this.canvasY(y, this.height / 2, spritePic.extra);
+
+      // if (spritePic.extra === "beginX") {
+      //   console.log("beginX", x, width - 32, canvasX);
+      // }
 
       this.context.drawImage(
         this.image,
-        spriteXOffset,
-        spriteYOffset,
-        32,
-        32,
-        x,
-        y,
-        this.image.width,
+        xOffset,
+        yOffset,
+        width,
+        height,
+        canvasX,
+        canvasY,
+        spriteWidth,
         spriteHeight
       );
     } else {
@@ -67,5 +85,24 @@ export class DrawManager {
     // this.context.lineWidth = 2;
     // this.context.strokeRect(x, y, this.image.width, this.image.height);
     this.context.restore();
+  }
+
+  canvasX(
+    x: number,
+    extraPics: number,
+    extra?: "beginX" | "beginY" | "endX" | "endY"
+  ) {
+    // if (extra === "beginX") {
+    //   console.log("beginX", x, extraPics);
+    // }
+    return extra === "beginX" ? x - extraPics - 2 : x;
+  }
+
+  canvasY(
+    y: number,
+    extraPics: number,
+    extra?: "beginX" | "beginY" | "endX" | "endY"
+  ) {
+    return extra === "beginY" ? y - extraPics : y;
   }
 }

@@ -21,7 +21,7 @@ body {
 .btn-primary {
   min-width: 12rem;
   min-height: 3rem;
-  margin: 1rem
+  margin: 1rem;
 }
 
 .btn:hover {
@@ -74,6 +74,7 @@ body {
 }
 
 #game-div {
+  image-rendering: pixelated;
   display: flex;
   flex-direction: column;
   justify-content: center;

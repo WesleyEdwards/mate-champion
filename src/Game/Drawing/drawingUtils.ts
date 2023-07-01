@@ -102,14 +102,20 @@ export const spriteMap = {
     left: 1,
     rightUp: 2,
     leftUp: 3,
-    rightAttack: 3,
-    leftAttack: 4.5,
-    rightUpAttack: { x: 0, y: 1, height: 1.5 },
-    leftUpAttack: { x: 1, y: 1, height: 1.5 },
+    rightAttack: { x: 4, y: 0, height: 1, width: 1.5 },
+    leftAttack: { x: 5.5, y: 0, height: 1, width: 1.5, extra: "beginX" },
+    rightUpAttack: { x: 0, y: 1, height: 1.5, width: 1, extra: "beginY" },
+    leftUpAttack: { x: 1, y: 1, height: 1.5, width: 1, extra: "beginY" },
   },
 } satisfies Record<Drawable, SpriteMap>;
 
-type SpritePicInfo = { x: number; y: number; height: number };
+type SpritePicInfo = {
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+  extra?: "beginX" | "beginY" | "endX" | "endY"; // default is "endX"
+};
 
 export function isSpritePicInfo(x: any): x is SpritePicInfo {
   return (
