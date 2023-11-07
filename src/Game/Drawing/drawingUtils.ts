@@ -1,3 +1,7 @@
+import oopSprites from "../../assets/opp-1-sprites-1.png";
+import playerSprites from "../../assets/mate-player.png";
+import bgImageUrl from "../../assets/back-ground.png";
+
 type imageObjects =
   | "matePot"
   | "opponentLeft"
@@ -5,9 +9,6 @@ type imageObjects =
   | "bulletVert"
   | "bulletHor"
   | "package";
-
-export const bgImageUrl =
-  "./public/sprites/back-ground.png";
 
 export const instructionsUrl =
   "https://user-images.githubusercontent.com/97990557/210724055-8d8862af-16b0-442e-ba70-e89a389578cd.png";
@@ -17,7 +18,7 @@ const images: Record<imageObjects, string> = {
     "https://user-images.githubusercontent.com/97990557/209984096-f821db2f-2f59-4599-976f-feb1b6295194.png",
   opponentLeft:
     "https://user-images.githubusercontent.com/97990557/210022545-8ad89050-eb77-4acf-960c-ef0a727da23d.png",
-  opponentRight: "./public/sprites/opp-1-sprites-1.png",
+  opponentRight: bgImageUrl,
   bulletHor:
     "https://user-images.githubusercontent.com/97990557/210044411-c18b7c57-3883-46df-95a4-b9c21e8379ed.png",
   bulletVert:
@@ -47,8 +48,8 @@ export function makeImage(
 export type Drawable = "opponent" | "player";
 
 export const drawableMap: Record<Drawable, string> = {
-  opponent: "./public/sprites/opp-1-sprites-1.png",
-  player: "./public/sprites/mate-player.png",
+  opponent: oopSprites,
+  player: playerSprites,
 };
 
 export type SpriteOption =

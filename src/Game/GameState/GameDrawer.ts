@@ -1,4 +1,4 @@
-import { bgImageUrl } from "../Drawing/drawingUtils";
+import bgImageUrl from "../../assets/back-ground.png";
 import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
@@ -10,6 +10,8 @@ export class GameDrawer {
   context: CanvasRenderingContext2D;
   constructor(context: CanvasRenderingContext2D) {
     this.context = context;
+    context.rotate(60)
+    context.arc
   }
 
   drawBackground(

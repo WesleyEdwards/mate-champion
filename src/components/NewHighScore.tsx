@@ -12,7 +12,7 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
 
   const [error, setError] = useState<string | null>(null);
   const [disableSubmit, setDisableSubmit] = useState(false);
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState("");
 
   const handleSubmitNew = async () => {
     setDisableSubmit(true);
@@ -40,36 +40,17 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
         <br />
         To receive credit, Enter your name:
       </h3>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "1rem",
-            alignItems: "center",
-          }}
-        >
+      <div className="vertical-flex" style={{ gap: "1rem" }}>
+        <div className="horizontal-flex" style={{ gap: "1rem" }}>
           <input
-            style={{
-              padding: "0.5rem",
-            }}
+            style={{ padding: "0.5rem" }}
             type="text"
-            value={name || ""}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <button
-            className={
-              name?.length === 0 || disableSubmit ? "btn-disabled" : "btn"
-            }
             style={{ padding: "0.5rem" }}
-            disabled={name?.length === 0 || disableSubmit}
+            disabled={name.length === 0 || disableSubmit}
             onClick={handleSubmitNew}
             type="submit"
           >

@@ -1,21 +1,30 @@
 body {
   margin: 0px;
-}
-
-.green-text {
-  color: green;
   font-family: "Courier New", Courier, monospace;
 }
-
-.btn {
+canvas {
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px green;
+}
+button {
   background-color: green;
   border-radius: 0.5rem;
   min-width: 8rem;
   cursor: pointer;
   font-size: 1rem;
+  min-height: 3rem;
   border: 1px solid black;
-  font-family: "Courier New", Courier, monospace;
   transition: 0.3s;
+  font-family: "Courier New", Courier, monospace;
+}
+
+input {
+  font-family: "Courier New", Courier, monospace;
+  font-size: large;
+}
+
+.green-text {
+  color: green;
 }
 
 .btn-primary {
@@ -27,19 +36,14 @@ body {
 .btn:hover {
   background-color: grey;
 }
-.btn-disabled {
-  background-color: green;
-  min-width: 12rem;
-  min-height: 3rem;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid black;
-  font-family: "Courier New", Courier, monospace;
+
+.btn:disabled {
+  background-color: grey;
+  cursor: unset
 }
 
 .red-text {
   color: red;
-  font-family: "Courier New", Courier, monospace;
 }
 
 #instructions {
@@ -81,7 +85,8 @@ body {
   padding-block: 1rem;
   width: 50%;
   min-width: 32rem;
-  border-radius: 1rem;
+  max-width: 48rem;
+  border-radius: 10px;
 }
 
 .original-game {

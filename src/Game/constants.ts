@@ -46,23 +46,16 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const PACKAGE_WORTH = 3;
 
-export const emptyStats: PlayStats = {
+
+export const emptyStats = {
   score: 0,
-  lives: 1,
+  lives: 3,
   level: 1,
-  ammo: 50,
+  ammo: 20,
 };
 
-export const firebaseCollection = "scores-test";
-
-// export const emptyStats = {
-//   score: 0,
-//   lives: 3,
-//   level: 1,
-//   ammo: 20,
-// };
-
 // export const firebaseCollection = "scores";
+export const firebaseCollection = "scores-test";
 
 export const listOfColors = [
   "springgreen",

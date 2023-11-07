@@ -63,9 +63,9 @@ function App() {
                 <button className="btn" onClick={() => setScreen("highScores")}>
                   High Scores
                 </button>
-                <button className="btn" onClick={() => setScreen("settings")}>
+                {/* <button className="btn" onClick={() => setScreen("settings")}>
                   Settings
-                </button>
+                </button> */}
                 <button className="btn" onClick={() => setScreen("controls")}>
                   Controls
                 </button>
@@ -81,7 +81,10 @@ function App() {
               score={stats.score}
               scores={scores}
               playerPrevScore={playerScore}
-              mainMenu={() => setScreen("home")}
+              mainMenu={() => {
+                setStats({ ...emptyStats });
+                setScreen("home");
+              }}
             />
           )}
           {screen === "controls" && (
