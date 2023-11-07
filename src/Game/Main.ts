@@ -1,75 +1,29 @@
-import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "./constants";
+import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
 import { SetUI } from "./models";
 
-export function doEverything(setUI: SetUI) {
-  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-  canvas.width = MAX_CANVAS_WIDTH;
+export function enterGameLoop(setUI: SetUI) {
+  const { canvas, context } = getCanvasContext();
+  const gameState: GameState = new GameState(setUI, context);
 
-  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+  function gameLoop(timeStamp: number) {
+    if (gameState.isWinState("lose")) return handleLose();
 
-  let requestId: number | undefined = undefined;
+    gameState.update(timeStamp);
+    gameState.render();
 
-  const gameState = new GameState(setUI);
-
-  function enterGameLoop(first?: boolean) {
-    gameState.reset(first);
-    gameState.enterGame();
-    gameState.setGameState("playing");
-    canvas.height = MAX_CANVAS_HEIGHT;
-    loop();
-  };
-
-  enterGameLoop(true);
-
-  function loop() {
-    requestId = undefined;
-
-    if (gameState.isLost()) {
-      canvas.height = 0;
-      const score = gameState.getScore();
-      setUI.setShowHighScoreDiv(score);
-      stop();
-      return;
-    }
-
-    if (gameState.isNextLevel()) {
-      context.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
-      context.font = "60px Courier";
-      context.fillText(
-        `Level ${gameState.getLevel()}`,
-        MAX_CANVAS_WIDTH / 3,
-        MAX_CANVAS_HEIGHT / 2
-      );
-      stop();
-      handleNextLevel();
-      return;
-    }
-
-    gameState.updateEverything();
-    gameState.calcInteractions();
-    gameState.drawEverything(context);
-
-    start();
+    requestAnimationFrame(gameLoop);
   }
 
-  function start() {
-    if (!requestId) {
-      requestId = window.requestAnimationFrame(loop);
-    }
+  function handleLose() {
+    setUI.handleLose();
+    displayCanvas(false, canvas);
   }
 
-  function stop() {
-    if (requestId) {
-      window.cancelAnimationFrame(requestId);
-      requestId = undefined;
-    }
+  function startGame() {
+    displayCanvas(true, canvas);
+    requestAnimationFrame(gameLoop);
   }
 
-  function handleNextLevel() {
-    setTimeout(() => {
-      enterGameLoop();
-      start();
-    }, 2000);
-  }
+  startGame();
 }

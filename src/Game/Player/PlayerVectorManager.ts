@@ -1,12 +1,18 @@
-import { MAX_CANVAS_HEIGHT } from "../constants";
-import { CharAction, Coordinates } from "../models";
+import {
+  MAX_CANVAS_HEIGHT,
+  PLAYER_INIT_POS,
+  PLAYER_JUMP_SPEED,
+  PLAYER_MOVE_SPEED,
+  PLAYER_RADIUS,
+} from "../constants";
+import { CharAction } from "../models";
 import { CharVectorManager } from "../VectorManager/CharVectorManager";
 import { PlayerDirection } from "./models";
 
 export class PlayerVectorManager extends CharVectorManager {
   facing: PlayerDirection;
-  constructor(pos: Coordinates, radius: number, moveSpeed: number) {
-    super(pos, moveSpeed, radius);
+  constructor() {
+    super({ ...PLAYER_INIT_POS }, PLAYER_MOVE_SPEED, PLAYER_RADIUS);
     this.facing = "right";
   }
 
@@ -25,7 +31,8 @@ export class PlayerVectorManager extends CharVectorManager {
       this.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
     if (action === "Jump" && this.velY === 0 && jumps < 1) {
-      this.setVelY(-15);
+      this.setVelY(PLAYER_JUMP_SPEED);
+      this.setPosY(this.posY - 1);
       setJumps((jumps += 1));
     }
     if (this.velY > 0) setJumps(0);

@@ -1,58 +1,42 @@
 import { BulletVector } from "./BulletVector";
-import { bulletSpeed } from "../constants";
+import { BULLET_RADIUS, BULLET_SPEED } from "../constants";
 import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { Coordinates, HasPosition, VagueFacing } from "../models";
-
-const bulletRadius = 15;
-
-function getDirection(dir: VagueFacing): Coordinates {
-  if (dir === "left") return { x: -10, y: 0 };
-  if (dir === "right") return { x: 10, y: 0 };
-  return { x: 0, y: -10 };
-}
-
-function calcImage(dir: VagueFacing): MCImage {
-  const widthHeight = bulletRadius * 2;
-  if (dir === "left" || dir === "right") {
-    return makeImage(widthHeight, widthHeight, "bulletHor");
-  }
-  return makeImage(widthHeight, widthHeight, "bulletVert");
-}
+import { bulletImageType } from "./BulletDrawer";
 
 export class Bullet implements HasPosition {
   vector: BulletVector;
   position: Coordinates;
   velocity: Coordinates;
-  bulletImage: MCImage;
-  radius: number;
+  imageType: bulletImageType;
 
   constructor(pos: Coordinates, direction: VagueFacing) {
-    this.vector = new BulletVector(pos, bulletSpeed, bulletRadius);
+    this.vector = new BulletVector(pos);
     this.position = pos;
     this.velocity = getDirection(direction);
-    this.bulletImage = calcImage(direction);
-    this.radius = bulletRadius;
+    this.imageType = calcImage(direction);
   }
 
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(
-      this.bulletImage.image,
-      this.position.x - this.radius,
-      this.position.y - this.radius,
-      this.bulletImage.width,
-      this.bulletImage.height
-    );
-  }
-
-  update() {
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
+  update(elapsedTime: number) {
+    this.position.x += this.velocity.x * elapsedTime;
+    this.position.y += this.velocity.y * elapsedTime;
   }
 
   get posCenter() {
     return {
-      x: this.position.x + bulletRadius,
-      y: this.position.y + bulletRadius,
+      x: this.position.x + BULLET_RADIUS,
+      y: this.position.y + BULLET_RADIUS,
     };
   }
+}
+
+function getDirection(dir: VagueFacing): Coordinates {
+  if (dir === "left") return { x: -BULLET_SPEED, y: 0 };
+  if (dir === "right") return { x: BULLET_SPEED, y: 0 };
+  return { x: 0, y: -BULLET_SPEED };
+}
+
+function calcImage(dir: VagueFacing): bulletImageType {
+  if (dir === "left" || dir === "right") return "bulletHor";
+  return "bulletVert";
 }

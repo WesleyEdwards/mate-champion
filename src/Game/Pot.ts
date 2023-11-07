@@ -5,22 +5,25 @@ import { StaticObject } from "./models";
 
 export class Pot implements StaticObject {
   vector: PotVector;
-  color: string = "green";
   image: HTMLImageElement = potImage.image;
   canMoveBelow: boolean = false;
+  context: CanvasRenderingContext2D;
 
-  constructor() {
+  constructor(context: CanvasRenderingContext2D) {
+    this.context = context;
     this.vector = new PotVector(
-      {
-        x: END_POS + 750,
-        y: 50,
-      },
+      { x: END_POS + 750, y: 50 },
       potImage.width,
       potImage.height
     );
   }
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(this.image, this.vector.posX, this.vector.posY);
+
+  draw() {
+    this.context.drawImage(this.image, this.vector.posX, this.vector.posY);
+  }
+
+  reset() {
+    this.vector.setPosX(END_POS + 750);
   }
 }
 

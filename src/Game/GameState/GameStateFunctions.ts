@@ -1,11 +1,6 @@
 import { Bullet } from "../Bullet/Bullet";
-import {
-  INCREMENT_VALUE,
-  playerConstants,
-  MAX_CANVAS_WIDTH,
-  MAX_CANVAS_HEIGHT,
-  END_POS,
-} from "../constants";
+import { INCREMENT_VALUE, BULLET_RADIUS, initialKeyStatus } from "../constants";
+import { debounceLog } from "../utils";
 import {
   HasPosition,
   Keys,
@@ -13,15 +8,14 @@ import {
   Coordinates,
   StaticObject,
 } from "../models";
-import { ObjectManager } from "./ObjectManager";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Package } from "../Bullet/Package";
 
 export function updateWithPlayer<T extends HasPosition>(
   keys: Keys,
-  player: Player,
   scrollOffset: number,
+  player: Player,
   objects: Array<T[]>
 ): void {
   const objList = objects.flat();
@@ -42,44 +36,24 @@ export function calcPlatColl<T extends Character>(
   platform: StaticObject,
   char: T
 ) {
+  if (platform.canMoveBelow && char.vector.isMovingDown) {
+    return;
+  }
   if (
-    char.vector.bottomPos <= platform.vector.posY &&
-    char.vector.bottomPos + char.vector.velY >= platform.vector.posY &&
-    char.vector.rightPos >= platform.vector.posX &&
-    char.vector.posX <= platform.vector.posX + platform.vector.width
+    char.vector.rightPos < platform.vector.posX ||
+    char.vector.posX > platform.vector.posX + platform.vector.width
   ) {
-    if (platform.canMoveBelow && char.vector.isMovingDown) {
-      return;
-    }
+    return;
+  }
+
+  const previous = char.vector.prevPosY + char.vector.height;
+  const recent = char.vector.posY + char.vector.height;
+  if (recent >= platform.vector.posY && previous <= platform.vector.posY) {
     char.setPosY(platform.vector.posY - char.vector.height);
   }
 }
-export function calcPlatPackageColl(
-  platform: StaticObject,
-  matePackage: Package
-) {
-  if (
-    matePackage.vector.bottomPos <= platform.vector.posY &&
-    matePackage.vector.bottomPos + matePackage.velocity.y >=
-      platform.vector.posY &&
-    matePackage.vector.rightPos >= platform.vector.posX &&
-    matePackage.vector.posX <= platform.vector.posX + platform.vector.width
-  ) {
-    matePackage.setPosY(platform.vector.posY - matePackage.vector.height);
-  }
-}
 
-export function checkIfPlayerDies(
-  player: Player,
-  opponents: Character[]
-): boolean {
-  if (player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
-  return opponents.some((opp) =>
-    areTouching(player, opp.vector.posCenter, playerConstants.radius * 2)
-  );
-}
-
-function areTouching<T extends HasPosition>(
+export function areTouching<T extends HasPosition>(
   objectA: T,
   where: Coordinates,
   dist: number
@@ -122,7 +96,7 @@ export function updateLiveStatus(
         areTouching(
           opp,
           bullet.posCenter,
-          bullet.radius + opp.vector.radius + 10
+          BULLET_RADIUS + opp.vector.radius + 10
         )
       ) {
         shanked.push(opp);
@@ -137,8 +111,8 @@ export function updateLiveStatus(
 export function updatePackageStatus(
   player: Player,
   packages: Package[]
-): Package[] {
-  return packages.filter((p) => {
+): Package | undefined {
+  return packages.find((p) => {
     if (
       areTouching(
         player,
@@ -155,43 +129,26 @@ export function updatePackageStatus(
   });
 }
 
-export function drawComponents(
-  context: CanvasRenderingContext2D,
-  objects: ObjectManager
-) {
-  const { platforms, opponents, player, pot, bullets, matePackages } = objects;
-  context.fillStyle = "white";
-  context.fillRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
-  context.fillStyle = "red";
-  context.fillRect(-100, MAX_CANVAS_HEIGHT - 5, END_POS + 100, 5);
-
-  platforms.forEach((plat) => plat.draw(context));
-  opponents.forEach((opponent) => opponent.draw(context));
-  player.draw(context);
-  bullets.forEach((bullet) => bullet.draw(context));
-  matePackages.forEach((p) => p.draw(context));
-
-  pot.draw(context);
-}
-
-export function addEventListeners(keys: Keys) {
+export function addEventListeners(): Keys {
+  const keys = { ...initialKeyStatus };
   window.addEventListener("keydown", ({ code }) => {
-    if (code === "KeyW") keys.up = true;
-    if (code === "KeyD") keys.right = true;
-    if (code === "KeyA") keys.left = true;
-    if (code === "KeyS") keys.down = true;
+    if (code === "KeyW" || code === "ArrowUp") keys.up = true;
+    if (code === "KeyD" || code === "ArrowRight") keys.right = true;
+    if (code === "KeyA" || code === "ArrowLeft") keys.left = true;
+    if (code === "KeyS" || code === "ArrowDown") keys.down = true;
     if (code === "Space") keys.jump = true;
     if (code === "KeyJ") keys.shoot = true;
     if (code === "KeyK") keys.shank = true;
   });
 
   window.addEventListener("keyup", ({ code }) => {
-    if (code === "KeyW") keys.up = false;
-    if (code === "KeyD") keys.right = false;
-    if (code === "KeyA") keys.left = false;
-    if (code === "KeyS") keys.down = false;
+    if (code === "KeyW" || code === "ArrowUp") keys.up = false;
+    if (code === "KeyD" || code === "ArrowRight") keys.right = false;
+    if (code === "KeyA" || code === "ArrowLeft") keys.left = false;
+    if (code === "KeyS" || code === "ArrowDown") keys.down = false;
     if (code === "Space") keys.jump = false;
     if (code === "KeyJ") keys.shoot = false;
     if (code === "KeyK") keys.shank = false;
   });
+  return keys;
 }

@@ -1,3 +1,5 @@
+import { PlayStats } from "./constants";
+
 export type CharAction =
   | "MoveRight"
   | "MoveLeft"
@@ -12,13 +14,8 @@ export interface Coordinates {
 }
 
 export interface SetUI {
-  setLevel: (level: number) => void;
-  setLives: (lives: number | undefined) => void;
-  setScore: (score: number) => void;
-  setAmmo: (ammo: number) => void;
-  setDisabledPlay: (disabled: boolean) => void;
-  setShowInstructions: (show: boolean) => void;
-  setShowHighScoreDiv: (score: number | undefined) => void;
+  modifyStats: (stats: Partial<PlayStats>) => void;
+  handleLose: () => void;
 }
 
 export interface HasPosition {
@@ -38,11 +35,12 @@ export interface VectorMan {
   posCenter: Coordinates;
 }
 
-export interface ObjVectorMan extends VectorMan {}
 export interface CharVectorMan extends VectorMan {
   velocity: Coordinates;
   velY: number;
   velX: number;
+  prevPosX: number;
+  prevPosY: number;
   isMovingDown: boolean;
 }
 
@@ -66,13 +64,6 @@ export interface Keys {
   jump: boolean;
   shoot: boolean;
   shank: boolean;
-}
-
-export interface GameStats {
-  level: number;
-  score: number;
-  lives: number;
-  ammo: number;
 }
 
 export interface PlayerScore {

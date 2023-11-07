@@ -5,12 +5,23 @@ export class CharVectorManager extends BaseVectorMan {
   velocity: Coordinates;
   radius: number;
   moveSpeed: number;
+  prevPosX: number;
+  prevPosY: number;
   constructor(pos: Coordinates, moveSpeed: number, radius: number) {
     super(pos, radius * 2, radius * 2);
+    this.prevPosX = pos.x;
+    this.prevPosY = pos.y;
     this.position = pos;
     this.velocity = { x: moveSpeed, y: 0 };
     this.radius = radius;
     this.moveSpeed = moveSpeed;
+  }
+
+  update(elapsedTime: number) {
+    this.prevPosX = this.position.x;
+    this.prevPosY = this.position.y;
+    this.position.x += this.velX * elapsedTime;
+    this.position.y += this.velY * elapsedTime;
   }
 
   stopY(yPos: number) {

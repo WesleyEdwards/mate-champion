@@ -21,9 +21,14 @@ async function getUsers(name: string): Promise<QuerySnapshot<DocumentData>> {
   return querySnapshot;
 }
 
-export const userExists = async (name: string): Promise<DocumentData[]> => {
+export async function userAlreadyExists(name: string): Promise<boolean> {
   const querySnapshot = await getUsers(name);
-  const docs = querySnapshot.docs.map((doc) => doc.data());
+  return !querySnapshot.empty;
+}
+
+export const playerPrevScore = async (name: string): Promise<PlayerScore> => {
+  const querySnapshot = await getUsers(name);
+  const docs = querySnapshot.docs.map((doc) => doc.data())?.[0] as PlayerScore;
   return docs;
 };
 
@@ -54,22 +59,20 @@ export const fetchPlayerScores = async (): Promise<PlayerScore[]> => {
     .splice(0, numberDisplayed);
 };
 
-export const isHighScore = async (score: number): Promise<boolean> => {
-  const scores = await fetchPlayerScores();
-
+export const isHighScore = (
+  score: number,
+  scores: PlayerScore[],
+  prevScore?: PlayerScore
+): boolean => {
   if (
-    scores.every((playerScore) => playerScore.score > score) &&
+    scores.every((s) => s.score > score) &&
     scores.length >= numberDisplayed
   ) {
     return false;
   }
 
-  const name = localStorage.getItem("name");
-  if (name) {
-    const users = await userExists(name!);
-    if (users) {
-      return users.every((user) => user.score < score);
-    }
+  if (prevScore) {
+    return prevScore.score < score;
   }
 
   return scores.some((playerScore) => playerScore.score < score);

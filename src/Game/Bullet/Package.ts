@@ -7,27 +7,19 @@ import { HasPosition } from "../models";
 export class Package implements HasPosition {
   vector: PackageVector;
   image: MCImage = packageImage;
+  platform: number;
 
-  constructor(xPos: number) {
+  constructor(xPos: number, platsUnder: number[]) {
     this.vector = new PackageVector({ x: xPos, y: 100 }, 1, packageImage.width);
+
+    this.platform = Math.min(...platsUnder);
   }
 
-  update() {
-    this.position.y += this.velocity.y;
-    this.velocity.y += GRAVITY;
-  }
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.drawImage(
-      this.image.image,
-      this.position.x,
-      this.position.y,
-      this.image.width,
-      this.image.height
-    );
-  }
+  update(elapsedTime: number) {
+    if (this.bottomPos >= this.platform) return;
 
-  setPosY(num: number) {
-    return this.vector.stopY(num);
+    this.position.y += this.velocity.y * elapsedTime;
+    this.velocity.y += GRAVITY * elapsedTime;
   }
 
   get bottomPos() {
@@ -48,10 +40,6 @@ export class Package implements HasPosition {
 
   get velocity() {
     return this.vector.velocity;
-  }
-
-  get moveDown() {
-    return false;
   }
 }
 
