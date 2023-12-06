@@ -46,7 +46,6 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
 
 export const PACKAGE_WORTH = 3;
 
-
 export const emptyStats = {
   score: 0,
   lives: 3,
@@ -86,14 +85,12 @@ export type StatsManagerInfo = {
   shot: boolean;
 };
 
-export type LevelInfo = {
-  isCaught: boolean;
-  nextLevel: boolean;
-};
-
 export type UpdateStatus = {
   statsInfo: StatsManagerInfo;
-  levelInfo: LevelInfo;
+  levelInfo: {
+    isCaught: boolean;
+    nextLevel: boolean;
+  };
 };
 
 export type PlayStats = {

@@ -1,6 +1,4 @@
-import { PLAT_FREQUENCY } from "../constants";
 import { StaticObject } from "../models";
-import { generateRandomInt } from "../utils";
 import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
 
 const PLAT_Y_MIN = 100;
@@ -9,33 +7,24 @@ const PLAT_WIDTH_MIN = 200;
 const PLAT_WIDTH_MAX = 500;
 const TOTAL_HEIGHT = 576;
 
-type PlatPosition = "top" | "middle";
+export type PlatProps = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+};
 
 export class Platform implements StaticObject {
   color: string;
   vector: ObjVectorManager;
   canMoveBelow: boolean = true;
 
-  constructor(
-    xPos: number,
-    sectionY: PlatPosition,
-    color?: string,
-    special?: boolean
-  ) {
-    if (special) {
-      this.vector = new ObjVectorManager({ x: 100, y: 150 }, 75, 40);
-    } else {
-      this.vector = new ObjVectorManager(
-        {
-          x: getXPos(xPos),
-          y: getYPos(sectionY),
-        },
-        generateRandomInt(PLAT_WIDTH_MIN, PLAT_WIDTH_MAX),
-        40
-      );
-    }
-    this.color = color ?? "green";
+  constructor({ x, y, width, height, color }: PlatProps) {
+    this.vector = new ObjVectorManager({ x, y }, width, height);
+    this.color = color;
   }
+
   draw(canvas: CanvasRenderingContext2D) {
     canvas.fillStyle = this.color;
     canvas.strokeStyle = "black";
@@ -54,19 +43,4 @@ export class Platform implements StaticObject {
       this.vector.height
     );
   }
-}
-
-export function getYPos(sectionY: PlatPosition) {
-  if (sectionY === "top") {
-    return generateRandomInt(PLAT_Y_MIN, TOTAL_HEIGHT / 2);
-  }
-  if (sectionY === "middle") {
-    return generateRandomInt(TOTAL_HEIGHT / 2, TOTAL_HEIGHT - 100);
-  }
-
-  return PLAT_Y_MAX;
-}
-
-export function getXPos(xPos: number) {
-  return xPos + generateRandomInt(0, PLAT_FREQUENCY);
 }

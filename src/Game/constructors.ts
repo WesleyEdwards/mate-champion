@@ -1,8 +1,10 @@
-import { listOfColors, NUM_PLATFORMS, END_POS } from "./constants";
+import { END_POS } from "./constants";
 import { StaticObject } from "./models";
 import { Floor } from "./Platform/Floor";
 import { Platform } from "./Platform/Platform";
+import { levelOneInfo } from "./level-info/1-levelInfo";
 import { generateRandomInt } from "./utils";
+import { getLevelInfo } from "./level-info/levelInfo";
 
 export function createBlocks(level: number): StaticObject[] {
   const blocks = createPlatforms(level);
@@ -11,14 +13,9 @@ export function createBlocks(level: number): StaticObject[] {
 }
 
 function createPlatforms(level: number): Platform[] {
-  const platColor = listOfColors[(level - 1) % listOfColors.length];
-  const plats = new Array(NUM_PLATFORMS).fill(null).map((_, i) => {
-    const sectionY = i % 2 === 0 ? "top" : "middle";
-    return new Platform(END_POS - i * 150, sectionY, platColor);
-  });
-  return plats.concat(
-    new Platform(END_POS - NUM_PLATFORMS * 150, "top", platColor, true)
-  );
+  console.log(getLevelInfo(level));
+  const { platforms, platformColor } = getLevelInfo(level);
+  return platforms.map((p) => new Platform({ ...p, color: platformColor }));
 }
 
 function createFloor(level: number): Floor[] {
