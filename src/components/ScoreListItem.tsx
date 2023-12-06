@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { PlayerScore } from "../Game/models";
-import { MHTypography } from "./MHComponents.tsx/MHTypography";
 import "./HighScores.css";
 
 interface ScoreListItemProps {
@@ -15,14 +14,15 @@ export const ScoreListItem: FC<ScoreListItemProps> = (props) => {
       style={{
         display: "flex",
         flexDirection: "row",
-        gap: "1rem",
+        justifyContent: "space-between",
+        alignItems: "center",
       }}
     >
       <div
         className="score-list-item green-text"
         title={score.name}
       >{`${num} - ${score.name}`}</div>
-      <MHTypography>{`(${score.score})`}</MHTypography>
+      <div className="green-text">{score.score}</div>
     </div>
   );
 };

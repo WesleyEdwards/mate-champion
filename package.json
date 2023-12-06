@@ -6,6 +6,8 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
+    "deploy": "firebase deploy --only hosting",
+    "deploy:test": "firebase hosting:channel:deploy preview_name",
     "preview": "vite preview"
   },
   "dependencies": {

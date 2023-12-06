@@ -39,7 +39,7 @@ input {
 
 .btn:disabled {
   background-color: grey;
-  cursor: unset
+  cursor: unset;
 }
 
 .red-text {
@@ -69,25 +69,7 @@ input {
   gap: 1rem;
 }
 
-#root-div {
-  background-color: #000000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 
-#game-div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-block: 1rem;
-  width: 50%;
-  min-width: 32rem;
-  max-width: 48rem;
-  border-radius: 10px;
-}
 
 .original-game {
   margin: 1rem;

@@ -8,7 +8,7 @@ type ControlsProps = { mainMenu: () => void };
 export const Controls: FC<ControlsProps> = ({ mainMenu }) => {
   return (
     <>
-      <StackHor style={{ justifyContent: "space-between" }}>
+      <StackHor>
         <span className="material-icons back-button" onClick={mainMenu}>
           {"arrow_back"}
         </span>

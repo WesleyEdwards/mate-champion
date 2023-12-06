@@ -39,11 +39,27 @@ function App() {
 
   return (
     <>
-      <div id="root-div">
+      <div
+        style={{
+          backgroundColor: "#000000",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100dvh",
+        }}
+      >
         <div
-          id={"game-div"}
           style={{
             backgroundColor: playing ? "#000000" : "#212121",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "1rem",
+            minWidth: "32rem",
+            borderRadius: "10px",
+            overflowY: "auto",
           }}
         >
           <h1 className="green-text" style={{ margin: "1rem" }}>
@@ -96,9 +112,7 @@ function App() {
 
           <div>
             <canvas
-              style={{
-                height: playing ? undefined : "0px",
-              }}
+              style={{ height: playing ? undefined : "0px" }}
               id="canvas"
             ></canvas>
 
