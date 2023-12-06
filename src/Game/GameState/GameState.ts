@@ -1,4 +1,4 @@
-import { winState, DISPLAY_LEVEL_TIME } from "../constants";
+import { WinState, DISPLAY_LEVEL_TIME } from "../constants";
 import { addEventListeners, updateWithPlayer } from "./GameStateFunctions";
 import { Keys, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
@@ -6,7 +6,7 @@ import { GameStatsManager } from "./GameStatsManager";
 import { GameDrawer } from "./GameDrawer";
 
 export class GameState {
-  private winState: winState = "initial";
+  private winState: WinState = "initial";
   private objectManager: ObjectManager;
   private keys: Keys;
   private setUI: SetUI;
@@ -58,7 +58,7 @@ export class GameState {
     }
   }
 
-  isWinState(state: winState): boolean {
+  isWinState(state: WinState): boolean {
     return this.winState === state;
   }
 

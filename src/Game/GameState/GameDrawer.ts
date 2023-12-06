@@ -3,7 +3,7 @@ import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
   END_POS,
-  winState,
+  WinState,
 } from "../constants";
 
 export class GameDrawer {
@@ -16,7 +16,7 @@ export class GameDrawer {
 
   drawBackground(
     showMessage: boolean,
-    winState: winState,
+    winState: WinState,
     level: number,
     scrollOffset: number
   ) {
@@ -50,7 +50,7 @@ export class GameDrawer {
     this.context.fillRect(-100, MAX_CANVAS_HEIGHT - 5, END_POS + 100, 5);
   }
 
-  private displayNextLevel(winState: winState, level: number) {
+  private displayNextLevel(winState: WinState, level: number) {
     const message = winState === "loseLife" ? "Try Again" : `Level ${level}`;
     this.context.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
     this.context.font = "60px Courier";

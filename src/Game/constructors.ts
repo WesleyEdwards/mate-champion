@@ -1,4 +1,3 @@
-import { Package } from "./Bullet/Package";
 import { listOfColors, NUM_PLATFORMS, END_POS } from "./constants";
 import { StaticObject } from "./models";
 import { Floor } from "./Platform/Floor";

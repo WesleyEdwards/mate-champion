@@ -1,4 +1,4 @@
-import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH, winState } from "../constants";
+import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH, WinState } from "../constants";
 
 export function getCanvasContext(): {
   canvas: HTMLCanvasElement;
@@ -16,7 +16,7 @@ export function getCanvasContext(): {
 
 export function displayNextLevel(
   context: CanvasRenderingContext2D,
-  winState: winState,
+  winState: WinState,
   level: number
 ) {
   const message = winState === "loseLife" ? "Try Again" : `Level ${level}`;
