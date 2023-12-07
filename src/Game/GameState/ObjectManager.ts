@@ -9,35 +9,21 @@ import { MAX_CANVAS_HEIGHT, playerConst } from "../constants";
 import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
-import { UpdateStatus } from "../helpers/types";
+import { Canvas, UpdateStatus } from "../helpers/types";
 
 export class ObjectManager {
-  player: Player;
-  opponentManager: OpponentManager;
-  pot: Pot;
-  matePackManager: MatePackageManager;
-  bulletManager: BulletManager;
-  platformManager: PlatformManager;
-  canvas: CanvasRenderingContext2D;
-
-  constructor(context: CanvasRenderingContext2D) {
-    this.player = new Player(context);
-    this.bulletManager = new BulletManager(context);
-    this.opponentManager = new OpponentManager(context);
-    this.pot = new Pot(context);
-    this.platformManager = new PlatformManager(context);
-    this.matePackManager = new MatePackageManager(
-      this.platformManager.platforms,
-      context
-    );
-    this.canvas = context;
-  }
+  player: Player = new Player();
+  opponentManager: OpponentManager = new OpponentManager();
+  bulletManager: BulletManager = new BulletManager();
+  matePackManager: MatePackageManager = new MatePackageManager();
+  platformManager: PlatformManager = new PlatformManager();
+  pot: Pot = new Pot();
 
   reset(level: number) {
     this.platformManager.reset(level);
-    this.matePackManager.reset(this.platformManager.platforms);
+    this.matePackManager.reset(level);
     this.player.reset();
-    this.opponentManager.reset(this.canvas, level);
+    this.opponentManager.reset(level);
     this.pot.reset();
     this.bulletManager.reset();
   }
@@ -46,7 +32,6 @@ export class ObjectManager {
     this.player.update(keys, elapsedTime);
     this.opponentManager.update(elapsedTime);
     this.bulletManager.update(elapsedTime);
-    this.matePackManager.update(elapsedTime);
     // Calc Interactions
     this.platformManager.calcPersonColl(this.player, this.opponents);
 
@@ -109,13 +94,13 @@ export class ObjectManager {
     ];
   }
 
-  drawObjects() {
-    this.platformManager.draw();
-    this.pot.draw();
-    this.bulletManager.draw();
-    this.opponentManager.draw();
-    this.matePackManager.draw();
-    this.player.draw();
+  drawObjects(ctx: Canvas) {
+    this.platformManager.draw(ctx);
+    this.pot.draw(ctx);
+    this.bulletManager.draw(ctx);
+    this.opponentManager.draw(ctx);
+    this.matePackManager.draw(ctx);
+    this.player.draw(ctx);
   }
 
   get playerStopped(): boolean {

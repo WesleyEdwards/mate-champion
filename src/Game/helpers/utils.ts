@@ -21,7 +21,7 @@ export function vagueFacing(facing: PlayerDirection): VagueFacing {
   return facing;
 }
 
-export const initialKeyStatus: Record<keyof Keys, boolean> = {
+export const initialKeyStatus: Keys = {
   up: false,
   right: false,
   left: false,
@@ -29,6 +29,9 @@ export const initialKeyStatus: Record<keyof Keys, boolean> = {
   jump: false,
   shoot: false,
   shank: false,
+  toJump: 0,
+  toShoot: 0,
+  toShank: 0,
 };
 
 export const emptyStats = {

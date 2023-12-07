@@ -118,7 +118,7 @@ export function updatePackageStatus(
         player,
         {
           x: p.vector.posCenter.x + 30,
-          y: p.vector.posCenter.y,
+          y: p.vector.posCenter.y - p.height,
         },
         40
       )
@@ -136,9 +136,18 @@ export function addEventListeners(): Keys {
     if (code === "KeyD" || code === "ArrowRight") keys.right = true;
     if (code === "KeyA" || code === "ArrowLeft") keys.left = true;
     if (code === "KeyS" || code === "ArrowDown") keys.down = true;
-    if (code === "Space") keys.jump = true;
-    if (code === "KeyJ") keys.shoot = true;
-    if (code === "KeyK") keys.shank = true;
+    if (code === "Space") {
+      keys.jump = true;
+      keys.toJump = 1;
+    }
+    if (code === "KeyJ") {
+      keys.shoot = true;
+      keys.toShoot = 1;
+    }
+    if (code === "KeyK") {
+      keys.shank = true;
+      keys.toShank = 1;
+    }
   });
 
   window.addEventListener("keyup", ({ code }) => {

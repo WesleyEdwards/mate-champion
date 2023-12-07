@@ -4,22 +4,17 @@ import { MCImage } from "../Drawing/drawingUtils";
 import { packageImage } from "../Drawing/ImageRepos";
 import { HasPosition } from "../models";
 
+export type PackageProps = {
+  x: number;
+  y: number;
+};
+
 export class Package implements HasPosition {
   vector: PackageVector;
   image: MCImage = packageImage;
-  platform: number;
 
-  constructor(xPos: number, platsUnder: number[]) {
-    this.vector = new PackageVector({ x: xPos, y: 100 }, 1, packageImage.width);
-
-    this.platform = Math.min(...platsUnder);
-  }
-
-  update(elapsedTime: number) {
-    if (this.bottomPos >= this.platform) return;
-
-    this.position.y += this.velocity.y * elapsedTime;
-    this.velocity.y += GRAVITY * elapsedTime;
+  constructor({ x, y }: PackageProps) {
+    this.vector = new PackageVector({ x, y }, 1, packageImage.width);
   }
 
   get bottomPos() {

@@ -28,3 +28,5 @@ export type PlayStats = {
   level: number;
   ammo: number;
 };
+
+export type Canvas = CanvasRenderingContext2D

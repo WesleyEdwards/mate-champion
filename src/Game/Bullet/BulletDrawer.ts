@@ -1,31 +1,30 @@
 import { Bullet } from "./Bullet";
 import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { bulletConst } from "../constants";
+import { Canvas } from "../helpers/types";
 
 export type bulletImageType = "bulletHor" | "bulletVert";
 
 export class BulletDrawer {
-  canvas: CanvasRenderingContext2D;
   imageHor: MCImage;
   imageVert: MCImage;
-  constructor(context: CanvasRenderingContext2D) {
+  constructor() {
     const widthHeight = bulletConst.radius * 2;
-    this.canvas = context;
     this.imageHor = makeImage(widthHeight, widthHeight, "bulletHor");
     this.imageVert = makeImage(widthHeight, widthHeight, "bulletVert");
   }
 
-  draw(bullets: Bullet[]) {
+  draw(ctx: Canvas, bullets: Bullet[]) {
     bullets.forEach((b) => {
       if (b.imageType === "bulletHor")
-        this.drawHorBullet(b.position.x, b.position.y);
+        this.drawHorBullet(ctx, b.position.x, b.position.y);
       if (b.imageType === "bulletVert")
-        this.drawVertBullet(b.position.x, b.position.y);
+        this.drawVertBullet(ctx, b.position.x, b.position.y);
     });
   }
 
-  drawHorBullet(xPos: number, yPos: number) {
-    this.canvas.drawImage(
+  drawHorBullet(ctx: Canvas, xPos: number, yPos: number) {
+    ctx.drawImage(
       this.imageHor.image,
       xPos - bulletConst.radius,
       yPos - bulletConst.radius,
@@ -33,8 +32,8 @@ export class BulletDrawer {
       this.imageHor.height
     );
   }
-  drawVertBullet(xPos: number, yPos: number) {
-    this.canvas.drawImage(
+  drawVertBullet(ctx: Canvas, xPos: number, yPos: number) {
+    ctx.drawImage(
       this.imageVert.image,
       xPos - bulletConst.radius,
       yPos - bulletConst.radius,

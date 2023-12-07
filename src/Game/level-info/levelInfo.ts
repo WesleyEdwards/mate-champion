@@ -1,3 +1,5 @@
+import { PackageProps } from "../Bullet/Package";
+import { OppProps } from "../Opponent/Opponent";
 import { PlatProps } from "../Platform/Platform";
 import { levelOneInfo } from "./1-levelInfo";
 import { levelTwoInfo } from "./2-levelInfo";
@@ -6,6 +8,8 @@ import { levelFourInfo } from "./4-levelInfo";
 import { levelFiveInfo } from "./5-levelInfo";
 
 export type LevelInfo = {
+  packages: PackageProps[];
+  opponents: OppProps[];
   platforms: PlatProps[];
   floors: PlatProps[];
 };

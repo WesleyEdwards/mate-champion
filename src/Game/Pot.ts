@@ -2,15 +2,14 @@ import { BaseVectorMan } from "./VectorManager/BaseVectorMan";
 import { END_POS } from "./constants";
 import { potImage } from "./Drawing/ImageRepos";
 import { StaticObject } from "./models";
+import { Canvas } from "./helpers/types";
 
 export class Pot implements StaticObject {
   vector: PotVector;
   image: HTMLImageElement = potImage.image;
   canMoveBelow: boolean = false;
-  context: CanvasRenderingContext2D;
 
-  constructor(context: CanvasRenderingContext2D) {
-    this.context = context;
+  constructor() {
     this.vector = new PotVector(
       { x: END_POS + 750, y: 50 },
       potImage.width,
@@ -18,8 +17,8 @@ export class Pot implements StaticObject {
     );
   }
 
-  draw() {
-    this.context.drawImage(this.image, this.vector.posX, this.vector.posY);
+  draw(ctx: Canvas) {
+    ctx.drawImage(this.image, this.vector.posX, this.vector.posY);
   }
 
   reset() {

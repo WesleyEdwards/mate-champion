@@ -21,17 +21,11 @@ type DrawInfo = {
 
 export class DrawManager {
   image: HTMLImageElement;
-  context: CanvasRenderingContext2D;
   spriteInfo: SpriteMap;
   width: number;
   height: number;
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    drawable: Drawable,
-    width: number,
-    height: number
-  ) {
+  constructor(drawable: Drawable, width: number, height: number) {
     this.image = new Image();
     this.image.src = drawableMap[drawable];
     this.image.width = width;
@@ -39,11 +33,13 @@ export class DrawManager {
     this.spriteInfo = spriteMap[drawable];
     this.width = width;
     this.height = height;
-
-    this.context = context;
   }
 
-  draw(point: Coordinates, sprite: SpriteOption) {
+  draw(
+    cxt: CanvasRenderingContext2D,
+    point: Coordinates,
+    sprite: SpriteOption
+  ) {
     const { x, y } = point;
 
     const spritePic = this.spriteInfo[sprite];
@@ -54,14 +50,14 @@ export class DrawManager {
         ? this.normalSpriteInfo(x, y, spritePic)
         : this.spritePicInfo(x, y, spritePic);
 
-    this.drawSpriteImage(info);
+    this.drawSpriteImage(cxt, info);
   }
 
-  drawSpriteImage(info: DrawInfo) {
-    this.context.imageSmoothingEnabled = false;
-    this.context.imageSmoothingQuality = "high";
+  drawSpriteImage(cxt: CanvasRenderingContext2D, info: DrawInfo) {
+    cxt.imageSmoothingEnabled = false;
+    cxt.imageSmoothingQuality = "high";
     // this.context.save();
-    this.context.drawImage(
+    cxt.drawImage(
       this.image,
       info.xOffset,
       info.yOffset,

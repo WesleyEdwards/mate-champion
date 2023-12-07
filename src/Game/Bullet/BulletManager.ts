@@ -1,4 +1,5 @@
 import { PlayerVectorManager } from "../Player/PlayerVectorManager";
+import { Canvas } from "../helpers/types";
 import { Bullet } from "./Bullet";
 import { BulletDrawer } from "./BulletDrawer";
 
@@ -6,16 +7,16 @@ export class BulletManager {
   bullets: Bullet[] = [];
   bulletDrawer: BulletDrawer;
 
-  constructor(context: CanvasRenderingContext2D) {
-    this.bulletDrawer = new BulletDrawer(context);
+  constructor() {
+    this.bulletDrawer = new BulletDrawer();
   }
 
   update(elapsedTime: number) {
     this.bullets.forEach((bullet) => bullet.update(elapsedTime));
   }
 
-  draw() {
-    this.bulletDrawer.draw(this.bullets);
+  draw(ctx: Canvas) {
+    this.bulletDrawer.draw(ctx, this.bullets);
   }
 
   addBullet(playerVector: PlayerVectorManager) {

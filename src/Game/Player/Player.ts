@@ -6,20 +6,17 @@ import { Coordinates, Keys, CharAction, Character } from "../models";
 import { debounceLog, vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
+import { Canvas } from "../helpers/types";
 
 export class Player implements Character {
-  jumps: number = 0;
   shank: number = 0;
   shoot: number = 0;
   shot: boolean = false;
   vector: PlayerVectorManager = new PlayerVectorManager();
-  context: CanvasRenderingContext2D;
   drawManager: DrawManager;
 
-  constructor(context: CanvasRenderingContext2D) {
-    this.context = context;
+  constructor() {
     this.drawManager = new DrawManager(
-      context,
       "player",
       playerConst.radius * 2,
       playerConst.radius * 2
@@ -27,7 +24,6 @@ export class Player implements Character {
   }
 
   reset() {
-    this.jumps = 0;
     this.shank = 0;
     this.shoot = 0;
     this.shot = false;
@@ -37,7 +33,10 @@ export class Player implements Character {
   update(keys: Keys, elapsedTime: number) {
     this.vector.update(elapsedTime);
 
-    if (keys.jump) this.move("Jump");
+    if (keys.jump || keys.toJump > 0) {
+      this.move("Jump");
+      keys.toJump = 0;
+    }
 
     if (keys.right && this.position.x < 400) this.move("MoveRight");
     if (keys.right && this.position.x >= 400) this.move("StopX");
@@ -48,7 +47,7 @@ export class Player implements Character {
     if (!keys.right && !keys.left) this.move("StopX");
 
     if (
-      keys.shank &&
+      (keys.shank || keys.toShank > 0) &&
       Date.now() - this.shank >
         playerConst.shankTime + playerConst.shankCoolDown
     ) {
@@ -60,15 +59,18 @@ export class Player implements Character {
       ) {
         this.shank = Date.now();
       }
+      keys.toShank = 0;
     }
 
     if (
-      keys.shoot &&
+      (keys.shoot || keys.toShoot > 0) &&
       Date.now() - this.shoot > playerConst.shootCoolDown &&
       !this.shanking
     ) {
       this.shoot = Date.now();
       this.shot = true;
+      keys.shoot = false;
+      keys.toShoot = 0;
     }
 
     if (keys.up) this.setUpPos();
@@ -81,16 +83,16 @@ export class Player implements Character {
   }
 
   move(action: CharAction) {
-    this.vector.move(action, this.jumps, (num) => (this.jumps = num));
+    this.vector.move(action);
   }
 
-  draw() {
+  draw(ctx: Canvas) {
     const direction: SpriteOption = shankingImage(
       this.vector.facing,
       this.shanking
     );
 
-    this.drawManager.draw(this.position, direction);
+    this.drawManager.draw(ctx, this.position, direction);
   }
 
   private setUpPos(up: boolean = true) {

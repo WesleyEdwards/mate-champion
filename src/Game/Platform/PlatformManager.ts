@@ -1,18 +1,15 @@
 import { createBlocks } from "../constructors";
 import { calcPlatColl } from "../GameState/GameStateFunctions";
+import { Canvas } from "../helpers/types";
 import { StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 
 export class PlatformManager {
   platforms: StaticObject[] = createBlocks(1);
-  context: CanvasRenderingContext2D;
-  constructor(context: CanvasRenderingContext2D) {
-    this.context = context;
-  }
 
-  draw() {
-    this.platforms.forEach((p) => p.draw(this.context));
+  draw(ctx: Canvas) {
+    this.platforms.forEach((p) => p.draw(ctx));
   }
 
   reset(level: number) {

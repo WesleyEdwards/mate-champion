@@ -1,39 +1,45 @@
 import { Package } from "../Bullet/Package";
-import { END_POS } from "../constants";
-import { makeImage, MCImage } from "../Drawing/drawingUtils";
+import { MCImage } from "../Drawing/drawingUtils";
 import { packageImage } from "../Drawing/ImageRepos";
 import { updatePackageStatus } from "../GameState/GameStateFunctions";
-import { StaticObject } from "../models";
 import Player from "../Player/Player";
-import { generateRandomInt } from "../helpers/utils";
+import { Canvas } from "../helpers/types";
+import { createMatePackages } from "../constructors";
 
 export class MatePackageManager {
   packages: Package[];
-  context: CanvasRenderingContext2D;
   image: MCImage = packageImage;
-  constructor(plats: StaticObject[], context: CanvasRenderingContext2D) {
-    this.packages = this.createMatePackages(plats);
-    this.context = context;
+  constructor() {
+    this.packages = createMatePackages(1);
   }
 
-  update(elapsedTime: number) {
-    this.packages.forEach((p) => p.update(elapsedTime));
-  }
+  // update(elapsedTime: number) {
+  //   this.packages.forEach((p) => p.update(elapsedTime));
+  // }
 
-  draw() {
+  draw(ctx: Canvas) {
     this.packages.forEach((p) => {
-      this.context.drawImage(
+      ctx.drawImage(
         this.image.image,
         p.position.x,
-        p.position.y,
+        p.position.y - this.image.height,
+        this.image.width,
+        this.image.height
+      );
+
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(
+        p.position.x,
+        p.position.y - this.image.height,
         this.image.width,
         this.image.height
       );
     });
   }
 
-  reset(plats: StaticObject[]) {
-    this.packages = this.createMatePackages(plats);
+  reset(level: number) {
+    this.packages = createMatePackages(level);
   }
 
   getReceivedPackages(player: Player): boolean {
@@ -41,25 +47,5 @@ export class MatePackageManager {
     if (!matePackage) return false;
     this.packages.splice(this.packages.indexOf(matePackage), 1);
     return true;
-  }
-
-  private createMatePackages(plats: StaticObject[]): Package[] {
-    const packages: Package[] = [];
-    for (let i = 0; i < 3; i++) {
-      packages.push(this.createMatePackage(plats));
-    }
-    return packages;
-  }
-
-  private createMatePackage(plats: StaticObject[]): Package {
-    const placement = generateRandomInt(500, END_POS);
-    const platsUnder = plats.filter(
-      (p) =>
-        p.vector.posX < placement && p.vector.posX + p.vector.width > placement
-    );
-    return new Package(
-      placement,
-      platsUnder.map((p) => p.vector.posY)
-    );
   }
 }

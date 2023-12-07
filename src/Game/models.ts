@@ -64,6 +64,9 @@ export interface Keys {
   jump: boolean;
   shoot: boolean;
   shank: boolean;
+  toJump: 0 | 1;
+  toShoot: 0 | 1;
+  toShank: 0 | 1;
 }
 
 export interface PlayerScore {

@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { H2, StackHor } from "./MHComponents.tsx/Components";
 import "./HighScores.css";
-import { instructionsUrl } from "../Game/Drawing/drawingUtils";
+import instructions from "../assets/instructions.png";
 
 type ControlsProps = { mainMenu: () => void };
 
@@ -16,7 +16,7 @@ export const Controls: FC<ControlsProps> = ({ mainMenu }) => {
         <div style={{ width: "2rem" }}></div>
       </StackHor>
       <img
-        src={instructionsUrl}
+        src={instructions}
         alt="instructions"
         style={{ width: 250, height: 200 }}
       />
