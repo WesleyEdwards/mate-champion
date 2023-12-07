@@ -21,19 +21,6 @@ export function vagueFacing(facing: PlayerDirection): VagueFacing {
   return facing;
 }
 
-export const initialKeyStatus: Keys = {
-  up: false,
-  right: false,
-  left: false,
-  down: false,
-  jump: false,
-  shoot: false,
-  shank: false,
-  toJump: 0,
-  toShoot: 0,
-  toShank: 0,
-};
-
 export const emptyStats = {
   score: 0,
   lives: 3,

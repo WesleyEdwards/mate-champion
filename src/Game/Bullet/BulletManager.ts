@@ -12,7 +12,11 @@ export class BulletManager {
   }
 
   update(elapsedTime: number) {
-    this.bullets.forEach((bullet) => bullet.update(elapsedTime));
+    this.bullets.forEach((bullet) =>
+      bullet.isDead
+        ? this.bullets.splice(this.bullets.indexOf(bullet), 1)
+        : bullet.update(elapsedTime)
+    );
   }
 
   draw(ctx: Canvas) {

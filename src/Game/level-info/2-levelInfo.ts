@@ -36,6 +36,15 @@ export const levelTwoInfo: LevelInfo = {
     { x: 3500, y: 530, width: 760, height: 60, color: "green" },
     { x: 4500, y: 530, width: 2000, height: 60, color: "green" },
   ],
-  opponents: [],
-  packages: [],
+  opponents: [
+    { x: 1000, moveSpeed: 0.07 },
+    { x: 2000, moveSpeed: 0.07 },
+    { x: 3000, moveSpeed: 0.07 },
+    { x: 4000, moveSpeed: 0.07 },
+  ],
+  packages: [
+    { x: 1680, y: 300 },
+    { x: 2930, y: 150 },
+    { x: 4730, y: 420 },
+  ],
 };

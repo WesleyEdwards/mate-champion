@@ -3,7 +3,7 @@ export const levelOneInfo: LevelInfo = {
   platforms: [
     { x: 100, y: 150, width: 70, height: 40, color: "springgreen" },
     { x: 1080, y: 400, width: 310, height: 40, color: "springgreen" },
-    { x: 1100, y: 200, width: 200, height: 40, color: "blue" },
+    { x: 1100, y: 200, width: 200, height: 40, color: "springgreen" },
     { x: 1300, y: 290, width: 290, height: 40, color: "springgreen" },
     { x: 1840, y: 420, width: 420, height: 40, color: "springgreen" },
     { x: 2580, y: 410, width: 270, height: 40, color: "springgreen" },
@@ -20,11 +20,10 @@ export const levelOneInfo: LevelInfo = {
     { x: 2100, y: 525, width: 2200, height: 60, color: "green" },
     { x: 4500, y: 525, width: 1000, height: 60, color: "green" },
   ],
-  opponents: [],
+  opponents: [{ x: 3000, moveSpeed: 0.05 }],
   packages: [
-    { x: 700, y: 525 },
     { x: 1200, y: 200 },
-    { x: 2670, y: 410 },
+    { x: 2670, y: 525 },
     { x: 4190, y: 340 },
   ],
 };

@@ -1,3 +1,4 @@
+import { devSettings } from "../devSettings";
 import { Coordinates } from "../models";
 import {
   Drawable,
@@ -68,6 +69,17 @@ export class DrawManager {
       info.spriteWidth,
       info.spriteHeight
     );
+
+    if (devSettings.redOutline) {
+      cxt.strokeStyle = "red";
+      cxt.lineWidth = 2;
+      cxt.strokeRect(
+        info.canvasX,
+        info.canvasY + 1,
+        info.spriteWidth,
+        info.spriteHeight
+      );
+    }
     // this.context.restore();
   }
 

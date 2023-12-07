@@ -3,7 +3,7 @@ import { devSettings } from "./devSettings";
 export const MAX_CANVAS_WIDTH = 1024;
 export const MAX_CANVAS_HEIGHT = 576;
 
-export const DISPLAY_LEVEL_TIME = devSettings.showLevelScreen ? 2000 : 100;
+export const DISPLAY_LEVEL_TIME = devSettings.shortLevelScreen ? 100 : 2000;
 
 export const GRAVITY = 0.0025;
 
@@ -23,7 +23,6 @@ export const playerConst = {
 
 export const opponentConst = {
   radius: 32,
-  speedBase: 0.05,
   jumpSpeed: -0.8,
 } as const;
 

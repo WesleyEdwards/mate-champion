@@ -1,14 +1,14 @@
 import { BulletVector } from "./BulletVector";
-import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { Coordinates, HasPosition, VagueFacing } from "../models";
 import { bulletImageType } from "./BulletDrawer";
-import { bulletConst } from "../constants";
+import { bulletConst, MAX_CANVAS_WIDTH } from "../constants";
 
 export class Bullet implements HasPosition {
   vector: BulletVector;
   position: Coordinates;
   velocity: Coordinates;
   imageType: bulletImageType;
+  isDead: boolean = false;
 
   constructor(pos: Coordinates, direction: VagueFacing) {
     this.vector = new BulletVector(pos);
@@ -20,6 +20,14 @@ export class Bullet implements HasPosition {
   update(elapsedTime: number) {
     this.position.x += this.velocity.x * elapsedTime;
     this.position.y += this.velocity.y * elapsedTime;
+
+    if (
+      this.position.x > MAX_CANVAS_WIDTH ||
+      this.position.x < 0 ||
+      this.position.y < 0
+    ) {
+      this.isDead = true;
+    }
   }
 
   get posCenter() {

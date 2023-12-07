@@ -11,7 +11,7 @@ export class Pot implements StaticObject {
 
   constructor() {
     this.vector = new PotVector(
-      { x: END_POS + 750, y: 50 },
+      { x: END_POS + 750, y: 100 },
       potImage.width,
       potImage.height
     );

@@ -5,6 +5,7 @@ import { updatePackageStatus } from "../GameState/GameStateFunctions";
 import Player from "../Player/Player";
 import { Canvas } from "../helpers/types";
 import { createMatePackages } from "../constructors";
+import { devSettings } from "../devSettings";
 
 export class MatePackageManager {
   packages: Package[];
@@ -27,14 +28,16 @@ export class MatePackageManager {
         this.image.height
       );
 
-      ctx.strokeStyle = "red";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(
-        p.position.x,
-        p.position.y - this.image.height,
-        this.image.width,
-        this.image.height
-      );
+      if (devSettings.redOutline) {
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          p.position.x,
+          p.position.y - this.image.height,
+          this.image.width,
+          this.image.height
+        );
+      }
     });
   }
 

@@ -2,6 +2,7 @@ import { Bullet } from "./Bullet";
 import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { bulletConst } from "../constants";
 import { Canvas } from "../helpers/types";
+import { devSettings } from "../devSettings";
 
 export type bulletImageType = "bulletHor" | "bulletVert";
 
@@ -15,30 +16,26 @@ export class BulletDrawer {
   }
 
   draw(ctx: Canvas, bullets: Bullet[]) {
+    const { radius } = bulletConst;
     bullets.forEach((b) => {
-      if (b.imageType === "bulletHor")
-        this.drawHorBullet(ctx, b.position.x, b.position.y);
-      if (b.imageType === "bulletVert")
-        this.drawVertBullet(ctx, b.position.x, b.position.y);
-    });
-  }
+      ctx.drawImage(
+        this.imageHor.image,
+        b.position.x - radius,
+        b.position.y - radius,
+        radius * 2,
+        radius * 2
+      );
 
-  drawHorBullet(ctx: Canvas, xPos: number, yPos: number) {
-    ctx.drawImage(
-      this.imageHor.image,
-      xPos - bulletConst.radius,
-      yPos - bulletConst.radius,
-      this.imageHor.width,
-      this.imageHor.height
-    );
-  }
-  drawVertBullet(ctx: Canvas, xPos: number, yPos: number) {
-    ctx.drawImage(
-      this.imageVert.image,
-      xPos - bulletConst.radius,
-      yPos - bulletConst.radius,
-      this.imageVert.width,
-      this.imageVert.height
-    );
+      if (devSettings.redOutline) {
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          b.position.x - radius,
+          b.position.y - radius,
+          radius * 2,
+          radius * 2
+        );
+      }
+    });
   }
 }

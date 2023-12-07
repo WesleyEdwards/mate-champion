@@ -1,5 +1,4 @@
 import { Bullet } from "../Bullet/Bullet";
-import { debounceLog, initialKeyStatus } from "../helpers/utils";
 import {
   HasPosition,
   Keys,
@@ -127,37 +126,4 @@ export function updatePackageStatus(
     }
     return false;
   });
-}
-
-export function addEventListeners(): Keys {
-  const keys = { ...initialKeyStatus };
-  window.addEventListener("keydown", ({ code }) => {
-    if (code === "KeyW" || code === "ArrowUp") keys.up = true;
-    if (code === "KeyD" || code === "ArrowRight") keys.right = true;
-    if (code === "KeyA" || code === "ArrowLeft") keys.left = true;
-    if (code === "KeyS" || code === "ArrowDown") keys.down = true;
-    if (code === "Space") {
-      keys.jump = true;
-      keys.toJump = 1;
-    }
-    if (code === "KeyJ") {
-      keys.shoot = true;
-      keys.toShoot = 1;
-    }
-    if (code === "KeyK") {
-      keys.shank = true;
-      keys.toShank = 1;
-    }
-  });
-
-  window.addEventListener("keyup", ({ code }) => {
-    if (code === "KeyW" || code === "ArrowUp") keys.up = false;
-    if (code === "KeyD" || code === "ArrowRight") keys.right = false;
-    if (code === "KeyA" || code === "ArrowLeft") keys.left = false;
-    if (code === "KeyS" || code === "ArrowDown") keys.down = false;
-    if (code === "Space") keys.jump = false;
-    if (code === "KeyJ") keys.shoot = false;
-    if (code === "KeyK") keys.shank = false;
-  });
-  return keys;
 }
