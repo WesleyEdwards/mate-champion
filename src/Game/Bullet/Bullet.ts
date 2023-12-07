@@ -1,8 +1,8 @@
 import { BulletVector } from "./BulletVector";
-import { BULLET_RADIUS, BULLET_SPEED } from "../constants";
 import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { Coordinates, HasPosition, VagueFacing } from "../models";
 import { bulletImageType } from "./BulletDrawer";
+import { bulletConst } from "../constants";
 
 export class Bullet implements HasPosition {
   vector: BulletVector;
@@ -24,16 +24,16 @@ export class Bullet implements HasPosition {
 
   get posCenter() {
     return {
-      x: this.position.x + BULLET_RADIUS,
-      y: this.position.y + BULLET_RADIUS,
+      x: this.position.x + bulletConst.radius,
+      y: this.position.y + bulletConst.radius,
     };
   }
 }
 
 function getDirection(dir: VagueFacing): Coordinates {
-  if (dir === "left") return { x: -BULLET_SPEED, y: 0 };
-  if (dir === "right") return { x: BULLET_SPEED, y: 0 };
-  return { x: 0, y: -BULLET_SPEED };
+  if (dir === "left") return { x: -bulletConst.speed, y: 0 };
+  if (dir === "right") return { x: bulletConst.speed, y: 0 };
+  return { x: 0, y: -bulletConst.speed };
 }
 
 function calcImage(dir: VagueFacing): bulletImageType {

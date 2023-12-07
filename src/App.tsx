@@ -5,9 +5,10 @@ import { Instructions } from "./components/Instructions";
 import { StatsDiv } from "./components/StatsDiv";
 import { enterGameLoop } from "./Game/Main";
 import { Controls } from "./components/Controls";
-import { PlayStats, emptyStats } from "./Game/constants";
 import { useScoreData } from "./hooks/useScoreInfo";
 import Settings from "./components/Settings";
+import { emptyStats } from "./Game/helpers/utils";
+import { PlayStats } from "./Game/helpers/types";
 
 type Screen =
   | "game"

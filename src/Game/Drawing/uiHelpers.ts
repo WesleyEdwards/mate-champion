@@ -1,4 +1,5 @@
-import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH, WinState } from "../constants";
+import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../constants";
+import { WinState } from "../helpers/types";
 
 export function getCanvasContext(): {
   canvas: HTMLCanvasElement;
@@ -10,7 +11,6 @@ export function getCanvasContext(): {
   context.imageSmoothingEnabled = false;
   context.imageSmoothingQuality = "high";
 
-  
   return { canvas, context };
 }
 

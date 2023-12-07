@@ -3,8 +3,8 @@ import {
   MAX_CANVAS_WIDTH,
   MAX_CANVAS_HEIGHT,
   END_POS,
-  WinState,
 } from "../constants";
+import { WinState } from "../helpers/types";
 
 export class GameDrawer {
   context: CanvasRenderingContext2D;

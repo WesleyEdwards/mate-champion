@@ -1,8 +1,8 @@
-import { GRAVITY, MAX_CANVAS_HEIGHT, oppConstants } from "../constants";
+import { GRAVITY, MAX_CANVAS_HEIGHT, opponentConst } from "../constants";
 import { DrawManager } from "../Drawing/DrawManager";
 import { OppImages, oppImages } from "../Drawing/ImageRepos";
 import { Character, OppDirections, CharAction } from "../models";
-import { randomOutOf } from "../utils";
+import { randomOutOf } from "../helpers/utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
 
 export class Opponent implements Character {
@@ -18,13 +18,13 @@ export class Opponent implements Character {
     this.vector = new OpponentVectorManager(
       { x: xPos, y: 100 },
       moveSpeed,
-      oppConstants.radius
+      opponentConst.radius
     );
     this.drawManager = new DrawManager(
       context,
       "opponent",
-      oppConstants.radius * 2,
-      oppConstants.radius * 2
+      opponentConst.radius * 2,
+      opponentConst.radius * 2
     );
   }
 

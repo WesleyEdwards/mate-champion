@@ -1,6 +1,6 @@
 import { Bullet } from "./Bullet";
 import { makeImage, MCImage } from "../Drawing/drawingUtils";
-import { BULLET_RADIUS } from "../constants";
+import { bulletConst } from "../constants";
 
 export type bulletImageType = "bulletHor" | "bulletVert";
 
@@ -9,7 +9,7 @@ export class BulletDrawer {
   imageHor: MCImage;
   imageVert: MCImage;
   constructor(context: CanvasRenderingContext2D) {
-    const widthHeight = BULLET_RADIUS * 2;
+    const widthHeight = bulletConst.radius * 2;
     this.canvas = context;
     this.imageHor = makeImage(widthHeight, widthHeight, "bulletHor");
     this.imageVert = makeImage(widthHeight, widthHeight, "bulletVert");
@@ -27,8 +27,8 @@ export class BulletDrawer {
   drawHorBullet(xPos: number, yPos: number) {
     this.canvas.drawImage(
       this.imageHor.image,
-      xPos - BULLET_RADIUS,
-      yPos - BULLET_RADIUS,
+      xPos - bulletConst.radius,
+      yPos - bulletConst.radius,
       this.imageHor.width,
       this.imageHor.height
     );
@@ -36,8 +36,8 @@ export class BulletDrawer {
   drawVertBullet(xPos: number, yPos: number) {
     this.canvas.drawImage(
       this.imageVert.image,
-      xPos - BULLET_RADIUS,
-      yPos - BULLET_RADIUS,
+      xPos - bulletConst.radius,
+      yPos - bulletConst.radius,
       this.imageVert.width,
       this.imageVert.height
     );

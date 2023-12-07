@@ -1,5 +1,5 @@
-import { END_POS, OPP_PER_LEVEL, OPP_SPEED_BASE } from "../constants";
-import { generateRandomInt } from "../utils";
+import { END_POS, OPP_PER_LEVEL, opponentConst } from "../constants";
+import { generateRandomInt } from "../helpers/utils";
 import { Opponent } from "./Opponent";
 
 export class OpponentManager {
@@ -24,7 +24,7 @@ export class OpponentManager {
   }
 
   createOpponents(canvas: CanvasRenderingContext2D, level: number): Opponent[] {
-    const moveSpeed = OPP_SPEED_BASE + level * 0.1;
+    const moveSpeed = opponentConst.speedBase + level * 0.1;
     return new Array(OPP_PER_LEVEL * level)
       .fill(null)
       .map(

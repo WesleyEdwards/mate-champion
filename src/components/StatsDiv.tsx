@@ -1,9 +1,9 @@
 import React, { FC } from "react";
-import { PlayStats, emptyStats } from "../Game/constants";
 import { lifeImage } from "./constants";
 import { StackHor } from "./MHComponents.tsx/Components";
-import { MHButton } from "./MHComponents.tsx/MHButton";
 import { ScoreStats } from "./ScoreStats";
+import { emptyStats } from "../Game/helpers/utils";
+import { PlayStats } from "../Game/helpers/types";
 
 const widthOfDiv = 50 * emptyStats.lives;
 

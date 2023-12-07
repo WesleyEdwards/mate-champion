@@ -1,23 +1,18 @@
 import { MAX_CANVAS_HEIGHT } from "../constants";
 import { StaticObject } from "../models";
 import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
+import { PlatProps } from "./Platform";
 
 export class Floor implements StaticObject {
   color: string;
   vector: ObjVectorManager;
   canMoveBelow: boolean = false;
 
-  constructor(xPos: number, width: number, color?: string) {
-    this.vector = new ObjVectorManager(
-      {
-        x: xPos,
-        y: MAX_CANVAS_HEIGHT - 50,
-      },
-      width,
-      60
-    );
-    this.color = color ?? "green";
+  constructor({ x, y, width, color }: PlatProps) {
+    this.vector = new ObjVectorManager({ x, y }, width, 60);
+    this.color = color;
   }
+
   draw(canvas: CanvasRenderingContext2D) {
     canvas.fillStyle = this.color;
     canvas.strokeStyle = "black";

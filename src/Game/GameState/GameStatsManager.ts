@@ -1,9 +1,6 @@
-import {
-  emptyStats,
-  INCREMENT_VALUE,
-  PACKAGE_WORTH,
-  StatsManagerInfo,
-} from "../constants";
+import { INCREMENT_VALUE, packageConst } from "../constants";
+import { StatsManagerInfo } from "../helpers/types";
+import { emptyStats } from "../helpers/utils";
 
 type PlayInfo = {
   lives: number;
@@ -97,7 +94,7 @@ export class GameStatsManager {
   }
 
   addAmmo() {
-    this.uiInfo.ammo += PACKAGE_WORTH;
+    this.uiInfo.ammo += packageConst.worth;
   }
   shotAmmo() {
     this.uiInfo.ammo -= 1;

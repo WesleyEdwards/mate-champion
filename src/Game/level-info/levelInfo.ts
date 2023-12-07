@@ -1,15 +1,22 @@
 import { PlatProps } from "../Platform/Platform";
 import { levelOneInfo } from "./1-levelInfo";
 import { levelTwoInfo } from "./2-levelInfo";
+import { levelThreeInfo } from "./3-levelInfo";
+import { levelFourInfo } from "./4-levelInfo";
+import { levelFiveInfo } from "./5-levelInfo";
 
 export type LevelInfo = {
-  platformColor: string;
-  floorColor: string;
-  platforms: Omit<PlatProps, "color">[];
-  floors: Omit<PlatProps, "color">[];
+  platforms: PlatProps[];
+  floors: PlatProps[];
 };
 
-const levelsInfo: LevelInfo[] = [levelOneInfo, levelTwoInfo];
+const levelsInfo: LevelInfo[] = [
+  levelOneInfo,
+  levelTwoInfo,
+  levelThreeInfo,
+  levelFourInfo,
+  levelFiveInfo,
+];
 
 export const getLevelInfo = (level: number) =>
-  levelsInfo[level % levelsInfo.length];
+  levelsInfo[(level % levelsInfo.length) - 1];

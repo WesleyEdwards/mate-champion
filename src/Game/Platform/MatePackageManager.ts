@@ -5,7 +5,7 @@ import { packageImage } from "../Drawing/ImageRepos";
 import { updatePackageStatus } from "../GameState/GameStateFunctions";
 import { StaticObject } from "../models";
 import Player from "../Player/Player";
-import { generateRandomInt } from "../utils";
+import { generateRandomInt } from "../helpers/utils";
 
 export class MatePackageManager {
   packages: Package[];

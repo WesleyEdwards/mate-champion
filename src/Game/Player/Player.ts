@@ -1,15 +1,9 @@
 import { DrawManager } from "../Drawing/DrawManager";
 import { DrawImageInfo } from "../Drawing/ImageRepos";
 import { SpriteOption } from "../Drawing/drawingUtils";
-import {
-  GRAVITY,
-  PLAYER_RADIUS,
-  SHANK_COOL_DOWN,
-  SHANK_TIME,
-  SHOOT_COOL_DOWN,
-} from "../constants";
+import { GRAVITY, playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { debounceLog, vagueFacing } from "../utils";
+import { debounceLog, vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 
@@ -27,8 +21,8 @@ export class Player implements Character {
     this.drawManager = new DrawManager(
       context,
       "player",
-      PLAYER_RADIUS * 2,
-      PLAYER_RADIUS * 2
+      playerConst.radius * 2,
+      playerConst.radius * 2
     );
   }
 
@@ -53,7 +47,11 @@ export class Player implements Character {
 
     if (!keys.right && !keys.left) this.move("StopX");
 
-    if (keys.shank && Date.now() - this.shank > SHANK_TIME + SHANK_COOL_DOWN) {
+    if (
+      keys.shank &&
+      Date.now() - this.shank >
+        playerConst.shankTime + playerConst.shankCoolDown
+    ) {
       if (
         this.vector.isFacing("right") ||
         this.vector.isFacing("rightUp") ||
@@ -66,7 +64,7 @@ export class Player implements Character {
 
     if (
       keys.shoot &&
-      Date.now() - this.shoot > SHOOT_COOL_DOWN &&
+      Date.now() - this.shoot > playerConst.shootCoolDown &&
       !this.shanking
     ) {
       this.shoot = Date.now();
@@ -115,7 +113,7 @@ export class Player implements Character {
   }
 
   get shanking() {
-    return Date.now() - this.shank < SHANK_TIME;
+    return Date.now() - this.shank < playerConst.shankTime;
   }
   get shooting() {
     if (this.shot) {

@@ -1,12 +1,12 @@
 import { BaseVectorMan } from "../VectorManager/BaseVectorMan";
+import { bulletConst } from "../constants";
 import { Coordinates } from "../models";
-import { BULLET_RADIUS, BULLET_SPEED } from "../constants";
 
 export class BulletVector extends BaseVectorMan {
   velocity: Coordinates;
   constructor(pos: Coordinates) {
-    super(pos, BULLET_RADIUS * 2, BULLET_RADIUS * 2);
-    this.velocity = { x: BULLET_SPEED, y: 0 };
+    super(pos, bulletConst.radius * 2, bulletConst.radius * 2);
+    this.velocity = { x: bulletConst.speed, y: 0 };
   }
 
   setVelX(x: number) {

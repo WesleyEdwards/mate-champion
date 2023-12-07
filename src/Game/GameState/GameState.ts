@@ -1,9 +1,10 @@
-import { WinState, DISPLAY_LEVEL_TIME } from "../constants";
+import { DISPLAY_LEVEL_TIME } from "../constants";
 import { addEventListeners, updateWithPlayer } from "./GameStateFunctions";
 import { Keys, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
 import { GameDrawer } from "./GameDrawer";
+import { WinState } from "../helpers/types";
 
 export class GameState {
   private winState: WinState = "initial";

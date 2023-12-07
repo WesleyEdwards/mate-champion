@@ -1,6 +1,5 @@
 import { Bullet } from "../Bullet/Bullet";
-import { INCREMENT_VALUE, BULLET_RADIUS, initialKeyStatus } from "../constants";
-import { debounceLog } from "../utils";
+import { debounceLog, initialKeyStatus } from "../helpers/utils";
 import {
   HasPosition,
   Keys,
@@ -11,6 +10,7 @@ import {
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Package } from "../Bullet/Package";
+import { INCREMENT_VALUE, bulletConst } from "../constants";
 
 export function updateWithPlayer<T extends HasPosition>(
   keys: Keys,
@@ -96,7 +96,7 @@ export function updateLiveStatus(
         areTouching(
           opp,
           bullet.posCenter,
-          BULLET_RADIUS + opp.vector.radius + 10
+          bulletConst.radius + opp.vector.radius + 10
         )
       ) {
         shanked.push(opp);

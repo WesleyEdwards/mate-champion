@@ -1,4 +1,4 @@
-import { PlayStats } from "./constants";
+import { PlayStats } from "./helpers/types";
 
 export type CharAction =
   | "MoveRight"
