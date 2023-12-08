@@ -16,7 +16,7 @@ export class GameStatsManager {
   uiInfo: PlayInfo = { ...emptyStats };
   prevTime: number = 0;
   elapsedTime: number = 0;
-  scrollOffset: number = 0;
+  scrollOffsetX: number = 0;
 
   constructor() {}
 
@@ -29,7 +29,7 @@ export class GameStatsManager {
       packagesReceived,
     } = updates;
     if (moveScreenLeft) this.moveScreenLeft();
-    if (moveScreenRight && this.scrollOffset > 0) {
+    if (moveScreenRight && this.scrollOffsetX > 0) {
       this.moveScreenRight();
     }
     if (killedOpp) this.addScore(10);
@@ -67,17 +67,17 @@ export class GameStatsManager {
   }
 
   resetLevel() {
-    this.scrollOffset = 0;
+    this.scrollOffsetX = 0;
     this.timeInLevel = 0;
     this.initial = true;
   }
 
   moveScreenRight() {
-    this.scrollOffset -= INCREMENT_VALUE;
+    this.scrollOffsetX -= INCREMENT_VALUE;
   }
 
   moveScreenLeft() {
-    this.scrollOffset += INCREMENT_VALUE;
+    this.scrollOffsetX += INCREMENT_VALUE;
   }
 
   get ammo() {

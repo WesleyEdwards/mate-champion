@@ -12,12 +12,6 @@ export function getCanvasContext(): {
   context.imageSmoothingEnabled = false;
   context.imageSmoothingQuality = "high";
 
-  if (devSettings.logClickPos) {
-    canvas.addEventListener("click", (e) => {
-      console.log({ x: e.offsetX, y: e.offsetY });
-    });
-  }
-
   return { canvas, context };
 }
 

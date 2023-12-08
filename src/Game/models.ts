@@ -33,6 +33,7 @@ export interface VectorMan {
   setPosX: (newX: number) => void;
   setPosY: (newY: number) => void;
   posCenter: Coordinates;
+  absPos: (xOffset: number) => Coordinates
 }
 
 export interface CharVectorMan extends VectorMan {

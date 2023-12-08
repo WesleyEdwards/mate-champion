@@ -17,12 +17,22 @@ export class GameState {
   private stats: GameStatsManager = new GameStatsManager();
   private cxt: Canvas;
 
-  constructor(setUI: SetUI, cxt: CanvasRenderingContext2D) {
+  constructor(
+    setUI: SetUI,
+    canvas: HTMLCanvasElement,
+    cxt: CanvasRenderingContext2D
+  ) {
     this.keys = addEventListeners();
     this.objectManager = new ObjectManager();
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;
+
+    if (devSettings.logClickPos) {
+      canvas.addEventListener("click", (e) => {
+        this.logCoordinates(e);
+      });
+    }
 
     this.drawStats();
   }
@@ -45,7 +55,7 @@ export class GameState {
 
     updateWithPlayer(
       this.keys,
-      this.stats.scrollOffset,
+      this.stats.scrollOffsetX,
       this.objectManager.player,
       this.objectManager.objectsToUpdatePos
     );
@@ -57,7 +67,7 @@ export class GameState {
       this.showMessage,
       this.winState,
       this.stats.level,
-      this.stats.scrollOffset
+      this.stats.scrollOffsetX
     );
     if (!this.showMessage) {
       this.objectManager.drawObjects(this.cxt);
@@ -65,7 +75,7 @@ export class GameState {
     if (devSettings.showDevStats) {
       this.gameDrawer.showDevStats(
         this.cxt,
-        this.objectManager.player.vector.position,
+        this.objectManager.player.vector.absPos(this.stats.scrollOffsetX),
         this.objectManager.player.vector.velocity
       );
     }
@@ -104,6 +114,14 @@ export class GameState {
     this.winState = "nextLevel";
     this.stats.nextLevel();
     this.resetLevel();
+  }
+
+  logCoordinates(e: MouseEvent) {
+    console.log("Canvas", { x: e.offsetX, y: e.offsetY });
+    console.log("Abs", {
+      x: e.offsetX + this.stats.scrollOffsetX,
+      y: e.offsetY,
+    });
   }
 
   private get showMessage() {

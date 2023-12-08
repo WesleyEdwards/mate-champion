@@ -44,4 +44,11 @@ export class BaseVectorMan implements VectorMan {
       y: this.centerY,
     };
   }
+
+  absPos(xOffset: number) {
+    return {
+      x: this.position.x + xOffset,
+      y: this.position.y,
+    };
+  }
 }
