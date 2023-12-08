@@ -62,6 +62,13 @@ export class GameState {
     if (!this.showMessage) {
       this.objectManager.drawObjects(this.cxt);
     }
+    if (devSettings.showDevStats) {
+      this.gameDrawer.showDevStats(
+        this.cxt,
+        this.objectManager.player.vector.position,
+        this.objectManager.player.vector.velocity
+      );
+    }
   }
 
   isWinState(state: WinState): boolean {

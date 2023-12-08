@@ -1,4 +1,5 @@
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../constants";
+import { devSettings } from "../devSettings";
 import { WinState } from "../helpers/types";
 
 export function getCanvasContext(): {
@@ -10,6 +11,12 @@ export function getCanvasContext(): {
 
   context.imageSmoothingEnabled = false;
   context.imageSmoothingQuality = "high";
+
+  if (devSettings.logClickPos) {
+    canvas.addEventListener("click", (e) => {
+      console.log({ x: e.offsetX, y: e.offsetY });
+    });
+  }
 
   return { canvas, context };
 }

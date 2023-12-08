@@ -1,6 +1,8 @@
 import bgImageUrl from "../../assets/back-ground.png";
 import { MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT, END_POS } from "../constants";
+import { DevStats } from "../devSettings";
 import { Canvas, WinState } from "../helpers/types";
+import { Coordinates } from "../models";
 
 export class GameDrawer {
   constructor() {
@@ -38,6 +40,15 @@ export class GameDrawer {
         MAX_CANVAS_HEIGHT
       );
     }
+  }
+
+  showDevStats(cxt: Canvas, coor: Coordinates, vel: Coordinates) {
+    cxt.fillStyle = "rgba(0, 0, 0, 0.75)";
+    cxt.fillRect(0, 0, 200, 100);
+    cxt.font = "20px Courier";
+    cxt.fillStyle = "green";
+    cxt.fillText(`pos:(${Math.round(coor.x)}, ${Math.round(coor.y)})`, 10, 20);
+    cxt.fillText(`vel:(${Math.round(vel.x)}, ${Math.round(vel.y)})`, 10, 50);
   }
 
   private drawLava(cxt: Canvas) {

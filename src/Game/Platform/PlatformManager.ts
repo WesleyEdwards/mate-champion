@@ -1,6 +1,7 @@
 import { createBlocks } from "../constructors";
 import { calcPlatColl } from "../GameState/GameStateFunctions";
 import { Canvas } from "../helpers/types";
+import { debounceLog } from "../helpers/utils";
 import { StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";

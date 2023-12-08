@@ -5,21 +5,21 @@ import { getLevelInfo } from "./level-info/levelInfo";
 import { Opponent } from "./Opponent/Opponent";
 import { Package } from "./Bullet/Package";
 
-const runThing = () => {
-  const platforms = [
-    { x: 6500, y: 530, width: 900, height: 60, color: "green" },
-    { x: 5500, y: 530, width: 900, height: 60, color: "green" },
-    { x: 4500, y: 530, width: 810, height: 60, color: "green" },
-    { x: 3500, y: 530, width: 730, height: 60, color: "green" },
-    { x: 2500, y: 530, width: 890, height: 60, color: "green" },
-    { x: 1500, y: 530, width: 690, height: 60, color: "green" },
-    { x: 500, y: 530, width: 900, height: 60, color: "green" },
-    { x: -500, y: 530, width: 780, height: 60, color: "green" },
-  ];
-  const sorted = platforms.sort((a, b) => a.x - b.x);
-  console.log(sorted);
-};
-runThing()
+// const runThing = () => {
+//   const platforms = [
+//     { x: 6500, y: 530, width: 900, height: 60, color: "green" },
+//     { x: 5500, y: 530, width: 900, height: 60, color: "green" },
+//     { x: 4500, y: 530, width: 810, height: 60, color: "green" },
+//     { x: 3500, y: 530, width: 730, height: 60, color: "green" },
+//     { x: 2500, y: 530, width: 890, height: 60, color: "green" },
+//     { x: 1500, y: 530, width: 690, height: 60, color: "green" },
+//     { x: 500, y: 530, width: 900, height: 60, color: "green" },
+//     { x: -500, y: 530, width: 780, height: 60, color: "green" },
+//   ];
+//   const sorted = platforms.sort((a, b) => a.x - b.x);
+//   console.log(sorted);
+// };
+// runThing()
 
 
 export function createBlocks(level: number): StaticObject[] {
