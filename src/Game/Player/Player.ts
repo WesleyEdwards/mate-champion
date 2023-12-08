@@ -86,13 +86,13 @@ export class Player implements Character {
     this.vector.move(action);
   }
 
-  draw(ctx: Canvas) {
+  draw(cxt: Canvas) {
     const direction: SpriteOption = shankingImage(
       this.vector.facing,
       this.shanking
     );
 
-    this.drawManager.draw(ctx, this.position, direction);
+    this.drawManager.draw(cxt, this.position, direction);
   }
 
   private setUpPos(up: boolean = true) {

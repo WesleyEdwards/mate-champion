@@ -52,7 +52,7 @@ export interface Character {
 }
 
 export interface StaticObject extends HasPosition {
-  draw: (ctx: CanvasRenderingContext2D) => void;
+  draw: (cxt: CanvasRenderingContext2D) => void;
   canMoveBelow: boolean;
 }
 

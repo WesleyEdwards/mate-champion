@@ -6,6 +6,7 @@ import { GameStatsManager } from "./GameStatsManager";
 import { GameDrawer } from "./GameDrawer";
 import { Canvas, WinState } from "../helpers/types";
 import { addEventListeners } from "../helpers/eventListeners";
+import { devSettings } from "../devSettings";
 
 export class GameState {
   private winState: WinState = "initial";
@@ -14,14 +15,14 @@ export class GameState {
   private setUI: SetUI;
   private gameDrawer: GameDrawer;
   private stats: GameStatsManager = new GameStatsManager();
-  private ctx: Canvas;
+  private cxt: Canvas;
 
-  constructor(setUI: SetUI, ctx: CanvasRenderingContext2D) {
+  constructor(setUI: SetUI, cxt: CanvasRenderingContext2D) {
     this.keys = addEventListeners();
     this.objectManager = new ObjectManager();
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
-    this.ctx = ctx;
+    this.cxt = cxt;
 
     this.drawStats();
   }
@@ -52,14 +53,14 @@ export class GameState {
 
   render() {
     this.gameDrawer.drawBackground(
-      this.ctx,
+      this.cxt,
       this.showMessage,
       this.winState,
       this.stats.level,
       this.stats.scrollOffset
     );
     if (!this.showMessage) {
-      this.objectManager.drawObjects(this.ctx);
+      this.objectManager.drawObjects(this.cxt);
     }
   }
 
@@ -74,6 +75,7 @@ export class GameState {
   }
 
   private handleLoseLife() {
+    if (devSettings.noDie) return;
     this.winState = "loseLife";
     this.stats.addLives(-1);
     this.resetLevel();

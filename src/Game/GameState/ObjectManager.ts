@@ -94,13 +94,13 @@ export class ObjectManager {
     ];
   }
 
-  drawObjects(ctx: Canvas) {
-    this.platformManager.draw(ctx);
-    this.pot.draw(ctx);
-    this.bulletManager.draw(ctx);
-    this.opponentManager.draw(ctx);
-    this.matePackManager.draw(ctx);
-    this.player.draw(ctx);
+  drawObjects(cxt: Canvas) {
+    this.platformManager.draw(cxt);
+    this.pot.draw(cxt);
+    this.bulletManager.draw(cxt);
+    this.opponentManager.draw(cxt);
+    this.matePackManager.draw(cxt);
+    this.player.draw(cxt);
   }
 
   get playerStopped(): boolean {

@@ -13,8 +13,8 @@ export class OpponentManager {
     this.opponents.forEach((o) => o.update(elapsedTime));
   }
 
-  draw(ctx: Canvas) {
-    this.opponents.forEach((o) => o.draw(ctx));
+  draw(cxt: Canvas) {
+    this.opponents.forEach((o) => o.draw(cxt));
   }
 
   reset(level: number) {

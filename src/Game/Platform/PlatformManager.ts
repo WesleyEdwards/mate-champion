@@ -8,8 +8,8 @@ import Player from "../Player/Player";
 export class PlatformManager {
   platforms: StaticObject[] = createBlocks(1);
 
-  draw(ctx: Canvas) {
-    this.platforms.forEach((p) => p.draw(ctx));
+  draw(cxt: Canvas) {
+    this.platforms.forEach((p) => p.draw(cxt));
   }
 
   reset(level: number) {

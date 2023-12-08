@@ -17,8 +17,8 @@ export class Pot implements StaticObject {
     );
   }
 
-  draw(ctx: Canvas) {
-    ctx.drawImage(this.image, this.vector.posX, this.vector.posY);
+  draw(cxt: Canvas) {
+    cxt.drawImage(this.image, this.vector.posX, this.vector.posY);
   }
 
   reset() {

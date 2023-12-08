@@ -4,6 +4,7 @@ type Settings = {
   sandboxDb: boolean;
   shortLevelScreen: boolean;
   redOutline: boolean;
+  noDie: boolean;
 };
 
 const prodSettings = {
@@ -12,6 +13,7 @@ const prodSettings = {
   sandboxDb: false,
   shortLevelScreen: false,
   redOutline: false,
+  noDie: false,
 } as const;
 
 export const devSettings: Settings = import.meta.env.DEV
@@ -21,5 +23,6 @@ export const devSettings: Settings = import.meta.env.DEV
       sandboxDb: true,
       shortLevelScreen: true,
       redOutline: false,
+      noDie: true
     } as const)
   : prodSettings;

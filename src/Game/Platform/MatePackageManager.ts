@@ -18,9 +18,9 @@ export class MatePackageManager {
   //   this.packages.forEach((p) => p.update(elapsedTime));
   // }
 
-  draw(ctx: Canvas) {
+  draw(cxt: Canvas) {
     this.packages.forEach((p) => {
-      ctx.drawImage(
+      cxt.drawImage(
         this.image.image,
         p.position.x,
         p.position.y - this.image.height,
@@ -29,9 +29,9 @@ export class MatePackageManager {
       );
 
       if (devSettings.redOutline) {
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(
+        cxt.strokeStyle = "red";
+        cxt.lineWidth = 2;
+        cxt.strokeRect(
           p.position.x,
           p.position.y - this.image.height,
           this.image.width,

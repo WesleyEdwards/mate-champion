@@ -19,8 +19,8 @@ export class BulletManager {
     );
   }
 
-  draw(ctx: Canvas) {
-    this.bulletDrawer.draw(ctx, this.bullets);
+  draw(cxt: Canvas) {
+    this.bulletDrawer.draw(cxt, this.bullets);
   }
 
   addBullet(playerVector: PlayerVectorManager) {
