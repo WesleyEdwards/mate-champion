@@ -3,7 +3,7 @@ import { MCImage } from "../Drawing/drawingUtils";
 import { packageImage } from "../Drawing/ImageRepos";
 import { updatePackageStatus } from "../GameState/GameStateFunctions";
 import Player from "../Player/Player";
-import { Canvas } from "../helpers/types";
+import { Canvas, DrawObjProps } from "../helpers/types";
 import { createMatePackages } from "../constructors";
 import { devSettings } from "../devSettings";
 
@@ -18,11 +18,11 @@ export class MatePackageManager {
   //   this.packages.forEach((p) => p.update(elapsedTime));
   // }
 
-  draw(cxt: Canvas) {
+  draw({ cxt, offsetX }: DrawObjProps) {
     this.packages.forEach((p) => {
       cxt.drawImage(
         this.image.image,
-        p.position.x,
+        p.position.x - offsetX,
         p.position.y - this.image.height,
         this.image.width,
         this.image.height
@@ -32,7 +32,7 @@ export class MatePackageManager {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(
-          p.position.x,
+          p.position.x - offsetX,
           p.position.y - this.image.height,
           this.image.width,
           this.image.height

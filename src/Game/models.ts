@@ -1,4 +1,4 @@
-import { PlayStats } from "./helpers/types";
+import { Canvas, DrawObjProps, PlayStats } from "./helpers/types";
 
 export type CharAction =
   | "MoveRight"
@@ -33,13 +33,11 @@ export interface VectorMan {
   setPosX: (newX: number) => void;
   setPosY: (newY: number) => void;
   posCenter: Coordinates;
-  absPos: (xOffset: number) => Coordinates
+  relativePos: (xOffset: number) => Coordinates;
 }
 
 export interface CharVectorMan extends VectorMan {
   velocity: Coordinates;
-  velY: number;
-  velX: number;
   prevPosX: number;
   prevPosY: number;
   isMovingDown: boolean;
@@ -53,7 +51,7 @@ export interface Character {
 }
 
 export interface StaticObject extends HasPosition {
-  draw: (cxt: CanvasRenderingContext2D) => void;
+  draw: (drawProps: DrawObjProps) => void;
   canMoveBelow: boolean;
 }
 

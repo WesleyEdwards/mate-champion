@@ -1,5 +1,4 @@
 import { DISPLAY_LEVEL_TIME } from "../constants";
-import { updateWithPlayer } from "./GameStateFunctions";
 import { Keys, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
@@ -43,7 +42,8 @@ export class GameState {
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
       this.stats.elapsedTime,
-      this.stats.ammo
+      this.stats.ammo,
+      this.objectManager.player.whereToDrawOffset
     );
 
     const statsRes = this.stats.update(statsInfo);
@@ -52,13 +52,6 @@ export class GameState {
     if (levelInfo.nextLevel) this.nextLevel();
 
     if (levelInfo.nextLevel || statsRes) this.drawStats();
-
-    updateWithPlayer(
-      this.keys,
-      this.stats.scrollOffsetX,
-      this.objectManager.player,
-      this.objectManager.objectsToUpdatePos
-    );
   }
 
   render() {
@@ -67,15 +60,18 @@ export class GameState {
       this.showMessage,
       this.winState,
       this.stats.level,
-      this.stats.scrollOffsetX
+      this.objectManager.player.whereToDraw
     );
     if (!this.showMessage) {
-      this.objectManager.drawObjects(this.cxt);
+      this.objectManager.drawObjects(
+        this.cxt,
+        this.objectManager.player.whereToDraw
+      );
     }
     if (devSettings.showDevStats) {
       this.gameDrawer.showDevStats(
         this.cxt,
-        this.objectManager.player.vector.absPos(this.stats.scrollOffsetX),
+        this.objectManager.player.vector.position,
         this.objectManager.player.vector.velocity
       );
     }
@@ -117,9 +113,8 @@ export class GameState {
   }
 
   logCoordinates(e: MouseEvent) {
-    console.log("Canvas", { x: e.offsetX, y: e.offsetY });
     console.log("Abs", {
-      x: e.offsetX + this.stats.scrollOffsetX,
+      x: e.offsetX + this.objectManager.player.whereToDraw,
       y: e.offsetY,
     });
   }

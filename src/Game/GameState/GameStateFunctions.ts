@@ -9,27 +9,7 @@ import {
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Package } from "../Bullet/Package";
-import { INCREMENT_VALUE, bulletConst } from "../constants";
-
-export function updateWithPlayer<T extends HasPosition>(
-  keys: Keys,
-  scrollOffset: number,
-  player: Player,
-  objects: Array<T[]>
-): void {
-  const objList = objects.flat();
-
-  if (keys.right && player.vector.velX === 0) {
-    objList.forEach((object) => {
-      object.vector.setPosX(object.vector.posX - INCREMENT_VALUE);
-    });
-  }
-  if (keys.left && player.vector.velX === 0 && scrollOffset > 0) {
-    objList.forEach((object) => {
-      object.vector.setPosX(object.vector.posX + INCREMENT_VALUE);
-    });
-  }
-}
+import { bulletConst } from "../constants";
 
 export function calcPlatColl<T extends Character>(
   platform: StaticObject,

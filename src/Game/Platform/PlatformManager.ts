@@ -1,7 +1,6 @@
 import { createBlocks } from "../constructors";
 import { calcPlatColl } from "../GameState/GameStateFunctions";
-import { Canvas } from "../helpers/types";
-import { debounceLog } from "../helpers/utils";
+import { DrawObjProps } from "../helpers/types";
 import { StaticObject } from "../models";
 import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
@@ -9,8 +8,8 @@ import Player from "../Player/Player";
 export class PlatformManager {
   platforms: StaticObject[] = createBlocks(1);
 
-  draw(cxt: Canvas) {
-    this.platforms.forEach((p) => p.draw(cxt));
+  draw(drawProps: DrawObjProps) {
+    this.platforms.forEach((p) => p.draw(drawProps));
   }
 
   reset(level: number) {

@@ -3,6 +3,7 @@ import { DrawManager } from "../Drawing/DrawManager";
 import { Character, OppDirections, CharAction } from "../models";
 import { randomOutOf } from "../helpers/utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
+import { DrawObjProps } from "../helpers/types";
 
 export type OppProps = {
   x: number;
@@ -42,8 +43,8 @@ export class Opponent implements Character {
     this.vector.move(action);
   }
 
-  draw(cxt: CanvasRenderingContext2D) {
-    this.drawManager.draw(cxt, this.position, this.facing);
+  draw(drawProps: DrawObjProps) {
+    this.drawManager.draw(drawProps, this.position, this.facing);
   }
 
   setPosY(num: number) {

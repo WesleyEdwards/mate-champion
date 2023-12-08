@@ -9,7 +9,7 @@ import { MAX_CANVAS_HEIGHT, playerConst } from "../constants";
 import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
-import { Canvas, UpdateStatus } from "../helpers/types";
+import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -28,17 +28,20 @@ export class ObjectManager {
     this.bulletManager.reset();
   }
 
-  updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
+  updateAll(
+    keys: Keys,
+    elapsedTime: number,
+    ammo: number,
+    screenStartX: number
+  ): UpdateStatus {
     this.player.update(keys, elapsedTime);
     this.opponentManager.update(elapsedTime);
-    this.bulletManager.update(elapsedTime);
-    // Calc Interactions
+    this.bulletManager.update(elapsedTime, screenStartX);
+
     this.platformManager.calcPersonColl(this.player, this.opponents);
 
     return {
       statsInfo: {
-        moveScreenLeft: keys.right && this.playerStopped,
-        moveScreenRight: keys.left && this.playerStopped,
         killedOpp: this.getKilledOpponents(),
         shot: this.calcBullets(ammo),
         packagesReceived: this.matePackManager.getReceivedPackages(this.player),
@@ -84,27 +87,18 @@ export class ObjectManager {
     return this.player.position.x > this.pot.vector.posX;
   }
 
-  get objectsToUpdatePos(): Array<HasPosition[]> {
-    return [
-      this.platformManager.platforms,
-      this.opponents,
-      this.bullets,
-      [this.pot],
-      this.matePackManager.packages,
-    ];
-  }
-
-  drawObjects(cxt: Canvas) {
-    this.platformManager.draw(cxt);
-    this.pot.draw(cxt);
-    this.bulletManager.draw(cxt);
-    this.opponentManager.draw(cxt);
-    this.matePackManager.draw(cxt);
-    this.player.draw(cxt);
+  drawObjects(cxt: Canvas, offsetX: number) {
+    const drawProps: DrawObjProps = { cxt, offsetX };
+    this.platformManager.draw(drawProps);
+    this.pot.draw(drawProps);
+    this.bulletManager.draw(drawProps);
+    this.opponentManager.draw(drawProps);
+    this.matePackManager.draw(drawProps);
+    this.player.draw(drawProps);
   }
 
   get playerStopped(): boolean {
-    return this.player.vector.velX === 0;
+    return this.player.vector.velocity.x === 0;
   }
 
   private get bullets(): Bullet[] {

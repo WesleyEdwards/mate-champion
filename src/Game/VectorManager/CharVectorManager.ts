@@ -20,8 +20,8 @@ export class CharVectorManager extends BaseVectorMan {
   update(elapsedTime: number) {
     this.prevPosX = this.position.x;
     this.prevPosY = this.position.y;
-    this.position.x += this.velX * elapsedTime;
-    this.position.y += this.velY * elapsedTime;
+    this.position.x += this.velocity.x * elapsedTime;
+    this.position.y += this.velocity.y * elapsedTime;
   }
 
   stopY(yPos: number) {
@@ -35,12 +35,6 @@ export class CharVectorManager extends BaseVectorMan {
     this.velocity.y = y;
   }
 
-  get velX() {
-    return this.velocity.x;
-  }
-  get velY() {
-    return this.velocity.y;
-  }
   get isMovingDown() {
     return false;
   }

@@ -2,7 +2,7 @@ import { BaseVectorMan } from "./VectorManager/BaseVectorMan";
 import { END_POS } from "./constants";
 import { potImage } from "./Drawing/ImageRepos";
 import { StaticObject } from "./models";
-import { Canvas } from "./helpers/types";
+import { Canvas, DrawObjProps } from "./helpers/types";
 
 export class Pot implements StaticObject {
   vector: PotVector;
@@ -17,8 +17,8 @@ export class Pot implements StaticObject {
     );
   }
 
-  draw(cxt: Canvas) {
-    cxt.drawImage(this.image, this.vector.posX, this.vector.posY);
+  draw({ cxt, offsetX }: DrawObjProps) {
+    cxt.drawImage(this.image, this.vector.posX - offsetX, this.vector.posY);
   }
 
   reset() {

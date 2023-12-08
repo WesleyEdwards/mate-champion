@@ -1,4 +1,5 @@
 import { devSettings } from "../devSettings";
+import { DrawObjProps } from "../helpers/types";
 import { Coordinates } from "../models";
 import {
   Drawable,
@@ -36,11 +37,7 @@ export class DrawManager {
     this.height = height;
   }
 
-  draw(
-    cxt: CanvasRenderingContext2D,
-    point: Coordinates,
-    sprite: SpriteOption
-  ) {
+  draw(drawProps: DrawObjProps, point: Coordinates, sprite: SpriteOption) {
     const { x, y } = point;
 
     const spritePic = this.spriteInfo[sprite];
@@ -51,10 +48,10 @@ export class DrawManager {
         ? this.normalSpriteInfo(x, y, spritePic)
         : this.spritePicInfo(x, y, spritePic);
 
-    this.drawSpriteImage(cxt, info);
+    this.drawSpriteImage(drawProps, info);
   }
 
-  drawSpriteImage(cxt: CanvasRenderingContext2D, info: DrawInfo) {
+  drawSpriteImage({ cxt, offsetX }: DrawObjProps, info: DrawInfo) {
     cxt.imageSmoothingEnabled = false;
     cxt.imageSmoothingQuality = "high";
     // this.context.save();
@@ -64,7 +61,7 @@ export class DrawManager {
       info.yOffset,
       info.width,
       info.height,
-      info.canvasX,
+      info.canvasX - offsetX,
       info.canvasY + 1,
       info.spriteWidth,
       info.spriteHeight
@@ -74,7 +71,7 @@ export class DrawManager {
       cxt.strokeStyle = "red";
       cxt.lineWidth = 2;
       cxt.strokeRect(
-        info.canvasX,
+        info.canvasX - offsetX,
         info.canvasY + 1,
         info.spriteWidth,
         info.spriteHeight

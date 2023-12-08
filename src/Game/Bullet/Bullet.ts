@@ -17,13 +17,13 @@ export class Bullet implements HasPosition {
     this.imageType = calcImage(direction);
   }
 
-  update(elapsedTime: number) {
+  update(elapsedTime: number, screenStartX: number) {
     this.position.x += this.velocity.x * elapsedTime;
     this.position.y += this.velocity.y * elapsedTime;
 
     if (
-      this.position.x > MAX_CANVAS_WIDTH ||
-      this.position.x < 0 ||
+      this.position.x - screenStartX > MAX_CANVAS_WIDTH ||
+      this.position.x - screenStartX < 0 ||
       this.position.y < 0
     ) {
       this.isDead = true;

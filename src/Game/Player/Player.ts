@@ -3,10 +3,10 @@ import { DrawImageInfo } from "../Drawing/ImageRepos";
 import { SpriteOption } from "../Drawing/drawingUtils";
 import { GRAVITY, playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { debounceLog, vagueFacing } from "../helpers/utils";
+import { vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
-import { Canvas } from "../helpers/types";
+import { Canvas, DrawObjProps } from "../helpers/types";
 
 export class Player implements Character {
   shank: number = 0;
@@ -14,6 +14,8 @@ export class Player implements Character {
   shot: boolean = false;
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: DrawManager;
+  whereToDrawOffset: number = 0;
+  drift: number = 0;
 
   constructor() {
     this.drawManager = new DrawManager(
@@ -38,11 +40,8 @@ export class Player implements Character {
       keys.toJump = 0;
     }
 
-    if (keys.right && this.position.x < 400) this.move("MoveRight");
-    if (keys.right && this.position.x >= 400) this.move("StopX");
-
-    if (keys.left && this.position.x >= 100) this.move("MoveLeft");
-    if (keys.left && this.position.x < 250) this.move("StopX");
+    if (keys.right) this.move("MoveRight");
+    if (keys.left) this.move("MoveLeft");
 
     if (!keys.right && !keys.left) this.move("StopX");
 
@@ -79,20 +78,35 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    this.vector.setVelY(this.vector.velY + GRAVITY * elapsedTime);
+    this.vector.setVelY(this.vector.velocity.y + GRAVITY * elapsedTime);
+    this.calcDrift(elapsedTime);
+  }
+
+  calcDrift(elapsedTime: number) {
+    if (this.drift < playerConst.driftX && this.vector.velocity.x > 0) {
+      this.drift += this.vector.velocity.x * elapsedTime;
+      return;
+    }
+
+    if (this.drift > -playerConst.driftX && this.vector.velocity.x < 0) {
+      this.drift += this.vector.velocity.x * elapsedTime;
+      return;
+    }
+
+    this.whereToDrawOffset += this.vector.velocity.x * elapsedTime;
   }
 
   move(action: CharAction) {
     this.vector.move(action);
   }
 
-  draw(cxt: Canvas) {
+  draw(drawProps: DrawObjProps) {
     const direction: SpriteOption = shankingImage(
       this.vector.facing,
       this.shanking
     );
 
-    this.drawManager.draw(cxt, this.position, direction);
+    this.drawManager.draw(drawProps, this.position, direction);
   }
 
   private setUpPos(up: boolean = true) {
@@ -136,6 +150,10 @@ export class Player implements Character {
   }
   get facing() {
     return vagueFacing(this.vector.facing);
+  }
+
+  get whereToDraw() {
+    return this.whereToDrawOffset;
   }
 }
 

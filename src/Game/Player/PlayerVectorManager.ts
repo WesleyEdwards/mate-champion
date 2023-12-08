@@ -6,6 +6,7 @@ import { PlayerDirection } from "./models";
 export class PlayerVectorManager extends CharVectorManager {
   facing: PlayerDirection;
   jumps: number = 0;
+
   constructor() {
     super(
       { ...playerConst.initPos },
@@ -29,12 +30,12 @@ export class PlayerVectorManager extends CharVectorManager {
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
       this.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
-    if (action === "Jump" && this.velY === 0 && this.jumps < 1) {
+    if (action === "Jump" && this.velocity.y === 0 && this.jumps < 1) {
       this.setVelY(playerConst.jumpSpeed);
       this.setPosY(this.posY - 1);
       this.jumps += 1;
     }
-    if (this.velY > 0) this.jumps = 0;
+    if (this.velocity.y > 0) this.jumps = 0;
   }
 
   isFacing(direction: PlayerDirection) {

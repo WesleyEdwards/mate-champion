@@ -1,4 +1,4 @@
-import { INCREMENT_VALUE, packageConst } from "../constants";
+import { packageConst } from "../constants";
 import { StatsManagerInfo } from "../helpers/types";
 import { emptyStats } from "../helpers/utils";
 
@@ -16,22 +16,11 @@ export class GameStatsManager {
   uiInfo: PlayInfo = { ...emptyStats };
   prevTime: number = 0;
   elapsedTime: number = 0;
-  scrollOffsetX: number = 0;
 
   constructor() {}
 
   update(updates: StatsManagerInfo): boolean {
-    const {
-      moveScreenLeft,
-      moveScreenRight,
-      killedOpp,
-      shot,
-      packagesReceived,
-    } = updates;
-    if (moveScreenLeft) this.moveScreenLeft();
-    if (moveScreenRight && this.scrollOffsetX > 0) {
-      this.moveScreenRight();
-    }
+    const { killedOpp, shot, packagesReceived } = updates;
     if (killedOpp) this.addScore(10);
     if (shot) this.shotAmmo();
     if (packagesReceived) this.addAmmo();
@@ -67,17 +56,8 @@ export class GameStatsManager {
   }
 
   resetLevel() {
-    this.scrollOffsetX = 0;
     this.timeInLevel = 0;
     this.initial = true;
-  }
-
-  moveScreenRight() {
-    this.scrollOffsetX -= INCREMENT_VALUE;
-  }
-
-  moveScreenLeft() {
-    this.scrollOffsetX += INCREMENT_VALUE;
   }
 
   get ammo() {

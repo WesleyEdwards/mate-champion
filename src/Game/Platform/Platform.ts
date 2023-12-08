@@ -1,11 +1,6 @@
+import { Canvas, DrawObjProps } from "../helpers/types";
 import { StaticObject } from "../models";
 import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
-
-const PLAT_Y_MIN = 100;
-const PLAT_Y_MAX = 576 - 30;
-const PLAT_WIDTH_MIN = 200;
-const PLAT_WIDTH_MAX = 500;
-const TOTAL_HEIGHT = 576;
 
 export type PlatProps = {
   x: number;
@@ -25,19 +20,19 @@ export class Platform implements StaticObject {
     this.color = color;
   }
 
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.fillStyle = this.color;
-    canvas.strokeStyle = "black";
-    canvas.lineWidth = 8;
+  draw({ cxt, offsetX }: DrawObjProps) {
+    cxt.fillStyle = this.color;
+    cxt.strokeStyle = "black";
+    cxt.lineWidth = 8;
 
-    canvas.strokeRect(
-      this.vector.posX,
+    cxt.strokeRect(
+      this.vector.posX - offsetX,
       this.vector.posY + 4,
       this.vector.width,
       this.vector.height
     );
-    canvas.fillRect(
-      this.vector.posX,
+    cxt.fillRect(
+      this.vector.posX - offsetX,
       this.vector.posY + 4,
       this.vector.width,
       this.vector.height

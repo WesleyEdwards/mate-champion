@@ -9,8 +9,6 @@ export const GRAVITY = 0.0025;
 
 export const END_POS = 4500;
 
-export const INCREMENT_VALUE = 5;
-
 export const playerConst = {
   radius: 32,
   moveSpeed: 0.5,
@@ -18,7 +16,8 @@ export const playerConst = {
   shankTime: 200,
   shankCoolDown: 275,
   shootCoolDown: 150,
-  initPos: { x: 100, y: 10 },
+  initPos: { x: 250, y: 10 },
+  driftX: 150
 } as const;
 
 export const opponentConst = {

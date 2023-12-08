@@ -1,5 +1,5 @@
 import { PlayerVectorManager } from "../Player/PlayerVectorManager";
-import { Canvas } from "../helpers/types";
+import { Canvas, DrawObjProps } from "../helpers/types";
 import { Bullet } from "./Bullet";
 import { BulletDrawer } from "./BulletDrawer";
 
@@ -11,16 +11,16 @@ export class BulletManager {
     this.bulletDrawer = new BulletDrawer();
   }
 
-  update(elapsedTime: number) {
+  update(elapsedTime: number, screenStartX: number) {
     this.bullets.forEach((bullet) =>
       bullet.isDead
         ? this.bullets.splice(this.bullets.indexOf(bullet), 1)
-        : bullet.update(elapsedTime)
+        : bullet.update(elapsedTime, screenStartX)
     );
   }
 
-  draw(cxt: Canvas) {
-    this.bulletDrawer.draw(cxt, this.bullets);
+  draw(drawProps: DrawObjProps) {
+    this.bulletDrawer.draw(drawProps, this.bullets);
   }
 
   addBullet(playerVector: PlayerVectorManager) {

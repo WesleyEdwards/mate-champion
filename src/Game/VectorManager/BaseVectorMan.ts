@@ -45,9 +45,9 @@ export class BaseVectorMan implements VectorMan {
     };
   }
 
-  absPos(xOffset: number) {
+  relativePos(xOffset: number) {
     return {
-      x: this.position.x + xOffset,
+      x: this.position.x - xOffset,
       y: this.position.y,
     };
   }

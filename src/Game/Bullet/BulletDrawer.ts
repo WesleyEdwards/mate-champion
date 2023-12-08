@@ -1,7 +1,7 @@
 import { Bullet } from "./Bullet";
 import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { bulletConst } from "../constants";
-import { Canvas } from "../helpers/types";
+import { Canvas, DrawObjProps } from "../helpers/types";
 import { devSettings } from "../devSettings";
 
 export type bulletImageType = "bulletHor" | "bulletVert";
@@ -15,12 +15,12 @@ export class BulletDrawer {
     this.imageVert = makeImage(widthHeight, widthHeight, "bulletVert");
   }
 
-  draw(cxt: Canvas, bullets: Bullet[]) {
+  draw({ cxt, offsetX }: DrawObjProps, bullets: Bullet[]) {
     const { radius } = bulletConst;
     bullets.forEach((b) => {
       cxt.drawImage(
         this.imageHor.image,
-        b.position.x - radius,
+        b.position.x - radius - offsetX,
         b.position.y - radius,
         radius * 2,
         radius * 2
@@ -30,7 +30,7 @@ export class BulletDrawer {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(
-          b.position.x - radius,
+          b.position.x - radius - offsetX,
           b.position.y - radius,
           radius * 2,
           radius * 2

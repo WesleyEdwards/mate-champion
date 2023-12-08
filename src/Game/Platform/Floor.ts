@@ -1,4 +1,5 @@
 import { MAX_CANVAS_HEIGHT } from "../constants";
+import { DrawObjProps } from "../helpers/types";
 import { StaticObject } from "../models";
 import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
 import { PlatProps } from "./Platform";
@@ -13,19 +14,19 @@ export class Floor implements StaticObject {
     this.color = color;
   }
 
-  draw(canvas: CanvasRenderingContext2D) {
-    canvas.fillStyle = this.color;
-    canvas.strokeStyle = "black";
-    canvas.lineWidth = 8;
+  draw({ cxt, offsetX }: DrawObjProps) {
+    cxt.fillStyle = this.color;
+    cxt.strokeStyle = "black";
+    cxt.lineWidth = 8;
 
-    canvas.strokeRect(
-      this.vector.posX,
+    cxt.strokeRect(
+      this.vector.posX - offsetX,
       this.vector.posY + 4,
       this.vector.width,
       this.vector.height
     );
-    canvas.fillRect(
-      this.vector.posX,
+    cxt.fillRect(
+      this.vector.posX - offsetX,
       this.vector.posY + 4,
       this.vector.width,
       this.vector.height

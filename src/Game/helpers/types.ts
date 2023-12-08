@@ -1,4 +1,3 @@
-
 export type WinState =
   | "lose"
   | "playing"
@@ -9,8 +8,8 @@ export type WinState =
 export type StatsManagerInfo = {
   killedOpp: number;
   packagesReceived: boolean;
-  moveScreenLeft: boolean;
-  moveScreenRight: boolean;
+  // moveScreenLeft: boolean;
+  // moveScreenRight: boolean;
   shot: boolean;
 };
 
@@ -29,4 +28,9 @@ export type PlayStats = {
   ammo: number;
 };
 
-export type Canvas = CanvasRenderingContext2D
+export type Canvas = CanvasRenderingContext2D;
+
+export type DrawObjProps = {
+  cxt: Canvas;
+  offsetX: number;
+};

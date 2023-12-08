@@ -1,5 +1,5 @@
 import { createOpponents } from "../constructors";
-import { Canvas } from "../helpers/types";
+import { Canvas, DrawObjProps } from "../helpers/types";
 import { Opponent } from "./Opponent";
 
 export class OpponentManager {
@@ -13,8 +13,8 @@ export class OpponentManager {
     this.opponents.forEach((o) => o.update(elapsedTime));
   }
 
-  draw(cxt: Canvas) {
-    this.opponents.forEach((o) => o.draw(cxt));
+  draw(drawProps: DrawObjProps) {
+    this.opponents.forEach((o) => o.draw(drawProps));
   }
 
   reset(level: number) {
