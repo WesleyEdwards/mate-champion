@@ -42,13 +42,14 @@ export class GameDrawer {
     }
   }
 
-  showDevStats(cxt: Canvas, coor: Coordinates, vel: Coordinates) {
+  showDevStats(cxt: Canvas, coor: Coordinates, vel: Coordinates, fps: number) {
     cxt.fillStyle = "rgba(0, 0, 0, 0.75)";
     cxt.fillRect(0, 0, 200, 100);
     cxt.font = "20px Courier";
     cxt.fillStyle = "green";
     cxt.fillText(`pos:(${Math.round(coor.x)}, ${Math.round(coor.y)})`, 10, 20);
     cxt.fillText(`vel:(${Math.round(vel.x)}, ${Math.round(vel.y)})`, 10, 50);
+    cxt.fillText(`fps: ${fps}`, 10, 80);
   }
 
   private drawLava(cxt: Canvas) {

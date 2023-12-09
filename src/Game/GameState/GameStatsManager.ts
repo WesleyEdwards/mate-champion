@@ -16,11 +16,11 @@ export class GameStatsManager {
   uiInfo: PlayInfo = { ...emptyStats };
   prevTime: number = 0;
   elapsedTime: number = 0;
+  fps: number = 0;
 
   constructor() {}
 
-  update(updates: StatsManagerInfo): boolean {
-    const { killedOpp, shot, packagesReceived } = updates;
+  update({ killedOpp, shot, packagesReceived }: StatsManagerInfo): boolean {
     if (killedOpp) this.addScore(10);
     if (shot) this.shotAmmo();
     if (packagesReceived) this.addAmmo();
@@ -28,6 +28,8 @@ export class GameStatsManager {
   }
 
   updateTime(timeStamp: number) {
+    this.fps = Math.round(1000 / (timeStamp - this.prevTime));
+
     if (this.initial) {
       this.prevTime = timeStamp;
       this.initial = false;

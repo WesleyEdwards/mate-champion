@@ -72,7 +72,8 @@ export class GameState {
       this.gameDrawer.showDevStats(
         this.cxt,
         this.objectManager.player.vector.position,
-        this.objectManager.player.vector.velocity
+        this.objectManager.player.vector.velocity,
+        this.stats.fps
       );
     }
   }
