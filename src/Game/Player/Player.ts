@@ -15,6 +15,7 @@ export class Player implements Character {
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: DrawManager;
   whereToDrawOffset: number = 0;
+  prevWhereToDrawOffset: number = 0;
   drift: number = 0;
 
   constructor() {
@@ -29,11 +30,14 @@ export class Player implements Character {
     this.shank = 0;
     this.shoot = 0;
     this.shot = false;
+    this.whereToDrawOffset = 0;
+    this.drift = 0;
     this.vector = new PlayerVectorManager();
   }
 
   update(keys: Keys, elapsedTime: number) {
     this.vector.update(elapsedTime);
+    this.prevWhereToDrawOffset = this.whereToDrawOffset;
 
     if (keys.jump || keys.toJump > 0) {
       this.move("Jump");
@@ -92,6 +96,10 @@ export class Player implements Character {
       this.drift += this.vector.velocity.x * elapsedTime;
       return;
     }
+
+    // if (this.vector.velocity.x !== 0 && ) {
+    //   return;
+    // }
 
     this.whereToDrawOffset += this.vector.velocity.x * elapsedTime;
   }
@@ -153,7 +161,7 @@ export class Player implements Character {
   }
 
   get whereToDraw() {
-    return this.whereToDrawOffset;
+    return this.prevWhereToDrawOffset;
   }
 }
 
