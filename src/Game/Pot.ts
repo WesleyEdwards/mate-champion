@@ -5,9 +5,10 @@ import { StaticObject } from "./models";
 import { Canvas, DrawObjProps } from "./helpers/types";
 
 export class Pot implements StaticObject {
+  color: string = "black";
   vector: PotVector;
   image: HTMLImageElement = potImage.image;
-  canMoveBelow: boolean = false;
+  isFloor: boolean = false;
 
   constructor() {
     this.vector = new PotVector(

@@ -15,7 +15,7 @@ export function calcPlatColl<T extends Character>(
   platform: StaticObject,
   char: T
 ) {
-  if (platform.canMoveBelow && char.vector.isMovingDown) {
+  if (!platform.isFloor && char.vector.isMovingDown) {
     return;
   }
   if (

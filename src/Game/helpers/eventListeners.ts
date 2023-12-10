@@ -1,6 +1,6 @@
 import { Keys } from "../models";
 
-export const initialKeyStatus: Keys = {
+const initialKeyStatus: Keys = {
   up: false,
   right: false,
   left: false,

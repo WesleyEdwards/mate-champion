@@ -1,6 +1,6 @@
 import { PackageProps } from "../Bullet/Package";
 import { OppProps } from "../Opponent/Opponent";
-import { PlatProps } from "../Platform/Platform";
+import { FloatingType, FloorType } from "../Platform/Platform";
 import { levelOneInfo } from "./1-levelInfo";
 import { levelTwoInfo } from "./2-levelInfo";
 import { levelThreeInfo } from "./3-levelInfo";
@@ -10,14 +10,14 @@ import { levelFiveInfo } from "./5-levelInfo";
 export type LevelInfo = {
   packages: PackageProps[];
   opponents: OppProps[];
-  platforms: PlatProps[];
-  floors: PlatProps[];
+  platforms: FloatingType[];
+  floors: FloorType[];
 };
 
 const levelsInfo: LevelInfo[] = [
   levelOneInfo,
-  levelThreeInfo,
   levelTwoInfo,
+  levelThreeInfo,
   levelFourInfo,
   levelFiveInfo,
 ];

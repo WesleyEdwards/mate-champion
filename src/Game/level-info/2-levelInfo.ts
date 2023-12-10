@@ -29,12 +29,12 @@ export const levelTwoInfo: LevelInfo = {
     { x: 4570, y: 420, width: 310, height: 40, color: "red" },
   ],
   floors: [
-    { x: -500, y: 530, width: 870, height: 60, color: "green" },
-    { x: 500, y: 530, width: 660, height: 60, color: "green" },
-    { x: 1500, y: 530, width: 850, height: 60, color: "green" },
-    { x: 2500, y: 530, width: 870, height: 60, color: "green" },
-    { x: 3500, y: 530, width: 760, height: 60, color: "green" },
-    { x: 4500, y: 530, width: 2000, height: 60, color: "green" },
+    { x: -500, width: 870, color: "green" },
+    { x: 500, width: 660, color: "green" },
+    { x: 1500, width: 850, color: "green" },
+    { x: 2500, width: 870, color: "green" },
+    { x: 3500, width: 760, color: "green" },
+    { x: 4500, width: 2000, color: "green" },
   ],
   opponents: [
     { x: 1000, moveSpeed: 0.07 },

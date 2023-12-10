@@ -1,8 +1,18 @@
-import { Canvas, DrawObjProps } from "../helpers/types";
+import { platformConst, playerConst } from "../constants";
+import { DrawObjProps } from "../helpers/types";
 import { StaticObject } from "../models";
-import { ObjVectorManager } from "../VectorManager/ObjVectorManager";
+import {
+  ObjVectorManager,
+  ObjVectorManagerProps,
+} from "../VectorManager/ObjVectorManager";
 
-export type PlatProps = {
+export type FloorType = {
+  x: number;
+  width: number;
+  color: string;
+};
+
+export type FloatingType = {
   x: number;
   y: number;
   width: number;
@@ -10,14 +20,38 @@ export type PlatProps = {
   color: string;
 };
 
+type PlatProps = FloorType | FloatingType;
+
+function isFloating(props: PlatProps): props is FloatingType {
+  return "y" in props && "height" in props;
+}
+function isFloatingBool(props: PlatProps): boolean {
+  return "y" in props && "height" in props;
+}
+
+function createObjVectorProps(props: PlatProps): ObjVectorManagerProps {
+  if (isFloating(props)) {
+    const { x, y, width, height } = props;
+    return { pos: { x, y }, width, height };
+  } else {
+    const { x, width } = props;
+    return {
+      pos: { x, y: platformConst.floorY },
+      width,
+      height: platformConst.floorHeight,
+    };
+  }
+}
+
 export class Platform implements StaticObject {
   color: string;
   vector: ObjVectorManager;
-  canMoveBelow: boolean = true;
+  isFloor: boolean;
 
-  constructor({ x, y, width, height, color }: PlatProps) {
-    this.vector = new ObjVectorManager({ x, y }, width, height);
-    this.color = color;
+  constructor(params: PlatProps) {
+    this.vector = new ObjVectorManager(createObjVectorProps(params));
+    this.color = params.color;
+    this.isFloor = !isFloatingBool(params);
   }
 
   draw({ cxt, offsetX }: DrawObjProps) {

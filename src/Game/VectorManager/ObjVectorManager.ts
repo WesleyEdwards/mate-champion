@@ -1,10 +1,16 @@
 import { Coordinates, VectorMan } from "../models";
 
+export type ObjVectorManagerProps = {
+  pos: Coordinates;
+  width: number;
+  height: number;
+};
+
 export class ObjVectorManager implements VectorMan {
   position: Coordinates;
   width: number;
   height: number;
-  constructor(pos: Coordinates, width: number, height: number) {
+  constructor({ pos, width, height }: ObjVectorManagerProps) {
     this.position = pos;
     this.width = width;
     this.height = height;
@@ -50,5 +56,4 @@ export class ObjVectorManager implements VectorMan {
       y: this.position.y,
     };
   }
-
 }

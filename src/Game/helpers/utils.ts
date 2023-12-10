@@ -27,24 +27,3 @@ export const emptyStats = {
   level: 1,
   ammo: 20,
 };
-
-// creating level info from previous implementation
-// thing.forEach((element) => {
-//   if (element.canMoveBelow) {
-//     levelInfo.platforms.push({
-//       x: round(element.vector.position.x),
-//       y: round(element.vector.position.y),
-//       width: round(element.vector.width),
-//       height: round(element.vector.height),
-//     });
-//   } else {
-//     levelInfo.floors.push({
-//       x: round(element.vector.position.x),
-//       y: round(element.vector.position.y),
-//       width: round(element.vector.width),
-//       height: round(element.vector.height),
-//     });
-//   }
-// });
-// return levelInfo;
-// };

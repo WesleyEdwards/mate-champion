@@ -16,9 +16,9 @@ export const levelOneInfo: LevelInfo = {
     { x: 4420, y: 240, width: 450, height: 40, color: "springgreen" },
   ],
   floors: [
-    { x: -500, y: 525, width: 2500, height: 60, color: "green" },
-    { x: 2100, y: 525, width: 2200, height: 60, color: "green" },
-    { x: 4500, y: 525, width: 1000, height: 60, color: "green" },
+    { x: -500, width: 2500, color: "green" },
+    { x: 2100, width: 2200, color: "green" },
+    { x: 4500, width: 1000, color: "green" },
   ],
   opponents: [{ x: 3000, moveSpeed: 0.05 }],
   packages: [

@@ -6,6 +6,7 @@ import { GameDrawer } from "./GameDrawer";
 import { Canvas, WinState } from "../helpers/types";
 import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
+import { DevContentCreate } from "../dev/DevContentCreate";
 
 export class GameState {
   private winState: WinState = "initial";
@@ -15,6 +16,7 @@ export class GameState {
   private gameDrawer: GameDrawer;
   private stats: GameStatsManager = new GameStatsManager();
   private cxt: Canvas;
+  private devContentCreate: DevContentCreate | null;
 
   constructor(
     setUI: SetUI,
@@ -26,12 +28,12 @@ export class GameState {
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;
-
-    if (devSettings.logClickPos) {
-      canvas.addEventListener("click", (e) => {
-        this.logCoordinates(e);
-      });
-    }
+    this.devContentCreate = devSettings.logClickPos
+      ? new DevContentCreate({
+          canvas,
+          objectManager: this.objectManager,
+        })
+      : null;
 
     this.drawStats();
   }
@@ -52,6 +54,8 @@ export class GameState {
     if (levelInfo.nextLevel) this.nextLevel();
 
     if (levelInfo.nextLevel || statsRes) this.drawStats();
+
+    this.devContentCreate?.update(this.objectManager.player.whereToDraw);
   }
 
   render() {
@@ -111,13 +115,6 @@ export class GameState {
     this.winState = "nextLevel";
     this.stats.nextLevel();
     this.resetLevel();
-  }
-
-  logCoordinates(e: MouseEvent) {
-    console.log("Abs", {
-      x: e.offsetX + this.objectManager.player.whereToDraw,
-      y: e.offsetY,
-    });
   }
 
   private get showMessage() {

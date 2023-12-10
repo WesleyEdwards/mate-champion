@@ -17,7 +17,7 @@ export const playerConst = {
   shankCoolDown: 275,
   shootCoolDown: 150,
   initPos: { x: 250, y: 10 },
-  driftX: 150
+  driftX: 150,
 } as const;
 
 export const opponentConst = {
@@ -27,6 +27,11 @@ export const opponentConst = {
 
 export const packageConst = { width: 60, height: 75, worth: 3 } as const;
 export const bulletConst = { radius: 15, speed: 0.7 } as const;
+
+export const platformConst = {
+  floorY: 530,
+  floorHeight: 60,
+} as const;
 
 export const firebaseCollection = devSettings.sandboxDb
   ? "scores-test"

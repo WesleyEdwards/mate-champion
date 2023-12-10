@@ -52,7 +52,8 @@ export interface Character {
 
 export interface StaticObject extends HasPosition {
   draw: (drawProps: DrawObjProps) => void;
-  canMoveBelow: boolean;
+  isFloor: boolean;
+  color: string;
 }
 
 export interface Keys {
