@@ -3,7 +3,7 @@ import { Platform } from "../Platform/Platform";
 import { Coordinates, StaticObject } from "../models";
 import { CreatingThing, ItemType } from "./CreatingThing";
 
-export class PlatformCreator implements CreatingThing<Platform> {
+export class PlatformCreator implements CreatingThing<"platform"> {
   selected: Platform | null = null;
   prevColor: string = "";
   items: Platform[];

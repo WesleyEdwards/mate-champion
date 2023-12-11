@@ -31,7 +31,7 @@ export const devSettings: Settings = import.meta.env.DEV
       hideOpponents: false,
       sandboxDb: true,
       shortLevelScreen: true,
-      redOutline: false,
+      redOutline: true,
       noDie: true,
       courseBuilder: true,
     } as const)

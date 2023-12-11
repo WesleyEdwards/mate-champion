@@ -3,7 +3,7 @@ import { Platform } from "../Platform/Platform";
 import { Coordinates, StaticObject } from "../models";
 import { CreatingThing, ItemType } from "./CreatingThing";
 
-export class FloorCreator implements CreatingThing<Platform> {
+export class FloorCreator implements CreatingThing<"platform"> {
   selected: Platform | null = null;
   platforms: Platform[];
   prevColor: string = "";
@@ -38,7 +38,6 @@ export class FloorCreator implements CreatingThing<Platform> {
   }
 
   handleCreate(coor: Coordinates) {
-    console.log("handle create");
     this.platforms.push(
       new Platform({
         x: coor.x - 50,

@@ -7,10 +7,12 @@ export function exportLevelInfo(objManager: ObjectManager) {
       x: p.vector.posX,
       y: p.vector.posY,
     })),
-    opponents: objManager.opponentManager.opponents.map((o) => ({
-      x: o.vector.posX,
-      moveSpeed: o.vector.moveSpeed,
-    })),
+    opponents: {
+      grog: objManager.opponentManager.opponents.grog.map((o) => ({
+        x: o.vector.posX,
+        moveSpeed: o.vector.moveSpeed,
+      })),
+    },
     platforms: objManager.platformManager.platforms
       .filter((p) => !p.isFloor)
       .map((p) => ({

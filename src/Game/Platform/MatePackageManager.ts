@@ -23,7 +23,7 @@ export class MatePackageManager {
       cxt.drawImage(
         this.image.image,
         p.position.x - offsetX,
-        p.position.y - this.image.height,
+        p.position.y,
         this.image.width,
         this.image.height
       );
@@ -33,7 +33,7 @@ export class MatePackageManager {
         cxt.lineWidth = 2;
         cxt.strokeRect(
           p.position.x - offsetX,
-          p.position.y - this.image.height,
+          p.position.y,
           this.image.width,
           this.image.height
         );

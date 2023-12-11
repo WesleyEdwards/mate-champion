@@ -2,7 +2,7 @@ import { createBlocks } from "../constructors";
 import { calcPlatColl } from "../GameState/GameStateFunctions";
 import { DrawObjProps } from "../helpers/types";
 import { StaticObject } from "../models";
-import { Opponent } from "../Opponent/Opponent";
+import { Opponents } from "../Opponent/OpponentManager";
 import Player from "../Player/Player";
 
 export class PlatformManager {
@@ -16,9 +16,9 @@ export class PlatformManager {
     this.platforms = createBlocks(level);
   }
 
-  calcPersonColl(player: Player, opponents: Opponent[]) {
+  calcPersonColl(player: Player, opponents: Opponents) {
     this.platforms.forEach((platform) => {
-      opponents.forEach((opp) => calcPlatColl(platform, opp));
+      opponents.grog.forEach((opp) => calcPlatColl(platform, opp));
       calcPlatColl(platform, player);
     });
   }

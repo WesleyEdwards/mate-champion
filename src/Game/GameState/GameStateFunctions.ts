@@ -6,10 +6,11 @@ import {
   Coordinates,
   StaticObject,
 } from "../models";
-import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Package } from "../Bullet/Package";
 import { bulletConst } from "../constants";
+import { Opponents } from "../Opponent/OpponentManager";
+import { Grog } from "../Opponent/Grog";
 
 export function calcPlatColl<T extends Character>(
   platform: StaticObject,
@@ -46,19 +47,19 @@ export function areTouching<T extends HasPosition>(
 }
 
 interface LiveStatus {
-  opponents: Opponent[];
+  opponents: Opponents;
   bullets: Bullet[];
 }
 
 export function updateLiveStatus(
   player: Player,
-  opponents: Opponent[],
+  opponents: Opponents,
   bullets: Bullet[]
 ): LiveStatus {
-  const shanked: Opponent[] = [];
+  const shanked: Grog[] = [];
   const spentBullets: Bullet[] = [];
 
-  opponents.forEach((opp) => {
+  opponents.grog.forEach((opp) => {
     if (
       player.weaponPosCurr &&
       areTouching(
@@ -84,7 +85,7 @@ export function updateLiveStatus(
     });
   });
 
-  return { opponents: shanked, bullets: spentBullets };
+  return { opponents: { grog: shanked }, bullets: spentBullets };
 }
 
 export function updatePackageStatus(

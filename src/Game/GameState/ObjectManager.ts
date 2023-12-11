@@ -1,15 +1,15 @@
 import { Bullet } from "../Bullet/Bullet";
 import { updateLiveStatus, areTouching } from "./GameStateFunctions";
 import { HasPosition, Keys } from "../models";
-import { Opponent } from "../Opponent/Opponent";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
 import { MAX_CANVAS_HEIGHT, playerConst } from "../constants";
 import { MatePackageManager } from "../Platform/MatePackageManager";
-import { OpponentManager } from "../Opponent/OpponentManager";
+import { OpponentManager, Opponents } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
+import { Grog } from "../Opponent/Grog";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -67,18 +67,18 @@ export class ObjectManager {
       this.opponents,
       this.bullets
     );
-    opponents.forEach((opp) => {
-      this.opponents.splice(this.opponents.indexOf(opp), 1);
+    opponents.grog.forEach((opp) => {
+      this.opponents.grog.splice(this.opponents.grog.indexOf(opp), 1);
     });
     bullets.forEach((bullet) => {
       this.bullets.splice(this.bullets.indexOf(bullet), 1);
     });
-    return opponents.length;
+    return opponents.grog.length;
   }
 
   private get playerDies() {
     if (this.player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
-    return this.opponents.some((opp) =>
+    return this.opponents.grog.some((opp) =>
       areTouching(this.player, opp.vector.posCenter, playerConst.radius * 2)
     );
   }
@@ -105,7 +105,7 @@ export class ObjectManager {
     return this.bulletManager.bullets;
   }
 
-  private get opponents(): Opponent[] {
+  private get opponents(): Opponents {
     return this.opponentManager.opponents;
   }
 }

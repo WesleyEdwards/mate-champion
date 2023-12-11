@@ -1,5 +1,4 @@
 import { DrawManager } from "../Drawing/DrawManager";
-import { DrawImageInfo } from "../Drawing/ImageRepos";
 import { SpriteOption } from "../Drawing/drawingUtils";
 import { GRAVITY, playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";

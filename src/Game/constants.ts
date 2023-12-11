@@ -20,7 +20,7 @@ export const playerConst = {
   driftX: 150,
 } as const;
 
-export const opponentConst = {
+export const grogConst = {
   radius: 32,
   jumpSpeed: -0.8,
 } as const;

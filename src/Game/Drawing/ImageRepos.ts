@@ -1,4 +1,4 @@
-import { opponentConst, packageConst } from "../constants";
+import { grogConst, packageConst } from "../constants";
 import { makeImage, MCImage } from "./drawingUtils";
 
 export const potImage = makeImage(500, 750, "matePot");
@@ -8,7 +8,7 @@ export const potImage = makeImage(500, 750, "matePot");
 //   right: MCImage;
 // }
 
-const oppWidth = opponentConst.radius * 2;
+const oppWidth = grogConst.radius * 2;
 
 // export const oppImages: OppImages = {
 //   left: makeImage(oppWidth, oppWidth, "opponentLeft"),

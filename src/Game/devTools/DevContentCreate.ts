@@ -4,6 +4,9 @@ import { PlatformCreator } from "./PlatformCreator";
 import { CreatingThing, CreatorItem, ItemType } from "./CreatingThing";
 import { addDevEventListeners } from "./eventListeners";
 import { FloorCreator } from "./FloorCreator";
+import { GrogCreator } from "./GrogCreator";
+import { PackageCreator } from "./PackageCreator";
+import { debounceLog } from "../helpers/utils";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
@@ -32,9 +35,9 @@ export class DevContentCreate {
   offsetX: number = 0;
   draggingOffset?: Coordinates;
   prevColor: string = "";
-  currentlyCreating: CreatingThing<CreatorItem>;
+  currentlyCreating: CreatingThing;
 
-  creatingOptions: Record<ItemType, CreatingThing<CreatorItem>>;
+  creatingOptions: Record<ItemType, CreatingThing>;
 
   constructor({ canvas, objectManager }: DevContentCreateProps) {
     addDevEventListeners(this, canvas);
@@ -43,6 +46,8 @@ export class DevContentCreate {
     this.creatingOptions = {
       platform: new PlatformCreator(objectManager),
       floor: new FloorCreator(objectManager),
+      grog: new GrogCreator(objectManager),
+      package: new PackageCreator(objectManager),
     };
     this.currentlyCreating = this.creatingOptions.platform;
   }
@@ -106,6 +111,7 @@ export class DevContentCreate {
         const offSetCoor = { x: xWithOffset, y: coor.y };
         this.currentlyCreating.handleCreate(offSetCoor);
       }
+      // debounceLog(action === "drag", this.draggingOffset);
       if (action === "drag" && this.draggingOffset) {
         const { x: offsetX, y: offsetY } = this.draggingOffset;
         this.currentlyCreating.dragItem({

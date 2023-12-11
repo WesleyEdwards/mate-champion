@@ -36,12 +36,14 @@ export const levelTwoInfo: LevelInfo = {
     { x: 3500, width: 760, color: "green" },
     { x: 4500, width: 2000, color: "green" },
   ],
-  opponents: [
-    { x: 1000, moveSpeed: 0.07 },
-    { x: 2000, moveSpeed: 0.07 },
-    { x: 3000, moveSpeed: 0.07 },
-    { x: 4000, moveSpeed: 0.07 },
-  ],
+  opponents: {
+    grog: [
+      { x: 1000, moveSpeed: 0.07 },
+      { x: 2000, moveSpeed: 0.07 },
+      { x: 3000, moveSpeed: 0.07 },
+      { x: 4000, moveSpeed: 0.07 },
+    ],
+  },
   packages: [
     { x: 1680, y: 300 },
     { x: 2930, y: 150 },

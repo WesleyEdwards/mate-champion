@@ -1,5 +1,5 @@
 import { CharVectorManager } from "../VectorManager/CharVectorManager";
-import { opponentConst } from "../constants";
+import { grogConst } from "../constants";
 import { CharAction, Coordinates } from "../models";
 
 export class OpponentVectorManager extends CharVectorManager {
@@ -19,7 +19,7 @@ export class OpponentVectorManager extends CharVectorManager {
 
     if (action === "Jump") {
       this.setPosY(this.posY - 1);
-      this.velocity.y = opponentConst.jumpSpeed;
+      this.velocity.y = grogConst.jumpSpeed;
     }
   }
 }

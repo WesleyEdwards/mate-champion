@@ -45,5 +45,5 @@ export const levelFourInfo: LevelInfo = {
     { x: -500, width: 780, color: "green" },
   ],
   packages: [],
-  opponents: [],
+  opponents: { grog: [] },
 };

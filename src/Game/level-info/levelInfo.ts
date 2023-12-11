@@ -1,5 +1,5 @@
 import { PackageProps } from "../Bullet/Package";
-import { OppProps } from "../Opponent/Opponent";
+import { GrogProps } from "../Opponent/Grog";
 import { FloatingType, FloorType } from "../Platform/Platform";
 import { levelOneInfo } from "./1-levelInfo";
 import { levelTwoInfo } from "./2-levelInfo";
@@ -9,7 +9,7 @@ import { levelFiveInfo } from "./5-levelInfo";
 
 export type LevelInfo = {
   packages: PackageProps[];
-  opponents: OppProps[];
+  opponents: { grog: GrogProps[] };
   platforms: FloatingType[];
   floors: FloorType[];
 };

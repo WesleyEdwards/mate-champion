@@ -14,7 +14,11 @@ export class Package implements HasPosition {
   image: MCImage = packageImage;
 
   constructor({ x, y }: PackageProps) {
-    this.vector = new PackageVector({ x, y }, 1, packageImage.width);
+    this.vector = new PackageVector(
+      { x, y },
+      packageImage.width,
+      packageImage.height
+    );
   }
 
   get bottomPos() {
