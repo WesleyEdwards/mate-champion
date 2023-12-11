@@ -25,6 +25,7 @@ type PlatProps = FloorType | FloatingType;
 function isFloating(props: PlatProps): props is FloatingType {
   return "y" in props && "height" in props;
 }
+
 function isFloatingBool(props: PlatProps): boolean {
   return "y" in props && "height" in props;
 }

@@ -7,7 +7,7 @@ const prodSettings = {
   shortLevelScreen: false,
   redOutline: false,
   noDie: false,
-  logClickPos: false,
+  courseBuilder: false,
 } as const;
 
 export type DevStats = {
@@ -22,7 +22,7 @@ type Settings = {
   shortLevelScreen: boolean;
   redOutline: boolean;
   noDie: boolean;
-  logClickPos: boolean;
+  courseBuilder: boolean;
 };
 
 export const devSettings: Settings = import.meta.env.DEV
@@ -33,6 +33,6 @@ export const devSettings: Settings = import.meta.env.DEV
       shortLevelScreen: true,
       redOutline: false,
       noDie: true,
-      logClickPos: true,
+      courseBuilder: true,
     } as const)
   : prodSettings;

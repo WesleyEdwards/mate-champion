@@ -6,7 +6,7 @@ import { GameDrawer } from "./GameDrawer";
 import { Canvas, WinState } from "../helpers/types";
 import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
-import { DevContentCreate } from "../dev/DevContentCreate";
+import { DevContentCreate } from "../devTools/DevContentCreate";
 
 export class GameState {
   private winState: WinState = "initial";
@@ -28,7 +28,7 @@ export class GameState {
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;
-    this.devContentCreate = devSettings.logClickPos
+    this.devContentCreate = devSettings.courseBuilder
       ? new DevContentCreate({
           canvas,
           objectManager: this.objectManager,

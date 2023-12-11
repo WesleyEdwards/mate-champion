@@ -9,6 +9,8 @@ import { useScoreData } from "./hooks/useScoreInfo";
 import Settings from "./components/Settings";
 import { emptyStats } from "./Game/helpers/utils";
 import { PlayStats } from "./Game/helpers/types";
+import { devSettings } from "./Game/devSettings";
+import { CourseBuilderSettings } from "./Game/devTools/CourseBuilderSettings";
 
 type Screen =
   | "game"
@@ -118,6 +120,7 @@ function App() {
             ></canvas>
 
             {playing && <StatsDiv stats={stats} />}
+            {playing && devSettings.courseBuilder && <CourseBuilderSettings />}
           </div>
         </div>
       </div>

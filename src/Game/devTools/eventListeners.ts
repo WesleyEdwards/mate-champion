@@ -1,13 +1,6 @@
 import { DevContentCreate } from "./DevContentCreate";
 import { exportLevelInfo } from "./helpers";
 
-export type DevKeys = {
-  shift: boolean;
-  ctrl: boolean;
-  plus: boolean;
-  minus: boolean;
-};
-
 const roundToTen = (num: number) => Math.round(num / 10) * 10;
 
 export function addDevEventListeners(
@@ -18,31 +11,29 @@ export function addDevEventListeners(
     contentCreator.mouseDown(roundToTen(e.offsetX), roundToTen(e.offsetY));
   });
   canvas.addEventListener("mousemove", (e) => {
-    contentCreator.mouseMove(roundToTen(e.offsetX), roundToTen(e.offsetY));
+    contentCreator.handleKeyEvent("drag", {
+      x: roundToTen(e.offsetX),
+      y: roundToTen(e.offsetY),
+    });
   });
 
   canvas.addEventListener("mouseup", (e) => {
-    contentCreator.mouseUp(roundToTen(e.offsetX), roundToTen(e.offsetY));
+    contentCreator.mouseUp({
+      x: e.offsetX,
+      y: e.offsetY,
+    });
     if (e.ctrlKey) {
-      contentCreator.handleCreatePlatform(
-        roundToTen(e.offsetX),
-        roundToTen(e.offsetY),
-        true
-      );
-      return;;
-    }
-    if (e.altKey) {
-      contentCreator.handleCreatePlatform(
-        roundToTen(e.offsetX),
-        roundToTen(e.offsetY),
-        false
-      );
+      contentCreator.handleKeyEvent("create", {
+        x: roundToTen(e.offsetX),
+        y: roundToTen(e.offsetY),
+      });
+      return;
     }
   });
 
   window.addEventListener("keydown", (e) => {
     if (e.code === "Delete") {
-      return contentCreator.handleDelete();
+      return contentCreator.handleKeyEvent("delete");
     }
     if (e.code === "Enter") {
       return exportLevelInfo(contentCreator.objectManager);
@@ -51,11 +42,11 @@ export function addDevEventListeners(
     if (e.ctrlKey) {
       if (e.code === "Equal") {
         e.preventDefault();
-        return contentCreator.handlePlus();
+        return contentCreator.handleKeyEvent("plus");
       }
       if (e.code === "Minus") {
         e.preventDefault();
-        return contentCreator.handleMinus();
+        return contentCreator.handleKeyEvent("minus");
       }
     }
   });
