@@ -20,7 +20,7 @@ export const levelOneInfo: LevelInfo = {
     { x: 2100, width: 2200, color: "green" },
     { x: 4500, width: 1000, color: "green" },
   ],
-  opponents: { grog: [{ x: 3000, moveSpeed: 0.05 }] },
+  opponents: { grog: [{ initPos: { x: 3000, y: 100 }, moveSpeed: 0.05 }] },
   packages: [
     // { x: 1200, y: 200 },
     // { x: 2670, y: 525 },

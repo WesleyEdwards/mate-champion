@@ -22,14 +22,14 @@ export class GrogCreator implements CreatingThing<"grog"> {
   dragItem({ x, y }: Coordinates) {
     if (!this.selected) return;
     this.selected.vector.velocity.y = 0;
-    this.selected.vector.position.x = x - grogConst.radius;
-    this.selected.vector.position.y = y - grogConst.radius;
+    this.selected.vector.position.x = x;
+    this.selected.vector.position.y = y;
   }
 
   handleCreate(coor: Coordinates) {
     this.items.push(
       new Grog({
-        x: coor.x,
+        initPos: { x: coor.x - grogConst.radius, y: coor.y - grogConst.radius },
         moveSpeed: 0,
       })
     );

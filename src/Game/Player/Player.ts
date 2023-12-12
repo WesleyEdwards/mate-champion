@@ -13,9 +13,6 @@ export class Player implements Character {
   shot: boolean = false;
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: DrawManager;
-  whereToDrawOffset: number = 0;
-  prevWhereToDrawOffset: number = 0;
-  drift: number = 0;
 
   constructor() {
     this.drawManager = new DrawManager(
@@ -29,14 +26,11 @@ export class Player implements Character {
     this.shank = 0;
     this.shoot = 0;
     this.shot = false;
-    this.whereToDrawOffset = 0;
-    this.drift = 0;
     this.vector = new PlayerVectorManager();
   }
 
   update(keys: Keys, elapsedTime: number) {
     this.vector.update(elapsedTime);
-    this.prevWhereToDrawOffset = this.whereToDrawOffset;
 
     if (keys.jump || keys.toJump > 0) {
       this.move("Jump");
@@ -82,25 +76,6 @@ export class Player implements Character {
     else this.setDownPos(false);
 
     this.vector.setVelY(this.vector.velocity.y + GRAVITY * elapsedTime);
-    this.calcDrift(elapsedTime);
-  }
-
-  calcDrift(elapsedTime: number) {
-    if (this.drift < playerConst.driftX && this.vector.velocity.x > 0) {
-      this.drift += this.vector.velocity.x * elapsedTime;
-      return;
-    }
-
-    if (this.drift > -playerConst.driftX && this.vector.velocity.x < 0) {
-      this.drift += this.vector.velocity.x * elapsedTime;
-      return;
-    }
-
-    // if (this.vector.velocity.x !== 0 && ) {
-    //   return;
-    // }
-
-    this.whereToDrawOffset += this.vector.velocity.x * elapsedTime;
   }
 
   move(action: CharAction) {
@@ -157,10 +132,6 @@ export class Player implements Character {
   }
   get facing() {
     return vagueFacing(this.vector.facing);
-  }
-
-  get whereToDraw() {
-    return this.prevWhereToDrawOffset;
   }
 }
 

@@ -38,10 +38,10 @@ export const levelTwoInfo: LevelInfo = {
   ],
   opponents: {
     grog: [
-      { x: 1000, moveSpeed: 0.07 },
-      { x: 2000, moveSpeed: 0.07 },
-      { x: 3000, moveSpeed: 0.07 },
-      { x: 4000, moveSpeed: 0.07 },
+      { initPos: { x: 1000, y: 100 }, moveSpeed: 0.07 },
+      { initPos: { x: 2000, y: 100 }, moveSpeed: 0.07 },
+      { initPos: { x: 3000, y: 100 }, moveSpeed: 0.07 },
+      { initPos: { x: 4000, y: 100 }, moveSpeed: 0.07 },
     ],
   },
   packages: [

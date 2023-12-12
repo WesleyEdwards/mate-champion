@@ -111,12 +111,11 @@ export class DevContentCreate {
         const offSetCoor = { x: xWithOffset, y: coor.y };
         this.currentlyCreating.handleCreate(offSetCoor);
       }
-      // debounceLog(action === "drag", this.draggingOffset);
       if (action === "drag" && this.draggingOffset) {
-        const { x: offsetX, y: offsetY } = this.draggingOffset;
+        const { x: offsetXDrag, y: offsetYDrag } = this.draggingOffset;
         this.currentlyCreating.dragItem({
-          x: xWithOffset - offsetX,
-          y: coor.y - offsetY,
+          x: xWithOffset - offsetXDrag,
+          y: coor.y - offsetYDrag,
         });
       }
     }

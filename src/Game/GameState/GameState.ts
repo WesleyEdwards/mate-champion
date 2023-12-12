@@ -7,6 +7,7 @@ import { Canvas, WinState } from "../helpers/types";
 import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
+import { CameraDisplay } from "./CameraDisplay";
 
 export class GameState {
   private winState: WinState = "initial";
@@ -17,6 +18,7 @@ export class GameState {
   private stats: GameStatsManager = new GameStatsManager();
   private cxt: Canvas;
   private devContentCreate: DevContentCreate | null;
+  private cameraDisplay: CameraDisplay = new CameraDisplay();
 
   constructor(
     setUI: SetUI,
@@ -40,12 +42,19 @@ export class GameState {
 
   update(timeStamp: number) {
     this.stats.updateTime(timeStamp);
+    // if (this.objectManager.player.vector.velocity.x > 0) {
+    //   console.log(this.objectManager.player.vector.velocity.x);
+    // }
+    this.cameraDisplay.update(
+      this.stats.elapsedTime,
+      this.objectManager.player.vector.velocity.x
+    );
     if (!this.isWinState("playing")) return;
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
       this.stats.elapsedTime,
       this.stats.ammo,
-      this.objectManager.player.whereToDrawOffset
+      this.cameraDisplay.currX
     );
 
     const statsRes = this.stats.update(statsInfo);
@@ -55,7 +64,7 @@ export class GameState {
 
     if (levelInfo.nextLevel || statsRes) this.drawStats();
 
-    this.devContentCreate?.update(this.objectManager.player.whereToDraw);
+    this.devContentCreate?.update(this.cameraDisplay.currX);
   }
 
   render() {
@@ -64,13 +73,10 @@ export class GameState {
       this.showMessage,
       this.winState,
       this.stats.level,
-      this.objectManager.player.whereToDraw
+      this.cameraDisplay.currX
     );
     if (!this.showMessage) {
-      this.objectManager.drawObjects(
-        this.cxt,
-        this.objectManager.player.whereToDraw
-      );
+      this.objectManager.drawObjects(this.cxt, this.cameraDisplay.currX);
     }
     if (devSettings.showDevStats) {
       this.gameDrawer.showDevStats(
@@ -89,6 +95,7 @@ export class GameState {
   private resetLevel() {
     this.stats.resetLevel();
     this.objectManager.reset(this.stats.level);
+    this.cameraDisplay.reset();
     this.drawStats();
   }
 

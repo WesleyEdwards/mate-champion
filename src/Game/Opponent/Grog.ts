@@ -1,13 +1,13 @@
 import { GRAVITY, MAX_CANVAS_HEIGHT, grogConst } from "../constants";
 import { DrawManager } from "../Drawing/DrawManager";
-import { Character, OppDirections, CharAction } from "../models";
+import { Character, OppDirections, CharAction, Coordinates } from "../models";
 import { randomOutOf } from "../helpers/utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
 import { DrawObjProps } from "../helpers/types";
 import { devSettings } from "../devSettings";
 
 export type GrogProps = {
-  x: number;
+  initPos: Coordinates;
   moveSpeed: number;
 };
 
@@ -15,9 +15,9 @@ export class Grog implements Character {
   vector: OpponentVectorManager;
   drawManager: DrawManager;
 
-  constructor({ x, moveSpeed }: GrogProps) {
+  constructor({ initPos, moveSpeed }: GrogProps) {
     this.vector = new OpponentVectorManager(
-      { x, y: 100 },
+      { ...initPos },
       moveSpeed,
       grogConst.radius
     );
@@ -29,14 +29,13 @@ export class Grog implements Character {
   }
 
   update(elapsedTime: number) {
+    if (devSettings.courseBuilder) return;
     this.vector.update(elapsedTime);
     this.velocity.y += GRAVITY * elapsedTime;
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
       this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
-
-    if (devSettings.courseBuilder) return;
 
     if (randomOutOf(120)) this.move("Jump");
     if (randomOutOf(120)) this.move("MoveRight");

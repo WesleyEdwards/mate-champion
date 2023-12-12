@@ -9,7 +9,7 @@ export function exportLevelInfo(objManager: ObjectManager) {
     })),
     opponents: {
       grog: objManager.opponentManager.opponents.grog.map((o) => ({
-        x: o.vector.posX,
+        initPos: { x: o.vector.posX, y: o.vector.posY },
         moveSpeed: o.vector.moveSpeed,
       })),
     },
