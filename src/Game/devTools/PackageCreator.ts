@@ -25,8 +25,8 @@ export class PackageCreator implements CreatingThing<"package"> {
   }
   dragItem({ x, y }: Coordinates) {
     if (!this.selected) return;
-    this.selected.vector.setPosX(x - packageConst.width / 2);
-    this.selected.vector.position.y = y - packageConst.height / 2;
+    this.selected.vector.position.x = x;
+    this.selected.vector.position.y = y;
   }
 
   handleCreate(coor: Coordinates) {

@@ -1,15 +1,10 @@
-import bgImageUrl from "../../assets/back-ground.png";
+import bgImageUrl from "../../assets/clouds-bg.jpg";
 import { MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT, END_POS } from "../constants";
 import { DevStats } from "../devSettings";
 import { Canvas, WinState } from "../helpers/types";
 import { Coordinates } from "../models";
 
 export class GameDrawer {
-  constructor() {
-    // context.rotate(60)
-    // context.arc
-  }
-
   drawBackground(
     cxt: Canvas,
     showMessage: boolean,

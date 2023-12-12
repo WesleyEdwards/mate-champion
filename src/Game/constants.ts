@@ -16,8 +16,8 @@ export const playerConst = {
   shankTime: 200,
   shankCoolDown: 275,
   shootCoolDown: 150,
-  initPos: { x: 250, y: 10 },
-  driftX: 150,
+  initPos: { x: 400, y: 10 },
+  driftX: 125,
 } as const;
 
 export const grogConst = {
@@ -26,7 +26,7 @@ export const grogConst = {
 } as const;
 
 export const packageConst = { width: 60, height: 75, worth: 3 } as const;
-export const bulletConst = { radius: 15, speed: 0.7 } as const;
+export const bulletConst = { radius: 15, speed: 0.9 } as const;
 
 export const platformConst = {
   floorY: 530,

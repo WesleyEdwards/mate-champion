@@ -2,7 +2,7 @@ import { DrawManager } from "../Drawing/DrawManager";
 import { SpriteOption } from "../Drawing/drawingUtils";
 import { GRAVITY, playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { vagueFacing } from "../helpers/utils";
+import { debounceLog, vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 import { Canvas, DrawObjProps } from "../helpers/types";
@@ -29,7 +29,7 @@ export class Player implements Character {
     this.vector = new PlayerVectorManager();
   }
 
-  update(keys: Keys, elapsedTime: number) {
+  update(keys: Keys, elapsedTime: number, screenStartX: number) {
     this.vector.update(elapsedTime);
 
     if (keys.jump || keys.toJump > 0) {
@@ -38,9 +38,12 @@ export class Player implements Character {
     }
 
     if (keys.right) this.move("MoveRight");
-    if (keys.left) this.move("MoveLeft");
+    const canMoveLeft = this.posCenter.x >= playerConst.initPos.x - 100;
+    if (keys.left && canMoveLeft) this.move("MoveLeft");
 
-    if (!keys.right && !keys.left) this.move("StopX");
+    if ((!keys.right && !keys.left) || (!canMoveLeft && keys.left)) {
+      this.move("StopX");
+    }
 
     if (
       (keys.shank || keys.toShank > 0) &&

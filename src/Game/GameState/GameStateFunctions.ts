@@ -92,13 +92,13 @@ export function updatePackageStatus(
   player: Player,
   packages: Package[]
 ): Package | undefined {
-  return packages.find((p) => {
+  return packages.find((pack) => {
     if (
       areTouching(
         player,
         {
-          x: p.vector.posCenter.x + 30,
-          y: p.vector.posCenter.y - p.height,
+          x: pack.vector.posCenter.x,
+          y: pack.vector.posCenter.y,
         },
         40
       )

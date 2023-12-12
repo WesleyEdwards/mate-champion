@@ -34,7 +34,7 @@ export class ObjectManager {
     ammo: number,
     screenStartX: number
   ): UpdateStatus {
-    this.player.update(keys, elapsedTime);
+    this.player.update(keys, elapsedTime, screenStartX);
     this.opponentManager.update(elapsedTime);
     this.bulletManager.update(elapsedTime, screenStartX);
 
