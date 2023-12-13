@@ -1,7 +1,7 @@
 import { ObjectManager } from "../GameState/ObjectManager";
 import { Platform } from "../Platform/Platform";
 import { Coordinates, StaticObject } from "../models";
-import { CreatingThing, ItemType } from "./CreatingThing";
+import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 
 export class FloorCreator implements CreatingThing<"platform"> {
   selected: Platform | null = null;
@@ -32,6 +32,23 @@ export class FloorCreator implements CreatingThing<"platform"> {
       }
     });
   }
+
+  handleEvent(event: ContentEvent, coor?: Coordinates) {
+    
+    if (event === "delete") return this.handleDelete();
+    if (event === "plus") return this.handlePlus();
+    if (event === "minus") return this.handleMinus();
+    
+    if (!coor) return console.log("no coor");
+    if (event === "drag") {
+      return this.dragItem(coor);
+    }
+
+    if (event === "create") {
+      return this.handleCreate(coor);
+    }
+  }
+
   dragItem({ x }: Coordinates) {
     if (!this.selected) return;
     this.selected.vector.position.x = x;

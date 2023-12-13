@@ -1,9 +1,20 @@
 import { LevelInfo } from "./levelInfo";
 
 export const levelTwoInfo: LevelInfo = {
+  packages: [
+    { x: 1870, y: 190 },
+    { x: 2930, y: 150 },
+    { x: 4799, y: 343 },
+  ],
+  opponents: {
+    grog: [
+      { initPos: { x: 1040, y: 210 }, moveSpeed: 0.07 },
+      { initPos: { x: 2450, y: 206 }, moveSpeed: 0.07 },
+      { initPos: { x: 4320, y: -30 }, moveSpeed: 0.07 },
+      { initPos: { x: 1493, y: 88 }, moveSpeed: 0 },
+    ],
+  },
   platforms: [
-    { x: 100, y: 150, width: 80, height: 40, color: "red" },
-    { x: 350, y: 450, width: 230, height: 40, color: "red" },
     { x: 540, y: 110, width: 220, height: 40, color: "red" },
     { x: 950, y: 280, width: 260, height: 40, color: "red" },
     { x: 1000, y: 400, width: 470, height: 40, color: "red" },
@@ -29,24 +40,10 @@ export const levelTwoInfo: LevelInfo = {
     { x: 4570, y: 420, width: 310, height: 40, color: "red" },
   ],
   floors: [
-    { x: -500, width: 870, color: "green" },
-    { x: 500, width: 660, color: "green" },
+    { x: -20, width: 1370, color: "green" },
     { x: 1500, width: 850, color: "green" },
     { x: 2500, width: 870, color: "green" },
     { x: 3500, width: 760, color: "green" },
     { x: 4500, width: 2000, color: "green" },
-  ],
-  opponents: {
-    grog: [
-      { initPos: { x: 1000, y: 100 }, moveSpeed: 0.07 },
-      { initPos: { x: 2000, y: 100 }, moveSpeed: 0.07 },
-      { initPos: { x: 3000, y: 100 }, moveSpeed: 0.07 },
-      { initPos: { x: 4000, y: 100 }, moveSpeed: 0.07 },
-    ],
-  },
-  packages: [
-    { x: 1680, y: 300 },
-    { x: 2930, y: 150 },
-    { x: 4730, y: 420 },
   ],
 };

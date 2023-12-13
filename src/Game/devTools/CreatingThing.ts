@@ -14,17 +14,15 @@ type ItemTypeToClass<T extends ItemType> = T extends "platform"
   ? Grog
   : never;
 
+  export type ContentEvent = "drag" | "create" | "delete" | "plus" | "minus" | "duplicate";
+
 export interface CreatingThing<
   T extends ItemType = any,
   K extends ItemTypeToClass<T> = any
 > {
   itemType: ItemType;
   items: K[];
-  selected: K | null;
-  selectItem: (item: K | null) => void;
-  dragItem: (coor: Coordinates) => void;
-  handleCreate: (coor: Coordinates) => void;
-  handleDelete: () => void;
-  handlePlus: () => void;
-  handleMinus: () => void;
+  selected: K | K[] | null;
+  selectItem: (item: K | null, multiple?: boolean) => void;
+  handleEvent: (event: ContentEvent, coor?: Coordinates) => void;
 }

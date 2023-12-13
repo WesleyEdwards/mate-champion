@@ -2,7 +2,7 @@ import { ObjectManager } from "../GameState/ObjectManager";
 import { Grog } from "../Opponent/Grog";
 import { grogConst } from "../constants";
 import { Coordinates } from "../models";
-import { CreatingThing, ItemType } from "./CreatingThing";
+import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 
 export class GrogCreator implements CreatingThing<"grog"> {
   itemType: ItemType = "grog";
@@ -13,12 +13,23 @@ export class GrogCreator implements CreatingThing<"grog"> {
     this.items = objectManager.opponentManager.opponents.grog;
   }
 
-  handlePlus() {}
-  handleMinus() {}
-
   selectItem(grog: Grog | null) {
     this.selected = grog;
   }
+
+  handleEvent(event: ContentEvent, coor?: Coordinates | undefined) {
+    if (event === "delete") return this.handleDelete();
+
+    if (!coor) return console.log("no coor");
+    if (event === "drag") {
+      return this.dragItem(coor);
+    }
+
+    if (event === "create") {
+      return this.handleCreate(coor);
+    }
+  }
+
   dragItem({ x, y }: Coordinates) {
     if (!this.selected) return;
     this.selected.vector.velocity.y = 0;

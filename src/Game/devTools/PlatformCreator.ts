@@ -1,13 +1,14 @@
 import { ObjectManager } from "../GameState/ObjectManager";
 import { Platform } from "../Platform/Platform";
 import { Coordinates, StaticObject } from "../models";
-import { CreatingThing, ItemType } from "./CreatingThing";
+import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 
 export class PlatformCreator implements CreatingThing<"platform"> {
-  selected: Platform | null = null;
-  prevColor: string = "";
+  selected: Platform[] = [];
+  defaultColor: string = "springgreen";
   items: Platform[];
   itemType: ItemType = "platform";
+
   constructor(objectManager: ObjectManager) {
     this.items = objectManager.platformManager.platforms as Platform[];
   }
@@ -16,58 +17,108 @@ export class PlatformCreator implements CreatingThing<"platform"> {
     return this.items as Platform[];
   }
 
-  selectItem(platform: StaticObject | null) {
-    if (this.selected) this.selected.color = this.prevColor;
+  unSelectAll() {
+    this.selected.forEach((p) => {
+      p.color = this.defaultColor;
+    });
+    this.selected.splice(0, this.selected.length);
+  }
+
+  selectAll(platforms: Platform[]) {
+    this.unSelectAll();
+    this.selected = platforms;
+    this.selected.forEach((p) => {
+      p.color = "pink";
+    });
+  }
+
+  selectItem(platform: StaticObject | null, multiple?: boolean) {
+    if (platform && this.selected.includes(platform as Platform)) return;
 
     if (!platform || platform.isFloor) {
-      return (this.selected = null);
+      this.unSelectAll();
+      return;
     }
 
-    this.selected = platform as Platform;
+    if (!multiple && this.selected.length > 0) {
+      this.unSelectAll();
+    }
+
     this.items.map((p) => {
       if (p === platform) {
-        this.selected = platform as Platform;
-        this.prevColor = p.color;
+        this.selected.push(p as Platform);
         p.color = "pink";
       }
     });
   }
 
-  dragItem({ x, y }: Coordinates) {
-    if (!this.selected) return;
-    this.selected.vector.position.x = x;
-    this.selected.vector.position.y = y;
+  handleEvent(event: ContentEvent, coor?: Coordinates) {
+    if (event === "delete") return this.handleDelete();
+    if (event === "plus") return this.handlePlus();
+    if (event === "minus") return this.handleMinus();
+    if (event === "duplicate") return this.handleDuplicate();
+
+    if (!coor) return;
+
+    if (event === "drag") {
+      return this.selected.forEach((p) => {
+        p.vector.position.x += coor.x;
+        p.vector.position.y += coor.y;
+      });
+    }
+
+    if (event === "create") {
+      return this.items.push(
+        new Platform({
+          x: coor.x - 50,
+          y: coor.y - 20,
+          width: 40,
+          height: 40,
+          color: "springgreen",
+        })
+      );
+    }
   }
 
-  handleCreate(coor: Coordinates) {
-    this.items.push(
-      new Platform({
-        x: coor.x - 50,
-        y: coor.y - 20,
-        width: 100,
-        height: 40,
-        color: "springgreen",
-      })
-    );
+  handleDuplicate() {
+    const newItems: Platform[] = [];
+    this.selected.forEach((p) => {
+      const newPlatform = new Platform({
+        x: p.vector.position.x + 50,
+        y: p.vector.position.y + 50,
+        width: p.vector.width,
+        height: p.vector.height,
+        color: p.color,
+      });
+      this.items.push(newPlatform);
+      newItems.push(newPlatform);
+    });
+    console.log(newItems);
+    this.unSelectAll();
+    this.selectAll(newItems);
   }
 
   handleDelete() {
-    if (this.selected) {
-      const index = this.items.indexOf(this.selected);
+    this.selected.forEach((p) => {
+      const index = this.items.indexOf(p);
       this.items.splice(index, 1);
-    }
-    this.selected = null;
+    });
+    this.selected = [];
   }
 
   handlePlus() {
-    if (this.selected) {
-      this.selected.vector.width += 10;
+    if (this.selected && this.selected[0].vector.width < 100) {
+      this.selected.forEach((p) => {
+        p.vector.width += 10;
+      });
     }
   }
 
   handleMinus() {
-    if (this.selected && this.selected.vector.width > 10) {
-      this.selected.vector.width -= 10;
+    if (this.selected && this.selected[0].vector.width > 10) {
+      this.selected.forEach((p) => {
+        p.vector.width -= 10;
+      });
     }
   }
 }

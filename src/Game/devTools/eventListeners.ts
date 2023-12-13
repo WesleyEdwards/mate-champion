@@ -1,19 +1,17 @@
 import { DevContentCreate } from "./DevContentCreate";
 import { exportLevelInfo } from "./helpers";
 
-const roundToTen = (num: number) => Math.round(num / 10) * 10;
-
 export function addDevEventListeners(
   contentCreator: DevContentCreate,
   canvas: HTMLCanvasElement
 ) {
   canvas.addEventListener("mousedown", (e: MouseEvent) => {
-    contentCreator.mouseDown(roundToTen(e.offsetX), roundToTen(e.offsetY));
+    contentCreator.mouseDown(e.offsetX, e.offsetY, e.shiftKey);
   });
   canvas.addEventListener("mousemove", (e) => {
     contentCreator.handleKeyEvent("drag", {
-      x: roundToTen(e.offsetX),
-      y: roundToTen(e.offsetY),
+      x: e.offsetX,
+      y: e.offsetY,
     });
   });
 
@@ -24,8 +22,8 @@ export function addDevEventListeners(
     });
     if (e.ctrlKey) {
       contentCreator.handleKeyEvent("create", {
-        x: roundToTen(e.offsetX),
-        y: roundToTen(e.offsetY),
+        x: e.offsetX,
+        y: e.offsetY,
       });
       return;
     }
@@ -47,6 +45,11 @@ export function addDevEventListeners(
       if (e.code === "Minus") {
         e.preventDefault();
         return contentCreator.handleKeyEvent("minus");
+      }
+
+      if (e.code === "KeyD") {
+        e.preventDefault();
+        return contentCreator.handleKeyEvent("duplicate");
       }
     }
   });

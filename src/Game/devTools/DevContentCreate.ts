@@ -1,7 +1,12 @@
 import { ObjectManager } from "../GameState/ObjectManager";
 import { Coordinates, StaticObject } from "../models";
 import { PlatformCreator } from "./PlatformCreator";
-import { CreatingThing, CreatorItem, ItemType } from "./CreatingThing";
+import {
+  ContentEvent,
+  CreatingThing,
+  CreatorItem,
+  ItemType,
+} from "./CreatingThing";
 import { addDevEventListeners } from "./eventListeners";
 import { FloorCreator } from "./FloorCreator";
 import { GrogCreator } from "./GrogCreator";
@@ -33,11 +38,13 @@ export class DevContentCreate {
   objectManager: ObjectManager;
   platforms: StaticObject[];
   offsetX: number = 0;
-  draggingOffset?: Coordinates;
   prevColor: string = "";
   currentlyCreating: CreatingThing;
 
   creatingOptions: Record<ItemType, CreatingThing>;
+
+  prevDrag: Coordinates | null = null;
+  dragSelect: Coordinates | null = null;
 
   constructor({ canvas, objectManager }: DevContentCreateProps) {
     addDevEventListeners(this, canvas);
@@ -73,60 +80,42 @@ export class DevContentCreate {
     );
   }
 
-  mouseDown(xNoOffset: number, y: number) {
-    const x = xNoOffset + this.offsetX;
+  mouseDown(xNoOffset: number, y: number, shiftKey: boolean) {
+    this.prevDrag = { x: xNoOffset, y };
 
-    const existingItem = this.findExistingItem(x, y);
-
+    const existingItem = this.findExistingItem(xNoOffset + this.offsetX, y);
     if (existingItem) {
-      this.draggingOffset = {
-        x: x - existingItem.vector.posX,
-        y: y - existingItem.vector.posY,
-      };
-
-      return this.currentlyCreating.selectItem(existingItem);
+      return this.currentlyCreating.selectItem(existingItem, shiftKey);
     }
   }
 
   mouseUp({ x: xNoOffset, y }: Coordinates) {
-    this.draggingOffset = undefined;
-    const x = xNoOffset + this.offsetX;
+    this.prevDrag = null;
 
-    const existingPlatform = this.findExistingItem(x, y);
-
+    const existingPlatform = this.findExistingItem(xNoOffset + this.offsetX, y);
     this.currentlyCreating.selectItem(existingPlatform || null);
   }
 
-  handleKeyEvent(
-    action: "drag" | "create" | "delete" | "plus" | "minus",
-    coor?: Coordinates
-  ) {
-    if (action === "create" || action === "drag") {
-      if (!coor) {
-        return console.error("no coordinates passed to handleKeyEvent");
-      }
-      const xWithOffset = coor.x + this.offsetX;
-
-      if (action === "create") {
-        const offSetCoor = { x: xWithOffset, y: coor.y };
-        this.currentlyCreating.handleCreate(offSetCoor);
-      }
-      if (action === "drag" && this.draggingOffset) {
-        const { x: offsetXDrag, y: offsetYDrag } = this.draggingOffset;
-        this.currentlyCreating.dragItem({
-          x: xWithOffset - offsetXDrag,
-          y: coor.y - offsetYDrag,
-        });
-      }
+  handleKeyEvent(action: ContentEvent, coor?: Coordinates) {
+    if (["plus", "minus", "delete", "duplicate"].includes(action)) {
+      this.currentlyCreating.handleEvent(action);
     }
 
-    switch (action) {
-      case "delete":
-        return this.currentlyCreating.handleDelete();
-      case "plus":
-        return this.currentlyCreating.handlePlus();
-      case "minus":
-        return this.currentlyCreating.handleMinus();
+    if (!coor) return;
+    if (action === "create") {
+      this.currentlyCreating.handleEvent("create", {
+        x: coor.x + this.offsetX,
+        y: coor.y,
+      });
+    }
+
+    if (action === "drag" && this.prevDrag) {
+      this.currentlyCreating.handleEvent("drag", {
+        x: coor.x - this.prevDrag.x,
+        y: coor.y - this.prevDrag.y,
+      });
+
+      this.prevDrag = { ...coor };
     }
   }
 }
