@@ -9,7 +9,7 @@ export function addDevEventListeners(
     contentCreator.mouseDown(e.offsetX, e.offsetY, e.shiftKey);
   });
   canvas.addEventListener("mousemove", (e) => {
-    contentCreator.handleKeyEvent("drag", {
+    contentCreator.handleKeyEvent("drag",e.shiftKey, {
       x: e.offsetX,
       y: e.offsetY,
     });
@@ -24,7 +24,7 @@ export function addDevEventListeners(
       e.shiftKey
     );
     if (e.ctrlKey) {
-      contentCreator.handleKeyEvent("create", {
+      contentCreator.handleKeyEvent("create", e.shiftKey, {
         x: e.offsetX,
         y: e.offsetY,
       });

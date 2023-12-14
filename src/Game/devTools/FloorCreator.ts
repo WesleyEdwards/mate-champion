@@ -54,7 +54,7 @@ export class FloorCreator implements CreatingThing<"platform"> {
 
   dragItem({ x }: Coordinates) {
     if (!this.selected) return;
-    this.selected.vector.position.x = x;
+    this.selected.vector.position.x += x;
   }
 
   handleCreate(coor: Coordinates) {

@@ -60,7 +60,7 @@ export class PlatformCreator implements CreatingThing<"platform"> {
     });
   }
 
-  handleEvent(event: ContentEvent, coor?: Coordinates) {
+  handleEvent(event: ContentEvent, coor?: Coordinates, shiftKey?: boolean) {
     if (event === "delete") return this.handleDelete();
     if (event === "plus") return this.handlePlus();
     if (event === "minus") return this.handleMinus();
@@ -69,6 +69,11 @@ export class PlatformCreator implements CreatingThing<"platform"> {
     if (!coor) return;
 
     if (event === "drag") {
+      if (shiftKey) {
+        return this.selected.forEach((p) => {
+          p.vector.width += coor.x;
+        });
+      }
       return this.selected.forEach((p) => {
         p.vector.position.x += coor.x;
         p.vector.position.y += coor.y;
@@ -80,7 +85,7 @@ export class PlatformCreator implements CreatingThing<"platform"> {
         new Platform({
           x: coor.x - 50,
           y: coor.y - 20,
-          width: 40,
+          width: 100,
           height: 40,
           color: "springgreen",
         })

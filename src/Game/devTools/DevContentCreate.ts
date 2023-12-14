@@ -124,7 +124,7 @@ export class DevContentCreate {
     this.selectOneItem(xNoOffset, y, shiftKey);
   }
 
-  handleKeyEvent(action: ContentEvent, coor?: Coordinates) {
+  handleKeyEvent(action: ContentEvent, shiftKey?: boolean, coor?: Coordinates) {
     if (["plus", "minus", "delete", "duplicate"].includes(action)) {
       this.currentlyCreating.handleEvent(action);
     }
@@ -141,7 +141,7 @@ export class DevContentCreate {
       this.currentlyCreating.handleEvent("drag", {
         x: coor.x - this.prevDrag.x,
         y: coor.y - this.prevDrag.y,
-      });
+      }, shiftKey);
 
       this.prevDrag = { ...coor };
     }

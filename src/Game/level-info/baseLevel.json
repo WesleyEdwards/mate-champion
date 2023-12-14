@@ -1,0 +1,14 @@
+{
+  "packages": [],
+  "opponents": {
+    "grog": []
+  },
+  "platforms": [],
+  "floors": [
+    {
+      "x": 283,
+      "width": 6000,
+      "color": "springgreen"
+    }
+  ]
+}

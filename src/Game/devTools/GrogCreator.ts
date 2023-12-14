@@ -7,21 +7,42 @@ import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 export class GrogCreator implements CreatingThing<"grog"> {
   itemType: ItemType = "grog";
   items: Grog[];
-  selected: Grog | null = null;
+  selected: Grog[] = [];
 
   constructor(objectManager: ObjectManager) {
     this.items = objectManager.opponentManager.opponents.grog;
   }
 
-  selectItem(grog: Grog | null) {
-    this.selected = grog;
+  unSelectAll() {
+    this.selected.splice(0, this.selected.length);
+  }
+
+  selectItem(grog: Grog | null, multiple?: boolean) {
+    if (grog && this.selected.includes(grog)) return;
+
+    if (!grog) return this.unSelectAll();
+
+    if (!multiple && this.selected.length > 0) {
+      this.unSelectAll();
+    }
+
+    this.items.forEach((g) => {
+      if (g === grog) this.selected.push(g);
+    });
   }
 
   selectItems(grogs: Grog[]) {
-    throw new Error("Method not implemented.");
+    this.unSelectAll();
+    grogs.forEach((g) => {
+      this.selected.push(g);
+    });
   }
 
-  handleEvent(event: ContentEvent, coor?: Coordinates | undefined) {
+  handleEvent(
+    event: ContentEvent,
+    coor?: Coordinates | undefined,
+    shiftKey?: boolean
+  ) {
     if (event === "delete") return this.handleDelete();
 
     if (!coor) return console.log("no coor");
@@ -36,9 +57,10 @@ export class GrogCreator implements CreatingThing<"grog"> {
 
   dragItem({ x, y }: Coordinates) {
     if (!this.selected) return;
-    this.selected.vector.velocity.y = 0;
-    this.selected.vector.position.x = x;
-    this.selected.vector.position.y = y;
+    this.selected.forEach((g) => {
+      g.vector.position.x += x;
+      g.vector.position.y += y;
+    });
   }
 
   handleCreate(coor: Coordinates) {
@@ -50,10 +72,10 @@ export class GrogCreator implements CreatingThing<"grog"> {
     );
   }
   handleDelete() {
-    if (this.selected) {
-      const index = this.items.indexOf(this.selected);
+    this.selected.forEach((g) => {
+      const index = this.items.indexOf(g);
       this.items.splice(index, 1);
-    }
-    this.selected = null;
+    });
+    this.selected = [];
   }
 }
