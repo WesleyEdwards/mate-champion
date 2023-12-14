@@ -1,5 +1,5 @@
 import { ObjectManager } from "../GameState/ObjectManager";
-import { Coordinates, StaticObject } from "../models";
+import { Coordinates, HasPosition, StaticObject } from "../models";
 import { PlatformCreator } from "./PlatformCreator";
 import {
   ContentEvent,
@@ -12,6 +12,7 @@ import { FloorCreator } from "./FloorCreator";
 import { GrogCreator } from "./GrogCreator";
 import { PackageCreator } from "./PackageCreator";
 import { debounceLog } from "../helpers/utils";
+import { findExistingItem } from "./helpers";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
@@ -70,30 +71,27 @@ export class DevContentCreate {
     this.currentlyCreating = this.creatingOptions[select.value as ItemType];
   }
 
-  findExistingItem(x: number, y: number) {
-    return this.currentlyCreating.items.find(
-      (item) =>
-        x >= item.vector.posX &&
-        x <= item.vector.posX + item.vector.width &&
-        y >= item.vector.posY &&
-        y <= item.vector.posY + item.vector.height
+  selectOneItem(xNoOffset: number, y: number, shiftKey: boolean) {
+    const existingItem = findExistingItem(
+      xNoOffset + this.offsetX,
+      y,
+      this.currentlyCreating.items
     );
+
+    if (shiftKey && existingItem === null) return;
+    console.log(existingItem, shiftKey);
+
+    this.currentlyCreating.selectItem(existingItem || null, shiftKey);
   }
 
   mouseDown(xNoOffset: number, y: number, shiftKey: boolean) {
     this.prevDrag = { x: xNoOffset, y };
-
-    const existingItem = this.findExistingItem(xNoOffset + this.offsetX, y);
-    if (existingItem) {
-      return this.currentlyCreating.selectItem(existingItem, shiftKey);
-    }
+    this.selectOneItem(xNoOffset, y, shiftKey);
   }
 
-  mouseUp({ x: xNoOffset, y }: Coordinates) {
+  mouseUp({ x: xNoOffset, y }: Coordinates, shiftKey: boolean) {
     this.prevDrag = null;
-
-    const existingPlatform = this.findExistingItem(xNoOffset + this.offsetX, y);
-    this.currentlyCreating.selectItem(existingPlatform || null);
+    this.selectOneItem(xNoOffset, y, shiftKey);
   }
 
   handleKeyEvent(action: ContentEvent, coor?: Coordinates) {

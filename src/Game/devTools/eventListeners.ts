@@ -16,10 +16,13 @@ export function addDevEventListeners(
   });
 
   canvas.addEventListener("mouseup", (e) => {
-    contentCreator.mouseUp({
-      x: e.offsetX,
-      y: e.offsetY,
-    });
+    contentCreator.mouseUp(
+      {
+        x: e.offsetX,
+        y: e.offsetY,
+      },
+      e.shiftKey
+    );
     if (e.ctrlKey) {
       contentCreator.handleKeyEvent("create", {
         x: e.offsetX,

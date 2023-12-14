@@ -1,5 +1,6 @@
 import { ObjectManager } from "../GameState/ObjectManager";
 import { LevelInfo } from "../level-info/levelInfo";
+import { Coordinates, HasPosition } from "../models";
 
 const { round } = Math;
 
@@ -36,4 +37,34 @@ export function exportLevelInfo(objManager: ObjectManager) {
   };
 
   console.log(levelInfo);
+}
+
+export function findExistingItems(
+  coor1: Coordinates,
+  coor2: Coordinates,
+  items: HasPosition[]
+): HasPosition[] {
+  return items.filter(
+    (item) =>
+      coor1.x <= item.vector.posX + item.vector.width &&
+      coor2.x >= item.vector.posX &&
+      coor1.y <= item.vector.posY + item.vector.height &&
+      coor2.y >= item.vector.posY
+  );
+}
+
+export function findExistingItem(
+  x: number,
+  y: number,
+  items: HasPosition[]
+): HasPosition | null {
+  return (
+    items.find(
+      (item) =>
+        x >= item.vector.posX &&
+        x <= item.vector.posX + item.vector.width &&
+        y >= item.vector.posY &&
+        y <= item.vector.posY + item.vector.height
+    ) || null
+  );
 }
