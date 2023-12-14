@@ -32,6 +32,9 @@ export class FloorCreator implements CreatingThing<"platform"> {
       }
     });
   }
+  selectItems(platforms: Platform[]) {
+    throw new Error("Method not implemented.");
+  }
 
   handleEvent(event: ContentEvent, coor?: Coordinates) {
     

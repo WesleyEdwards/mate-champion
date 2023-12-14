@@ -24,5 +24,6 @@ export interface CreatingThing<
   items: K[];
   selected: K | K[] | null;
   selectItem: (item: K | null, multiple?: boolean) => void;
+  selectItems: (items: K[]) => void;
   handleEvent: (event: ContentEvent, coor?: Coordinates) => void;
 }

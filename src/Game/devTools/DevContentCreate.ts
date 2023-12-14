@@ -12,7 +12,7 @@ import { FloorCreator } from "./FloorCreator";
 import { GrogCreator } from "./GrogCreator";
 import { PackageCreator } from "./PackageCreator";
 import { debounceLog } from "../helpers/utils";
-import { findExistingItem } from "./helpers";
+import { findExistingItem, findExistingItems } from "./helpers";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
@@ -79,17 +79,47 @@ export class DevContentCreate {
     );
 
     if (shiftKey && existingItem === null) return;
-    console.log(existingItem, shiftKey);
 
     this.currentlyCreating.selectItem(existingItem || null, shiftKey);
+  }
+
+  selectMultipleItems(xNoOffset: number, y: number) {
+    if (!this.dragSelect) {
+      this.dragSelect = { x: xNoOffset, y };
+      return;
+    }
+
+    const coor1 = {
+      x: Math.min(this.dragSelect.x, xNoOffset) + this.offsetX,
+      y: Math.min(this.dragSelect.y, y),
+    };
+    const coor2 = {
+      x: Math.max(this.dragSelect.x, xNoOffset) + this.offsetX,
+      y: Math.max(this.dragSelect.y, y),
+    };
+
+    const existingItems = findExistingItems(
+      coor1,
+      coor2,
+      this.currentlyCreating.items
+    );
+
+    this.currentlyCreating.selectItems(existingItems);
   }
 
   mouseDown(xNoOffset: number, y: number, shiftKey: boolean) {
     this.prevDrag = { x: xNoOffset, y };
     this.selectOneItem(xNoOffset, y, shiftKey);
+
+    if (shiftKey) {
+      this.dragSelect = { x: xNoOffset, y };
+    }
   }
 
   mouseUp({ x: xNoOffset, y }: Coordinates, shiftKey: boolean) {
+    if (Math.abs(xNoOffset - (this.dragSelect?.x ?? 0)) > 5 && shiftKey) {
+      this.selectMultipleItems(xNoOffset, y);
+    }
     this.prevDrag = null;
     this.selectOneItem(xNoOffset, y, shiftKey);
   }

@@ -52,6 +52,14 @@ export class PlatformCreator implements CreatingThing<"platform"> {
     });
   }
 
+  selectItems(platforms: Platform[]) {
+    this.unSelectAll();
+    this.selected = platforms;
+    this.selected.forEach((p) => {
+      p.color = "pink";
+    });
+  }
+
   handleEvent(event: ContentEvent, coor?: Coordinates) {
     if (event === "delete") return this.handleDelete();
     if (event === "plus") return this.handlePlus();

@@ -21,6 +21,10 @@ export class PackageCreator implements CreatingThing<"package"> {
     this.selected = matePackage ? [matePackage] : null;
   }
 
+  selectItems(packages: Package[]) {
+    this.selected = packages;
+  }
+
   handleEvent(event: ContentEvent, coor?: Coordinates | undefined) {
     if (event === "delete") return this.handleDelete();
 

@@ -17,6 +17,10 @@ export class GrogCreator implements CreatingThing<"grog"> {
     this.selected = grog;
   }
 
+  selectItems(grogs: Grog[]) {
+    throw new Error("Method not implemented.");
+  }
+
   handleEvent(event: ContentEvent, coor?: Coordinates | undefined) {
     if (event === "delete") return this.handleDelete();
 
