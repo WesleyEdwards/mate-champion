@@ -1,28 +1,16 @@
-import React, { FC } from "react";
-import { lifeImage } from "./constants";
+import { FC } from "react";
+import lifeImage from "../assets/heart.png";
 import { StackHor } from "./MHComponents.tsx/Components";
 import { ScoreStats } from "./ScoreStats";
 import { emptyStats } from "../Game/helpers/utils";
 import { PlayStats } from "../Game/helpers/types";
 
-const widthOfDiv = 50 * emptyStats.lives;
-
 export const StatsDiv: FC<{ stats: PlayStats }> = ({ stats }) => {
   const { lives, level, score, ammo } = stats;
 
   return (
-    <StackHor
-      style={{
-        justifyContent: "space-between",
-        paddingBlock: "10px",
-      }}
-    >
-      <StackHor
-        style={{
-          minWidth: `${widthOfDiv}px`,
-          justifyContent: "start",
-        }}
-      >
+    <StackHor style={{ justifyContent: "space-between" }}>
+      <StackHor style={{ justifyContent: "start" }}>
         {lives &&
           new Array(lives).fill(null).map((_, i) => (
             <img
