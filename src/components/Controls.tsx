@@ -7,10 +7,10 @@ export const Controls: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
   return (
     <>
       <Stack direction="row">
-        <IconButton>
+        <IconButton onClick={mainMenu}>
           <ArrowBack />
         </IconButton>
-        <Typography style={{ alignSelf: "center" }}>Controls:</Typography>
+        <Typography level="h2">Controls</Typography>
         <div style={{ width: "2rem" }}></div>
       </Stack>
       <img

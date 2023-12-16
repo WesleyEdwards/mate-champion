@@ -1,27 +1,24 @@
 import { FC } from "react";
 import { PlayerScore } from "../Game/models";
+import { Stack, Typography } from "@mui/joy";
 
-interface ScoreListItemProps {
+export const ScoreListItem: FC<{
   score: PlayerScore;
   num: number;
-}
-
-export const ScoreListItem: FC<ScoreListItemProps> = (props) => {
-  const { score, num } = props;
+}> = ({ score, num }) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div
-        className="score-list-item green-text"
+    <Stack direction="row" justifyContent="spaceBetween" alignItems="center">
+      <Typography sx={{ width: "3rem" }}>{num}</Typography>
+      <Typography
+        overflow="hidden"
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+        sx={{ width: "16rem", mr: "1rem" }}
         title={score.name}
-      >{`${num} - ${score.name}`}</div>
-      <div>{score.score}</div>
-    </div>
+      >
+        {score.name}
+      </Typography>
+      <Typography>{score.score}</Typography>
+    </Stack>
   );
 };

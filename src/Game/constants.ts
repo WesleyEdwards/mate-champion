@@ -34,5 +34,5 @@ export const platformConst = {
 } as const;
 
 export const firebaseCollection = devSettings.sandboxDb
-  ? "scores-test"
+  ? "scores-test-1"
   : "scores";

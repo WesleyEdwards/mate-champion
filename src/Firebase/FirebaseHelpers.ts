@@ -48,15 +48,18 @@ export const handleSubmitName = async (
 };
 
 export const fetchPlayerScores = async (): Promise<PlayerScore[]> => {
-  const scoresRef = collection(firebaseDb, firebaseCollection);
-  const scoresSnapshot = await getDocs(scoresRef);
-  const scoresList = scoresSnapshot.docs.map((doc) =>
-    doc.data()
-  ) as PlayerScore[];
-
-  return scoresList
-    .sort((a, b) => b.score - a.score)
-    .splice(0, numberDisplayed);
+  try {
+    const scoresRef = collection(firebaseDb, firebaseCollection);
+    const scoresSnapshot = await getDocs(scoresRef);
+    const scoresList = scoresSnapshot.docs.map((doc) =>
+      doc.data()
+    ) as PlayerScore[];
+    return scoresList
+      .sort((a, b) => b.score - a.score)
+      .splice(0, numberDisplayed);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 export const isHighScore = (

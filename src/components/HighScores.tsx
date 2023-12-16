@@ -3,7 +3,12 @@ import { handleSubmitName, isHighScore } from "../Firebase/FirebaseHelpers";
 import { PlayerScore } from "../Game/models";
 import { NewHighScore } from "./NewHighScore";
 import { ScoreListItem } from "./ScoreListItem";
-import { Button, Stack, Typography } from "@mui/joy";
+import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
+import { ArrowBack } from "@mui/icons-material";
+
+const emptyScoreList: PlayerScore[] = Array.from({ length: 15 }).map(
+  (_, i) => ({ name: "...", score: 0 })
+);
 
 interface HighScoresProps {
   score: number;
@@ -38,30 +43,21 @@ export const HighScores: FC<HighScoresProps> = (props) => {
 
   if (savedScore || gotHighScore === false) {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Stack direction="row" style={{ justifyContent: "space-between" }}>
-          <span className="material-icons back-button" onClick={mainMenu}>
-            {"arrow_back"}
-          </span>
-          <Typography style={{ alignSelf: "center" }}>Score Board:</Typography>
+      <Stack width="100%" gap="1rem">
+        <Stack direction="row" justifyContent="space-between">
+          <IconButton onClick={mainMenu}>
+            <ArrowBack />
+          </IconButton>
+          <Typography level="h2">High Scores</Typography>
           <div style={{ width: "2rem" }}></div>
         </Stack>
-        <hr
-          style={{
-            width: "100%",
-            borderColor: "green",
-            marginBottom: "1rem",
-          }}
-        />
-        {(scores ?? Array.from({ length: 15 })).map((score, i) => (
-          <ScoreListItem num={i + 1} score={score} key={i} />
-        ))}
-      </div>
+        <Divider />
+        <Stack>
+          {(scores ?? emptyScoreList).map((info, i) => (
+            <ScoreListItem num={i + 1} score={info} key={i} />
+          ))}
+        </Stack>
+      </Stack>
     );
   }
 

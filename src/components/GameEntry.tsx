@@ -8,8 +8,6 @@ import { enterGameLoop } from "../Game/Main";
 import HighScores from "./HighScores";
 import Settings from "./Settings";
 import StatsDiv from "./StatsDiv";
-import { devSettings } from "../Game/devSettings";
-import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import Controls from "./Controls";
 
 type Screen =
@@ -42,15 +40,29 @@ export const GameEntry: FC = () => {
 
   return (
     <Stack padding="1rem" alignItems="center" justifyContent="center">
-      <Typography level="h1">Mate Champion</Typography>
-
       {screen === "home" && (
-        <Stack width="100%" alignItems="center">
+        <Stack width="100%" gap="1rem" alignItems="center">
+          <Typography level="h1">Mate Champion</Typography>
           <Instructions />
           <Button onClick={() => handleClickPlay()}>Play Game</Button>
-          <Stack direction="row">
-            <Button onClick={() => setScreen("highScores")}>High Scores</Button>
-            <Button onClick={() => setScreen("controls")}>Controls</Button>
+          <Stack
+            direction="row"
+            width="100%"
+            justifyContent="center"
+            gap="1rem"
+          >
+            <Button
+              sx={{ width: "10rem" }}
+              onClick={() => setScreen("highScores")}
+            >
+              High Scores
+            </Button>
+            <Button
+              sx={{ width: "10rem" }}
+              onClick={() => setScreen("controls")}
+            >
+              Controls
+            </Button>
           </Stack>
         </Stack>
       )}
@@ -71,7 +83,7 @@ export const GameEntry: FC = () => {
 
       <Stack>
         <canvas
-          style={{ height: playing ? undefined : "0px" }}
+          style={{ height: playing ? undefined : "0px", borderRadius: "10px" }}
           id="canvas"
         ></canvas>
 
