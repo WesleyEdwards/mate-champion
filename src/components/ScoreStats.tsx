@@ -1,38 +1,21 @@
-import React, { FC } from "react";
-import { StackVert, Typography } from "./MHComponents.tsx/Components";
+import { Stack, Typography } from "@mui/joy";
+import { FC } from "react";
 
-interface StatsListItemProps {
-  label: string;
-  value: number | undefined;
-}
+import bullet from "../assets/bullet-hor.png";
 
-const StatsListItem: FC<StatsListItemProps> = (props) => {
-  const { label, value } = props;
-  return (
-    <Typography style={{ margin: 0, fontSize: "1.5rem" }}>
-      {value !== undefined && `${label}: ${value}`}
-    </Typography>
-  );
-};
-
-interface ScoreStatsProps {
+export const ScoreStats: FC<{
   level: number | undefined;
   score: number | undefined;
   ammo: number | undefined;
-}
-
-export const ScoreStats: FC<ScoreStatsProps> = (props) => {
-  const { level, score, ammo } = props;
+}> = ({ level, score, ammo }) => {
   return (
-    <StackVert
-      style={{
-        minWidth: "150px",
-        alignItems: "end",
-      }}
-    >
-      <StatsListItem label="ammo" value={ammo} />
-      <StatsListItem label="level" value={level} />
-      <StatsListItem label="score" value={score} />
-    </StackVert>
+    <>
+      <Stack direction="row" alignItems="center" justifyContent="center" gap="5px">
+        <img src={bullet} alt="bullet" width="30px" height="30px" />
+        <Typography>{ammo}</Typography>
+      </Stack>
+      <Typography>Level: {level}</Typography>
+      <Typography>Score: {score}</Typography>
+    </>
   );
 };

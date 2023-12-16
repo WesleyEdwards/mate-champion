@@ -1,12 +1,20 @@
+import { Select, Option } from "@mui/joy";
+
 export const CourseBuilderSettings = () => {
   return (
-    <div>
-      <select id="course-builder-select">
-        <option value="platform">Platform</option>
-        <option value="floor">Floor</option>
-        <option value="grog">Grog</option>
-        <option value="package">Package</option>
-      </select>
-    </div>
+    <Select
+      sx={{ minWidth: "10rem" }}
+      defaultValue="platform"
+      onChange={(_, value) => {
+        // @ts-ignore - this is a hacky hack
+        window.hackyHack = value;
+        console.log(value);
+      }}
+    >
+      <Option value="platform">Platform</Option>
+      <Option value="floor">Floor</Option>
+      <Option value="grog">Grog</Option>
+      <Option value="package">Package</Option>
+    </Select>
   );
 };

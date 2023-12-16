@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { PlayerScore } from "../Game/models";
-import "./HighScores.css";
 
 interface ScoreListItemProps {
   score: PlayerScore;
@@ -22,7 +21,7 @@ export const ScoreListItem: FC<ScoreListItemProps> = (props) => {
         className="score-list-item green-text"
         title={score.name}
       >{`${num} - ${score.name}`}</div>
-      <div className="green-text">{score.score}</div>
+      <div>{score.score}</div>
     </div>
   );
 };

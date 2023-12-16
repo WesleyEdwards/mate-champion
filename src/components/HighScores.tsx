@@ -1,12 +1,9 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { handleSubmitName, isHighScore } from "../Firebase/FirebaseHelpers";
-import "material-icons/iconfont/material-icons.css";
 import { PlayerScore } from "../Game/models";
-import "./HighScores.css";
-import { H2, StackHor, StackVert } from "./MHComponents.tsx/Components";
-import { MHButton } from "./MHComponents.tsx/MHButton";
 import { NewHighScore } from "./NewHighScore";
 import { ScoreListItem } from "./ScoreListItem";
+import { Button, Stack, Typography } from "@mui/joy";
 
 interface HighScoresProps {
   score: number;
@@ -47,13 +44,13 @@ export const HighScores: FC<HighScoresProps> = (props) => {
           flexDirection: "column",
         }}
       >
-        <StackHor style={{ justifyContent: "space-between" }}>
+        <Stack direction="row" style={{ justifyContent: "space-between" }}>
           <span className="material-icons back-button" onClick={mainMenu}>
             {"arrow_back"}
           </span>
-          <H2 style={{ alignSelf: "center" }}>Score Board:</H2>
+          <Typography style={{ alignSelf: "center" }}>Score Board:</Typography>
           <div style={{ width: "2rem" }}></div>
-        </StackHor>
+        </Stack>
         <hr
           style={{
             width: "100%",
@@ -73,15 +70,15 @@ export const HighScores: FC<HighScoresProps> = (props) => {
   }
 
   return (
-    <StackVert>
-      <H2>New High Score of {score}!</H2>
-      <MHButton
+    <Stack>
+      <Typography>New High Score of {score}!</Typography>
+      <Button
         style={{ padding: "1rem" }}
         onClick={() => handleSubmit(playerPrevScore.name)}
       >
         View Scores
-      </MHButton>
-    </StackVert>
+      </Button>
+    </Stack>
   );
 };
 

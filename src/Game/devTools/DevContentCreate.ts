@@ -63,12 +63,12 @@ export class DevContentCreate {
   update(offsetX: number) {
     this.offsetX = offsetX;
 
-    const select = window.document.getElementById(
-      "course-builder-select"
-    ) as HTMLSelectElement;
-    if (select.value === this.currentlyCreating.itemType) return;
-    this.currentlyCreating.selectItem(null);
-    this.currentlyCreating = this.creatingOptions[select.value as ItemType];
+    // @ts-ignore - this is a hack to get the current item type
+    const selected = (window.hackyHack ?? "platform") as ItemType;
+    if (selected !== this.currentlyCreating.itemType) {
+      this.currentlyCreating = this.creatingOptions[selected];
+      this.currentlyCreating.selectItem(null);
+    }
   }
 
   selectOneItem(xNoOffset: number, y: number, shiftKey: boolean) {
@@ -138,10 +138,14 @@ export class DevContentCreate {
     }
 
     if (action === "drag" && this.prevDrag) {
-      this.currentlyCreating.handleEvent("drag", {
-        x: coor.x - this.prevDrag.x,
-        y: coor.y - this.prevDrag.y,
-      }, shiftKey);
+      this.currentlyCreating.handleEvent(
+        "drag",
+        {
+          x: coor.x - this.prevDrag.x,
+          y: coor.y - this.prevDrag.y,
+        },
+        shiftKey
+      );
 
       this.prevDrag = { ...coor };
     }

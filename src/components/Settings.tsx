@@ -1,20 +1,18 @@
 import { FC, useState } from "react";
-import { H2, StackHor } from "./MHComponents.tsx/Components";
-import "./HighScores.css";
+import { IconButton, Stack, Typography } from "@mui/joy";
+import { ArrowBack } from "@mui/icons-material";
 
-type SettingsProps = { mainMenu: () => void };
-
-export const Settings: FC<SettingsProps> = ({ mainMenu }) => {
+export const Settings: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
   return (
     <>
-      <StackHor style={{ justifyContent: "space-between" }}>
-        <span className="material-icons back-button" onClick={mainMenu}>
-          {"arrow_back"}
-        </span>
-        <H2 style={{ alignSelf: "center" }}>Settings:</H2>
+      <Stack direction="row" style={{ justifyContent: "space-between" }}>
+        <IconButton>
+          <ArrowBack />
+        </IconButton>
+        <Typography>Settings:</Typography>
         <div style={{ width: "2rem" }}></div>
-      </StackHor>
-      <div>Sound</div>
+      </Stack>
+      <Typography>Sound</Typography>
     </>
   );
 };

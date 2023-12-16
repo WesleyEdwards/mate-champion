@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
-import { MHButton } from "./MHComponents.tsx/MHButton";
 import { userAlreadyExists } from "../Firebase/FirebaseHelpers";
+import { Button, Divider, Stack, Typography } from "@mui/joy";
 
 interface NewHighScoreProps {
   score: number;
@@ -33,32 +33,30 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
   };
 
   return (
-    <div>
-      <h2 className="green-text">Game Over!</h2>
-      <h3 className="green-text">
+    <Stack>
+      <Typography level="h2">Game Over!</Typography>
+      <Typography level="h3">
         You got a high score!
-        <br />
+        <Divider />
         To receive credit, Enter your name:
-      </h3>
-      <div className="vertical-flex" style={{ gap: "1rem" }}>
-        <div className="horizontal-flex" style={{ gap: "1rem" }}>
+      </Typography>
+      <Stack style={{ gap: "1rem" }}>
+        <Stack style={{ gap: "1rem" }}>
           <input
-            style={{ padding: "0.5rem" }}
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <button
-            style={{ padding: "0.5rem" }}
+          <Button
             disabled={name.length === 0 || disableSubmit}
             onClick={handleSubmitNew}
             type="submit"
           >
             Submit
-          </button>
-        </div>
-        {error && <p className="red-text">{error}</p>}
-      </div>
-    </div>
+          </Button>
+        </Stack>
+        {error && <Typography>{error}</Typography>}
+      </Stack>
+    </Stack>
   );
 };

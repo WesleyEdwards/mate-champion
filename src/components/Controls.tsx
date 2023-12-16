@@ -1,20 +1,18 @@
-import { FC, useState } from "react";
-import { H2, StackHor } from "./MHComponents.tsx/Components";
-import "./HighScores.css";
+import { FC } from "react";
 import instructions from "../assets/instructions.png";
+import { IconButton, Stack, Typography } from "@mui/joy";
+import { ArrowBack } from "@mui/icons-material";
 
-type ControlsProps = { mainMenu: () => void };
-
-export const Controls: FC<ControlsProps> = ({ mainMenu }) => {
+export const Controls: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
   return (
     <>
-      <StackHor>
-        <span className="material-icons back-button" onClick={mainMenu}>
-          {"arrow_back"}
-        </span>
-        <H2 style={{ alignSelf: "center" }}>Controls:</H2>
+      <Stack direction="row">
+        <IconButton>
+          <ArrowBack />
+        </IconButton>
+        <Typography style={{ alignSelf: "center" }}>Controls:</Typography>
         <div style={{ width: "2rem" }}></div>
-      </StackHor>
+      </Stack>
       <img
         src={instructions}
         alt="instructions"
