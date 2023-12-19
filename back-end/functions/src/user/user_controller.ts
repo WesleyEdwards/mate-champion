@@ -1,5 +1,12 @@
 import {controller} from "../auth/controller"
-import {createUser, getSelf, getUser, loginUser, queryUser} from "./userQueries"
+import {
+  changeName,
+  createUser,
+  getSelf,
+  getUser,
+  loginUser,
+  queryUser
+} from "./userQueries"
 
 export const usersController = controller("user", [
   {
@@ -11,6 +18,7 @@ export const usersController = controller("user", [
   {path: "/", method: "get", endpointBuilder: getSelf},
   {path: "/:id", method: "get", endpointBuilder: getUser},
   {path: "/query", method: "post", endpointBuilder: queryUser},
+  {path: "/change-name", method: "post", endpointBuilder: changeName},
   {
     path: "/login",
     method: "post",

@@ -14,7 +14,7 @@ const sendUserBody = (user: any) => {
 
 export const createUser: ReqBuilder =
   (client) =>
-  async ({body, jwtBody}, res) => {
+  async ({body}, res) => {
     const passwordHash = await bcrypt.hash(body.password, 10)
     const userBody = checkValidation("user", {...body, passwordHash})
     if (isParseError(userBody)) return res.status(400).json(userBody)
@@ -22,6 +22,7 @@ export const createUser: ReqBuilder =
     const emailExists = await client.user.findOne({
       email: userBody.email
     })
+
     if (emailExists) {
       return res.status(400).json({error: "Email already exists"})
     }
@@ -30,7 +31,7 @@ export const createUser: ReqBuilder =
 
     const token = createUserToken({userId: userBody._id})
 
-    const highScore = body.highScore || 0
+    const highScore = body.score || 0
     const scoreBody = checkValidation("score", {
       ...body,
       userId: userBody._id,
@@ -57,8 +58,6 @@ export const getUser: ReqBuilder =
 export const getSelf: ReqBuilder =
   (client) =>
   async ({jwtBody}, res) => {
-    console.log(jwtBody)
-    console.log(jwtBody?.userId)
     const user = await client.user.findOne({
       _id: jwtBody?.userId || ""
     })
@@ -69,12 +68,6 @@ export const getSelf: ReqBuilder =
 export const loginUser: ReqBuilder =
   (client) =>
   async ({body}, res) => {
-    // if (!("email" in body) || !(typeof body.email === "string")) {
-    //   return res.status(400).json({error: "Email is required"})
-    // }
-    // if (!("password" in body) || !(typeof body.password === "string")) {
-    //   return res.status(400).json({error: "Password is required"})
-    // }
     const loginBody = {
       email: body.email,
       password: body.password
@@ -99,8 +92,19 @@ export const loginUser: ReqBuilder =
 
 export const queryUser: ReqBuilder =
   (client) =>
-  async ({body, jwtBody}, res) => {
-    // const condition = jwtBody?.admin ? body : {...body, _id: jwtBody?.userId}
+  async ({body}, res) => {
     const users = await client.user.findMany(body)
     return res.json(users?.map(sendUserBody))
+  }
+
+export const changeName: ReqBuilder =
+  (client) =>
+  async ({body, jwtBody}, res) => {
+    const user = await client.user.findOne({_id: jwtBody?.userId})
+    if (!user || !body.name) return res.status(404)
+    const updatedUser = await client.user.updateOne(jwtBody?.userId ?? "", {
+      ...user,
+      name: body.name
+    })
+    return res.json(sendUserBody(updatedUser))
   }
