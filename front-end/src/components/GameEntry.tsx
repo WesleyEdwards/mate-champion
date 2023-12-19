@@ -19,7 +19,6 @@ type Screen =
   | "settings";
 
 export const GameEntry: FC = () => {
-  const { scores, playerScore } = useScoreData();
   const [screen, setScreen] = useState<Screen>("home");
 
   const [stats, setStats] = useState<PlayStats>({ ...emptyStats });
@@ -70,8 +69,6 @@ export const GameEntry: FC = () => {
       {screen === "highScores" && (
         <HighScores
           score={stats.score}
-          scores={scores}
-          playerPrevScore={playerScore}
           mainMenu={() => {
             setStats({ ...emptyStats });
             setScreen("home");

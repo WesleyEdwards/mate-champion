@@ -1,45 +1,62 @@
 import { FC, useEffect, useState } from "react";
-import { handleSubmitName, isHighScore } from "../Firebase/FirebaseHelpers";
-import { PlayerScore } from "../Game/models";
+import { isHighScore } from "../Firebase/FirebaseHelpers";
 import { NewHighScore } from "./NewHighScore";
 import { ScoreListItem } from "./ScoreListItem";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { ArrowBack } from "@mui/icons-material";
+import { Score, TopScore } from "../types";
+import { useAuthContext } from "../hooks/AuthContext";
 
-const emptyScoreList: PlayerScore[] = Array.from({ length: 15 }).map(
-  (_, i) => ({ name: "...", score: 0 })
-);
+const emptyScoreList: TopScore[] = Array.from({ length: 15 }).map((_, i) => ({
+  name: "...",
+  score: 0,
+}));
 
 interface HighScoresProps {
   score: number;
-  scores: PlayerScore[] | undefined;
-  playerPrevScore: PlayerScore | undefined;
   mainMenu: () => void;
 }
 
-export const HighScores: FC<HighScoresProps> = (props) => {
-  const { score, mainMenu, scores, playerPrevScore } = props;
+export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
   const [gotHighScore, setGotHighScore] = useState<boolean>(false);
+  const [highScores, setHighScores] = useState<TopScore[]>();
+  const [personalHigh, setPersonalHigh] = useState<Score | null>();
+
+  const { api, user } = useAuthContext();
 
   const [savedScore, setSavedScore] = useState<boolean>(false);
 
   const handleSubmit = (name: string) => {
-    localStorage.setItem("mate-champ-name", name);
-    return handleSubmitName(name, score).then(() => {
-      setGotHighScore(false);
-      setSavedScore(true);
-    });
+    // return handleSubmitName(name, score).then(() => {
+    //   setGotHighScore(false);
+    //
+    // });
   };
 
   useEffect(() => {
-    if (!scores) return;
-    const isHigh = isHighScore(score, scores, playerPrevScore);
+    if (!highScores || personalHigh === undefined) return;
+    const isHigh = isHighScore(score, highScores, personalHigh?.score ?? 0);
 
     setGotHighScore(isHigh);
     if (isHigh) {
       setSavedScore(false);
     }
-  }, [score]);
+  }, [highScores, score]);
+
+  useEffect(() => {
+    api.score.topScores().then(setHighScores);
+    api.score.query(user ? { userId: user._id } : {}).then((scores) => {
+      const high = scores.reduce<null | Score>((acc, curr) => {
+        if (acc) {
+          if (curr.score > acc.score) {
+            return curr;
+          }
+        }
+        return acc;
+      }, null);
+      setPersonalHigh(high);
+    });
+  }, []);
 
   if (savedScore || gotHighScore === false) {
     return (
@@ -53,7 +70,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
         </Stack>
         <Divider />
         <Stack>
-          {(scores ?? emptyScoreList).map((info, i) => (
+          {(highScores ?? emptyScoreList).map((info, i) => (
             <ScoreListItem num={i + 1} score={info} key={i} />
           ))}
         </Stack>
@@ -61,8 +78,8 @@ export const HighScores: FC<HighScoresProps> = (props) => {
     );
   }
 
-  if (!playerPrevScore) {
-    return <NewHighScore score={score} onSubmit={handleSubmit} />;
+  if (!personalHigh) {
+    return <NewHighScore score={score} onSubmit={() => setSavedScore(true)} />;
   }
 
   return (
@@ -70,7 +87,7 @@ export const HighScores: FC<HighScoresProps> = (props) => {
       <Typography>New High Score of {score}!</Typography>
       <Button
         style={{ padding: "1rem" }}
-        onClick={() => handleSubmit(playerPrevScore.name)}
+        onClick={() => handleSubmit(user?.name ?? "")}
       >
         View Scores
       </Button>

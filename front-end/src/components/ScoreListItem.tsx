@@ -1,9 +1,9 @@
 import { FC } from "react";
-import { PlayerScore } from "../Game/models";
 import { Stack, Typography } from "@mui/joy";
+import { TopScore } from "../types";
 
 export const ScoreListItem: FC<{
-  score: PlayerScore;
+  score: TopScore;
   num: number;
 }> = ({ score, num }) => {
   return (

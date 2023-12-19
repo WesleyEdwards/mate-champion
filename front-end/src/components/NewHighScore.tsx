@@ -1,18 +1,29 @@
 import React, { FC, useState } from "react";
-import { userAlreadyExists } from "../Firebase/FirebaseHelpers";
-import { Button, Divider, Stack, Typography } from "@mui/joy";
+import {
+  Button,
+  Divider,
+  Stack,
+  TextField,
+  Textarea,
+  Typography,
+} from "@mui/joy";
+import { useAuthContext } from "../hooks/AuthContext";
 
 interface NewHighScoreProps {
   score: number;
-  onSubmit: (name: string) => Promise<void>;
+  onSubmit: () => void;
 }
 
 export const NewHighScore: FC<NewHighScoreProps> = (props) => {
   const { onSubmit } = props;
 
+  const { api } = useAuthContext();
+
   const [error, setError] = useState<string | null>(null);
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmitNew = async () => {
     setDisableSubmit(true);
@@ -22,14 +33,22 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
       setError("Name is too long");
       return setDisableSubmit(false);
     }
-    const sameUsers = await userAlreadyExists(name);
+    // const sameUsers = await userAlreadyExists(name);
+    try {
+      const created = await api.auth.createAccount({
+        _id: crypto.randomUUID(),
+        name,
+        email,
+        password,
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      });
 
-    if (sameUsers) {
-      setError("Name is already exists");
+      return onSubmit();
+    } catch (e) {
+      setError(e as any);
       setDisableSubmit(false);
-      return;
     }
-    return onSubmit(name);
   };
 
   return (
@@ -42,10 +61,11 @@ export const NewHighScore: FC<NewHighScoreProps> = (props) => {
       </Typography>
       <Stack style={{ gap: "1rem" }}>
         <Stack style={{ gap: "1rem" }}>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+          <Textarea value={name} onChange={(e) => setName(e.target.value)} />
+          <Textarea value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Textarea
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button
             disabled={name.length === 0 || disableSubmit}

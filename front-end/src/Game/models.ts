@@ -69,11 +69,6 @@ export interface Keys {
   toShank: 0 | 1;
 }
 
-export interface PlayerScore {
-  name: string;
-  score: number;
-}
-
 export type OppDirections = "left" | "right";
 
 export type VagueFacing = "left" | "right" | "up" | "down";
