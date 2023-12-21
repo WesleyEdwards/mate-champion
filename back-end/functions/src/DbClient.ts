@@ -16,10 +16,15 @@ export type BasicEndpoints<T extends HasId> = {
   findMany: (filter: Condition<T>) => Promise<T[]>
   updateOne: (id: string, update: Partial<T>) => Promise<OrError<T>>
   deleteOne: (id: string) => Promise<string>
+}
 
+type MigrationEndpoints = {
+  hasRun: (name: string) => Promise<boolean>
+  markAsRun: (name: string) => Promise<boolean>
 }
 
 export type DbClient = {
   user: BasicEndpoints<User>
   score: BasicEndpoints<Score>
+  migrations: MigrationEndpoints
 }

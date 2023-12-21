@@ -15,9 +15,9 @@ export type LevelInfo = {
 };
 
 const levelsInfo: LevelInfo[] = [
+  levelTwoInfo,
   levelThreeInfo,
   levelFourInfo,
-  levelTwoInfo,
   levelOneInfo,
   levelFiveInfo,
 ];

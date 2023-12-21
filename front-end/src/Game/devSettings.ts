@@ -7,6 +7,7 @@ const prodSettings = {
   shortLevelScreen: false,
   redOutline: false,
   noDie: false,
+  oneLife: false,
   courseBuilder: false,
 } as const;
 
@@ -22,17 +23,19 @@ type Settings = {
   shortLevelScreen: boolean;
   redOutline: boolean;
   noDie: boolean;
+  oneLife: boolean;
   courseBuilder: boolean;
 };
 
 export const devSettings: Settings = import.meta.env.DEV
   ? ({
-      showDevStats: true,
+      showDevStats: false,
       hideOpponents: false,
-      sandboxDb: true,
-      shortLevelScreen: true,
-      redOutline: true,
-      noDie: true,
-      courseBuilder: true,
+      sandboxDb: false,
+      shortLevelScreen: false,
+      redOutline: false,
+      noDie: false,
+      oneLife: true,
+      courseBuilder: false,
     } as const)
   : prodSettings;

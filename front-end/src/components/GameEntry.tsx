@@ -9,13 +9,15 @@ import HighScores from "./HighScores";
 import Settings from "./Settings";
 import StatsDiv from "./StatsDiv";
 import Controls from "./Controls";
+import { PersonalHigh } from "./PersonalHigh";
+import { Profile } from "./Profile";
 
 type Screen =
   | "game"
   | "home"
   | "highScores"
-  | "newHighScore"
   | "controls"
+  | "profile"
   | "settings";
 
 export const GameEntry: FC = () => {
@@ -43,7 +45,13 @@ export const GameEntry: FC = () => {
         <Stack width="100%" gap="1rem" alignItems="center">
           <Typography level="h1">Mate Champion</Typography>
           <Instructions />
-          <Button onClick={() => handleClickPlay()}>Play Game</Button>
+          <Button
+            sx={{ width: "10rem", my: "2rem" }}
+            size="lg"
+            onClick={() => handleClickPlay()}
+          >
+            Play Game
+          </Button>
           <Stack
             direction="row"
             width="100%"
@@ -51,16 +59,25 @@ export const GameEntry: FC = () => {
             gap="1rem"
           >
             <Button
+              variant="outlined"
               sx={{ width: "10rem" }}
               onClick={() => setScreen("highScores")}
             >
               High Scores
             </Button>
             <Button
+              variant="outlined"
               sx={{ width: "10rem" }}
               onClick={() => setScreen("controls")}
             >
               Controls
+            </Button>
+            <Button
+              variant="outlined"
+              sx={{ width: "10rem" }}
+              onClick={() => setScreen("profile")}
+            >
+              Profile
             </Button>
           </Stack>
         </Stack>
@@ -77,6 +94,7 @@ export const GameEntry: FC = () => {
       )}
       {screen === "controls" && <Controls mainMenu={() => setScreen("home")} />}
       {screen === "settings" && <Settings mainMenu={() => setScreen("home")} />}
+      {screen === "profile" && <Profile mainMenu={() => setScreen("home")} />}
 
       <Stack>
         <canvas
@@ -85,6 +103,7 @@ export const GameEntry: FC = () => {
         ></canvas>
 
         {playing && <StatsDiv stats={stats} />}
+        {!playing && screen === "home" && <PersonalHigh />}
       </Stack>
     </Stack>
   );

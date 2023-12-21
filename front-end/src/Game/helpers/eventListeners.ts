@@ -42,7 +42,7 @@ export function addEventListeners(): Keys {
         keys.down = true;
         break;
       case "Space":
-        e.preventDefault();
+        // e.preventDefault();
         keys.jump = true;
         keys.toJump = 1;
         break;

@@ -33,5 +33,6 @@ export function displayCanvas(show: boolean, canvas: HTMLCanvasElement) {
     canvas.width = MAX_CANVAS_WIDTH;
     return;
   }
+  canvas.width = 0;
   canvas.height = 0;
 }

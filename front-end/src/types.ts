@@ -4,6 +4,7 @@ export type User = {
   updatedAt: string;
   name: string;
   email: string;
+  highScore: number;
 };
 
 export type LoginBody = {

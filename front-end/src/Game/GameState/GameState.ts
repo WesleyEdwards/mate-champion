@@ -45,11 +45,11 @@ export class GameState {
     // if (this.objectManager.player.vector.velocity.x > 0) {
     //   console.log(this.objectManager.player.vector.velocity.x);
     // }
+    if (!this.isWinState("playing")) return;
     this.cameraDisplay.update(
       this.stats.elapsedTime,
       this.objectManager.player.vector.velocity.x
     );
-    if (!this.isWinState("playing")) return;
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
       this.stats.elapsedTime,

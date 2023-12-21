@@ -13,7 +13,7 @@ export const scoresController = controller("score", [
     method: "post",
     endpointBuilder: createScore
   },
-  {path: "/", method: "get", endpointBuilder: getMine},
+  {path: "/self", method: "get", endpointBuilder: getMine},
   {path: "/:id", method: "delete", endpointBuilder: deleteScore},
   {path: "/query", method: "post", endpointBuilder: queryScores},
   {

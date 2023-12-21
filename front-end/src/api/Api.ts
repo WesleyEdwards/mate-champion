@@ -2,7 +2,6 @@ import { User, LoginBody, Condition, Score, TopScore } from "../types";
 
 type Method = "get" | "post" | "put" | "delete";
 
-
 export class Api {
   private token: string;
   public baseUrl = import.meta.env.VITE_BACKEND_URL;
@@ -60,7 +59,9 @@ export class Api {
   }
 
   readonly auth = {
-    createAccount: (body: User & { password: string }): Promise<User> => {
+    createAccount: (
+      body: User & { password: string; score?: number }
+    ): Promise<User> => {
       return this.post("user/create", body).then((res) => {
         this.setToken(res.token);
         return res.user;
@@ -73,7 +74,7 @@ export class Api {
       });
     },
     getSelf: (): Promise<User> => {
-      if (!this.token) return Promise.reject(null);
+      if (!this.token) return Promise.reject("No token");
       return this.get("user");
     },
   };
@@ -88,8 +89,8 @@ export class Api {
     create: (body: User): Promise<User> => {
       return this.post("user/create", body);
     },
-    update: (id: string, rep: Partial<User>): Promise<User> => {
-      return this.put(`user/${id}`, rep);
+    changeName: (name: string): Promise<User> => {
+      return this.post(`user/change-name`, { name });
     },
     delete: (id: string): Promise<User> => {
       return this.del(`user/${id}`);
@@ -112,8 +113,11 @@ export class Api {
     delete: (id: string): Promise<Score> => {
       return this.del(`score/${id}`);
     },
+    self: (): Promise<TopScore[]> => {
+      return this.get(`score/self`);
+    },
     topScores: (): Promise<TopScore[]> => {
-      return this.del(`score/top-scores`);
+      return this.get(`score/top-scores`);
     },
   };
 }

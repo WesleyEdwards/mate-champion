@@ -5,8 +5,8 @@ import { ArrowBack } from "@mui/icons-material";
 
 export const Controls: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
   return (
-    <>
-      <Stack direction="row">
+    <Stack gap="1rem">
+      <Stack direction="row" justifyContent="space-between" width="100%">
         <IconButton onClick={mainMenu}>
           <ArrowBack />
         </IconButton>
@@ -18,7 +18,7 @@ export const Controls: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
         alt="instructions"
         style={{ width: 250, height: 200 }}
       />
-    </>
+    </Stack>
   );
 };
 

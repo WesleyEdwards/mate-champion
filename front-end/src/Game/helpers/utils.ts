@@ -1,3 +1,4 @@
+import { devSettings } from "../devSettings";
 import { Keys, VagueFacing } from "../models";
 import { PlayerDirection } from "../Player/models";
 
@@ -23,7 +24,7 @@ export function vagueFacing(facing: PlayerDirection): VagueFacing {
 
 export const emptyStats = {
   score: 0,
-  lives: 3,
+  lives: devSettings.oneLife ? 1 : 3,
   level: 1,
   ammo: 20,
 };

@@ -32,7 +32,8 @@ export const mongoClient = (): DbClient => {
 
   return {
     user: functionsForModel<User>(db, "user"),
-    score: functionsForModel<Score>(db, "score")
+    score: functionsForModel<Score>(db, "score"),
+    migrations: migrationsFunctions(db)
   }
 }
 
@@ -80,6 +81,21 @@ function functionsForModel<T extends HasId>(
         throw new Error("Item not found")
       }
       return item._id
+    }
+  }
+}
+
+function migrationsFunctions(db: Db): DbClient["migrations"] {
+  const collection = db.collection("migrations")
+
+  return {
+    hasRun: async (name: string) => {
+      const migration = await collection.findOne({name})
+      return !!migration
+    },
+    markAsRun: async (name: string) => {
+      const {acknowledged} = await collection.insertOne({name})
+      return acknowledged
     }
   }
 }

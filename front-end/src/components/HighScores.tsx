@@ -21,30 +21,15 @@ export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
   const [gotHighScore, setGotHighScore] = useState<boolean>(false);
   const [highScores, setHighScores] = useState<TopScore[]>();
   const [personalHigh, setPersonalHigh] = useState<Score | null>();
+  const [checked, setChecked] = useState<boolean>(false);
 
   const { api, user } = useAuthContext();
 
-  const [savedScore, setSavedScore] = useState<boolean>(false);
+  const isPersonalHigh = score > (personalHigh?.score ?? 0);
 
-  const handleSubmit = (name: string) => {
-    // return handleSubmitName(name, score).then(() => {
-    //   setGotHighScore(false);
-    //
-    // });
-  };
+  const checkPersonalHigh = () => {
+    if (!api.getToken()) return;
 
-  useEffect(() => {
-    if (!highScores || personalHigh === undefined) return;
-    const isHigh = isHighScore(score, highScores, personalHigh?.score ?? 0);
-
-    setGotHighScore(isHigh);
-    if (isHigh) {
-      setSavedScore(false);
-    }
-  }, [highScores, score]);
-
-  useEffect(() => {
-    api.score.topScores().then(setHighScores);
     api.score.query(user ? { userId: user._id } : {}).then((scores) => {
       const high = scores.reduce<null | Score>((acc, curr) => {
         if (acc) {
@@ -54,11 +39,34 @@ export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
         }
         return acc;
       }, null);
+      if (score > (high?.score ?? 0)) {
+        api.score.create({
+          _id: crypto.randomUUID(),
+          userId: user?._id ?? "",
+          score,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      }
       setPersonalHigh(high);
     });
-  }, []);
+  };
 
-  if (savedScore || gotHighScore === false) {
+  useEffect(() => {
+    if (checked) return;
+    checkPersonalHigh();
+  }, [highScores, score]);
+
+  useEffect(() => {
+    if (checked) return;
+    api.score.topScores().then((scores) => {
+      const isHigh = isHighScore(score, scores, personalHigh?.score ?? 0);
+      setHighScores(scores);
+      setGotHighScore(isHigh);
+    });
+  }, [personalHigh, score]);
+
+  if ((!gotHighScore && !personalHigh) || checked) {
     return (
       <Stack width="100%" gap="1rem">
         <Stack direction="row" justifyContent="space-between">
@@ -78,20 +86,33 @@ export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
     );
   }
 
-  if (!personalHigh) {
-    return <NewHighScore score={score} onSubmit={() => setSavedScore(true)} />;
+  if (isPersonalHigh && api.getToken()) {
+    return (
+      <Stack gap="2rem">
+        <Typography level="h2">
+          You got a personal high score of {score}!
+        </Typography>
+        <Button
+          style={{ maxWidth: "12rem", alignSelf: "center" }}
+          onClick={() => {
+            localStorage.setItem("mate-high-score", score.toString());
+            setChecked(true);
+          }}
+        >
+          View Scores
+        </Button>
+      </Stack>
+    );
   }
 
   return (
-    <Stack>
-      <Typography>New High Score of {score}!</Typography>
-      <Button
-        style={{ padding: "1rem" }}
-        onClick={() => handleSubmit(user?.name ?? "")}
-      >
-        View Scores
-      </Button>
-    </Stack>
+    <NewHighScore
+      score={score}
+      onSubmit={() => {
+        localStorage.setItem("mate-high-score", score.toString());
+        setChecked(true);
+      }}
+    />
   );
 };
 

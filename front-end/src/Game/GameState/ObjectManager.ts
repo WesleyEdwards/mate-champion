@@ -1,6 +1,6 @@
 import { Bullet } from "../Bullet/Bullet";
 import { updateLiveStatus, areTouching } from "./GameStateFunctions";
-import { HasPosition, Keys } from "../models";
+import { Keys } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
