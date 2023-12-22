@@ -12,6 +12,13 @@ export const createScore: ReqBuilder =
     })
     if (isParseError(scoreBody)) return res.status(400).json(scoreBody)
 
+    const user = await client.user.findOne({_id: jwtBody!.userId})
+
+    if (!user) return res.status(400).json("User does not exist")
+    if (scoreBody.score > user.highScore) {
+      await client.user.updateOne(user._id, {highScore: scoreBody.score})
+    }
+
     const score = await client.score.insertOne(scoreBody)
     if (!score) return res.json("Error creating score")
 

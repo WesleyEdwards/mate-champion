@@ -15,7 +15,7 @@ const palette: Partial<Palette> = {
     800: "#2e7d32",
     900: "#1b5e20",
     plainColor: "#4caf50",
-    plainHoverBg: "#43a047",
+    plainHoverBg: "#171A1C",
     plainActiveBg: "#388e3c",
     plainDisabledColor: "#b2dfdb",
     outlinedColor: "#4caf50",

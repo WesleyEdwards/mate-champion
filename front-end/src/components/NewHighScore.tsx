@@ -1,13 +1,21 @@
 import { FC, useState } from "react";
-import { Alert, Button, Divider, Input, Stack, Typography } from "@mui/joy";
+import {
+  Alert,
+  Button,
+  Divider,
+  IconButton,
+  Input,
+  Stack,
+  Typography,
+} from "@mui/joy";
 import { useAuthContext } from "../hooks/AuthContext";
+import { ArrowBack } from "@mui/icons-material";
 
-interface NewHighScoreProps {
-  score: number;
+export const CreateAccount: FC<{
+  score?: number;
   onSubmit: () => void;
-}
-
-export const NewHighScore: FC<NewHighScoreProps> = ({ score, onSubmit }) => {
+  mainMenu: () => void;
+}> = ({ score, onSubmit, mainMenu }) => {
   const { createAccount } = useAuthContext();
 
   const [error, setError] = useState<string | null>(null);
@@ -24,14 +32,13 @@ export const NewHighScore: FC<NewHighScoreProps> = ({ score, onSubmit }) => {
       setError("Name is too long");
       return setDisableSubmit(false);
     }
-    // const sameUsers = await userAlreadyExists(name);
     try {
       createAccount({
         _id: crypto.randomUUID(),
         name,
         email,
         password,
-        highScore: score,
+        highScore: score ?? 0,
         updatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
       });
@@ -45,13 +52,25 @@ export const NewHighScore: FC<NewHighScoreProps> = ({ score, onSubmit }) => {
 
   return (
     <Stack>
-      <Typography level="h2">Score: {score}</Typography>
+      <Stack direction="row" justifyContent="space-between">
+        <IconButton onClick={mainMenu}>
+          <ArrowBack />
+        </IconButton>
+        {score !== undefined ? (
+          <Typography level="h2">Score: {score}</Typography>
+        ) : (
+          <Typography level="h2">Create Account</Typography>
+        )}
+        <div style={{ width: "2rem" }}></div>
+      </Stack>
       <Divider sx={{ my: "1rem" }} />
       <Stack style={{ gap: "1rem" }}>
-        <Stack>
-          <Typography>That&apos;s a new record for you!</Typography>
-          <Typography>To save your score, create an account</Typography>
-        </Stack>
+        {score !== undefined && (
+          <Stack>
+            <Typography>That&apos;s a new record for you!</Typography>
+            <Typography>To save your score, create an account</Typography>
+          </Stack>
+        )}
         <Input
           placeholder="Name"
           value={name}

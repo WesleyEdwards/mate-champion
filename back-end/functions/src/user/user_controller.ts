@@ -1,6 +1,6 @@
 import {controller} from "../auth/controller"
 import {
-  changeName,
+  modifyUser,
   createUser,
   getSelf,
   getUser,
@@ -18,7 +18,7 @@ export const usersController = controller("user", [
   {path: "/", method: "get", endpointBuilder: getSelf},
   {path: "/:id", method: "get", endpointBuilder: getUser},
   {path: "/query", method: "post", endpointBuilder: queryUser},
-  {path: "/change-name", method: "post", endpointBuilder: changeName},
+  {path: "/:id", method: "put", endpointBuilder: modifyUser},
   {
     path: "/login",
     method: "post",

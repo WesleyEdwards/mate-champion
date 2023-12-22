@@ -14,7 +14,8 @@ const userSchema = z
       .string({required_error: "Email is required"})
       .email({message: "Invalid email"}),
     passwordHash: z.string(),
-    highScore: z.number().default(0)
+    highScore: z.number().default(0),
+    admin: z.boolean().default(false)
   })
   .merge(baseObjectSchema)
 

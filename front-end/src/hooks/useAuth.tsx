@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
+import { localStorageManager } from "../api/localStorageManager";
 
 export const useAuth = () => {
-  const api = new Api(localStorage.getItem("mate-token"));
+  const api = new Api(localStorageManager.get("token"));
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
-    if (localStorage.getItem("mate-token")) {
+    if (localStorageManager.get("token")) {
       api.auth.getSelf().then(setUser);
     }
   }, []);
 
   const login = (body: LoginBody) => {
-    api.auth.signIn(body).then(setUser);
+    return api.auth.signIn(body).then(setUser);
   };
 
   const createAccount = (body: User & { password: string }) => {
@@ -21,7 +22,7 @@ export const useAuth = () => {
   };
 
   const logout = () => {
-    localStorage.removeItem("mate-token");
+    localStorageManager.remove("token");
     setUser(undefined);
   };
 

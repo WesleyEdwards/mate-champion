@@ -4,8 +4,8 @@ import { LoginBody, User } from "../types";
 
 type AuthContextType = {
   api: Api;
-  login: (body: LoginBody) => void;
-  createAccount: (body: User & { password: string }) => void;
+  login: (body: LoginBody) => Promise<unknown>;
+  createAccount: (body: User & { password: string }) => Promise<unknown>;
   user?: User;
   logout: () => void;
   modifyUser: (body: Partial<User>) => void;

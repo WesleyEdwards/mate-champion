@@ -1,11 +1,12 @@
 import { FC, useEffect, useState } from "react";
 import { isHighScore } from "../Firebase/FirebaseHelpers";
-import { NewHighScore } from "./NewHighScore";
+import { CreateAccount } from "./NewHighScore";
 import { ScoreListItem } from "./ScoreListItem";
 import { Button, Divider, IconButton, Stack, Typography } from "@mui/joy";
 import { ArrowBack } from "@mui/icons-material";
-import { Score, TopScore } from "../types";
+import { TopScore } from "../types";
 import { useAuthContext } from "../hooks/AuthContext";
+import { localStorageManager } from "../api/localStorageManager";
 
 const emptyScoreList: TopScore[] = Array.from({ length: 15 }).map((_, i) => ({
   name: "...",
@@ -20,53 +21,37 @@ interface HighScoresProps {
 export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
   const [gotHighScore, setGotHighScore] = useState<boolean>(false);
   const [highScores, setHighScores] = useState<TopScore[]>();
-  const [personalHigh, setPersonalHigh] = useState<Score | null>();
   const [checked, setChecked] = useState<boolean>(false);
 
-  const { api, user } = useAuthContext();
+  const { api, user, modifyUser } = useAuthContext();
 
-  const isPersonalHigh = score > (personalHigh?.score ?? 0);
+  const personalHigh =
+    user?.highScore ?? parseInt(localStorageManager.get("high-score") ?? "0");
 
-  const checkPersonalHigh = () => {
-    if (!api.getToken()) return;
+  const isPersonalHigh = score > (personalHigh ?? 0);
 
-    api.score.query(user ? { userId: user._id } : {}).then((scores) => {
-      const high = scores.reduce<null | Score>((acc, curr) => {
-        if (acc) {
-          if (curr.score > acc.score) {
-            return curr;
-          }
-        }
-        return acc;
-      }, null);
-      if (score > (high?.score ?? 0)) {
-        api.score.create({
+  useEffect(() => {
+    (async () => {
+      if (checked) return;
+      if (isPersonalHigh && !!user) {
+        await api.score.create({
           _id: crypto.randomUUID(),
-          userId: user?._id ?? "",
-          score,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          score,
+          userId: user._id,
         });
+        modifyUser({ highScore: score });
       }
-      setPersonalHigh(high);
-    });
-  };
+      api.score.topScores().then((scores) => {
+        const isHigh = isHighScore(score, scores, personalHigh);
+        setHighScores(scores);
+        setGotHighScore(isHigh);
+      });
+    })();
+  }, [score]);
 
-  useEffect(() => {
-    if (checked) return;
-    checkPersonalHigh();
-  }, [highScores, score]);
-
-  useEffect(() => {
-    if (checked) return;
-    api.score.topScores().then((scores) => {
-      const isHigh = isHighScore(score, scores, personalHigh?.score ?? 0);
-      setHighScores(scores);
-      setGotHighScore(isHigh);
-    });
-  }, [personalHigh, score]);
-
-  if ((!gotHighScore && !personalHigh) || checked) {
+  if ((!gotHighScore && !isPersonalHigh) || checked) {
     return (
       <Stack width="100%" gap="1rem">
         <Stack direction="row" justifyContent="space-between">
@@ -95,7 +80,7 @@ export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
         <Button
           style={{ maxWidth: "12rem", alignSelf: "center" }}
           onClick={() => {
-            localStorage.setItem("mate-high-score", score.toString());
+            localStorageManager.set("high-score", score.toString());
             setChecked(true);
           }}
         >
@@ -106,10 +91,11 @@ export const HighScores: FC<HighScoresProps> = ({ score, mainMenu }) => {
   }
 
   return (
-    <NewHighScore
+    <CreateAccount
       score={score}
+      mainMenu={mainMenu}
       onSubmit={() => {
-        localStorage.setItem("mate-high-score", score.toString());
+        localStorageManager.set("high-score", score.toString());
         setChecked(true);
       }}
     />

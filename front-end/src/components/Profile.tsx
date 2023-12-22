@@ -1,10 +1,20 @@
-import { ArrowBack, Check, Edit, Save, Undo } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Check,
+  Edit,
+  Logout,
+  Save,
+  Undo,
+} from "@mui/icons-material";
 import { Button, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { FC, useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
+import { Screen } from "./GameEntry";
 
-export const Profile: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
-  const { user, api, modifyUser } = useAuthContext();
+export const Profile: FC<{
+  setScreen: (screen: Screen) => void;
+}> = ({ setScreen }) => {
+  const { user, api, modifyUser, logout } = useAuthContext();
 
   const [displayName, setDisplayName] = useState<string>(user?.name ?? "");
   const [editingName, setEditingName] = useState<boolean>(false);
@@ -12,7 +22,7 @@ export const Profile: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
   return (
     <Stack gap="1rem">
       <Stack direction="row" justifyContent="space-between" width="100%">
-        <IconButton onClick={mainMenu}>
+        <IconButton onClick={()=> setScreen("home")}>
           <ArrowBack />
         </IconButton>
         <Typography level="h2">Profile</Typography>
@@ -27,7 +37,7 @@ export const Profile: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
             justifyContent="space-between"
           >
             <Stack direction="row" alignItems="center" gap="1rem">
-              <Typography level="h4">Username:</Typography>
+              <Typography level="h4">Name:</Typography>
               {editingName ? (
                 <Input
                   value={displayName}
@@ -64,9 +74,33 @@ export const Profile: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
             )}
           </Stack>
           <Typography level="h4">Email: {user.email}</Typography>
+          <Button
+            onClick={() => {
+              logout();
+              setScreen("home")
+            }}
+            sx={{ alignSelf: "center", mt: "2rem" }}
+            endDecorator={<Logout />}
+          >
+            Log Out
+          </Button>
         </>
       ) : (
-        <Button>Create Account</Button>
+        <Stack my="2rem" gap="2rem">
+          <Button
+            sx={{ alignSelf: "center" }}
+            onClick={() => setScreen("createAccount")}
+          >
+            Create Account
+          </Button>
+          <Button
+            sx={{ alignSelf: "center" }}
+            variant="plain"
+            onClick={() => setScreen("login")}
+          >
+            Already have an account?
+          </Button>
+        </Stack>
       )}
     </Stack>
   );

@@ -1,6 +1,5 @@
 import { Button, Stack, Typography } from "@mui/joy";
 import { FC, useState } from "react";
-import { useScoreData } from "../hooks/useScoreInfo";
 import Instructions from "./Instructions";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
@@ -11,12 +10,16 @@ import StatsDiv from "./StatsDiv";
 import Controls from "./Controls";
 import { PersonalHigh } from "./PersonalHigh";
 import { Profile } from "./Profile";
+import { Login } from "./Login";
+import { CreateAccount } from "./NewHighScore";
 
-type Screen =
+export type Screen =
   | "game"
   | "home"
   | "highScores"
   | "controls"
+  | "login"
+  | "createAccount"
   | "profile"
   | "settings";
 
@@ -92,10 +95,22 @@ export const GameEntry: FC = () => {
           }}
         />
       )}
-      {screen === "controls" && <Controls mainMenu={() => setScreen("home")} />}
-      {screen === "settings" && <Settings mainMenu={() => setScreen("home")} />}
-      {screen === "profile" && <Profile mainMenu={() => setScreen("home")} />}
-
+      <Stack minWidth="24rem">
+        {screen === "controls" && (
+          <Controls mainMenu={() => setScreen("home")} />
+        )}
+        {screen === "settings" && (
+          <Settings mainMenu={() => setScreen("home")} />
+        )}
+        {screen === "profile" && <Profile setScreen={setScreen} />}
+        {screen === "login" && <Login mainMenu={() => setScreen("home")} />}
+        {screen === "createAccount" && (
+          <CreateAccount
+            onSubmit={() => setScreen("home")}
+            mainMenu={() => setScreen("home")}
+          />
+        )}
+      </Stack>
       <Stack>
         <canvas
           style={{ height: playing ? undefined : "0px", borderRadius: "10px" }}

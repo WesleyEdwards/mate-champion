@@ -1,4 +1,5 @@
 import { User, LoginBody, Condition, Score, TopScore } from "../types";
+import { localStorageManager } from "./localStorageManager";
 
 type Method = "get" | "post" | "put" | "delete";
 
@@ -17,7 +18,7 @@ export class Api {
   private setToken(token: string) {
     if (!token) return;
     this.token = token;
-    localStorage.setItem("mate-token", token);
+    localStorageManager.set("token", token);
   }
 
   public async makeRequest(

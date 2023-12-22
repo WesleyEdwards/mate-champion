@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt"
 import {JWTBody, ReqBuilder} from "../auth/authTypes"
 import jwt from "jsonwebtoken"
-import {checkValidation, isParseError} from "../request_body"
+import {
+  checkPartialValidation,
+  checkValidation,
+  isParseError
+} from "../request_body"
 
 function createUserToken(jwtBody: JWTBody) {
   return jwt.sign(jwtBody, process.env.ENCRYPTION_KEY!, {})
@@ -29,7 +33,7 @@ export const createUser: ReqBuilder =
     const user = await client.user.insertOne(userBody)
     if (!user) return res.status(500).json({error: "Error creating user"})
 
-    const token = createUserToken({userId: userBody._id})
+    const token = createUserToken({userId: userBody._id, admin: false})
 
     const highScore = body.score || 0
     const scoreBody = checkValidation("score", {
@@ -86,7 +90,7 @@ export const loginUser: ReqBuilder =
 
     return res.json({
       user: sendUserBody(user),
-      token: createUserToken({userId: user._id})
+      token: createUserToken({userId: user._id, admin: user.admin})
     })
   }
 
@@ -97,14 +101,26 @@ export const queryUser: ReqBuilder =
     return res.json(users?.map(sendUserBody))
   }
 
-export const changeName: ReqBuilder =
+export const modifyUser: ReqBuilder =
   (client) =>
-  async ({body, jwtBody}, res) => {
-    const user = await client.user.findOne({_id: jwtBody?.userId})
+  async ({params, body, jwtBody}, res) => {
+    if (!jwtBody?.admin) {
+      if (jwtBody?.userId !== params.id) {
+        return res.status(401).json("Unauthorized")
+      }
+      if (body.admin) {
+        return res.status(401).json("Unauthorized")
+      }
+    }
+    const user = await client.user.findOne({_id: params.id})
     if (!user || !body.name) return res.status(404)
-    const updatedUser = await client.user.updateOne(jwtBody?.userId ?? "", {
-      ...user,
-      name: body.name
+    const userPartial = checkPartialValidation("user", {
+      ...body,
+      _id: params.id,
+      updatedAt: new Date().toISOString()
     })
+    if (isParseError(userPartial)) return res.status(400).json(userPartial)
+
+    const updatedUser = await client.user.updateOne(params.id, userPartial)
     return res.json(sendUserBody(updatedUser))
   }
