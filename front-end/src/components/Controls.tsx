@@ -13,11 +13,15 @@ export const Controls: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
         <Typography level="h2">Controls</Typography>
         <div style={{ width: "2rem" }}></div>
       </Stack>
-      <img
-        src={instructions}
-        alt="instructions"
-        style={{ width: 750, alignSelf: "center" }}
-      />
+      <div
+        style={{
+          width: 750,
+          borderRadius: 10,
+          height: 600,
+          background: `linear-gradient(rgba(50, 56, 62, 0.5), rgba(50, 56, 62, 0.5)),url("${instructions}")`,
+          backgroundSize: "cover",
+        }}
+      ></div>
     </Stack>
   );
 };

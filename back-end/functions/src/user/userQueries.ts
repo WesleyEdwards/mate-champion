@@ -35,11 +35,10 @@ export const createUser: ReqBuilder =
 
     const token = createUserToken({userId: userBody._id, admin: false})
 
-    const highScore = body.score || 0
     const scoreBody = checkValidation("score", {
       ...body,
       userId: userBody._id,
-      score: highScore
+      score: userBody.highScore
     })
 
     if (isParseError(scoreBody)) return res.status(400).json(userBody)
@@ -122,5 +121,20 @@ export const modifyUser: ReqBuilder =
     if (isParseError(userPartial)) return res.status(400).json(userPartial)
 
     const updatedUser = await client.user.updateOne(params.id, userPartial)
+    console.log("Modify User", updatedUser)
     return res.json(sendUserBody(updatedUser))
+  }
+
+export const deleteUser: ReqBuilder =
+  (client) =>
+  async ({params, jwtBody}, res) => {
+    if (!jwtBody?.admin) {
+      if (jwtBody?.userId !== params.id) {
+        return res.status(401).json("Unauthorized")
+      }
+    }
+    const scores = await client.score.findMany({userId: params.id})
+    await Promise.all(scores.map((score) => client.score.deleteOne(score._id)))
+    const user = await client.user.deleteOne(params.id)
+    return res.json(user)
   }

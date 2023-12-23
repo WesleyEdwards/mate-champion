@@ -90,8 +90,8 @@ export class Api {
     create: (body: User): Promise<User> => {
       return this.post("user/create", body);
     },
-    changeName: (name: string): Promise<User> => {
-      return this.post(`user/change-name`, { name });
+    modify: (id: string, mod: Partial<User>): Promise<User> => {
+      return this.put(`user/${id}`, mod);
     },
     delete: (id: string): Promise<User> => {
       return this.del(`user/${id}`);

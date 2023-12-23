@@ -67,9 +67,11 @@ function functionsForModel<T extends HasId>(
       return (await items.toArray()) as T[]
     },
     updateOne: async (id, item) => {
-      const value = await collection.findOneAndUpdate({_id: id} as Filter<T>, {
-        $set: item
-      })
+      const value = await collection.findOneAndUpdate(
+        {_id: id} as Filter<T>,
+        {$set: item},
+        {returnDocument: "after"}
+      )
       if (!value) {
         throw new Error("Item not found")
       }

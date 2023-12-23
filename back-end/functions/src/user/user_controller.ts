@@ -5,7 +5,8 @@ import {
   getSelf,
   getUser,
   loginUser,
-  queryUser
+  queryUser,
+  deleteUser
 } from "./userQueries"
 
 export const usersController = controller("user", [
@@ -19,6 +20,7 @@ export const usersController = controller("user", [
   {path: "/:id", method: "get", endpointBuilder: getUser},
   {path: "/query", method: "post", endpointBuilder: queryUser},
   {path: "/:id", method: "put", endpointBuilder: modifyUser},
+  {path: "/:id", method: "delete", endpointBuilder: deleteUser},
   {
     path: "/login",
     method: "post",

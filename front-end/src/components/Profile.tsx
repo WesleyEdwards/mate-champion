@@ -22,7 +22,7 @@ export const Profile: FC<{
   return (
     <Stack gap="1rem">
       <Stack direction="row" justifyContent="space-between" width="100%">
-        <IconButton onClick={()=> setScreen("home")}>
+        <IconButton onClick={() => setScreen("home")}>
           <ArrowBack />
         </IconButton>
         <Typography level="h2">Profile</Typography>
@@ -61,7 +61,7 @@ export const Profile: FC<{
                   onClick={() => {
                     setEditingName(false);
                     modifyUser({ name: displayName });
-                    api.user.changeName(displayName);
+                    api.user.modify(user._id, { name: displayName });
                   }}
                 >
                   <Check />
@@ -77,7 +77,7 @@ export const Profile: FC<{
           <Button
             onClick={() => {
               logout();
-              setScreen("home")
+              setScreen("home");
             }}
             sx={{ alignSelf: "center", mt: "2rem" }}
             endDecorator={<Logout />}
