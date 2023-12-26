@@ -29,7 +29,7 @@ type Settings = {
 
 export const devSettings: Settings = import.meta.env.DEV
   ? ({
-      showDevStats: false,
+      showDevStats: true,
       hideOpponents: false,
       sandboxDb: false,
       shortLevelScreen: true,

@@ -47,7 +47,7 @@ export interface Character {
   vector: CharVectorMan;
   facing: VagueFacing;
   move: (action: CharAction) => void;
-  setPosY: (newY: number) => void;
+  setOnPlatform: (newY: number) => void;
 }
 
 export interface StaticObject extends HasPosition {

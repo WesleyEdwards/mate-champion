@@ -1,5 +1,5 @@
 import { devSettings } from "../devSettings";
-import { Keys, VagueFacing } from "../models";
+import { VagueFacing } from "../models";
 import { PlayerDirection } from "../Player/models";
 
 export function generateRandomInt(min: number, max: number): number {

@@ -15,11 +15,4 @@ export class PlatformManager {
   reset(level: number) {
     this.platforms = createBlocks(level);
   }
-
-  calcPersonColl(player: Player, opponents: Opponents) {
-    this.platforms.forEach((platform) => {
-      opponents.grog.forEach((opp) => calcPlatColl(platform, opp));
-      calcPlatColl(platform, player);
-    });
-  }
 }

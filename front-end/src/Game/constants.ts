@@ -18,6 +18,7 @@ export const playerConst = {
   shootCoolDown: 150,
   initPos: { x: 400, y: 10 },
   driftX: 125,
+  maxCoyoteTime: 75
 } as const;
 
 export const grogConst = {

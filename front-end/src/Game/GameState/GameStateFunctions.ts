@@ -29,7 +29,7 @@ export function calcPlatColl<T extends Character>(
   const previous = char.vector.prevPosY + char.vector.height;
   const recent = char.vector.posY + char.vector.height;
   if (recent >= platform.vector.posY && previous <= platform.vector.posY) {
-    char.setPosY(platform.vector.posY - char.vector.height);
+    char.setOnPlatform(platform.vector.posY - char.vector.height);
   }
 }
 

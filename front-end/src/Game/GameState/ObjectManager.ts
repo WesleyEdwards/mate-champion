@@ -1,5 +1,9 @@
 import { Bullet } from "../Bullet/Bullet";
-import { updateLiveStatus, areTouching } from "./GameStateFunctions";
+import {
+  updateLiveStatus,
+  areTouching,
+  calcPlatColl,
+} from "./GameStateFunctions";
 import { Keys } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
@@ -38,7 +42,7 @@ export class ObjectManager {
     this.opponentManager.update(elapsedTime);
     this.bulletManager.update(elapsedTime, screenStartX);
 
-    this.platformManager.calcPersonColl(this.player, this.opponents);
+    this.calcPersonColl();
 
     return {
       statsInfo: {
@@ -107,5 +111,12 @@ export class ObjectManager {
 
   private get opponents(): Opponents {
     return this.opponentManager.opponents;
+  }
+
+  calcPersonColl() {
+    this.platformManager.platforms.forEach((platform) => {
+      this.opponents.grog.forEach((opp) => calcPlatColl(platform, opp));
+      calcPlatColl(platform, this.player);
+    });
   }
 }

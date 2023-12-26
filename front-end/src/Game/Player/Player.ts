@@ -1,8 +1,8 @@
 import { DrawManager } from "../Drawing/DrawManager";
 import { SpriteOption } from "../Drawing/drawingUtils";
 import { GRAVITY, playerConst } from "../constants";
-import { Coordinates, Keys, CharAction, Character } from "../models";
-import { debounceLog, vagueFacing } from "../helpers/utils";
+import { Coordinates, Keys, CharAction, Character, VectorMan } from "../models";
+import { vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 import { Canvas, DrawObjProps } from "../helpers/types";
@@ -13,6 +13,7 @@ export class Player implements Character {
   shot: boolean = false;
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: DrawManager;
+  onPlatform: boolean = false;
 
   constructor() {
     this.drawManager = new DrawManager(
@@ -78,7 +79,7 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    this.vector.setVelY(this.vector.velocity.y + GRAVITY * elapsedTime);
+    this.vector.updateGravity(elapsedTime);
   }
 
   move(action: CharAction) {
@@ -135,6 +136,10 @@ export class Player implements Character {
   }
   get facing() {
     return vagueFacing(this.vector.facing);
+  }
+
+  setOnPlatform(posY: number) {
+    this.vector.setOnPlatform(posY);
   }
 }
 

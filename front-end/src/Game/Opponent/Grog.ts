@@ -49,7 +49,7 @@ export class Grog implements Character {
     this.drawManager.draw(drawProps, this.position, this.facing);
   }
 
-  setPosY(num: number) {
+  setOnPlatform(num: number) {
     return this.vector.stopY(num);
   }
 
