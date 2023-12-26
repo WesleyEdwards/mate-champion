@@ -9,11 +9,9 @@ import {
 import { Button, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { FC, useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
-import { Screen } from "./GameEntry";
+import { MCScreen, ScreenProps } from "./GameEntry";
 
-export const Profile: FC<{
-  setScreen: (screen: Screen) => void;
-}> = ({ setScreen }) => {
+export const Profile: FC<ScreenProps> = ({ changeScreen }) => {
   const { user, api, modifyUser, logout } = useAuthContext();
 
   const [displayName, setDisplayName] = useState<string>(user?.name ?? "");
@@ -22,7 +20,7 @@ export const Profile: FC<{
   return (
     <Stack gap="1rem">
       <Stack direction="row" justifyContent="space-between" width="100%">
-        <IconButton onClick={() => setScreen("home")}>
+        <IconButton onClick={() => changeScreen("home")}>
           <ArrowBack />
         </IconButton>
         <Typography level="h2">Profile</Typography>
@@ -77,7 +75,7 @@ export const Profile: FC<{
           <Button
             onClick={() => {
               logout();
-              setScreen("home");
+              changeScreen("home");
             }}
             sx={{ alignSelf: "center", mt: "2rem" }}
             endDecorator={<Logout />}
@@ -89,14 +87,14 @@ export const Profile: FC<{
         <Stack my="2rem" gap="2rem">
           <Button
             sx={{ alignSelf: "center" }}
-            onClick={() => setScreen("createAccount")}
+            onClick={() => changeScreen("createAccount")}
           >
             Create Account
           </Button>
           <Button
             sx={{ alignSelf: "center" }}
             variant="plain"
-            onClick={() => setScreen("login")}
+            onClick={() => changeScreen("login")}
           >
             Already have an account?
           </Button>

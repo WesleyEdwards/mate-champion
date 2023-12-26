@@ -12,9 +12,9 @@ import { mateTheme } from "./theme";
 import { useAuth } from "./hooks/useAuth";
 import { AuthContext } from "./hooks/AuthContext";
 
-function App() {
-  const theme: Theme = extendTheme(mateTheme);
+const theme: Theme = extendTheme(mateTheme);
 
+function App() {
   const authInfo = useAuth();
 
   return (

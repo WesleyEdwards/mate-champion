@@ -2,17 +2,13 @@ import { FC } from "react";
 import instructions from "../assets/instructions.png";
 import { IconButton, Stack, Typography } from "@mui/joy";
 import { ArrowBack } from "@mui/icons-material";
+import { ScreenProps } from "./GameEntry";
+import { ViewHeader } from "./ViewHeader";
 
-export const Controls: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
+export const Controls: FC<ScreenProps> = (props) => {
   return (
     <Stack gap="1rem">
-      <Stack direction="row" justifyContent="space-between" width="100%">
-        <IconButton onClick={mainMenu}>
-          <ArrowBack />
-        </IconButton>
-        <Typography level="h2">Controls</Typography>
-        <div style={{ width: "2rem" }}></div>
-      </Stack>
+      <ViewHeader title={"Controls"} {...props} />
       <div
         style={{
           width: 750,

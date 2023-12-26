@@ -15,7 +15,7 @@ export interface Coordinates {
 
 export interface SetUI {
   modifyStats: (stats: Partial<PlayStats>) => void;
-  handleLose: () => void;
+  handleLose: (score: number) => void;
 }
 
 export interface HasPosition {

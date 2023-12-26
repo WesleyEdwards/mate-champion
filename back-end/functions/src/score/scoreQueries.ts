@@ -5,7 +5,6 @@ import {Score, User} from "../types"
 export const createScore: ReqBuilder =
   (client) =>
   async ({body, jwtBody}, res) => {
-    console.log("user", jwtBody!.userId)
     const scoreBody = checkValidation("score", {
       ...body,
       userId: jwtBody!.userId

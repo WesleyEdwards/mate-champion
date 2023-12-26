@@ -1,17 +1,12 @@
-import { FC, useState } from "react";
-import { IconButton, Stack, Typography } from "@mui/joy";
-import { ArrowBack } from "@mui/icons-material";
+import { FC } from "react";
+import { Typography } from "@mui/joy";
+import { ScreenProps } from "./GameEntry";
+import { ViewHeader } from "./ViewHeader";
 
-export const Settings: FC<{ mainMenu: () => void }> = ({ mainMenu }) => {
+export const Settings: FC<ScreenProps> = ({ changeScreen }) => {
   return (
     <>
-      <Stack direction="row" style={{ justifyContent: "space-between" }}>
-        <IconButton>
-          <ArrowBack />
-        </IconButton>
-        <Typography>Settings:</Typography>
-        <div style={{ width: "2rem" }}></div>
-      </Stack>
+      <ViewHeader changeScreen={changeScreen} title="Settings" />
       <Typography>Sound</Typography>
     </>
   );

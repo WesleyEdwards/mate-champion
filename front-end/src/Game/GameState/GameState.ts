@@ -129,4 +129,8 @@ export class GameState {
     if (!showMessage) this.winState = "playing";
     return showMessage;
   }
+
+  get score() {
+    return this.stats.score;
+  }
 }

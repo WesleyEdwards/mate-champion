@@ -13,7 +13,7 @@ export class GameStatsManager {
   timeInLevel: number = 0;
   initial: boolean = true;
   totalTime: number = 0;
-  uiInfo: PlayInfo = { ...emptyStats };
+  private uiInfo: PlayInfo = { ...emptyStats };
   prevTime: number = 0;
   elapsedTime: number = 0;
   fps: number = 0;
@@ -21,7 +21,7 @@ export class GameStatsManager {
   constructor() {}
 
   update({ killedOpp, shot, packagesReceived }: StatsManagerInfo): boolean {
-    if (killedOpp) this.addScore(10);
+    if (killedOpp) this.uiInfo.score += 10;
     if (shot) this.shotAmmo();
     if (packagesReceived) this.addAmmo();
     return !!killedOpp || shot || packagesReceived;
@@ -53,10 +53,6 @@ export class GameStatsManager {
     this.resetLevel();
   }
 
-  incrementScore(points: number) {
-    this.uiInfo.score += points;
-  }
-
   resetLevel() {
     this.timeInLevel = 0;
     this.initial = true;
@@ -80,9 +76,6 @@ export class GameStatsManager {
   }
   shotAmmo() {
     this.uiInfo.ammo -= 1;
-  }
-  addScore(num: number) {
-    this.uiInfo.score += num;
   }
   addLives(num: number) {
     this.uiInfo.lives += num;

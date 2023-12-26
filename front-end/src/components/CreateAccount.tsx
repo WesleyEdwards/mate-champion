@@ -10,30 +10,27 @@ import {
 } from "@mui/joy";
 import { useAuthContext } from "../hooks/AuthContext";
 import { ArrowBack } from "@mui/icons-material";
+import { ScreenProps } from "./GameEntry";
 
-export const CreateAccount: FC<{
-  score?: number;
-  onSubmit: () => void;
-  mainMenu: () => void;
-}> = ({ score, onSubmit, mainMenu }) => {
+export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
   const { createAccount } = useAuthContext();
 
   const [error, setError] = useState<string | null>(null);
-  const [disableSubmit, setDisableSubmit] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmitNew = async () => {
-    setDisableSubmit(true);
+    setSubmitting(true);
     setError(null);
     if (!name) return;
     if (name.length > 300) {
       setError("Name is too long");
-      return setDisableSubmit(false);
+      return setSubmitting(false);
     }
     try {
-      createAccount({
+      await createAccount({
         _id: crypto.randomUUID(),
         name,
         email,
@@ -43,17 +40,17 @@ export const CreateAccount: FC<{
         createdAt: new Date().toISOString(),
       });
 
-      return onSubmit();
+      return changeScreen("home");
     } catch (e) {
-      setError(e as any);
-      setDisableSubmit(false);
+      setError("Error creating account");
+      setSubmitting(false);
     }
   };
 
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={mainMenu}>
+        <IconButton onClick={() => changeScreen("home")}>
           <ArrowBack />
         </IconButton>
         {score !== undefined ? (
@@ -77,18 +74,19 @@ export const CreateAccount: FC<{
           onChange={(e) => setName(e.target.value)}
         />
         <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
           placeholder="Password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <Input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <Button
-          disabled={disableSubmit || [name, email, password].some((v) => !v)}
+          disabled={[name, email, password].some((v) => !v)}
+          loading={submitting}
           onClick={handleSubmitNew}
           type="submit"
         >
