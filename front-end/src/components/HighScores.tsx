@@ -17,10 +17,14 @@ import { ViewHeader } from "./ViewHeader";
 
 export const HighScores: FC<ScreenProps> = ({ changeScreen, score }) => {
   const [highScores, setHighScores] = useState<TopScore[]>();
+  const [error, setError] = useState<string>();
   const { api } = useAuthContext();
 
   useEffect(() => {
-    api.score.topScores().then(setHighScores);
+    api.score
+      .topScores()
+      .then(setHighScores)
+      .catch(() => setError("Error fetching high scores"));
   }, []);
 
   return (
@@ -29,6 +33,7 @@ export const HighScores: FC<ScreenProps> = ({ changeScreen, score }) => {
       <Divider />
       <Stack alignSelf="center">
         {!highScores &&
+          !error &&
           Array.from({ length: 15 }).map((_, i) => (
             <Skeleton
               variant="rectangular"
@@ -50,6 +55,11 @@ export const HighScores: FC<ScreenProps> = ({ changeScreen, score }) => {
             Create an account or log in so you show up on the leaderboard!
           </Alert>
         )}
+      {error && (
+        <Alert color="danger" sx={{ maxWidth: "22rem", alignSelf: "center" }}>
+          {error}
+        </Alert>
+      )}
       {!!score && (
         <>
           <Divider />

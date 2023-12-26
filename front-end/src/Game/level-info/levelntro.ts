@@ -1,6 +1,6 @@
 import { LevelInfo } from "./levelInfo";
 
-export const levelOneInfo: LevelInfo = {
+export const levelInto: LevelInfo = {
   packages: [{ x: 3390, y: 82 }],
   opponents: { grog: [{ initPos: { x: 3000, y: 100 }, moveSpeed: 0.05 }] },
   platforms: [

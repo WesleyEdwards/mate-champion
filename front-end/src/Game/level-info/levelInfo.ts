@@ -1,10 +1,10 @@
 import { PackageProps } from "../Bullet/Package";
 import { GrogProps } from "../Opponent/Grog";
 import { FloatingType, FloorType } from "../Platform/Platform";
-import { levelOneInfo } from "./1-levelInfo";
+import { levelInto } from "./levelntro";
 import { levelTwoInfo } from "./2-levelInfo";
 import { levelThreeInfo } from "./3-levelInfo";
-import { levelFourInfo } from "./4-levelInfo";
+import { levelAbandonHope } from "./levelAbandonHope";
 import { levelFiveInfo } from "./5-levelInfo";
 
 export type LevelInfo = {
@@ -15,16 +15,14 @@ export type LevelInfo = {
 };
 
 const levelsInfo: LevelInfo[] = [
+  levelFiveInfo,
+  levelInto,
   levelTwoInfo,
   levelThreeInfo,
-  levelFourInfo,
-  levelOneInfo,
-  levelFiveInfo,
+  levelAbandonHope,
 ];
 
 export const getLevelInfo = (level: number) =>
   levelsInfo[(level % levelsInfo.length) - 1];
-
-
 
 // readLevelInfo

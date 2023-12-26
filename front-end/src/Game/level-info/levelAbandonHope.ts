@@ -1,8 +1,27 @@
 import { LevelInfo } from "./levelInfo";
 
-export const levelFourInfo: LevelInfo = {
+export const levelAbandonHope: LevelInfo = {
   packages: [],
-  opponents: { grog: [] },
+  opponents: {
+    grog: [
+      { initPos: { x: 4005, y: 137 }, moveSpeed: 0.05 },
+      { initPos: { x: 4217, y: 48 }, moveSpeed: 0.05 },
+      { initPos: { x: 4051, y: 75 }, moveSpeed: 0.05 },
+      { initPos: { x: 4152, y: 28 }, moveSpeed: 0.05 },
+      { initPos: { x: 4416, y: 57 }, moveSpeed: 0.05 },
+      { initPos: { x: 4564, y: 12 }, moveSpeed: 0.05 },
+      { initPos: { x: 4667, y: 69 }, moveSpeed: 0.05 },
+      { initPos: { x: 4767, y: 42 }, moveSpeed: 0.05 },
+      { initPos: { x: 4697, y: 160 }, moveSpeed: 0.05 },
+      { initPos: { x: 4472, y: 190 }, moveSpeed: 0.05 },
+      { initPos: { x: 4573, y: 231 }, moveSpeed: 0.05 },
+      { initPos: { x: 4487, y: 304 }, moveSpeed: 0.05 },
+      { initPos: { x: 4192, y: 328 }, moveSpeed: 0.05 },
+      { initPos: { x: 4233, y: 422 }, moveSpeed: 0.05 },
+      { initPos: { x: 4870, y: 352 }, moveSpeed: 0.05 },
+      { initPos: { x: 4681, y: 382 }, moveSpeed: 0.05 },
+    ],
+  },
   platforms: [
     { x: 791, y: 408, width: 40, height: 40, color: "springgreen" },
     { x: 801, y: 348, width: 40, height: 40, color: "springgreen" },
