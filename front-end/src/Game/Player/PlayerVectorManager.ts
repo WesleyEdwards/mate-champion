@@ -23,6 +23,7 @@ export class PlayerVectorManager implements VectorMan {
     this.position.y += this.velocity.y * elapsedTime;
     this.coyoteTime += elapsedTime;
   }
+
   updateGravity(elapsedTime: number, isJumping: boolean) {
     if (this.gravityFactor) {
       this.gravityFactor *= playerConst.jumpGravityFrameDecrease;

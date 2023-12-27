@@ -16,9 +16,10 @@ export const playerConst = {
   shankTime: 200,
   shankCoolDown: 275,
   shootCoolDown: 150,
-  initPos: { x: 400, y: 10 },
+  initPos: { x: 300, y: 400 },
   driftX: 125,
-  maxCoyoteTime: 75,
+  driftY: 125,
+  maxCoyoteTime: 100,
   jumpGravityFactor: 0.9,
   jumpGravityFrameDecrease: 0.93,
 } as const;

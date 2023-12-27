@@ -13,7 +13,6 @@ import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager, Opponents } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
-import { Grog } from "../Opponent/Grog";
 
 export class ObjectManager {
   player: Player = new Player();

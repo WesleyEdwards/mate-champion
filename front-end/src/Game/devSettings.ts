@@ -29,13 +29,13 @@ type Settings = {
 
 export const devSettings: Settings = import.meta.env.DEV
   ? ({
-      showDevStats: true,
+      showDevStats: false,
       hideOpponents: false,
       sandboxDb: false,
       shortLevelScreen: true,
       redOutline: true,
       noDie: true,
       oneLife: true,
-      courseBuilder: false,
+      courseBuilder: true,
     } as const)
   : prodSettings;
