@@ -5,7 +5,7 @@ export const MAX_CANVAS_WIDTH = MAX_CANVAS_HEIGHT * 1.777777777777778;
 
 export const DISPLAY_LEVEL_TIME = devSettings.shortLevelScreen ? 100 : 2000;
 
-export const GRAVITY = 0.0025;
+export const GRAVITY = 0.004;
 
 export const END_POS = 4500;
 
@@ -18,12 +18,14 @@ export const playerConst = {
   shootCoolDown: 150,
   initPos: { x: 400, y: 10 },
   driftX: 125,
-  maxCoyoteTime: 75
+  maxCoyoteTime: 75,
+  jumpGravityFactor: 0.9,
+  jumpGravityFrameDecrease: 0.93,
 } as const;
 
 export const grogConst = {
   radius: 32,
-  jumpSpeed: -0.8,
+  jumpSpeed: -1,
 } as const;
 
 export const packageConst = { width: 60, height: 75, worth: 3 } as const;

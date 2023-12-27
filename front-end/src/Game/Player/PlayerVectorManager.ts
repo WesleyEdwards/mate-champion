@@ -12,6 +12,7 @@ export class PlayerVectorManager implements VectorMan {
   prevVelY: number = 0;
   prevPosX: number = playerConst.initPos.x;
   prevPosY: number = playerConst.initPos.y;
+  gravityFactor: number | undefined = undefined;
 
   position: Coordinates = { ...playerConst.initPos };
 
@@ -22,9 +23,18 @@ export class PlayerVectorManager implements VectorMan {
     this.position.y += this.velocity.y * elapsedTime;
     this.coyoteTime += elapsedTime;
   }
-  updateGravity(elapsedTime: number) {
+  updateGravity(elapsedTime: number, isJumping: boolean) {
+    if (this.gravityFactor) {
+      this.gravityFactor *= playerConst.jumpGravityFrameDecrease;
+    }
+    if (!isJumping || this.velocity.y > 0) {
+      this.gravityFactor = undefined;
+    }
     if (this.coyoteTime > playerConst.maxCoyoteTime || this.velocity.y < 0) {
-      this.setVelY(this.velocity.y + GRAVITY * elapsedTime);
+      const jumpFactor = this.gravityFactor
+        ? (1 - this.gravityFactor) * GRAVITY
+        : GRAVITY;
+      this.setVelY(this.velocity.y + jumpFactor * elapsedTime);
     }
   }
 
@@ -42,9 +52,10 @@ export class PlayerVectorManager implements VectorMan {
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
       this.stopY(MAX_CANVAS_HEIGHT - this.radius * 2);
     }
-    if (action === "Jump" && this.canJump) {
+    if (action === "Jump" && this.velocity.y === 0 && this.jumps < 1) {
       this.setVelY(playerConst.jumpSpeed);
       this.setPosY(this.posY - 1);
+      this.gravityFactor = playerConst.jumpGravityFactor;
       this.jumps += 1;
     }
     if (this.velocity.y > 0) this.jumps = 0;
@@ -75,10 +86,6 @@ export class PlayerVectorManager implements VectorMan {
       if (this.isFacing("rightDown")) this.setFacing("right");
       if (this.isFacing("leftDown")) this.setFacing("left");
     }
-  }
-
-  get canJump(): boolean {
-    return this.velocity.y === 0 && this.jumps < 1;
   }
 
   get isMovingDown() {

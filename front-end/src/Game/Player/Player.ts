@@ -30,7 +30,7 @@ export class Player implements Character {
     this.vector = new PlayerVectorManager();
   }
 
-  update(keys: Keys, elapsedTime: number, screenStartX: number) {
+  update(keys: Keys, elapsedTime: number) {
     this.vector.update(elapsedTime);
 
     if (keys.jump || keys.toJump > 0) {
@@ -79,7 +79,7 @@ export class Player implements Character {
     if (keys.down) this.setDownPos();
     else this.setDownPos(false);
 
-    this.vector.updateGravity(elapsedTime);
+    this.vector.updateGravity(elapsedTime, keys.jump);
   }
 
   move(action: CharAction) {
