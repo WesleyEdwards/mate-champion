@@ -3,8 +3,8 @@ import { devSettings } from "../devSettings";
 import { Coordinates } from "../models";
 
 export class CameraDisplay {
-  prevVel: Coordinates = { x: 0, y: 0 };
-  currVel: Coordinates = { x: 0, y: 0 };
+  prevCameraOffset: Coordinates = { x: 0, y: 0 };
+  cameraOffset: Coordinates = { x: 0, y: 0 };
   playerDrift: Coordinates = { x: 0, y: 0 };
   lastKnownScrollPosition: number = 0;
   ticking: boolean = false;
@@ -15,10 +15,11 @@ export class CameraDisplay {
     }
   }
 
-  update(elapsedTime: number, playerVelocity: Coordinates) {
-    this.prevVel = { x: this.currVel.x, y: this.currVel.y };
+  update(elapsedTime: number, playerVelocity: Coordinates, posY: number) {
+    this.prevCameraOffset = { x: this.cameraOffset.x, y: this.cameraOffset.y };
 
     this.calcDrift(elapsedTime, playerVelocity.x);
+    this.calcOffsetY(posY);
   }
 
   calcDrift(elapsedTime: number, playerVelocityX: number) {
@@ -32,19 +33,27 @@ export class CameraDisplay {
       return;
     }
 
-    this.currVel.x += playerVelocityX * elapsedTime;
+    this.cameraOffset.x += playerVelocityX * elapsedTime;
+  }
+
+  calcOffsetY(posY: number) {
+    if (posY > 250) {
+      this.cameraOffset.y = 0;
+      return;
+    }
+    this.cameraOffset.y = 300 - posY;
   }
 
   reset() {
-    this.prevVel = { x: 0, y: 0 };
-    this.currVel = { x: 0, y: 0 };
+    this.prevCameraOffset = { x: 0, y: 0 };
+    this.cameraOffset = { x: 0, y: 0 };
     this.playerDrift = { x: 0, y: 0 };
   }
 
   addScrollEventListeners() {
     window.addEventListener("wheel", (e) => {
       if (e.shiftKey) {
-        this.currVel.x += e.deltaY;
+        this.cameraOffset.x += e.deltaY;
       }
     });
   }

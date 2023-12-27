@@ -45,13 +45,14 @@ export class GameState {
     if (!this.isWinState("playing")) return;
     this.cameraDisplay.update(
       this.stats.elapsedTime,
-      this.objectManager.player.vector.velocity
+      this.objectManager.player.vector.velocity,
+      this.objectManager.player.vector.posY
     );
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
       this.stats.elapsedTime,
       this.stats.ammo,
-      this.cameraDisplay.currVel.x
+      this.cameraDisplay.cameraOffset.x
     );
 
     const statsRes = this.stats.update(statsInfo);
@@ -61,7 +62,7 @@ export class GameState {
 
     if (levelInfo.nextLevel || statsRes) this.drawStats();
 
-    this.devContentCreate?.update(this.cameraDisplay.currVel.x);
+    this.devContentCreate?.update(this.cameraDisplay.cameraOffset);
   }
 
   render() {
@@ -70,10 +71,13 @@ export class GameState {
       this.showMessage,
       this.winState,
       this.stats.level,
-      this.cameraDisplay.currVel.x
+      this.cameraDisplay.cameraOffset
     );
     if (!this.showMessage) {
-      this.objectManager.drawObjects(this.cxt, this.cameraDisplay.currVel.x);
+      this.objectManager.drawObjects(
+        this.cxt,
+        this.cameraDisplay.cameraOffset
+      );
     }
     if (devSettings.showDevStats) {
       this.gameDrawer.showDevStats(

@@ -15,13 +15,13 @@ export class BulletDrawer {
     this.imageVert = makeImage(widthHeight, widthHeight, "bulletVert");
   }
 
-  draw({ cxt, offsetX }: DrawObjProps, bullets: Bullet[]) {
+  draw({ cxt, camOffset }: DrawObjProps, bullets: Bullet[]) {
     const { radius } = bulletConst;
     bullets.forEach((b) => {
       cxt.drawImage(
         this.imageHor.image,
-        b.position.x - radius - offsetX,
-        b.position.y - radius,
+        b.position.x - radius - camOffset.x,
+        b.position.y - radius + camOffset.y,
         radius * 2,
         radius * 2
       );
@@ -30,7 +30,7 @@ export class BulletDrawer {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(
-          b.position.x - radius - offsetX,
+          b.position.x - radius - camOffset.x,
           b.position.y - radius,
           radius * 2,
           radius * 2

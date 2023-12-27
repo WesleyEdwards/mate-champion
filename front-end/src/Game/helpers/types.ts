@@ -1,3 +1,5 @@
+import { Coordinates } from "../models";
+
 export type WinState =
   | "lose"
   | "playing"
@@ -32,5 +34,5 @@ export type Canvas = CanvasRenderingContext2D;
 
 export type DrawObjProps = {
   cxt: Canvas;
-  offsetX: number;
+  camOffset: Coordinates;
 };

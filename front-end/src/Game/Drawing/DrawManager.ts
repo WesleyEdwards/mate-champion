@@ -51,7 +51,7 @@ export class DrawManager {
     this.drawSpriteImage(drawProps, info);
   }
 
-  drawSpriteImage({ cxt, offsetX }: DrawObjProps, info: DrawInfo) {
+  drawSpriteImage({ cxt, camOffset: camOffset }: DrawObjProps, info: DrawInfo) {
     cxt.imageSmoothingEnabled = false;
     cxt.imageSmoothingQuality = "high";
     // this.context.save();
@@ -61,8 +61,8 @@ export class DrawManager {
       info.yOffset,
       info.width,
       info.height,
-      info.canvasX - offsetX,
-      info.canvasY + 1,
+      info.canvasX - camOffset.x,
+      info.canvasY + 1 + camOffset.y,
       info.spriteWidth,
       info.spriteHeight
     );
@@ -71,8 +71,8 @@ export class DrawManager {
       cxt.strokeStyle = "red";
       cxt.lineWidth = 2;
       cxt.strokeRect(
-        info.canvasX - offsetX,
-        info.canvasY + 1,
+        info.canvasX - camOffset.x,
+        info.canvasY + 1 + camOffset.y,
         info.spriteWidth,
         info.spriteHeight
       );

@@ -38,7 +38,7 @@ type DevContentCreateProps = {
 export class DevContentCreate {
   objectManager: ObjectManager;
   platforms: StaticObject[];
-  offsetX: number = 0;
+  cameraOffset: Coordinates = { x: 0, y: 0 };
   prevColor: string = "";
   currentlyCreating: CreatingThing;
 
@@ -60,8 +60,8 @@ export class DevContentCreate {
     this.currentlyCreating = this.creatingOptions.platform;
   }
 
-  update(offsetX: number) {
-    this.offsetX = offsetX;
+  update(offset: Coordinates) {
+    this.cameraOffset = { x: offset.x, y: offset.y };
 
     // @ts-ignore - this is a hack to get the current item type
     const selected = (window.hackyHack ?? "platform") as ItemType;
@@ -73,8 +73,8 @@ export class DevContentCreate {
 
   selectOneItem(xNoOffset: number, y: number, shiftKey: boolean) {
     const existingItem = findExistingItem(
-      xNoOffset + this.offsetX,
-      y,
+      xNoOffset + this.cameraOffset.x,
+      y - this.cameraOffset.y,
       this.currentlyCreating.items
     );
 
@@ -90,12 +90,12 @@ export class DevContentCreate {
     }
 
     const coor1 = {
-      x: Math.min(this.dragSelect.x, xNoOffset) + this.offsetX,
-      y: Math.min(this.dragSelect.y, y),
+      x: Math.min(this.dragSelect.x, xNoOffset) + this.cameraOffset.x,
+      y: Math.min(this.dragSelect.y, y) + this.cameraOffset.y,
     };
     const coor2 = {
-      x: Math.max(this.dragSelect.x, xNoOffset) + this.offsetX,
-      y: Math.max(this.dragSelect.y, y),
+      x: Math.max(this.dragSelect.x, xNoOffset) + this.cameraOffset.x,
+      y: Math.max(this.dragSelect.y, y) + this.cameraOffset.y,
     };
 
     const existingItems = findExistingItems(
@@ -132,8 +132,8 @@ export class DevContentCreate {
     if (!coor) return;
     if (action === "create") {
       this.currentlyCreating.handleEvent("create", {
-        x: coor.x + this.offsetX,
-        y: coor.y,
+        x: coor.x + this.cameraOffset.x,
+        y: coor.y - this.cameraOffset.y,
       });
     }
 

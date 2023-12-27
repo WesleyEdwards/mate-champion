@@ -1,4 +1,5 @@
 import bgImageUrl from "../../assets/clouds-bg.jpg";
+import bgImageClouds from "../../assets/clouds-bg-2.jpg";
 import { MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT, END_POS } from "../constants";
 import { DevStats } from "../devSettings";
 import { Canvas, WinState } from "../helpers/types";
@@ -10,27 +11,38 @@ export class GameDrawer {
     showMessage: boolean,
     winState: WinState,
     level: number,
-    scrollOffset: number
+    cameraOffset: Coordinates
   ) {
     if (showMessage) {
       this.displayNextLevel(cxt, winState, level);
       return;
     }
-    this.drawBg(cxt, scrollOffset);
-    this.drawLava(cxt);
+    this.drawBg(cxt, cameraOffset);
+    this.drawLava(cxt, cameraOffset);
   }
 
-  private drawBg(cxt: Canvas, scrollOffset: number) {
+  private drawBg(cxt: Canvas, cameraOffset: Coordinates) {
     const imageWidth = MAX_CANVAS_WIDTH;
     const bgImage = new Image();
     bgImage.src = bgImageUrl;
-    const diff = Math.floor(scrollOffset / imageWidth);
+    const diff = Math.floor(cameraOffset.x / imageWidth);
+
+    const cloudsBg = new Image();
+    cloudsBg.src = bgImageClouds;
 
     for (let i = 0; i < diff + 2; i++) {
       cxt.drawImage(
         bgImage,
-        -(scrollOffset - i * imageWidth),
-        0,
+        -(cameraOffset.x - i * imageWidth),
+        cameraOffset.y,
+        MAX_CANVAS_WIDTH,
+        MAX_CANVAS_HEIGHT
+      );
+
+      cxt.drawImage(
+        cloudsBg,
+        -(cameraOffset.x - i * imageWidth),
+        cameraOffset.y - MAX_CANVAS_HEIGHT,
         MAX_CANVAS_WIDTH,
         MAX_CANVAS_HEIGHT
       );
@@ -47,9 +59,18 @@ export class GameDrawer {
     cxt.fillText(`fps: ${fps}`, 10, 80);
   }
 
-  private drawLava(cxt: Canvas) {
+  private drawLava(cxt: Canvas, cameraOffset: Coordinates) {
     cxt.fillStyle = "red";
-    cxt.fillRect(-100, MAX_CANVAS_HEIGHT - 5, END_POS + 100, 5);
+    cxt.fillRect(
+      -100,
+      MAX_CANVAS_HEIGHT - 5 + cameraOffset.y,
+      END_POS + 100,
+      5
+    );
+    cxt.beginPath();
+    cxt.moveTo(0, 300);
+    cxt.lineTo(500, 300);
+    cxt.stroke();
   }
 
   private displayNextLevel(cxt: Canvas, winState: WinState, level: number) {

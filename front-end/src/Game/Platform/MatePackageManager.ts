@@ -18,12 +18,12 @@ export class MatePackageManager {
   //   this.packages.forEach((p) => p.update(elapsedTime));
   // }
 
-  draw({ cxt, offsetX }: DrawObjProps) {
+  draw({ cxt, camOffset }: DrawObjProps) {
     this.packages.forEach((p) => {
       cxt.drawImage(
         this.image.image,
-        p.position.x - offsetX,
-        p.position.y,
+        p.position.x - camOffset.x,
+        p.position.y + camOffset.y,
         this.image.width,
         this.image.height
       );
@@ -32,8 +32,8 @@ export class MatePackageManager {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(
-          p.position.x - offsetX,
-          p.position.y,
+          p.position.x - camOffset.x,
+          p.position.y + camOffset.y,
           this.image.width,
           this.image.height
         );

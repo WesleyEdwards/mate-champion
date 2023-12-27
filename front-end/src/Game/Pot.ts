@@ -18,8 +18,12 @@ export class Pot implements StaticObject {
     );
   }
 
-  draw({ cxt, offsetX }: DrawObjProps) {
-    cxt.drawImage(this.image, this.vector.posX - offsetX, this.vector.posY);
+  draw({ cxt, camOffset }: DrawObjProps) {
+    cxt.drawImage(
+      this.image,
+      this.vector.posX - camOffset.x,
+      this.vector.posY + camOffset.x
+    );
   }
 
   reset() {

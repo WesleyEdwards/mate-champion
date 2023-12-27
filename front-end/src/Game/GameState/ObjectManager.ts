@@ -4,7 +4,7 @@ import {
   areTouching,
   calcPlatColl,
 } from "./GameStateFunctions";
-import { Keys } from "../models";
+import { Coordinates, Keys } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
@@ -90,8 +90,8 @@ export class ObjectManager {
     return this.player.position.x > this.pot.vector.posX;
   }
 
-  drawObjects(cxt: Canvas, offsetX: number) {
-    const drawProps: DrawObjProps = { cxt, offsetX };
+  drawObjects(cxt: Canvas, camOffset: Coordinates) {
+    const drawProps: DrawObjProps = { cxt, camOffset };
     this.platformManager.draw(drawProps);
     this.pot.draw(drawProps);
     this.bulletManager.draw(drawProps);

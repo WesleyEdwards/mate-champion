@@ -55,20 +55,20 @@ export class Platform implements StaticObject {
     this.isFloor = !isFloatingBool(params);
   }
 
-  draw({ cxt, offsetX }: DrawObjProps) {
+  draw({ cxt, camOffset }: DrawObjProps) {
     cxt.fillStyle = this.color;
     cxt.strokeStyle = "black";
     cxt.lineWidth = 8;
 
     cxt.strokeRect(
-      this.vector.posX - offsetX,
-      this.vector.posY + 4,
+      this.vector.posX - camOffset.x,
+      this.vector.posY + 4 + camOffset.y,
       this.vector.width,
       this.vector.height
     );
     cxt.fillRect(
-      this.vector.posX - offsetX,
-      this.vector.posY + 4,
+      this.vector.posX - camOffset.x,
+      this.vector.posY + 4 + camOffset.y,
       this.vector.width,
       this.vector.height
     );
