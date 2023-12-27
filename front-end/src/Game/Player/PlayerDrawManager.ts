@@ -3,34 +3,38 @@ import { DrawObjProps } from "../helpers/types";
 import { Coordinates } from "../models";
 import {
   DrawInfo,
-  Drawable,
   SpriteMap,
   SpriteOption,
   SpritePicInfo,
-  drawableMap,
-  spriteMap,
-} from "./drawingUtils";
+} from "../Drawing/drawingUtils";
+import playerSprites from "../../assets/mate-player.png";
+import { playerConst } from "../constants";
 
-export class DrawManager {
+const spriteInfo: SpriteMap = {
+  right: 0,
+  left: 1,
+  rightUp: 2,
+  leftUp: 3,
+  rightAttack: { x: 4, y: 0, height: 1, width: 1.5 },
+  leftAttack: { x: 5.5, y: 0, height: 1, width: 1.5, extra: "beginX" },
+  rightUpAttack: { x: 0, y: 1, height: 1.5, width: 1, extra: "beginY" },
+  leftUpAttack: { x: 1, y: 1, height: 1.5, width: 1, extra: "beginY" },
+};
+
+export class PlayerDrawManager {
   image: HTMLImageElement;
-  spriteInfo: SpriteMap;
-  width: number;
-  height: number;
 
-  constructor(drawable: Drawable, width: number, height: number) {
+  constructor() {
     this.image = new Image();
-    this.image.src = drawableMap[drawable];
-    this.image.width = width;
-    this.image.height = height;
-    this.spriteInfo = spriteMap[drawable];
-    this.width = width;
-    this.height = height;
+    this.image.src = playerSprites;
+    this.image.width = this.widthHeight;
+    this.image.height = this.widthHeight;
   }
 
   draw(drawProps: DrawObjProps, point: Coordinates, sprite: SpriteOption) {
     const { x, y } = point;
 
-    const spritePic = this.spriteInfo[sprite];
+    const spritePic = spriteInfo[sprite];
     if (spritePic === undefined) throw new Error("Sprite not found");
 
     const info =
@@ -76,8 +80,8 @@ export class DrawManager {
       yOffset: 0,
       height: 32,
       width: 32,
-      spriteHeight: this.height,
-      spriteWidth: this.width,
+      spriteHeight: this.widthHeight,
+      spriteWidth: this.widthHeight,
       canvasX: x,
       canvasY: y,
     };
@@ -89,10 +93,10 @@ export class DrawManager {
       yOffset: spritePic.y * 32,
       height: spritePic.height * 32,
       width: spritePic.width * 32,
-      spriteHeight: spritePic.height * this.height,
-      spriteWidth: spritePic.width * this.width,
-      canvasX: this.canvasX(x, this.width / 2, spritePic.extra),
-      canvasY: this.canvasY(y, this.height / 2, spritePic.extra),
+      spriteHeight: spritePic.height * this.widthHeight,
+      spriteWidth: spritePic.width * this.widthHeight,
+      canvasX: this.canvasX(x, this.widthHeight / 2, spritePic.extra),
+      canvasY: this.canvasY(y, this.widthHeight / 2, spritePic.extra),
     };
   }
 
@@ -110,5 +114,9 @@ export class DrawManager {
     extra?: "beginX" | "beginY" | "endX" | "endY"
   ) {
     return extra === "beginY" ? y - extraPics : y;
+  }
+
+  get widthHeight() {
+    return playerConst.radius * 2;
   }
 }

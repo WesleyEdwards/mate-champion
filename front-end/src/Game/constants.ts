@@ -17,12 +17,15 @@ export const playerConst = {
   shankCoolDown: 275,
   shootCoolDown: 150,
   initPos: { x: 300, y: 400 },
-  driftX: 125,
-  driftY: 125,
   maxCoyoteTime: 100,
   jumpGravityFactor: 0.9,
   jumpGravityFrameDecrease: 0.93,
 } as const;
+
+export const cameraConst = {
+  driftX: 125,
+  cameraYMin: 225,
+};
 
 export const grogConst = {
   radius: 32,
@@ -30,7 +33,11 @@ export const grogConst = {
 } as const;
 
 export const packageConst = { width: 60, height: 75, worth: 3 } as const;
-export const bulletConst = { radius: 15, speed: 0.9 } as const;
+export const bulletConst = {
+  radius: 15,
+  speed: 0.9,
+  distFromPlayerDud: 800,
+} as const;
 
 export const platformConst = {
   floorY: 530,

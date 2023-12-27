@@ -31,15 +31,10 @@ export class ObjectManager {
     this.bulletManager.reset();
   }
 
-  updateAll(
-    keys: Keys,
-    elapsedTime: number,
-    ammo: number,
-    screenStartX: number
-  ): UpdateStatus {
+  updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
     this.player.update(keys, elapsedTime);
     this.opponentManager.update(elapsedTime);
-    this.bulletManager.update(elapsedTime, screenStartX);
+    this.bulletManager.update(elapsedTime, this.player.posCenter);
 
     this.calcPersonColl();
 

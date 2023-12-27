@@ -31,7 +31,7 @@ export class BulletDrawer {
         cxt.lineWidth = 2;
         cxt.strokeRect(
           b.position.x - radius - camOffset.x,
-          b.position.y - radius,
+          b.position.y - radius + camOffset.y,
           radius * 2,
           radius * 2
         );

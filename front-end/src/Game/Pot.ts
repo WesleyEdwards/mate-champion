@@ -22,7 +22,7 @@ export class Pot implements StaticObject {
     cxt.drawImage(
       this.image,
       this.vector.posX - camOffset.x,
-      this.vector.posY + camOffset.x
+      this.vector.posY + camOffset.y
     );
   }
 

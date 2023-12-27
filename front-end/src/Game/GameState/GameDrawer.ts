@@ -38,6 +38,11 @@ export class GameDrawer {
         MAX_CANVAS_WIDTH,
         MAX_CANVAS_HEIGHT
       );
+      cxt.beginPath();
+      cxt.moveTo(
+        -(cameraOffset.x - i * imageWidth),
+        cameraOffset.y - MAX_CANVAS_HEIGHT
+      );
 
       cxt.drawImage(
         cloudsBg,
@@ -67,10 +72,6 @@ export class GameDrawer {
       END_POS + 100,
       5
     );
-    cxt.beginPath();
-    cxt.moveTo(0, 300);
-    cxt.lineTo(500, 300);
-    cxt.stroke();
   }
 
   private displayNextLevel(cxt: Canvas, winState: WinState, level: number) {

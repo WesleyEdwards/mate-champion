@@ -17,15 +17,15 @@ export class Bullet implements HasPosition {
     this.imageType = calcImage(direction);
   }
 
-  update(elapsedTime: number, screenStartX: number) {
+  update(elapsedTime: number, playerPos: Coordinates) {
     this.position.x += this.velocity.x * elapsedTime;
     this.position.y += this.velocity.y * elapsedTime;
+    const distanceBetween = Math.sqrt(
+      Math.pow(playerPos.x - this.posCenter.x, 2) +
+        Math.pow(playerPos.y - this.posCenter.y, 2)
+    );
 
-    if (
-      this.position.x - screenStartX > MAX_CANVAS_WIDTH ||
-      this.position.x - screenStartX < 0 ||
-      this.position.y < 0
-    ) {
+    if (distanceBetween > bulletConst.distFromPlayerDud) {
       this.isDead = true;
     }
   }

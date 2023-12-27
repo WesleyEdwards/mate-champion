@@ -1,4 +1,4 @@
-import { playerConst } from "../constants";
+import { cameraConst } from "../constants";
 import { devSettings } from "../devSettings";
 import { Coordinates } from "../models";
 
@@ -18,17 +18,17 @@ export class CameraDisplay {
   update(elapsedTime: number, playerVelocity: Coordinates, posY: number) {
     this.prevCameraOffset = { x: this.cameraOffset.x, y: this.cameraOffset.y };
 
-    this.calcDrift(elapsedTime, playerVelocity.x);
+    this.calcDriftX(elapsedTime, playerVelocity.x);
     this.calcOffsetY(posY);
   }
 
-  calcDrift(elapsedTime: number, playerVelocityX: number) {
-    if (this.playerDrift.x < playerConst.driftX && playerVelocityX > 0) {
+  calcDriftX(elapsedTime: number, playerVelocityX: number) {
+    if (this.playerDrift.x < cameraConst.driftX && playerVelocityX > 0) {
       this.playerDrift.x += playerVelocityX * elapsedTime;
       return;
     }
 
-    if (this.playerDrift.x > -playerConst.driftX && playerVelocityX < 0) {
+    if (this.playerDrift.x > -cameraConst.driftX && playerVelocityX < 0) {
       this.playerDrift.x += playerVelocityX * elapsedTime;
       return;
     }
@@ -37,11 +37,11 @@ export class CameraDisplay {
   }
 
   calcOffsetY(posY: number) {
-    if (posY > 250) {
+    if (posY > cameraConst.cameraYMin) {
       this.cameraOffset.y = 0;
       return;
     }
-    this.cameraOffset.y = 300 - posY;
+    this.cameraOffset.y = cameraConst.cameraYMin - posY;
   }
 
   reset() {

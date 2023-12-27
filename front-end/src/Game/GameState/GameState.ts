@@ -51,8 +51,7 @@ export class GameState {
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
       this.stats.elapsedTime,
-      this.stats.ammo,
-      this.cameraDisplay.cameraOffset.x
+      this.stats.ammo
     );
 
     const statsRes = this.stats.update(statsInfo);
@@ -74,10 +73,7 @@ export class GameState {
       this.cameraDisplay.cameraOffset
     );
     if (!this.showMessage) {
-      this.objectManager.drawObjects(
-        this.cxt,
-        this.cameraDisplay.cameraOffset
-      );
+      this.objectManager.drawObjects(this.cxt, this.cameraDisplay.cameraOffset);
     }
     if (devSettings.showDevStats) {
       this.gameDrawer.showDevStats(

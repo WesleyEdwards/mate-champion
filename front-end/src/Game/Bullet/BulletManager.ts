@@ -1,5 +1,6 @@
 import { PlayerVectorManager } from "../Player/PlayerVectorManager";
 import { Canvas, DrawObjProps } from "../helpers/types";
+import { Coordinates } from "../models";
 import { Bullet } from "./Bullet";
 import { BulletDrawer } from "./BulletDrawer";
 
@@ -11,11 +12,11 @@ export class BulletManager {
     this.bulletDrawer = new BulletDrawer();
   }
 
-  update(elapsedTime: number, screenStartX: number) {
+  update(elapsedTime: number, playerPos: Coordinates) {
     this.bullets.forEach((bullet) =>
       bullet.isDead
         ? this.bullets.splice(this.bullets.indexOf(bullet), 1)
-        : bullet.update(elapsedTime, screenStartX)
+        : bullet.update(elapsedTime, playerPos)
     );
   }
 

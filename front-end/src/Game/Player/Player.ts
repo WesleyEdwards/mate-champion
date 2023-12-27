@@ -6,22 +6,17 @@ import { vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
 import { Canvas, DrawObjProps } from "../helpers/types";
+import { PlayerDrawManager } from "./PlayerDrawManager";
 
 export class Player implements Character {
   shank: number = 0;
   shoot: number = 0;
   shot: boolean = false;
   vector: PlayerVectorManager = new PlayerVectorManager();
-  drawManager: DrawManager;
+  drawManager: PlayerDrawManager = new PlayerDrawManager();
   onPlatform: boolean = false;
 
-  constructor() {
-    this.drawManager = new DrawManager(
-      "player",
-      playerConst.radius * 2,
-      playerConst.radius * 2
-    );
-  }
+  constructor() {}
 
   reset() {
     this.shank = 0;
