@@ -11,7 +11,7 @@ export function randomOutOf(max: number): boolean {
 }
 
 export function debounceLog(val: any, log?: any) {
-  if (generateRandomInt(0, 150) === 1) {
+  if (generateRandomInt(0, 10) === 1) {
     console.log(val, log);
   }
 }

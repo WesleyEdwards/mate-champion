@@ -1,11 +1,12 @@
 import { Coordinates } from "./models";
 
-const prodSettings = {
+const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,
   hideOpponents: false,
   sandboxDb: false,
   shortLevelScreen: false,
   redOutline: false,
+  cameraLines: false,
   noDie: false,
   oneLife: false,
   courseBuilder: false,
@@ -22,6 +23,7 @@ type Settings = {
   sandboxDb: boolean;
   shortLevelScreen: boolean;
   redOutline: boolean;
+  cameraLines: boolean;
   noDie: boolean;
   oneLife: boolean;
   courseBuilder: boolean;
@@ -34,6 +36,7 @@ export const devSettings: Settings = import.meta.env.DEV
       sandboxDb: false,
       shortLevelScreen: true,
       redOutline: true,
+      cameraLines: false,
       noDie: true,
       oneLife: true,
       courseBuilder: true,

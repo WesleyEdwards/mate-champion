@@ -1,11 +1,10 @@
-import { DrawManager } from "../Drawing/DrawManager";
 import { SpriteOption } from "../Drawing/drawingUtils";
-import { GRAVITY, playerConst } from "../constants";
-import { Coordinates, Keys, CharAction, Character, VectorMan } from "../models";
+import { playerConst } from "../constants";
+import { Coordinates, Keys, CharAction, Character } from "../models";
 import { vagueFacing } from "../helpers/utils";
 import { shankingImage } from "./PlayerUtils";
 import { PlayerVectorManager } from "./PlayerVectorManager";
-import { Canvas, DrawObjProps } from "../helpers/types";
+import { DrawObjProps } from "../helpers/types";
 import { PlayerDrawManager } from "./PlayerDrawManager";
 
 export class Player implements Character {

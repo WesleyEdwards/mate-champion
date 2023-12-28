@@ -16,15 +16,15 @@ export const playerConst = {
   shankTime: 200,
   shankCoolDown: 275,
   shootCoolDown: 150,
-  initPos: { x: 300, y: 400 },
+  initPos: { x: 400, y: 400 },
   maxCoyoteTime: 100,
   jumpGravityFactor: 0.9,
   jumpGravityFrameDecrease: 0.93,
 } as const;
 
 export const cameraConst = {
-  driftX: 125,
-  cameraYMin: 225,
+  idealDistFromLeftWall: 400,
+  idealMinDistFromCeiling: 290,
 };
 
 export const grogConst = {

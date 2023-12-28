@@ -45,8 +45,7 @@ export class GameState {
     if (!this.isWinState("playing")) return;
     this.cameraDisplay.update(
       this.stats.elapsedTime,
-      this.objectManager.player.vector.velocity,
-      this.objectManager.player.vector.posY
+      this.objectManager.player.vector
     );
     const { statsInfo, levelInfo } = this.objectManager.updateAll(
       this.keys,
@@ -83,6 +82,7 @@ export class GameState {
         this.stats.fps
       );
     }
+    this.cameraDisplay.draw(this.cxt);
   }
 
   isWinState(state: WinState): boolean {
