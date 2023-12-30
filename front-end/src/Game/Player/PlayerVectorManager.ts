@@ -1,9 +1,14 @@
 import { GRAVITY, MAX_CANVAS_HEIGHT, playerConst } from "../constants";
 import { CharAction, Coordinates, VectorMan } from "../models";
-import { PlayerDirection } from "./models";
+
+export type PlayerDirectionX = "left" | "right";
+export type PlayerDirectionY = "up" | "down" | "none";
+export type PlayerAction = "shoot" | "melee" | "none";
+export type PlayerMove = "walk" | "jump" | "none";
 
 export class PlayerVectorManager implements VectorMan {
-  facing: PlayerDirection = "right";
+  facingX: PlayerDirectionX = "right";
+  facingY: PlayerDirectionY = "none";
   jumps: number = 0;
   coyoteTime = 0;
 
@@ -42,74 +47,65 @@ export class PlayerVectorManager implements VectorMan {
   move(action: CharAction) {
     if (action === "MoveRight") {
       this.setVelX(this.moveSpeed);
-      this.setFacing("right");
+      this.facingX = "right";
     }
     if (action === "MoveLeft") {
       this.setVelX(-this.moveSpeed);
-      this.setFacing("left");
+      this.facingX = "left";
     }
     if (action === "StopX") this.setVelX(0);
 
-    if (this.bottomPos > MAX_CANVAS_HEIGHT) {
+    if (this.position.y + playerConst.radius > MAX_CANVAS_HEIGHT) {
       this.stopY(MAX_CANVAS_HEIGHT - this.radius * 2);
     }
     if (action === "Jump" && this.velocity.y === 0 && this.jumps < 1) {
       this.setVelY(playerConst.jumpSpeed);
-      this.setPosY(this.posY - 1);
+      this.setPosY(this.position.y - 1);
       this.gravityFactor = playerConst.jumpGravityFactor;
       this.jumps += 1;
     }
     if (this.velocity.y > 0) this.jumps = 0;
   }
 
-  isFacing(direction: PlayerDirection) {
-    return this.facing === direction;
-  }
-  setFacing(direction: PlayerDirection) {
-    this.facing = direction;
-  }
-
   setUpPos(up: boolean = true) {
-    if (up) {
-      if (this.isFacing("right")) this.setFacing("rightUp");
-      if (this.isFacing("left")) this.setFacing("leftUp");
-    } else {
-      if (this.isFacing("rightUp")) this.setFacing("right");
-      if (this.isFacing("leftUp")) this.setFacing("left");
-    }
+    this.facingY = up ? "up" : "none";
   }
 
   setDownPos(down: boolean = true) {
-    if (down) {
-      if (this.isFacing("right")) this.setFacing("rightDown");
-      if (this.isFacing("left")) this.setFacing("leftDown");
-    } else {
-      if (this.isFacing("rightDown")) this.setFacing("right");
-      if (this.isFacing("leftDown")) this.setFacing("left");
+    this.facingY = down ? "down" : "none";
+  }
+
+  weaponPosition(direction: PlayerDirectionX | PlayerDirectionY) {
+    const map: Record<
+      PlayerDirectionX | PlayerDirectionY,
+      (og: Coordinates) => Coordinates
+    > = {
+      left: (og) => ({
+        x: og.x - playerConst.radius,
+        y: og.y,
+      }),
+      right: (og) => ({
+        x: og.x + playerConst.radius,
+        y: og.y,
+      }),
+      up: (og) => ({
+        x: og.x,
+        y: og.y - playerConst.radius,
+      }),
+      down: (og) => ({
+        x: og.x,
+        y: og.y + playerConst.radius,
+      }),
+      none: (og) => og,
+    };
+    return map[direction](this.position);
+  }
+
+  get weaponPosCurr() {
+    if (this.facingY !== "none") {
+      return this.weaponPosition(this.facingY);
     }
-  }
-
-  get isMovingDown() {
-    return this.facing === "leftDown" || this.facing === "rightDown";
-  }
-
-  get posRightWeapon() {
-    return {
-      x: this.posX + this.radius * 3,
-      y: this.centerY,
-    };
-  }
-  get posLeftWeapon() {
-    return {
-      x: this.posX - this.radius,
-      y: this.centerY,
-    };
-  }
-  get posUpWeapon() {
-    return {
-      x: this.centerX,
-      y: this.posY - this.radius,
-    };
+    return this.weaponPosition(this.facingX);
   }
 
   stopY(yPos: number) {
@@ -121,31 +117,6 @@ export class PlayerVectorManager implements VectorMan {
   }
   setVelY(y: number) {
     this.velocity.y = y;
-  }
-
-  get posX() {
-    return this.position.x;
-  }
-  get posY() {
-    return this.position.y;
-  }
-  get bottomPos() {
-    return this.position.y + this.radius * 2;
-  }
-  get rightPos() {
-    return this.position.x + this.radius * 2;
-  }
-  get centerX() {
-    return this.position.x + this.radius;
-  }
-  get centerY() {
-    return this.position.y + this.radius;
-  }
-  get posCenter() {
-    return {
-      x: this.centerX,
-      y: this.centerY,
-    };
   }
 
   relativePos(xOffset: number) {

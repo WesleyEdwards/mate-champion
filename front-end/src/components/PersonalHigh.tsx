@@ -5,7 +5,7 @@ import { localStorageManager } from "../api/localStorageManager";
 import { useAuth } from "../hooks/useAuth";
 
 export const PersonalHigh: FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const highScore = (() => {
     if (localStorageManager.get("high-score")) {
       return parseInt(localStorageManager.get("high-score") ?? "0");

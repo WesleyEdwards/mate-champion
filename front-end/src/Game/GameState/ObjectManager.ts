@@ -1,16 +1,15 @@
-import { Bullet } from "../Bullet/Bullet";
 import {
+  calcPlatOppCollision,
+  calcPlatPlayerCollision,
   updateLiveStatus,
-  areTouching,
-  calcPlatColl,
 } from "./GameStateFunctions";
 import { Coordinates, Keys } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
-import { MAX_CANVAS_HEIGHT, playerConst } from "../constants";
+import { MAX_CANVAS_HEIGHT } from "../constants";
 import { MatePackageManager } from "../Platform/MatePackageManager";
-import { OpponentManager, Opponents } from "../Opponent/OpponentManager";
+import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
 
@@ -34,7 +33,7 @@ export class ObjectManager {
   updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
     this.player.update(keys, elapsedTime);
     this.opponentManager.update(elapsedTime);
-    this.bulletManager.update(elapsedTime, this.player.posCenter);
+    this.bulletManager.update(elapsedTime, this.player.position);
 
     this.calcPersonColl();
 
@@ -62,23 +61,21 @@ export class ObjectManager {
   private getKilledOpponents(): number {
     const { opponents, bullets } = updateLiveStatus(
       this.player,
-      this.opponents,
-      this.bullets
+      this.opponentManager.opponents,
+      this.bulletManager.bullets
     );
-    opponents.grog.forEach((opp) => {
-      this.opponents.grog.splice(this.opponents.grog.indexOf(opp), 1);
-    });
-    bullets.forEach((bullet) => {
-      this.bullets.splice(this.bullets.indexOf(bullet), 1);
-    });
+    this.opponentManager.removeOpponents(opponents);
+    this.bulletManager.removeBullets(bullets);
     return opponents.grog.length;
   }
 
   private get playerDies() {
-    if (this.player.vector.bottomPos > MAX_CANVAS_HEIGHT - 5) return true;
-    return this.opponents.grog.some((opp) =>
-      areTouching(this.player, opp.vector.posCenter, playerConst.radius * 2)
-    );
+    if (
+      this.player.vector.position.y + this.player.vector.height / 2 >
+      MAX_CANVAS_HEIGHT - 5
+    )
+      return true;
+    return this.opponentManager.touchingPlayer(this.player.position);
   }
 
   get nextLevel() {
@@ -99,18 +96,12 @@ export class ObjectManager {
     return this.player.vector.velocity.x === 0;
   }
 
-  private get bullets(): Bullet[] {
-    return this.bulletManager.bullets;
-  }
-
-  private get opponents(): Opponents {
-    return this.opponentManager.opponents;
-  }
-
   calcPersonColl() {
     this.platformManager.platforms.forEach((platform) => {
-      this.opponents.grog.forEach((opp) => calcPlatColl(platform, opp));
-      calcPlatColl(platform, this.player);
+      this.opponentManager.opponents.grog.forEach((opp) =>
+        calcPlatOppCollision(platform, opp)
+      );
+      calcPlatPlayerCollision(platform, this.player);
     });
   }
 }

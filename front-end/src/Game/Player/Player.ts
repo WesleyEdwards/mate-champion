@@ -1,11 +1,9 @@
-import { SpriteOption } from "../Drawing/drawingUtils";
 import { playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { vagueFacing } from "../helpers/utils";
-import { shankingImage } from "./PlayerUtils";
-import { PlayerVectorManager } from "./PlayerVectorManager";
+import { getSpriteDisplay } from "./PlayerUtils";
+import { PlayerAction, PlayerVectorManager } from "./PlayerVectorManager";
 import { DrawObjProps } from "../helpers/types";
-import { PlayerDrawManager } from "./PlayerDrawManager";
+import { PlayerDrawManager, SpriteDisplay } from "./PlayerDrawManager";
 
 export class Player implements Character {
   shank: number = 0;
@@ -26,6 +24,7 @@ export class Player implements Character {
 
   update(keys: Keys, elapsedTime: number) {
     this.vector.update(elapsedTime);
+    this.drawManager.update(elapsedTime);
 
     if (keys.jump || keys.toJump > 0) {
       this.move("Jump");
@@ -33,7 +32,7 @@ export class Player implements Character {
     }
 
     if (keys.right) this.move("MoveRight");
-    const canMoveLeft = this.posCenter.x >= playerConst.initPos.x - 100;
+    const canMoveLeft = this.position.x >= playerConst.initPos.x - 100;
     if (keys.left && canMoveLeft) this.move("MoveLeft");
 
     if ((!keys.right && !keys.left) || (!canMoveLeft && keys.left)) {
@@ -45,12 +44,7 @@ export class Player implements Character {
       Date.now() - this.shank >
         playerConst.shankTime + playerConst.shankCoolDown
     ) {
-      if (
-        this.vector.isFacing("right") ||
-        this.vector.isFacing("rightUp") ||
-        this.vector.isFacing("leftUp") ||
-        this.vector.isFacing("left")
-      ) {
+      if (this.vector.facingX === "left" || this.vector.facingX === "right") {
         this.shank = Date.now();
       }
       keys.toShank = 0;
@@ -59,7 +53,7 @@ export class Player implements Character {
     if (
       (keys.shoot || keys.toShoot > 0) &&
       Date.now() - this.shoot > playerConst.shootCoolDown &&
-      !this.shanking
+      this.currAction !== "melee"
     ) {
       this.shoot = Date.now();
       this.shot = true;
@@ -67,11 +61,11 @@ export class Player implements Character {
       keys.toShoot = 0;
     }
 
-    if (keys.up) this.setUpPos();
-    else this.setUpPos(false);
-
-    if (keys.down) this.setDownPos();
-    else this.setDownPos(false);
+    if (keys.up || keys.down) {
+      this.vector.facingY = keys.up ? "up" : "down";
+    } else {
+      this.vector.facingY = "none";
+    }
 
     this.vector.updateGravity(elapsedTime, keys.jump);
   }
@@ -81,36 +75,30 @@ export class Player implements Character {
   }
 
   draw(drawProps: DrawObjProps) {
-    const direction: SpriteOption = shankingImage(
-      this.vector.facing,
-      this.shanking
+    this.drawManager.draw(
+      drawProps,
+      this.position,
+      getSpriteDisplay(
+        this.vector.facingX,
+        this.vector.facingY,
+        this.currAction,
+        this.vector.velocity.x !== 0 ? "walk" : "none"
+      )
     );
-
-    this.drawManager.draw(drawProps, this.position, direction);
-  }
-
-  private setUpPos(up: boolean = true) {
-    this.vector.setUpPos(up);
-  }
-
-  private setDownPos(down: boolean = true) {
-    this.vector.setDownPos(down);
   }
 
   get weaponPosCurr(): Coordinates | undefined {
-    if (!this.shanking) return undefined;
-    if (this.vector.isFacing("right") || this.vector.isFacing("rightDown")) {
-      return this.vector.posRightWeapon;
-    }
-    if (this.vector.isFacing("left") || this.vector.isFacing("leftDown")) {
-      return this.vector.posLeftWeapon;
-    }
-    return this.vector.posUpWeapon;
+    if (this.currAction !== "melee") return undefined;
+    return this.vector.weaponPosCurr;
   }
 
-  get shanking() {
-    return Date.now() - this.shank < playerConst.shankTime;
+  get currAction(): PlayerAction {
+    if (Date.now() - this.shank < playerConst.shankTime) {
+      return "melee";
+    }
+    return "none";
   }
+
   get shooting() {
     if (this.shot) {
       this.shot = false;
@@ -122,14 +110,8 @@ export class Player implements Character {
   get position() {
     return this.vector.position;
   }
-  get posCenter() {
-    return this.vector.posCenter;
-  }
   setPosY(num: number) {
     return this.vector.stopY(num);
-  }
-  get facing() {
-    return vagueFacing(this.vector.facing);
   }
 
   setOnPlatform(posY: number) {

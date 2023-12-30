@@ -8,6 +8,7 @@ const prodSettings: Record<keyof Settings, false> = {
   redOutline: false,
   cameraLines: false,
   noDie: false,
+  unlimitedBullets: false,
   oneLife: false,
   courseBuilder: false,
 } as const;
@@ -25,6 +26,7 @@ type Settings = {
   redOutline: boolean;
   cameraLines: boolean;
   noDie: boolean;
+  unlimitedBullets: boolean;
   oneLife: boolean;
   courseBuilder: boolean;
 };
@@ -35,10 +37,11 @@ export const devSettings: Settings = import.meta.env.DEV
       hideOpponents: false,
       sandboxDb: false,
       shortLevelScreen: true,
-      redOutline: true,
+      redOutline: false,
       cameraLines: false,
       noDie: true,
       oneLife: true,
+      unlimitedBullets: true,
       courseBuilder: true,
     } as const)
   : prodSettings;

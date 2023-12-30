@@ -8,8 +8,6 @@ export const potImage = makeImage(500, 750, "matePot");
 //   right: MCImage;
 // }
 
-const oppWidth = grogConst.radius * 2;
-
 // export const oppImages: OppImages = {
 //   left: makeImage(oppWidth, oppWidth, "opponentLeft"),
 //   right: makeImage(oppWidth, oppWidth, "opponentRight"),

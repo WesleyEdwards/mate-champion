@@ -29,12 +29,6 @@ export class ObjVectorManager implements VectorMan {
   get posY() {
     return this.position.y;
   }
-  get bottomPos() {
-    return this.position.y + this.height;
-  }
-  get rightPos() {
-    return this.position.x + this.width;
-  }
   get isMovingDown() {
     return false;
   }
@@ -43,12 +37,6 @@ export class ObjVectorManager implements VectorMan {
   }
   get centerY() {
     return this.position.y + this.height / 2;
-  }
-  get posCenter() {
-    return {
-      x: this.centerX,
-      y: this.centerY,
-    };
   }
   relativePos(xOffset: number) {
     return {

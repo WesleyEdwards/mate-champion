@@ -19,8 +19,8 @@ export function exportLevelInfo(objManager: ObjectManager) {
     platforms: objManager.platformManager.platforms
       .filter((p) => !p.isFloor)
       .map((p) => ({
-        x: round(p.vector.posX),
-        y: round(p.vector.posY),
+        x: round(p.vector.position.x),
+        y: round(p.vector.position.y),
         width: round(p.vector.width),
         height: round(p.vector.height),
         color: p.color,
@@ -29,7 +29,7 @@ export function exportLevelInfo(objManager: ObjectManager) {
     floors: objManager.platformManager.platforms
       .filter((p) => p.isFloor)
       .map((p) => ({
-        x: round(p.vector.posX),
+        x: round(p.vector.position.x),
         width: round(p.vector.width),
         color: p.color,
       }))
@@ -46,10 +46,10 @@ export function findExistingItems(
 ): HasPosition[] {
   return items.filter(
     (item) =>
-      coor1.x <= item.vector.posX + item.vector.width &&
-      coor2.x >= item.vector.posX &&
-      coor1.y <= item.vector.posY + item.vector.height &&
-      coor2.y >= item.vector.posY
+      coor1.x <= item.vector.position.x + item.vector.width &&
+      coor2.x >= item.vector.position.x &&
+      coor1.y <= item.vector.position.y + item.vector.height &&
+      coor2.y >= item.vector.position.y
   );
 }
 
@@ -61,10 +61,10 @@ export function findExistingItem(
   return (
     items.find(
       (item) =>
-        x >= item.vector.posX &&
-        x <= item.vector.posX + item.vector.width &&
-        y >= item.vector.posY &&
-        y <= item.vector.posY + item.vector.height
+        x >= item.vector.position.x &&
+        x <= item.vector.position.x + item.vector.width &&
+        y >= item.vector.position.y &&
+        y <= item.vector.position.y + item.vector.height
     ) || null
   );
 }

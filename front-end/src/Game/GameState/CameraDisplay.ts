@@ -5,12 +5,11 @@ import { debounceLog } from "../helpers/utils";
 import { Coordinates } from "../models";
 
 export class CameraDisplay {
-  prevCameraOffset: Coordinates = { x: 0, y: 0 };
   cameraOffset: Coordinates = { x: 0, y: 0 };
-  playerDrift: Coordinates = { x: 0, y: 0 };
   cameraVelocity: Coordinates = { x: 0, y: 0 };
-  lastKnownScrollPosition: number = 0;
-  ticking: boolean = false;
+  // For some reason, when you leave the page for an extended amount of time,
+  // it starts eating up computing power and the camera shifts to somewhere else
+  idleTime: number = 0;
 
   constructor() {
     if (devSettings.courseBuilder) {
@@ -19,8 +18,13 @@ export class CameraDisplay {
   }
 
   update(elapsedTime: number, playerVector: PlayerVectorManager) {
+    this.idleTime += elapsedTime;
+    if (playerVector.velocity.x !== 0 || playerVector.velocity.y !== 0) {
+      this.idleTime = 0;
+    }
+    if (this.idleTime > 3000) return;
+
     // y increases as the player goes up
-    this.prevCameraOffset = { x: this.cameraOffset.x, y: this.cameraOffset.y };
 
     this.cameraOffset.x += this.cameraVelocity.x * elapsedTime;
     this.cameraOffset.y += this.cameraVelocity.y * elapsedTime;
@@ -69,10 +73,8 @@ export class CameraDisplay {
   }
 
   reset() {
-    this.prevCameraOffset = { x: 0, y: 0 };
     this.cameraOffset = { x: 0, y: 0 };
     this.cameraVelocity = { x: 0, y: 0 };
-    this.playerDrift = { x: 0, y: 0 };
   }
 
   addScrollEventListeners() {

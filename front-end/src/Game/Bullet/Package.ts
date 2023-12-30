@@ -29,10 +29,6 @@ export class Package implements HasPosition {
     return this.vector.height;
   }
 
-  get posCenter() {
-    return this.vector.posCenter;
-  }
-
   get position() {
     return this.vector.position;
   }

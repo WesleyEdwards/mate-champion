@@ -66,7 +66,10 @@ export class GrogCreator implements CreatingThing<"grog"> {
   handleCreate(coor: Coordinates) {
     this.items.push(
       new Grog({
-        initPos: { x: coor.x - grogConst.radius, y: coor.y - grogConst.radius },
+        initPos: {
+          x: coor.x - grogConst.width / 2,
+          y: coor.y - grogConst.height / 2,
+        },
         moveSpeed: 0,
       })
     );

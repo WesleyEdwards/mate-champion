@@ -4,9 +4,9 @@ import { Coordinates } from "../models";
 
 export class BulletVector extends BaseVectorMan {
   velocity: Coordinates;
-  constructor(pos: Coordinates) {
-    super(pos, bulletConst.radius * 2, bulletConst.radius * 2);
-    this.velocity = { x: bulletConst.speed, y: 0 };
+  constructor(pos: Coordinates, vel: Coordinates) {
+    super(pos, bulletConst.width, bulletConst.height);
+    this.velocity = vel;
   }
 
   setVelX(x: number) {

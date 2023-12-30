@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
 
 export const useAuth = () => {
-  const api = new Api(localStorageManager.get("token"));
   const [user, setUser] = useState<User>();
+
+  const api = useMemo(() => new Api(localStorageManager.get("token")), []);
 
   useEffect(() => {
     if (localStorageManager.get("token")) {

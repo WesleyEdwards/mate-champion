@@ -6,6 +6,7 @@ import { levelTwoInfo } from "./2-levelInfo";
 import { levelThreeInfo } from "./3-levelInfo";
 import { levelAbandonHope } from "./levelAbandonHope";
 import { levelFiveInfo } from "./5-levelInfo";
+import { sandboxLevel } from "./sandboxLevel";
 
 export type LevelInfo = {
   packages: PackageProps[];
@@ -15,6 +16,7 @@ export type LevelInfo = {
 };
 
 const levelsInfo: LevelInfo[] = [
+  sandboxLevel,
   levelInto,
   levelFiveInfo,
   levelAbandonHope,

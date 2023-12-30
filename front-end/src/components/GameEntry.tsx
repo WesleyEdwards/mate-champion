@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from "@mui/joy";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import Instructions from "./Instructions";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
@@ -12,9 +12,9 @@ import { PersonalHigh } from "./PersonalHigh";
 import { Profile } from "./Profile";
 import { Login } from "./Login";
 import { CreateAccount } from "./CreateAccount";
-import { useAuth } from "../hooks/useAuth";
 import { localStorageManager } from "../api/localStorageManager";
 import { PersonalHighScore } from "./PersonalHighScore";
+import { useAuthContext } from "../hooks/AuthContext";
 
 export type MCScreen =
   | "game"
@@ -33,7 +33,7 @@ export interface ScreenProps {
 }
 
 export const GameEntry: FC = () => {
-  const { user, api, modifyUser } = useAuth();
+  const { user, api, modifyUser } = useAuthContext();
 
   const [stats, setStats] = useState<PlayStats>(emptyStats);
 

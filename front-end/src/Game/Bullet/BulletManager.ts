@@ -1,6 +1,10 @@
-import { PlayerVectorManager } from "../Player/PlayerVectorManager";
+import {
+  PlayerDirectionX,
+  PlayerDirectionY,
+  PlayerVectorManager,
+} from "../Player/PlayerVectorManager";
 import { Canvas, DrawObjProps } from "../helpers/types";
-import { Coordinates } from "../models";
+import { Coordinates, VagueFacing } from "../models";
 import { Bullet } from "./Bullet";
 import { BulletDrawer } from "./BulletDrawer";
 
@@ -14,9 +18,9 @@ export class BulletManager {
 
   update(elapsedTime: number, playerPos: Coordinates) {
     this.bullets.forEach((bullet) =>
-      bullet.isDead
-        ? this.bullets.splice(this.bullets.indexOf(bullet), 1)
-        : bullet.update(elapsedTime, playerPos)
+      // bullet.timeAlive === null
+      //   ? this.bullets.splice(this.bullets.indexOf(bullet), 1)
+      bullet.update(elapsedTime, playerPos)
     );
   }
 
@@ -25,18 +29,22 @@ export class BulletManager {
   }
 
   addBullet(playerVector: PlayerVectorManager) {
-    if (playerVector.isFacing("right") || playerVector.isFacing("rightDown")) {
-      this.bullets.push(new Bullet(playerVector.posRightWeapon, "right"));
-      return;
-    }
-    if (playerVector.isFacing("left") || playerVector.isFacing("leftDown")) {
-      this.bullets.push(new Bullet(playerVector.posLeftWeapon, "left"));
-      return;
-    }
-    if (playerVector.isFacing("rightUp") || playerVector.isFacing("leftUp")) {
-      this.bullets.push(new Bullet(playerVector.posUpWeapon, "up"));
-    }
+    const direction: PlayerDirectionX | PlayerDirectionY =
+      playerVector.facingY !== "none"
+        ? playerVector.facingY
+        : playerVector.facingX;
+
+    this.bullets.push(
+      new Bullet(playerVector.weaponPosition(direction), direction)
+    );
   }
+
+  removeBullets(bulletIndex: number[]) {
+    bulletIndex.forEach((i) => {
+      this.bullets.splice(i, 1);
+    });
+  }
+
   reset() {
     this.bullets = [];
   }

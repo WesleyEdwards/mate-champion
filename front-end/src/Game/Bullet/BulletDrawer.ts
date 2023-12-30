@@ -1,41 +1,74 @@
 import { Bullet } from "./Bullet";
-import { makeImage, MCImage } from "../Drawing/drawingUtils";
 import { bulletConst } from "../constants";
-import { Canvas, DrawObjProps } from "../helpers/types";
+import { DrawObjProps } from "../helpers/types";
 import { devSettings } from "../devSettings";
 
-export type bulletImageType = "bulletHor" | "bulletVert";
+import bulletSprite from "../../assets/mate_bullet.png";
+
+// image,
+// where on spriteSheet to start X,
+// where on spriteSheet to start Y,
+// total Width of sprite sheet
+// total height of sprite sheet,
+// x coordinate on canvas
+// y coordinate on canvas
+// width on canvas to show
+// height on canvas to show
+
+const spritesInRow = 4;
 
 export class BulletDrawer {
-  imageHor: MCImage;
-  imageVert: MCImage;
+  image: HTMLImageElement;
+  imageWidth: number;
   constructor() {
-    const widthHeight = bulletConst.radius * 2;
-    this.imageHor = makeImage(widthHeight, widthHeight, "bulletHor");
-    this.imageVert = makeImage(widthHeight, widthHeight, "bulletVert");
+    this.image = new Image();
+    this.image.src = bulletSprite;
+    this.imageWidth = 28;
   }
 
   draw({ cxt, camOffset }: DrawObjProps, bullets: Bullet[]) {
-    const { radius } = bulletConst;
     bullets.forEach((b) => {
+      const whichSprite = Math.round((b?.timeAlive ?? 0) / 10) % spritesInRow;
+
+      cxt.save();
+      cxt.translate(b.position.x - camOffset.x, b.position.y + camOffset.y);
+
+      cxt.rotate(
+        (() => {
+          if (b.vector.velX > 0) return 0;
+          if (b.vector.velX < 0) return Math.PI;
+          if (b.vector.velY < 0) return (Math.PI / 2) * 3;
+          return 0;
+        })()
+      );
+
       cxt.drawImage(
-        this.imageHor.image,
-        b.position.x - radius - camOffset.x,
-        b.position.y - radius + camOffset.y,
-        radius * 2,
-        radius * 2
+        this.image,
+        this.imageWidth * whichSprite,
+        0,
+        this.imageWidth,
+        this.image.height,
+        -0.5 * bulletConst.width,
+        -0.5 * bulletConst.height,
+        bulletConst.width,
+        bulletConst.height
       );
 
       if (devSettings.redOutline) {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(
-          b.position.x - radius - camOffset.x,
-          b.position.y - radius + camOffset.y,
-          radius * 2,
-          radius * 2
+          -0.5 * bulletConst.width,
+          -0.5 * bulletConst.height,
+          bulletConst.width,
+          bulletConst.height
         );
+        cxt.beginPath();
+        cxt.arc(0, 0, 1, 0, 2 * Math.PI);
+        cxt.stroke();
       }
+
+      cxt.restore();
     });
   }
 }

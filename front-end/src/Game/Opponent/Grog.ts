@@ -1,10 +1,10 @@
 import { GRAVITY, MAX_CANVAS_HEIGHT, grogConst } from "../constants";
-import { DrawManager } from "../Drawing/DrawManager";
 import { Character, OppDirections, CharAction, Coordinates } from "../models";
 import { randomOutOf } from "../helpers/utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
 import { DrawObjProps } from "../helpers/types";
 import { devSettings } from "../devSettings";
+import { GrogDrawManager } from "./GrogDrawManager";
 
 export type GrogProps = {
   initPos: Coordinates;
@@ -13,19 +13,15 @@ export type GrogProps = {
 
 export class Grog implements Character {
   vector: OpponentVectorManager;
-  drawManager: DrawManager;
+  drawManager: GrogDrawManager;
 
   constructor({ initPos, moveSpeed }: GrogProps) {
     this.vector = new OpponentVectorManager(
       { ...initPos },
       moveSpeed,
-      grogConst.radius
+      grogConst.width / 2
     );
-    this.drawManager = new DrawManager(
-      "opponent",
-      grogConst.radius * 2,
-      grogConst.radius * 2
-    );
+    this.drawManager = new GrogDrawManager();
   }
 
   update(elapsedTime: number) {
@@ -46,7 +42,7 @@ export class Grog implements Character {
   }
 
   draw(drawProps: DrawObjProps) {
-    this.drawManager.draw(drawProps, this.position, this.facing);
+    this.drawManager.draw(drawProps, this.position, "left"); // this.facing
   }
 
   setOnPlatform(num: number) {
@@ -59,10 +55,6 @@ export class Grog implements Character {
 
   get height() {
     return this.vector.height;
-  }
-
-  get posCenter() {
-    return this.vector.posCenter;
   }
 
   get position() {

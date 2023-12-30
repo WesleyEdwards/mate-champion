@@ -12,80 +12,109 @@ import { bulletConst } from "../constants";
 import { Opponents } from "../Opponent/OpponentManager";
 import { Grog } from "../Opponent/Grog";
 
-export function calcPlatColl<T extends Character>(
-  platform: StaticObject,
-  char: T
-) {
-  if (!platform.isFloor && char.vector.isMovingDown) {
-    return;
-  }
+export function calcPlatOppCollision(platform: StaticObject, opp: Grog) {
+  const betweenCenterAndEdgeX = opp.vector.width / 2;
   if (
-    char.vector.rightPos < platform.vector.posX ||
-    char.vector.posX > platform.vector.posX + platform.vector.width
+    opp.vector.position.x + betweenCenterAndEdgeX <
+      platform.vector.position.x ||
+    opp.vector.position.x - betweenCenterAndEdgeX >
+      platform.vector.position.x + platform.vector.width
   ) {
     return;
   }
 
-  const previous = char.vector.prevPosY + char.vector.height;
-  const recent = char.vector.posY + char.vector.height;
-  if (recent >= platform.vector.posY && previous <= platform.vector.posY) {
-    char.setOnPlatform(platform.vector.posY - char.vector.height);
+  const betweenCenterAndBottom = opp.vector.height / 2;
+
+  const previous = opp.vector.prevPosY + betweenCenterAndBottom;
+  const recent = opp.vector.position.y + betweenCenterAndBottom;
+  if (
+    recent >= platform.vector.position.y &&
+    previous <= platform.vector.position.y
+  ) {
+    opp.setOnPlatform(platform.vector.position.y - betweenCenterAndBottom);
   }
 }
 
-export function areTouching<T extends HasPosition>(
-  objectA: T,
+export function calcPlatPlayerCollision(platform: StaticObject, champ: Player) {
+  if (!platform.isFloor && champ.vector.facingY === "down") {
+    return;
+  }
+  const betweenCenterAndEdgeX = champ.vector.width / 2;
+  if (
+    champ.vector.position.x + betweenCenterAndEdgeX <
+      platform.vector.position.x ||
+    champ.vector.position.x - betweenCenterAndEdgeX >
+      platform.vector.position.x + platform.vector.width
+  ) {
+    return;
+  }
+
+  const betweenCenterAndBottom = champ.vector.height / 2;
+
+  const previous = champ.vector.prevPosY + betweenCenterAndBottom;
+  const recent = champ.vector.position.y + betweenCenterAndBottom;
+  if (
+    recent >= platform.vector.position.y &&
+    previous <= platform.vector.position.y
+  ) {
+    champ.setOnPlatform(platform.vector.position.y - betweenCenterAndBottom);
+  }
+}
+
+export function areTouching(
+  objectAPos: Coordinates,
   where: Coordinates,
   dist: number
 ): boolean {
   // For some reason, 'where' was coming in as undefined here (from looping through opponents)
   const distBetween = Math.sqrt(
-    Math.pow(objectA.vector.posCenter.x - (where?.x ?? 0), 2) +
-      Math.pow(objectA.vector.posCenter.y - (where?.y ?? 0), 2)
+    Math.pow(objectAPos.x - (where?.x ?? 0), 2) +
+      Math.pow(objectAPos.y - (where?.y ?? 0), 2)
   );
   return distBetween < dist;
-}
-
-interface LiveStatus {
-  opponents: Opponents;
-  bullets: Bullet[];
 }
 
 export function updateLiveStatus(
   player: Player,
   opponents: Opponents,
   bullets: Bullet[]
-): LiveStatus {
-  const shanked: Grog[] = [];
-  const spentBullets: Bullet[] = [];
+): {
+  opponents: { grog: number[] };
+  bullets: number[];
+} {
+  const shankedGrogs: number[] = [];
+  const spentBulletsIndex: number[] = [];
 
-  opponents.grog.forEach((opp) => {
+  opponents.grog.forEach((opp, grogI) => {
     if (
       player.weaponPosCurr &&
       areTouching(
-        opp,
+        opp.vector.position,
         player.weaponPosCurr,
         player.vector.radius + opp.vector.radius + 15
       )
     ) {
-      shanked.push(opp);
+      shankedGrogs.push(grogI);
       return;
     }
-    bullets.forEach((bullet) => {
+    bullets.forEach((bullet, i) => {
       if (
         areTouching(
-          opp,
-          bullet.posCenter,
-          bulletConst.radius + opp.vector.radius + 10
+          opp.vector.position,
+          bullet.position,
+          bulletConst.distFromOppHit
         )
       ) {
-        shanked.push(opp);
-        spentBullets.push(bullet);
+        shankedGrogs.push(grogI);
+        spentBulletsIndex.push(i);
       }
     });
   });
 
-  return { opponents: { grog: shanked }, bullets: spentBullets };
+  return {
+    opponents: { grog: [...new Set(shankedGrogs)] },
+    bullets: [...new Set(spentBulletsIndex)],
+  };
 }
 
 export function updatePackageStatus(
@@ -95,10 +124,10 @@ export function updatePackageStatus(
   return packages.find((pack) => {
     if (
       areTouching(
-        player,
+        player.vector.position,
         {
-          x: pack.vector.posCenter.x,
-          y: pack.vector.posCenter.y,
+          x: pack.vector.position.x,
+          y: pack.vector.position.y,
         },
         40
       )

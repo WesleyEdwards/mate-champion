@@ -24,15 +24,10 @@ export interface HasPosition {
 
 export interface VectorMan {
   position: Coordinates;
-  bottomPos: number;
-  rightPos: number;
   width: number;
   height: number;
-  posX: number;
-  posY: number;
   setPosX: (newX: number) => void;
   setPosY: (newY: number) => void;
-  posCenter: Coordinates;
   relativePos: (xOffset: number) => Coordinates;
 }
 
@@ -40,12 +35,10 @@ export interface CharVectorMan extends VectorMan {
   velocity: Coordinates;
   prevPosX: number;
   prevPosY: number;
-  isMovingDown: boolean;
 }
 
 export interface Character {
   vector: CharVectorMan;
-  facing: VagueFacing;
   move: (action: CharAction) => void;
   setOnPlatform: (newY: number) => void;
 }

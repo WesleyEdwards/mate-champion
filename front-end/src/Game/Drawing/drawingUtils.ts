@@ -1,4 +1,3 @@
-import oopSprites from "../../assets/opp-1-sprites-1.png";
 import playerSprites from "../../assets/mate-player.png";
 import matePackage from "../../assets/mate-package.png";
 import bulletHor from "../../assets/bullet-hor.png";
@@ -44,33 +43,8 @@ export function makeImage(
 
 export type Drawable = "opponent";
 
-export const drawableMap: Record<Drawable, string> = {
-  opponent: oopSprites,
-};
-
-export type SpriteOption =
-  | "forward"
-  | "right"
-  | "left"
-  | "rightUp"
-  | "leftUp"
-  | "rightAttack"
-  | "leftAttack"
-  | "rightUpAttack"
-  | "leftUpAttack";
-
 // Most of the sprites will be 32x32 and only one row. The others require more specificity.
-export type SpriteMap = Partial<Record<SpriteOption, number | SpritePicInfo>>;
-
-export const spriteMap: Record<Drawable, SpriteMap> = {
-  opponent: {
-    forward: 0,
-    right: 1,
-    left: 2,
-    rightAttack: 3,
-    leftAttack: 4,
-  },
-};
+// export type SpriteMap = Partial<Record<SpriteOption, number | SpritePicInfo>>;
 
 export type SpritePicInfo = {
   x: number;
