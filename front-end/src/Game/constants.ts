@@ -8,15 +8,18 @@ export const DISPLAY_LEVEL_TIME = devSettings.shortLevelScreen ? 100 : 2000;
 // export const GRAVITY = 0.001;
 export const GRAVITY = 0.004;
 
-export const END_POS = 4500;
+export const levelConst = {
+  endPos: 4500,
+  playerMinX: 300,
+};
 
 export const playerConst = {
   radius: 32,
   moveSpeed: 0.5,
   jumpSpeed: -0.85,
   shankTime: 300,
-  shankCoolDown: 275,
-  shootCoolDown: 150,
+  meleeCoolDown: 275,
+  shootCoolDown: 200,
   initPos: { x: 400, y: 400 },
   maxCoyoteTime: 100,
   jumpGravityFactor: 0.9,

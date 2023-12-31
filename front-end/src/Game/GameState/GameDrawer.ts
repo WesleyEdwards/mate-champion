@@ -1,7 +1,6 @@
 import bgImageUrl from "../../assets/clouds-bg.jpg";
 import bgImageClouds from "../../assets/clouds-bg-2.jpg";
-import { MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT, END_POS } from "../constants";
-import { DevStats } from "../devSettings";
+import { MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT, levelConst } from "../constants";
 import { Canvas, WinState } from "../helpers/types";
 import { Coordinates } from "../models";
 
@@ -69,7 +68,7 @@ export class GameDrawer {
     cxt.fillRect(
       -100,
       MAX_CANVAS_HEIGHT - 5 + cameraOffset.y,
-      END_POS + 100,
+      levelConst.endPos + 200,
       5
     );
   }

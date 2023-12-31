@@ -1,4 +1,4 @@
-import { playerConst } from "../constants";
+import { levelConst, playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
 import {
   PlayerAction,
@@ -6,12 +6,16 @@ import {
   PlayerVectorManager,
 } from "./PlayerVectorManager";
 import { DrawObjProps } from "../helpers/types";
-import { PlayerDrawManager, SpriteDisplay } from "./PlayerDrawManager";
+import { PlayerDrawManager } from "./PlayerDrawManager";
+import { SpriteDisplay } from "./PlayerSpriteInfo";
 
+type NotNone<T> = Exclude<T, "none">;
 export class Player implements Character {
-  shank: number = 0;
-  shoot: number = 0;
-  shot: boolean = false;
+  currAction: {
+    action: NotNone<PlayerAction>;
+    timer: 0;
+    cooling: boolean;
+  } | null = null;
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: PlayerDrawManager = new PlayerDrawManager();
   onPlatform: boolean = false;
@@ -19,9 +23,6 @@ export class Player implements Character {
   constructor() {}
 
   reset() {
-    this.shank = 0;
-    this.shoot = 0;
-    this.shot = false;
     this.vector = new PlayerVectorManager();
   }
 
@@ -35,33 +36,13 @@ export class Player implements Character {
     }
 
     if (keys.right) this.move("MoveRight");
-    const canMoveLeft = this.position.x >= playerConst.initPos.x - 100;
+
+    const canMoveLeft = this.position.x >= levelConst.playerMinX;
+
     if (keys.left && canMoveLeft) this.move("MoveLeft");
 
     if ((!keys.right && !keys.left) || (!canMoveLeft && keys.left)) {
       this.move("StopX");
-    }
-
-    if (
-      (keys.shank || keys.toShank > 0) &&
-      Date.now() - this.shank >
-        playerConst.shankTime + playerConst.shankCoolDown
-    ) {
-      if (this.vector.facingX === "left" || this.vector.facingX === "right") {
-        this.shank = Date.now();
-      }
-      keys.toShank = 0;
-    }
-
-    if (
-      (keys.shoot || keys.toShoot > 0) &&
-      Date.now() - this.shoot > playerConst.shootCoolDown &&
-      this.currAction !== "melee"
-    ) {
-      this.shoot = Date.now();
-      this.shot = true;
-      keys.shoot = false;
-      keys.toShoot = 0;
     }
 
     if (keys.up || keys.down) {
@@ -70,7 +51,42 @@ export class Player implements Character {
       this.vector.facingY = "none";
     }
 
+    if (this.currAction) this.currAction.timer += elapsedTime;
+
+    this.checkActions(keys);
+
     this.vector.updateGravity(elapsedTime, keys.jump);
+  }
+
+  checkActions(keys: Keys) {
+    if (!this.currAction) {
+      if (keys.shank || keys.toShank > 0) {
+        this.takeAction("melee", keys);
+      }
+
+      if (keys.shoot || keys.toShoot > 0) {
+        this.takeAction("shoot", keys);
+      }
+      return;
+    }
+
+    if (this.currAction.cooling) {
+      const coolDownTime =
+        this.currAction.action === "melee"
+          ? playerConst.meleeCoolDown
+          : playerConst.shootCoolDown;
+      if (this.currAction.timer > coolDownTime) {
+        this.currAction = null;
+      }
+      return;
+    }
+
+    if (this.currAction.action === "melee") {
+      if (this.currAction.timer > playerConst.shankTime) {
+        this.setCooling();
+      }
+      return;
+    }
   }
 
   move(action: CharAction) {
@@ -95,28 +111,42 @@ export class Player implements Character {
     const move: PlayerMove = this.vector.velocity.x !== 0 ? "walk" : "none";
     const directionY =
       this.vector.facingY === "down" ? "none" : this.vector.facingY;
-
-    return `${directionY}-${this.currAction}-${move}`;
+    const action = (() => {
+      if (!this.currAction) return "none";
+      if (this.currAction.cooling && this.currAction.action !== "shoot") {
+        return "none";
+      }
+      return this.currAction.action;
+    })();
+    return `${directionY}-${action}-${move}`;
   }
 
   get weaponPosCurr(): Coordinates | undefined {
-    if (this.currAction !== "melee") return undefined;
+    if (this.currAction?.action !== "melee") return undefined;
     return this.vector.weaponPosCurr;
   }
 
-  get currAction(): PlayerAction {
-    if (Date.now() - this.shank < playerConst.shankTime) {
-      return "melee";
-    }
-    return "none";
+  takeAction(action: NotNone<PlayerAction>, keys: Keys) {
+    this.currAction = { action, timer: 0, cooling: false };
+    keys.shank = false;
+    keys.toShank = 0;
+    keys.shoot = false;
+    keys.toShoot = 0;
   }
 
   get shooting() {
-    if (this.shot) {
-      this.shot = false;
+    if (this.currAction?.action === "shoot" && !this.currAction.cooling) {
+      this.setCooling();
       return true;
     }
     return false;
+  }
+
+  setCooling() {
+    if (this.currAction) {
+      this.currAction.cooling = true;
+      this.currAction.timer = 0;
+    }
   }
 
   get position() {
