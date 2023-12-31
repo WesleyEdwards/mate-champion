@@ -1,7 +1,10 @@
 import { playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
-import { getSpriteDisplay } from "./PlayerUtils";
-import { PlayerAction, PlayerVectorManager } from "./PlayerVectorManager";
+import {
+  PlayerAction,
+  PlayerMove,
+  PlayerVectorManager,
+} from "./PlayerVectorManager";
 import { DrawObjProps } from "../helpers/types";
 import { PlayerDrawManager, SpriteDisplay } from "./PlayerDrawManager";
 
@@ -78,13 +81,22 @@ export class Player implements Character {
     this.drawManager.draw(
       drawProps,
       this.position,
-      getSpriteDisplay(
-        this.vector.facingX,
-        this.vector.facingY,
-        this.currAction,
-        this.vector.velocity.x !== 0 ? "walk" : "none"
-      )
+      this.vector.facingX,
+      this.vector.velocity.y > 0
+        ? "falling"
+        : this.vector.velocity.y < 0
+        ? "rising"
+        : null,
+      this.spriteDisplay
     );
+  }
+
+  get spriteDisplay(): SpriteDisplay {
+    const move: PlayerMove = this.vector.velocity.x !== 0 ? "walk" : "none";
+    const directionY =
+      this.vector.facingY === "down" ? "none" : this.vector.facingY;
+
+    return `${directionY}-${this.currAction}-${move}`;
   }
 
   get weaponPosCurr(): Coordinates | undefined {

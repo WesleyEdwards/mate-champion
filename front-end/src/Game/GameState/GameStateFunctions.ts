@@ -8,7 +8,7 @@ import {
 } from "../models";
 import Player from "../Player/Player";
 import { Package } from "../Bullet/Package";
-import { bulletConst } from "../constants";
+import { bulletConst, grogConst, playerConst } from "../constants";
 import { Opponents } from "../Opponent/OpponentManager";
 import { Grog } from "../Opponent/Grog";
 
@@ -91,7 +91,7 @@ export function updateLiveStatus(
       areTouching(
         opp.vector.position,
         player.weaponPosCurr,
-        player.vector.radius + opp.vector.radius + 15
+        playerConst.radius + grogConst.width + 15
       )
     ) {
       shankedGrogs.push(grogI);

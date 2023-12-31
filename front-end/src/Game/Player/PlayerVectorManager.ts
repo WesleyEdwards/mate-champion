@@ -56,7 +56,7 @@ export class PlayerVectorManager implements VectorMan {
     if (action === "StopX") this.setVelX(0);
 
     if (this.position.y + playerConst.radius > MAX_CANVAS_HEIGHT) {
-      this.stopY(MAX_CANVAS_HEIGHT - this.radius * 2);
+      this.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
     if (action === "Jump" && this.velocity.y === 0 && this.jumps < 1) {
       this.setVelY(playerConst.jumpSpeed);
@@ -126,14 +126,11 @@ export class PlayerVectorManager implements VectorMan {
     };
   }
 
-  get radius() {
-    return playerConst.radius;
-  }
   get width() {
-    return this.radius * 2;
+    return playerConst.radius * 2;
   }
   get height() {
-    return this.radius * 2;
+    return playerConst.radius * 2;
   }
 
   setPosX(x: number) {
