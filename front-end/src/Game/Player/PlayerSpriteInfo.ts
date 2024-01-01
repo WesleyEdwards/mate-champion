@@ -67,14 +67,26 @@ export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
     startX: 0,
     cycleTime: playerConst.shootCoolDown / 6,
   },
-  "none-shoot-walk": undefined,
+  "none-shoot-walk": {
+    // TODO
+    image: "champRange",
+    imgCount: 6,
+    startX: 0,
+    cycleTime: playerConst.shootCoolDown / 6,
+  },
   "none-melee-none": {
     image: "champMelee",
     imgCount: 5,
     startX: 0,
     cycleTime: playerConst.shankTime / 5,
   },
-  "none-melee-walk": undefined,
+  "none-melee-walk": {
+    // TODO
+    image: "champMelee",
+    imgCount: 5,
+    startX: 0,
+    cycleTime: playerConst.shankTime / 5,
+  },
 
   "up-none-none": {
     image: "champIdle",
