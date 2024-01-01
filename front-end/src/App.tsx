@@ -6,11 +6,13 @@ import {
   Theme,
   ThemeProvider,
   extendTheme,
+  useColorScheme,
 } from "@mui/joy";
 import { GameEntry } from "./components/GameEntry";
 import { mateTheme } from "./theme";
 import { useAuth } from "./hooks/useAuth";
 import { AuthContext } from "./hooks/AuthContext";
+import { useEffect } from "react";
 
 const theme: Theme = extendTheme(mateTheme);
 
@@ -18,7 +20,7 @@ function App() {
   const authInfo = useAuth();
 
   return (
-    <CssVarsProvider theme={theme}>
+    <CssVarsProvider defaultMode="dark" theme={theme}>
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <AuthContext.Provider value={authInfo}>
