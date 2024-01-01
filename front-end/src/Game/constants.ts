@@ -42,8 +42,8 @@ export const packageConst = { width: 60, height: 75, worth: 3 } as const;
 export const bulletConst = {
   width: 28 * 1.5,
   height: 12 * 2,
-  speed: 0.2,
-  // speed: 0.9,
+  // speed: 0.2,
+  speed: 0.9,
   distFromPlayerDud: 800,
   distFromOppHit: 40,
 } as const;

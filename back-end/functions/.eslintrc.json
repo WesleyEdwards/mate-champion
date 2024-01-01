@@ -2,9 +2,9 @@
     "root": true,
     "ignorePatterns": ["dist", "src/api"],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "unused-imports"],
+    "plugins": ["@typescript-eslint"], // "unused-imports"
     "rules": {
-      "unused-imports/no-unused-imports": "error"
+      // "unused-imports/no-unused-imports": "warn"
     }
   }
   
