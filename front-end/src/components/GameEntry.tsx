@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/joy";
+import { Button, Stack, Typography, useColorScheme } from "@mui/joy";
 import { FC, useMemo, useState } from "react";
 import Instructions from "./Instructions";
 import { PlayStats } from "../Game/helpers/types";

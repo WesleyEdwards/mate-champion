@@ -33,8 +33,8 @@ export const levelFiveInfo: LevelInfo = {
     { x: 4845, y: 296, width: 260, height: 40, color: "orange" },
   ],
   floors: [
-    { x: -500, width: 830, color: "green" },
-    { x: 500, width: 760, color: "green" },
+    { x: -500, width: 930, color: "green" },
+    { x: 500, width: 960, color: "green" },
     { x: 1500, width: 690, color: "green" },
     { x: 2500, width: 690, color: "green" },
     { x: 3771, width: 820, color: "green" },

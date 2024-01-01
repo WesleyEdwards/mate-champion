@@ -16,7 +16,7 @@ export type LevelInfo = {
 };
 
 const levelsInfo: LevelInfo[] = [
-  sandboxLevel,
+  // sandboxLevel,
   levelInto,
   levelFiveInfo,
   levelAbandonHope,

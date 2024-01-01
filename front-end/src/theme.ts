@@ -2,7 +2,7 @@ import { CssVarsThemeOptions } from "@mui/joy";
 import { Palette, PaletteOptions } from "@mui/joy/styles/types/colorSystem";
 
 const palette: Partial<Palette> = {
-  mode: "light",
+  mode: "dark",
   primary: {
     50: "#e8f5e9",
     100: "#c8e6c9",
@@ -82,6 +82,9 @@ export const mateTheme: CssVarsThemeOptions = {
     display: "Courier New,Courier,monospace",
   },
   colorSchemes: {
+    light: {
+      palette: palette,
+    },
     dark: {
       palette: palette,
     },

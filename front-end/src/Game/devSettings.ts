@@ -36,12 +36,12 @@ export const devSettings: Settings = import.meta.env.DEV
       showDevStats: false,
       hideOpponents: false,
       sandboxDb: false,
-      shortLevelScreen: true,
+      shortLevelScreen: false,
       redOutline: false,
       cameraLines: false,
-      noDie: true,
-      oneLife: true,
-      unlimitedBullets: true,
-      courseBuilder: true,
+      noDie: false,
+      oneLife: false,
+      unlimitedBullets: false,
+      courseBuilder: false,
     } as const)
   : prodSettings;
