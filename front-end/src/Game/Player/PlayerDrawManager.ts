@@ -4,10 +4,10 @@ import { Coordinates } from "../models";
 import { playerConst } from "../constants";
 import { debounceLog } from "../helpers/utils";
 import {
-  PlayerDirectionX,
-  PlayerDirectionY,
   PlayerAction,
+  PlayerDirectionX,
   PlayerMove,
+  PlayerVectorManager,
 } from "./PlayerVectorManager";
 import {
   ImageSource,
@@ -16,6 +16,7 @@ import {
   playerSpriteJumping,
   playerSpritesInfo,
 } from "./PlayerSpriteInfo";
+import { CurrentChampAction } from "./Player";
 
 const drawImageWidth = 300; // this allows room for the attacks to be drawn
 const drawImageHeight = drawImageWidth * (105 / 200);
@@ -33,6 +34,38 @@ export class PlayerDrawManager {
   }
   update(elapsedTime: number) {
     this.spriteTimer += elapsedTime;
+  }
+
+  spriteDisplay(
+    vector: PlayerVectorManager,
+    currAction: CurrentChampAction | null
+  ): SpriteDisplay {
+    const directionY = vector.facingY === "down" ? "none" : vector.facingY;
+    const action: PlayerAction = (() => {
+      if (!currAction) return "none";
+      if (currAction.cooling && currAction.action !== "shoot") {
+        return "none";
+      }
+      return currAction.action;
+    })();
+    const move: PlayerMove = vector.velocity.x !== 0 ? "walk" : "none";
+    return `${directionY}-${action}-${move}`;
+  }
+
+  drawFromPlayerInfo(
+    drawProps: DrawObjProps,
+    vector: PlayerVectorManager,
+    currAction: CurrentChampAction | null
+  ) {
+    const spriteDisplay = this.spriteDisplay(vector, currAction);
+    const inAir =
+      vector.velocity.y > 0
+        ? "falling"
+        : vector.velocity.y < 0
+        ? "rising"
+        : null;
+
+    this.draw(drawProps, vector.position, vector.facingX, inAir, spriteDisplay);
   }
 
   draw(

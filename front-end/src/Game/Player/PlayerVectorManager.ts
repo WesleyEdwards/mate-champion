@@ -55,9 +55,6 @@ export class PlayerVectorManager implements VectorMan {
     }
     if (action === "StopX") this.setVelX(0);
 
-    if (this.position.y + playerConst.radius > MAX_CANVAS_HEIGHT) {
-      this.stopY(MAX_CANVAS_HEIGHT - this.height);
-    }
     if (action === "Jump" && this.velocity.y === 0 && this.jumps < 1) {
       this.setVelY(playerConst.jumpSpeed);
       this.setPosY(this.position.y - 1);

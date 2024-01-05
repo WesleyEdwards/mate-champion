@@ -24,7 +24,7 @@ export const HighScores: FC<ScreenProps> = ({ changeScreen, score }) => {
     api.score
       .topScores()
       .then(setHighScores)
-      .catch(() => setError("Error fetching high scores"));
+      .catch(() => setError("Unable to load high scores"));
   }, []);
 
   return (

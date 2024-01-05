@@ -10,17 +10,17 @@ import { PlayerDrawManager } from "./PlayerDrawManager";
 import { SpriteDisplay } from "./PlayerSpriteInfo";
 
 type NotNone<T> = Exclude<T, "none">;
+
+export type CurrentChampAction = {
+  action: NotNone<PlayerAction>;
+  timer: 0;
+  cooling: boolean;
+};
 export class Player implements Character {
-  currAction: {
-    action: NotNone<PlayerAction>;
-    timer: 0;
-    cooling: boolean;
-  } | null = null;
+  currAction: CurrentChampAction | null = null;
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: PlayerDrawManager = new PlayerDrawManager();
   onPlatform: boolean = false;
-
-  constructor() {}
 
   reset() {
     this.vector = new PlayerVectorManager();
@@ -94,31 +94,11 @@ export class Player implements Character {
   }
 
   draw(drawProps: DrawObjProps) {
-    this.drawManager.draw(
+    this.drawManager.drawFromPlayerInfo(
       drawProps,
-      this.position,
-      this.vector.facingX,
-      this.vector.velocity.y > 0
-        ? "falling"
-        : this.vector.velocity.y < 0
-        ? "rising"
-        : null,
-      this.spriteDisplay
+      this.vector,
+      this.currAction
     );
-  }
-
-  get spriteDisplay(): SpriteDisplay {
-    const move: PlayerMove = this.vector.velocity.x !== 0 ? "walk" : "none";
-    const directionY =
-      this.vector.facingY === "down" ? "none" : this.vector.facingY;
-    const action = (() => {
-      if (!this.currAction) return "none";
-      if (this.currAction.cooling && this.currAction.action !== "shoot") {
-        return "none";
-      }
-      return this.currAction.action;
-    })();
-    return `${directionY}-${action}-${move}`;
   }
 
   get weaponPosCurr(): Coordinates | undefined {
@@ -151,9 +131,6 @@ export class Player implements Character {
 
   get position() {
     return this.vector.position;
-  }
-  setPosY(num: number) {
-    return this.vector.stopY(num);
   }
 
   setOnPlatform(posY: number) {

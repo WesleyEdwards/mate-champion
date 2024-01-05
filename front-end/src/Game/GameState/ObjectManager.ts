@@ -7,7 +7,7 @@ import { Coordinates, Keys } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
-import { MAX_CANVAS_HEIGHT } from "../constants";
+import { MAX_CANVAS_HEIGHT, playerConst } from "../constants";
 import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
@@ -71,8 +71,8 @@ export class ObjectManager {
 
   private get playerDies() {
     if (
-      this.player.vector.position.y + this.player.vector.height / 2 >
-      MAX_CANVAS_HEIGHT - 5
+      this.player.vector.position.y + this.player.vector.height >
+      MAX_CANVAS_HEIGHT
     )
       return true;
     return this.opponentManager.touchingPlayer(this.player.position);
@@ -97,6 +97,9 @@ export class ObjectManager {
   }
 
   calcPersonColl() {
+    if (this.player.position.y + playerConst.radius >= MAX_CANVAS_HEIGHT) {
+      this.player.setOnPlatform(MAX_CANVAS_HEIGHT - playerConst.radius);
+    }
     this.platformManager.platforms.forEach((platform) => {
       this.opponentManager.opponents.grog.forEach((opp) =>
         calcPlatOppCollision(platform, opp)
