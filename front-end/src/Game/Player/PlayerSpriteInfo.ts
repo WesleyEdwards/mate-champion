@@ -47,6 +47,7 @@ export type ImageInfo = {
   startX: number;
   cycleTime: number;
 };
+const walkCycleTime = 70;
 
 export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
   "none-none-none": {
@@ -59,7 +60,7 @@ export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
     image: "champWalk",
     imgCount: 8,
     startX: 0,
-    cycleTime: 100,
+    cycleTime: walkCycleTime,
   },
   "none-shoot-none": {
     image: "champRange",
@@ -68,7 +69,6 @@ export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
     cycleTime: playerConst.shootCoolDown / 6,
   },
   "none-shoot-walk": {
-    // TODO
     image: "champRange",
     imgCount: 6,
     startX: 0,
@@ -81,7 +81,6 @@ export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
     cycleTime: playerConst.shankTime / 5,
   },
   "none-melee-walk": {
-    // TODO
     image: "champMelee",
     imgCount: 5,
     startX: 0,
@@ -98,17 +97,32 @@ export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
     image: "champUpLookWalk",
     imgCount: 8,
     startX: 0,
-    cycleTime: 100,
+    cycleTime: walkCycleTime,
   },
-  "up-shoot-none": undefined,
-  "up-shoot-walk": undefined,
+  "up-shoot-none": {
+    image: "champRange",
+    imgCount: 6,
+    startX: 12,
+    cycleTime: playerConst.shootCoolDown / 6,
+  },
+  "up-shoot-walk": {
+    image: "champRange",
+    imgCount: 6,
+    startX: 12,
+    cycleTime: playerConst.shootCoolDown / 6,
+  },
   "up-melee-none": {
     image: "champMelee",
     imgCount: 5,
     startX: 10,
     cycleTime: playerConst.shankTime / 5,
   },
-  "up-melee-walk": undefined,
+  "up-melee-walk": {
+    image: "champMelee",
+    imgCount: 5,
+    startX: 10,
+    cycleTime: playerConst.shankTime / 5,
+  },
 };
 
 export const playerSpriteJumping: Record<"rising" | "falling", ImageInfo> = {

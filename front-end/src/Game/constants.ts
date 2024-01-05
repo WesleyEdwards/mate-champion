@@ -21,7 +21,7 @@ export const playerConst = {
   meleeCoolDown: 275,
   shootCoolDown: 200,
   initPos: { x: 400, y: 400 },
-  maxCoyoteTime: 100,
+  maxCoyoteTime: 80,
   jumpGravityFactor: 0.9,
   jumpGravityFrameDecrease: 0.93,
 } as const;
