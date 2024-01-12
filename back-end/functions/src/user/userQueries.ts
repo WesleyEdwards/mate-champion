@@ -23,9 +23,11 @@ export const createUser: ReqBuilder =
     const userBody = checkValidation("user", {...body, passwordHash})
     if (isParseError(userBody)) return res.status(400).json(userBody)
 
-    const emailExists = await client.user.findOne({
-      email: userBody.email
-    })
+    const emailExists = userBody.email
+      ? await client.user.findOne({
+          email: userBody.email
+        })
+      : false
 
     if (emailExists) {
       return res.status(400).json({error: "Email already exists"})

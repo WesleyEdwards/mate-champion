@@ -71,7 +71,9 @@ export const Profile: FC<ScreenProps> = ({ changeScreen }) => {
               </IconButton>
             )}
           </Stack>
-          <Typography level="h4">Email: {user.email}</Typography>
+          {user.email && (
+            <Typography level="h4">Email: {user.email}</Typography>
+          )}
           <Button
             onClick={() => {
               logout();

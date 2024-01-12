@@ -11,8 +11,9 @@ const userSchema = z
   .object({
     name: z.string({required_error: "Name is required"}),
     email: z
-      .string({required_error: "Email is required"})
-      .email({message: "Invalid email"}),
+      .string() //{required_error: "Email is required"}
+      .email({message: "Invalid email"})
+      .optional(),
     passwordHash: z.string(),
     highScore: z.number().default(0),
     admin: z.boolean().default(false)

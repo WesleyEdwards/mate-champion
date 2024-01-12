@@ -3,7 +3,7 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   name: string;
-  email: string;
+  email?: string | undefined;
   highScore: number;
 };
 

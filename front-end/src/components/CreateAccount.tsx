@@ -33,7 +33,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
       await createAccount({
         _id: crypto.randomUUID(),
         name,
-        email,
+        email: email === "" ? undefined : email,
         password,
         highScore: score ?? 0,
         updatedAt: new Date().toISOString(),
@@ -80,12 +80,12 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Input
-          placeholder="Email"
+          placeholder="Email (Optional)"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button
-          disabled={[name, email, password].some((v) => !v)}
+          disabled={[name, password].some((v) => !v)}
           loading={submitting}
           onClick={handleSubmitNew}
           type="submit"
