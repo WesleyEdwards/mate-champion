@@ -91,7 +91,7 @@ export function updateLiveStatus(
       areTouching(
         opp.vector.position,
         player.weaponPosCurr,
-        playerConst.radius + grogConst.width + 15
+        playerConst.radius + grogConst.width + grogConst.distFromChampMelee
       )
     ) {
       shankedGrogs.push(grogI);

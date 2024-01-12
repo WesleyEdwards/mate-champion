@@ -39,9 +39,9 @@ export const devSettings: Settings = import.meta.env.DEV
       shortLevelScreen: false,
       redOutline: false,
       cameraLines: false,
-      noDie: false,
+      noDie: true,
       oneLife: false,
       unlimitedBullets: false,
-      courseBuilder: false,
+      courseBuilder: true,
     } as const)
   : prodSettings;

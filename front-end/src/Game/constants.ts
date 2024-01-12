@@ -17,7 +17,7 @@ export const playerConst = {
   radius: 32,
   moveSpeed: 0.5,
   jumpSpeed: -0.85,
-  shankTime: 300,
+  shankTime: 200,
   meleeCoolDown: 275,
   shootCoolDown: 200,
   initPos: { x: 400, y: 400 },
@@ -34,6 +34,7 @@ export const cameraConst = {
 export const grogConst = {
   width: 64,
   height: 64,
+  distFromChampMelee: 10,
   jumpSpeed: -1,
 } as const;
 
