@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode development",
+    "build:prod": "tsc && vite build --mode production",
     "deploy": "firebase deploy --only hosting",
     "deploy:test": "firebase hosting:channel:deploy preview_name",
     "preview": "vite preview"
