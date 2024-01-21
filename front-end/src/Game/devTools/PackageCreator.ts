@@ -39,10 +39,9 @@ export class PackageCreator implements CreatingThing<"package"> {
   }
 
   dragItem({ x, y }: Coordinates) {
-    if (!this.selected) return;
-    this.selected.forEach((matePackage) => {
-      matePackage.vector.position.x = x;
-      matePackage.vector.position.y = y;
+    return this.selected?.forEach((p) => {
+      p.vector.position.x += x;
+      p.vector.position.y += y;
     });
   }
 

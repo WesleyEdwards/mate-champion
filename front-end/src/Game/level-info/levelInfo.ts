@@ -6,7 +6,7 @@ import { levelTwoInfo } from "./2-levelInfo";
 import { levelThreeInfo } from "./3-levelInfo";
 import { levelAbandonHope } from "./levelAbandonHope";
 import { levelFiveInfo } from "./5-levelInfo";
-import { sandboxLevel } from "./sandboxLevel";
+import { sandboxLevel } from "./sandbox/sandboxLevel";
 import { prettyHard } from "./pretty-hard";
 
 export type LevelInfo = {

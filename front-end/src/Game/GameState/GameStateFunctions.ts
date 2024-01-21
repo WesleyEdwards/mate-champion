@@ -74,6 +74,18 @@ export function areTouching(
   return distBetween < dist;
 }
 
+function isBeingHit(opp: Coordinates, player: Player): boolean {
+  if (!player.weaponPosCurr) return false;
+  const hitPos = player.weaponPosCurr;
+  const playerPos = player.vector.position;
+
+  const halfway = {
+    x: (hitPos.x - playerPos.x) * 0.65 + playerPos.x,
+    y: (hitPos.y - playerPos.y) * 0.65 + playerPos.y,
+  };
+  return areTouching(opp, hitPos, 40) || areTouching(opp, halfway, 40);
+}
+
 export function updateLiveStatus(
   player: Player,
   opponents: Opponents,
@@ -86,14 +98,7 @@ export function updateLiveStatus(
   const spentBulletsIndex: number[] = [];
 
   opponents.grog.forEach((opp, grogI) => {
-    if (
-      player.weaponPosCurr &&
-      areTouching(
-        opp.vector.position,
-        player.weaponPosCurr,
-        playerConst.radius + grogConst.width + grogConst.distFromChampMelee
-      )
-    ) {
+    if (player.weaponPosCurr && isBeingHit(opp.vector.position, player)) {
       shankedGrogs.push(grogI);
       return;
     }
@@ -121,19 +126,7 @@ export function updatePackageStatus(
   player: Player,
   packages: Package[]
 ): Package | undefined {
-  return packages.find((pack) => {
-    if (
-      areTouching(
-        player.vector.position,
-        {
-          x: pack.vector.position.x,
-          y: pack.vector.position.y,
-        },
-        40
-      )
-    ) {
-      return true;
-    }
-    return false;
-  });
+  return packages.find((pack) =>
+    areTouching(player.vector.position, pack.vector.position, 50)
+  );
 }

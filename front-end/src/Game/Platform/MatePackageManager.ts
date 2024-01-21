@@ -6,6 +6,7 @@ import Player from "../Player/Player";
 import { Canvas, DrawObjProps } from "../helpers/types";
 import { createMatePackages } from "../constructors";
 import { devSettings } from "../devSettings";
+import { packageConst } from "../constants";
 
 export class MatePackageManager {
   packages: Package[];
@@ -20,10 +21,12 @@ export class MatePackageManager {
 
   draw({ cxt, camOffset }: DrawObjProps) {
     this.packages.forEach((p) => {
+      cxt.save();
+      cxt.translate(p.position.x - camOffset.x, p.position.y + camOffset.y);
       cxt.drawImage(
         this.image.image,
-        p.position.x - camOffset.x,
-        p.position.y + camOffset.y,
+        -packageConst.width / 2,
+        -packageConst.height / 2,
         this.image.width,
         this.image.height
       );
@@ -32,12 +35,16 @@ export class MatePackageManager {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(
-          p.position.x - camOffset.x,
-          p.position.y + camOffset.y,
+          -packageConst.width / 2,
+          -packageConst.height / 2,
           this.image.width,
           this.image.height
         );
+        cxt.beginPath();
+        cxt.arc(0, 0, 1, 0, 2 * Math.PI);
+        cxt.stroke();
       }
+      cxt.restore();
     });
   }
 

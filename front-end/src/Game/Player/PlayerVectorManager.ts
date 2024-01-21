@@ -78,20 +78,20 @@ export class PlayerVectorManager implements VectorMan {
       (og: Coordinates) => Coordinates
     > = {
       left: (og) => ({
-        x: og.x - playerConst.radius,
+        x: og.x - playerConst.meleeReach,
         y: og.y,
       }),
       right: (og) => ({
-        x: og.x + playerConst.radius,
+        x: og.x + playerConst.meleeReach,
         y: og.y,
       }),
       up: (og) => ({
         x: og.x,
-        y: og.y - playerConst.radius,
+        y: og.y - playerConst.meleeReach,
       }),
       down: (og) => ({
         x: og.x,
-        y: og.y + playerConst.radius,
+        y: og.y + playerConst.meleeReach,
       }),
       none: (og) => og,
     };

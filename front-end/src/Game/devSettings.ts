@@ -37,7 +37,7 @@ export const devSettings: Settings = import.meta.env.DEV
       hideOpponents: false,
       sandboxDb: false,
       shortLevelScreen: false,
-      redOutline: false,
+      redOutline: true,
       cameraLines: false,
       noDie: true,
       oneLife: false,

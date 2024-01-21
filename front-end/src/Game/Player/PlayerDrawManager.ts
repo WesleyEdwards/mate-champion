@@ -127,11 +127,21 @@ export class PlayerDrawManager {
       cxt.arc(0, 0, 1, 0, 2 * Math.PI);
       cxt.stroke();
       cxt.lineWidth = 2;
+      const isHittingY = sprite.includes("melee") && sprite.includes("up");
+      const isHittingX = sprite.includes("melee") && !isHittingY;
+      const width = isHittingX
+        ? playerConst.radius * 2 + playerConst.meleeReach
+        : playerConst.radius * 2;
+
+      const height = isHittingY
+        ? playerConst.radius * 2 + playerConst.meleeReach
+        : playerConst.radius * 2;
+
       cxt.strokeRect(
         -playerConst.radius,
-        -playerConst.radius,
-        playerConst.radius * 2,
-        playerConst.radius * 2
+        -(playerConst.radius + (isHittingY ? playerConst.meleeReach : 0)),
+        width,
+        height
       );
     }
     cxt.restore();
