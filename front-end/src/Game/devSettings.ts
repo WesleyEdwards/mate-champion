@@ -42,6 +42,6 @@ export const devSettings: Settings = import.meta.env.DEV
       noDie: true,
       oneLife: false,
       unlimitedBullets: false,
-      courseBuilder: true,
+      courseBuilder: false,
     } as const)
   : prodSettings;

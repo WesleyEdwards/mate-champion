@@ -7,7 +7,7 @@ import { levelThreeInfo } from "./3-levelInfo";
 import { levelAbandonHope } from "./levelAbandonHope";
 import { levelFiveInfo } from "./5-levelInfo";
 import { sandboxLevel } from "./sandbox/sandboxLevel";
-import { prettyHard } from "./pretty-hard";
+import { ammoUp } from "./ammoUp";
 
 export type LevelInfo = {
   packages: PackageProps[];
@@ -20,19 +20,20 @@ export type LevelInfo = {
  * levelIntro
  * levelTwoInfo
  * levelThreeinfo
- * levelAbandonHope
  * levelFiveInfo
+ * ammoUp
+ * levelAbandonHope
  */
 
 const levelsInfo: LevelInfo[] = [
   // sandboxLevel,
-  levelAbandonHope,
-  levelFiveInfo,
-  levelThreeInfo,
-  levelTwoInfo,
   levelInto,
-  prettyHard,
+  levelTwoInfo,
+  levelThreeInfo,
+  levelFiveInfo,
+  ammoUp,
+  levelAbandonHope,
 ];
 
 export const getLevelInfo = (level: number) =>
-  levelsInfo[(level % levelsInfo.length) - 1];
+  levelsInfo[(level - 1) % levelsInfo.length];

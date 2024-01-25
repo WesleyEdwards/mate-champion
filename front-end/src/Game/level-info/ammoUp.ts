@@ -1,20 +1,28 @@
 import { LevelInfo } from "./levelInfo";
 
-export const prettyHard: LevelInfo = {
-  packages: [],
+export const ammoUp: LevelInfo = {
+  packages: [
+    { x: 943, y: -141 },
+    { x: 2312, y: -107 },
+    { x: 3359, y: 313 },
+    { x: 5087, y: 494 },
+    { x: 5155, y: 495 },
+    { x: 5218, y: 494 },
+    { x: 5283, y: 494 },
+  ],
   opponents: {
     grog: [
-      { initPos: { x: 4121, y: 285 }, moveSpeed: 0.3 },
-      { initPos: { x: 3869, y: 291 }, moveSpeed: 0.3 },
-      { initPos: { x: 3693, y: 263 }, moveSpeed: 0.3 },
-      { initPos: { x: 3825, y: 436 }, moveSpeed: 0.3 },
-      { initPos: { x: 3437, y: 248 }, moveSpeed: 0.3 },
-      { initPos: { x: 3228, y: 278 }, moveSpeed: 0.3 },
-      { initPos: { x: 3586, y: 408 }, moveSpeed: 0.3 },
-      { initPos: { x: 3737, y: 411 }, moveSpeed: 0.3 },
-      { initPos: { x: 4655, y: 285 }, moveSpeed: 0.3 },
-      { initPos: { x: 4453, y: 398 }, moveSpeed: 0.3 },
-      { initPos: { x: 4657, y: 450 }, moveSpeed: 0.3 },
+      { initPos: { x: 3228, y: 278 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 3437, y: 248 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 3586, y: 408 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 3693, y: 263 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 3737, y: 411 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 3825, y: 436 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 3869, y: 291 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 4121, y: 285 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 4453, y: 398 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 4655, y: 285 }, moveSpeed: 0.3, jumpOften: false },
+      { initPos: { x: 4657, y: 450 }, moveSpeed: 0.3, jumpOften: false },
     ],
   },
   platforms: [
@@ -22,7 +30,6 @@ export const prettyHard: LevelInfo = {
     { x: 386, y: 220, width: 100, height: 40, color: "springgreen" },
     { x: 668, y: 52, width: 100, height: 40, color: "springgreen" },
     { x: 674, y: 389, width: 100, height: 40, color: "springgreen" },
-    { x: 804, y: 215, width: 183, height: 40, color: "springgreen" },
     { x: 881, y: -102, width: 100, height: 40, color: "springgreen" },
     { x: 1063, y: 325, width: 155, height: 40, color: "springgreen" },
     { x: 1309, y: 346, width: 200, height: 40, color: "springgreen" },

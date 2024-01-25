@@ -4,7 +4,7 @@ export const levelTwoInfo: LevelInfo = {
   packages: [
     { x: 1900, y: 109 },
     { x: 4413, y: 5 },
-    { x: 5315, y: 494 },
+    { x: 5200, y: 494 },
   ],
   opponents: {
     grog: [
