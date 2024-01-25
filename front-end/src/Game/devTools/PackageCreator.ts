@@ -46,12 +46,7 @@ export class PackageCreator implements CreatingThing<"package"> {
   }
 
   handleCreate(coor: Coordinates) {
-    this.packages.push(
-      new Package({
-        x: coor.x - packageConst.width / 2,
-        y: coor.y - packageConst.height / 2,
-      })
-    );
+    this.packages.push(new Package(coor));
   }
   handleDelete() {
     if (this.selected) {

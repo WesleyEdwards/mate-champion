@@ -6,15 +6,20 @@ const { round } = Math;
 
 export function exportLevelInfo(objManager: ObjectManager) {
   const levelInfo: LevelInfo = {
-    packages: objManager.matePackManager.packages.map((p) => ({
-      x: round(p.vector.posX),
-      y: round(p.vector.posY),
-    })),
+    packages: objManager.matePackManager.packages
+      .map((p) => ({
+        x: round(p.vector.posX),
+        y: round(p.vector.posY),
+      }))
+      .sort((a, b) => a.x - b.x),
     opponents: {
-      grog: objManager.opponentManager.opponents.grog.map((o) => ({
-        initPos: { x: round(o.vector.posX), y: round(o.vector.posY) },
-        moveSpeed: o.vector.moveSpeed,
-      })),
+      grog: objManager.opponentManager.opponents.grog
+        .map((o) => ({
+          initPos: { x: round(o.vector.posX), y: round(o.vector.posY) },
+          moveSpeed: o.vector.moveSpeed,
+          jumpOften: o.jumpOften,
+        }))
+        .sort((a, b) => a.initPos.x - b.initPos.x),
     },
     platforms: objManager.platformManager.platforms
       .filter((p) => !p.isFloor)
@@ -59,12 +64,25 @@ export function findExistingItem(
   items: HasPosition[]
 ): HasPosition | null {
   return (
-    items.find(
-      (item) =>
-        x >= item.vector.position.x &&
-        x <= item.vector.position.x + item.vector.width &&
-        y >= item.vector.position.y &&
-        y <= item.vector.position.y + item.vector.height
-    ) || null
+    items.find((item) => {
+      // platforms base their position on the top-left corner,
+      // while everything else is based on the middle of the object
+      if ("isFloor" in item) {
+        return (
+          x >= item.vector.position.x &&
+          x <= item.vector.position.x + item.vector.width &&
+          y >= item.vector.position.y &&
+          y <= item.vector.position.y + item.vector.height
+        );
+      }
+      const distX = item.vector.width / 2;
+      const distY = item.vector.height / 2;
+      return (
+        x >= item.vector.position.x - distX &&
+        x <= item.vector.position.x + distX &&
+        y >= item.vector.position.y - distY &&
+        y <= item.vector.position.y + distY
+      );
+    }) || null
   );
 }

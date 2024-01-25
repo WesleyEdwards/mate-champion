@@ -9,19 +9,22 @@ import { GrogDrawManager } from "./GrogDrawManager";
 export type GrogProps = {
   initPos: Coordinates;
   moveSpeed: number;
+  jumpOften?: boolean;
 };
 
 export class Grog implements Character {
   vector: OpponentVectorManager;
   drawManager: GrogDrawManager;
+  jumpOften: boolean;
 
-  constructor({ initPos, moveSpeed }: GrogProps) {
+  constructor({ initPos, moveSpeed, jumpOften }: GrogProps) {
     this.vector = new OpponentVectorManager(
       { ...initPos },
       moveSpeed,
       grogConst.width / 2
     );
     this.drawManager = new GrogDrawManager();
+    this.jumpOften = !!jumpOften;
   }
 
   update(elapsedTime: number) {
@@ -33,7 +36,7 @@ export class Grog implements Character {
       this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);
     }
 
-    if (randomOutOf(120)) this.move("Jump");
+    if (randomOutOf(this.jumpOften ? 50 : 120)) this.move("Jump");
     if (randomOutOf(120)) this.move("MoveRight");
     if (randomOutOf(120)) this.move("MoveLeft");
   }
@@ -42,7 +45,7 @@ export class Grog implements Character {
   }
 
   draw(drawProps: DrawObjProps) {
-    this.drawManager.draw(drawProps, this.position, "left"); // this.facing
+    this.drawManager.draw(drawProps, this.position, "left");
   }
 
   setOnPlatform(num: number) {

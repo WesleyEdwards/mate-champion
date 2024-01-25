@@ -16,14 +16,22 @@ export type LevelInfo = {
   floors: FloorType[];
 };
 
+/**
+ * levelIntro
+ * levelTwoInfo
+ * levelThreeinfo
+ * levelAbandonHope
+ * levelFiveInfo
+ */
+
 const levelsInfo: LevelInfo[] = [
-  sandboxLevel,
-  prettyHard,
-  levelThreeInfo,
-  levelInto,
-  levelFiveInfo,
+  // sandboxLevel,
   levelAbandonHope,
+  levelFiveInfo,
+  levelThreeInfo,
   levelTwoInfo,
+  levelInto,
+  prettyHard,
 ];
 
 export const getLevelInfo = (level: number) =>

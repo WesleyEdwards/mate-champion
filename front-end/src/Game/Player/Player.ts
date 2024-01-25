@@ -99,19 +99,6 @@ export class Player implements Character {
       this.vector,
       this.currAction
     );
-
-    if (this.weaponPosCurr) {
-      drawProps.cxt.save();
-      drawProps.cxt.fillStyle = "blue";
-      drawProps.cxt.translate(
-        this.weaponPosCurr.x - drawProps.camOffset.x,
-        this.weaponPosCurr.y + drawProps.camOffset.y
-      );
-      drawProps.cxt.beginPath();
-      drawProps.cxt.arc(0, 0, 1, 0, 2 * Math.PI);
-      drawProps.cxt.stroke();
-      drawProps.cxt.restore();
-    }
   }
 
   get weaponPosCurr(): Coordinates | undefined {

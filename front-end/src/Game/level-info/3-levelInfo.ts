@@ -1,7 +1,10 @@
 import { LevelInfo } from "./levelInfo";
 
 export const levelThreeInfo: LevelInfo = {
-  packages: [{ x: 899, y: -176 }],
+  packages: [
+    { x: 944, y: -139 },
+    { x: 1838, y: 483 },
+  ],
   opponents: { grog: [] },
   platforms: [
     { x: 358, y: 456, width: 100, height: 40, color: "springgreen" },
@@ -16,6 +19,7 @@ export const levelThreeInfo: LevelInfo = {
     { x: 1252, y: 342, width: 100, height: 40, color: "springgreen" },
     { x: 1391, y: 217, width: 100, height: 40, color: "springgreen" },
     { x: 1562, y: 120, width: 100, height: 40, color: "springgreen" },
+    { x: 1773, y: 521, width: 100, height: 40, color: "springgreen" },
     { x: 1986, y: 345, width: 100, height: 40, color: "springgreen" },
     { x: 2137, y: 392, width: 100, height: 40, color: "springgreen" },
     { x: 2139, y: 149, width: 100, height: 40, color: "springgreen" },

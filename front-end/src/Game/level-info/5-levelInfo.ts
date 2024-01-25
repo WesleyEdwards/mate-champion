@@ -4,13 +4,13 @@ export const levelFiveInfo: LevelInfo = {
   packages: [],
   opponents: {
     grog: [
-      { initPos: { x: 1706, y: 389 }, moveSpeed: 0.1 },
-      { initPos: { x: 1879, y: 144 }, moveSpeed: 0.1 },
-      { initPos: { x: 2036, y: 102 }, moveSpeed: 0.1 },
-      { initPos: { x: 3041, y: 293 }, moveSpeed: 0.1 },
-      { initPos: { x: 4103, y: 296 }, moveSpeed: 0.1 },
-      { initPos: { x: 4646, y: 328 }, moveSpeed: 0.1 },
-      { initPos: { x: 4656, y: 132 }, moveSpeed: 0.1 },
+      { initPos: { x: 1706, y: 389 }, moveSpeed: 0.2 },
+      { initPos: { x: 1879, y: 144 }, moveSpeed: 0.2 },
+      { initPos: { x: 2036, y: 102 }, moveSpeed: 0.2 },
+      { initPos: { x: 3041, y: 293 }, moveSpeed: 0.2 },
+      { initPos: { x: 4103, y: 296 }, moveSpeed: 0.2 },
+      { initPos: { x: 4646, y: 328 }, moveSpeed: 0.2 },
+      { initPos: { x: 4656, y: 132 }, moveSpeed: 0.2 },
     ],
   },
   platforms: [
@@ -35,9 +35,9 @@ export const levelFiveInfo: LevelInfo = {
   floors: [
     { x: -500, width: 930, color: "green" },
     { x: 500, width: 960, color: "green" },
-    { x: 1500, width: 690, color: "green" },
+    { x: 1641, width: 690, color: "green" },
     { x: 2500, width: 690, color: "green" },
-    { x: 3771, width: 820, color: "green" },
+    { x: 3878, width: 820, color: "green" },
     { x: 4871, width: 1100, color: "green" },
   ],
 };
