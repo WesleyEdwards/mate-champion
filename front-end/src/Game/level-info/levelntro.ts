@@ -21,7 +21,7 @@ export const levelInto: LevelInfo = {
     { x: 4420, y: 240, width: 450, height: 40, color: "springgreen" },
   ],
   floors: [
-    { x: -500, width: 2500, color: "green" },
+    { x: -500, width: 2470, color: "green" },
     { x: 2100, width: 2200, color: "green" },
     { x: 4500, width: 1000, color: "green" },
   ],

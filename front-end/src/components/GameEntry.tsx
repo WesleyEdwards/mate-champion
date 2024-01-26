@@ -91,7 +91,14 @@ export const GameEntry: FC = () => {
   );
 
   return (
-    <Stack padding="1rem" alignItems="center" justifyContent="center">
+    <Stack
+      sx={{
+        px: "1rem",
+        pt: "1rem",
+      }}
+      alignItems="center"
+      justifyContent="center"
+    >
       {screen === "home" && (
         <Stack width="100%" gap="1rem" alignItems="center">
           <Typography level="h1">Mate Champion</Typography>

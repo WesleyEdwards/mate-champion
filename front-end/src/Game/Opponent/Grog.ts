@@ -33,7 +33,7 @@ export class Grog implements Character {
     this.velocity.y += GRAVITY * elapsedTime;
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
-      this.vector.stopY(MAX_CANVAS_HEIGHT - this.height);
+      this.vector.stopY(MAX_CANVAS_HEIGHT - this.height / 2);
     }
 
     if (randomOutOf(this.jumpOften ? 50 : 120)) this.move("Jump");
@@ -45,7 +45,11 @@ export class Grog implements Character {
   }
 
   draw(drawProps: DrawObjProps) {
-    this.drawManager.draw(drawProps, this.position, "left");
+    this.drawManager.draw(
+      drawProps,
+      this.position,
+      this.vector.velocity.x > 0 ? "right" : "left"
+    );
   }
 
   setOnPlatform(num: number) {
