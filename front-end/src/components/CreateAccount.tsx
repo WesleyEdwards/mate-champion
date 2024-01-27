@@ -49,7 +49,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
   };
 
   return (
-    <Stack mb={2}>
+    <Stack>
       <Stack direction="row" justifyContent="space-between">
         <IconButton onClick={() => changeScreen("home")}>
           <ArrowBack />
@@ -91,7 +91,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
           onClick={handleSubmitNew}
           type="submit"
         >
-          Save
+          Create Account
         </Button>
         {error && <Alert color="danger">{error}</Alert>}
       </Stack>

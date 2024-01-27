@@ -15,7 +15,10 @@ export const useAuth = () => {
   }, []);
 
   const login = (body: LoginBody) => {
-    return api.auth.signIn(body).then(setUser);
+    return api.auth.signIn(body).then((u) => {
+      localStorageManager.set("high-score", u);
+      setUser(u);
+    });
   };
 
   const createAccount = (body: User & { password: string }) => {

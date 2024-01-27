@@ -36,7 +36,7 @@ export interface ScreenProps {
 }
 
 export const GameEntry: FC = () => {
-  const {user} = useAuthContext()
+  const { user } = useAuthContext();
   const [stats, setStats] = useState<PlayStats>(emptyStats);
 
   const [screen, setScreen] = useState<MCScreen>("home");
@@ -89,6 +89,7 @@ export const GameEntry: FC = () => {
             width="100%"
             justifyContent="center"
             gap="1rem"
+            mb={4}
           >
             {Object.entries({
               highScores: true,
@@ -112,7 +113,7 @@ export const GameEntry: FC = () => {
         )}
       </Stack>
 
-      <Stack minWidth="24rem">
+      <Stack minWidth="24rem" mb={2}>
         <RenderScreen changeScreen={setScreen} score={stats.score} />
       </Stack>
 

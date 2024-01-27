@@ -1,13 +1,5 @@
 import { ArrowBack } from "@mui/icons-material";
-import {
-  Stack,
-  IconButton,
-  Typography,
-  Divider,
-  Button,
-  Input,
-  Alert,
-} from "@mui/joy";
+import { Stack, Divider, Button, Input, Alert } from "@mui/joy";
 import { FC, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
@@ -35,8 +27,7 @@ export const Login: FC<ScreenProps> = ({ changeScreen }) => {
       })
       .catch((err) => {
         setSubmitting(false);
-        console.log(err);
-        setError(err.message);
+        err.then((e: any) => setError(e.message));
       });
   };
 
@@ -44,9 +35,9 @@ export const Login: FC<ScreenProps> = ({ changeScreen }) => {
     <form onSubmit={(e) => e.preventDefault()}>
       <ViewHeader changeScreen={changeScreen} title={"Login"} />
       <Divider />
-      <Stack gap="1rem">
+      <Stack gap="1rem" my={2}>
         <Input
-          placeholder="Email"
+          placeholder="Email/Username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />

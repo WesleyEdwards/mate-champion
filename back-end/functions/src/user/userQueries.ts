@@ -78,15 +78,22 @@ export const loginUser: ReqBuilder =
       password: body.password
     }
 
-    const user = await client.user.findOne({email: loginBody.email})
+    if (!loginBody.email) {
+      res.status(404).json({message: "Invalid credentials"})
+      return
+    }
+    const userWithEmail = await client.user.findOne({email: loginBody.email})
+    const userWithName = await client.user.findOne({name: loginBody.email})
+    const user = userWithEmail ?? userWithName
+
     if (!user) {
-      res.status(404).json({message: "Invalid email or password"})
+      res.status(404).json({message: "Invalid credentials"})
       return
     }
 
     const isValid = await bcrypt.compare(loginBody.password, user.passwordHash)
     if (!isValid) {
-      return res.status(404).json({message: "Invalid email or password"})
+      return res.status(404).json({message: "Invalid credentials"})
     }
 
     return res.json({
@@ -114,7 +121,7 @@ export const modifyUser: ReqBuilder =
       }
     }
     const user = await client.user.findOne({_id: params.id})
-    if (!user || !body.name) return res.status(404)
+    if (!user) return res.status(404)
     const userPartial = checkPartialValidation("user", {
       ...body,
       _id: params.id,
@@ -123,7 +130,6 @@ export const modifyUser: ReqBuilder =
     if (isParseError(userPartial)) return res.status(400).json(userPartial)
 
     const updatedUser = await client.user.updateOne(params.id, userPartial)
-    console.log("Modify User", updatedUser)
     return res.json(sendUserBody(updatedUser))
   }
 

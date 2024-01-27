@@ -7,18 +7,16 @@ import {
   Undo,
 } from "@mui/icons-material";
 import { Button, IconButton, Input, Stack, Typography } from "@mui/joy";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
+import { EditEmailOrName } from "./EditEmailOrName";
 
 export const Profile: FC<ScreenProps> = ({ changeScreen }) => {
-  const { user, api, modifyUser, logout } = useAuthContext();
-
-  const [displayName, setDisplayName] = useState<string>(user?.name ?? "");
-  const [editingName, setEditingName] = useState<boolean>(false);
+  const { user, logout } = useAuthContext();
 
   return (
-    <Stack gap="1rem">
+    <Stack gap="1rem" mb={2}>
       <Stack direction="row" justifyContent="space-between" width="100%">
         <IconButton onClick={() => changeScreen("home")}>
           <ArrowBack />
@@ -29,51 +27,8 @@ export const Profile: FC<ScreenProps> = ({ changeScreen }) => {
 
       {user ? (
         <>
-          <Stack
-            direction="row"
-            minWidth="32rem"
-            justifyContent="space-between"
-          >
-            <Stack direction="row" alignItems="center" gap="1rem">
-              <Typography level="h4">Name:</Typography>
-              {editingName ? (
-                <Input
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                />
-              ) : (
-                <Typography level="h4">{user.name}</Typography>
-              )}
-            </Stack>
-            {editingName ? (
-              <Stack direction="row" gap="1rem">
-                <IconButton
-                  onClick={() => {
-                    setEditingName(false);
-                    setDisplayName(user.name);
-                  }}
-                >
-                  <Undo />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    setEditingName(false);
-                    modifyUser({ name: displayName });
-                    api.user.modify(user._id, { name: displayName });
-                  }}
-                >
-                  <Check />
-                </IconButton>
-              </Stack>
-            ) : (
-              <IconButton onClick={() => setEditingName(true)}>
-                <Edit />
-              </IconButton>
-            )}
-          </Stack>
-          {user.email && (
-            <Typography level="h4">Email: {user.email}</Typography>
-          )}
+          <EditEmailOrName type={"name"} />
+          <EditEmailOrName type={"email"} />
           <Button
             onClick={() => {
               logout();
