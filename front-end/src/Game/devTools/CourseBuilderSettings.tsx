@@ -1,4 +1,6 @@
 import { Select, Option } from "@mui/joy";
+import { contentCreatorModifyObject } from "../devSettings";
+import { ItemType } from "./CreatingThing";
 
 export const CourseBuilderSettings = () => {
   return (
@@ -6,9 +8,7 @@ export const CourseBuilderSettings = () => {
       sx={{ minWidth: "10rem" }}
       defaultValue="platform"
       onChange={(_, value) => {
-        // @ts-ignore - this is a hacky hack
-        window.hackyHack = value;
-        console.log(value);
+        contentCreatorModifyObject(value as ItemType);
       }}
     >
       <Option value="platform">Platform</Option>

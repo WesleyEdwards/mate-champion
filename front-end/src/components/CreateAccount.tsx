@@ -36,6 +36,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
         email: email === "" ? undefined : email,
         password,
         highScore: score ?? 0,
+        admin: false,
         updatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
       });
@@ -48,12 +49,12 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
   };
 
   return (
-    <Stack>
+    <Stack mb={2}>
       <Stack direction="row" justifyContent="space-between">
         <IconButton onClick={() => changeScreen("home")}>
           <ArrowBack />
         </IconButton>
-        {score !== undefined ? (
+        {score ? (
           <Typography level="h2">Score: {score}</Typography>
         ) : (
           <Typography level="h2">Create Account</Typography>
@@ -62,7 +63,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
       </Stack>
       <Divider sx={{ my: "1rem" }} />
       <Stack style={{ gap: "1rem" }}>
-        {score !== undefined && (
+        {score !== undefined && score !== 0 && (
           <Stack>
             <Typography>That&apos;s a new record for you!</Typography>
             <Typography>To save your score, create an account</Typography>

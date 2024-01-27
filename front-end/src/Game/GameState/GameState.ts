@@ -125,7 +125,10 @@ export class GameState {
 
   private get showMessage() {
     const showMessage = this.stats.timeInLevel < DISPLAY_LEVEL_TIME;
-    if (!showMessage && this.currStateOfGame === "initial") {
+    if (
+      !showMessage &&
+      ["initial", "loseLife"].includes(this.currStateOfGame)
+    ) {
       this.currStateOfGame = "playing";
     }
     return showMessage;

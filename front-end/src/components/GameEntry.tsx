@@ -13,6 +13,10 @@ import { Login } from "./Login";
 import { CreateAccount } from "./CreateAccount";
 import { PersonalHighScore } from "./PersonalHighScore";
 import { PlayScreen } from "./PlayScreen";
+import { LevelCreator } from "./LevelCreator";
+import { camelCaseToTitleCase } from "../helpers";
+import { devSettings } from "../Game/devSettings";
+import { useAuthContext } from "../hooks/AuthContext";
 
 export type MCScreen =
   | "game"
@@ -23,7 +27,8 @@ export type MCScreen =
   | "login"
   | "createAccount"
   | "profile"
-  | "settings";
+  | "settings"
+  | "levelCreator";
 
 export interface ScreenProps {
   changeScreen: (screen: MCScreen) => void;
@@ -31,6 +36,7 @@ export interface ScreenProps {
 }
 
 export const GameEntry: FC = () => {
+  const {user} = useAuthContext()
   const [stats, setStats] = useState<PlayStats>(emptyStats);
 
   const [screen, setScreen] = useState<MCScreen>("home");
@@ -53,6 +59,7 @@ export const GameEntry: FC = () => {
           createAccount: CreateAccount,
           profile: Profile,
           settings: Settings,
+          levelCreator: () => null,
         } satisfies Record<MCScreen, FC<ScreenProps>>
       )[screen]),
     [screen]
@@ -76,34 +83,33 @@ export const GameEntry: FC = () => {
           screen={screen}
           setScreen={setScreen}
         />
-        <Stack direction="row" width="100%" justifyContent="center" gap="1rem">
-          {screen === "home" && (
-            <>
-              <Button
-                hidden={true}
-                variant="outlined"
-                sx={{ width: "10rem", height: "0px" }}
-                onClick={() => setScreen("highScores")}
-              >
-                High Scores
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{ width: "10rem" }}
-                onClick={() => setScreen("controls")}
-              >
-                Controls
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{ width: "10rem" }}
-                onClick={() => setScreen("profile")}
-              >
-                Profile
-              </Button>
-            </>
-          )}
-        </Stack>
+        {screen === "home" && (
+          <Stack
+            direction="row"
+            width="100%"
+            justifyContent="center"
+            gap="1rem"
+          >
+            {Object.entries({
+              highScores: true,
+              controls: true,
+              profile: true,
+              levelCreator: user?.admin,
+            } satisfies Partial<Record<MCScreen, boolean>>).map(
+              ([view, show]) =>
+                show ? (
+                  <Button
+                    key={view}
+                    variant="outlined"
+                    sx={{ width: "10rem" }}
+                    onClick={() => setScreen(view as MCScreen)}
+                  >
+                    {camelCaseToTitleCase(view)}
+                  </Button>
+                ) : null
+            )}
+          </Stack>
+        )}
       </Stack>
 
       <Stack minWidth="24rem">
@@ -115,6 +121,8 @@ export const GameEntry: FC = () => {
           style={{ height: playing ? undefined : "0px", borderRadius: "10px" }}
           id="canvas"
         ></canvas>
+
+        {screen === "levelCreator" && <LevelCreator />}
 
         {playing && <StatsDiv stats={stats} />}
         {!playing && screen === "home" && <PersonalHigh />}

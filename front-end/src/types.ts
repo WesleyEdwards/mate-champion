@@ -5,6 +5,7 @@ export type User = {
   name: string;
   email?: string | undefined;
   highScore: number;
+  admin: boolean;
 };
 
 export type LoginBody = {

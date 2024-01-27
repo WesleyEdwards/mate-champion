@@ -1,4 +1,4 @@
-type KeyName = "token" | "high-score";
+type KeyName = "token" | "high-score" | "dev-settings";
 
 export const localStorageManager = {
   get: (key: KeyName) => {
