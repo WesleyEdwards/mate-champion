@@ -16,6 +16,7 @@ function relativePath() {
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   const outDir = mode === "production" ? "build" : "../docs";
+  const base = mode === "production" ? "./" : "./mate-champion/";
   const plugins =
     mode === "production"
       ? [react(), checker({ typescript: true })]
@@ -23,7 +24,8 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins,
-    build: { outDir },
+    build: { outDir, assetsDir: "mate-champion/assets" },
+    base,
     server: {
       port: 3000,
     },
