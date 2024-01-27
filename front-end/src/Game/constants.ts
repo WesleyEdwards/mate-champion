@@ -17,7 +17,7 @@ export const playerConst = {
   radius: 32,
   moveSpeed: 0.5,
   jumpSpeed: -0.85,
-  shankTime: 200,
+  shankTime: 250,
   meleeCoolDown: 275,
   meleeReach: 120,
   shootCoolDown: 200,

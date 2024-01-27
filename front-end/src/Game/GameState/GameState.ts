@@ -10,7 +10,7 @@ import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
 
 export class GameState {
-  private winState: WinState = "initial";
+  currStateOfGame: WinState = "initial";
   private objectManager: ObjectManager;
   private keys: Keys;
   private setUI: SetUI;
@@ -25,7 +25,11 @@ export class GameState {
     canvas: HTMLCanvasElement,
     cxt: CanvasRenderingContext2D
   ) {
-    this.keys = addEventListeners();
+    this.keys = addEventListeners(() => {
+      const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
+      setUI.handlePause(newState === "pause");
+      this.currStateOfGame = newState;
+    });
     this.objectManager = new ObjectManager();
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
@@ -42,7 +46,9 @@ export class GameState {
 
   update(timeStamp: number) {
     this.stats.updateTime(timeStamp);
-    if (!this.isWinState("playing")) return;
+    if (this.currStateOfGame !== "playing") {
+      return;
+    }
     this.cameraDisplay.update(
       this.stats.elapsedTime,
       this.objectManager.player.vector
@@ -67,7 +73,7 @@ export class GameState {
     this.gameDrawer.drawBackground(
       this.cxt,
       this.showMessage,
-      this.winState,
+      this.currStateOfGame,
       this.stats.level,
       this.cameraDisplay.cameraOffset
     );
@@ -85,10 +91,6 @@ export class GameState {
     this.cameraDisplay.draw(this.cxt);
   }
 
-  isWinState(state: WinState): boolean {
-    return this.winState === state;
-  }
-
   private resetLevel() {
     this.stats.resetLevel();
     this.objectManager.reset(this.stats.level);
@@ -98,11 +100,11 @@ export class GameState {
 
   private handleLoseLife() {
     if (devSettings.noDie) return;
-    this.winState = "loseLife";
+    this.currStateOfGame = "loseLife";
     this.stats.addLives(-1);
     this.resetLevel();
     if (this.stats.lives === 0) {
-      this.winState = "lose";
+      this.currStateOfGame = "lose";
     }
   }
 
@@ -116,14 +118,16 @@ export class GameState {
   }
 
   private nextLevel() {
-    this.winState = "nextLevel";
+    this.currStateOfGame = "nextLevel";
     this.stats.nextLevel();
     this.resetLevel();
   }
 
   private get showMessage() {
     const showMessage = this.stats.timeInLevel < DISPLAY_LEVEL_TIME;
-    if (!showMessage) this.winState = "playing";
+    if (!showMessage && this.currStateOfGame === "initial") {
+      this.currStateOfGame = "playing";
+    }
     return showMessage;
   }
 

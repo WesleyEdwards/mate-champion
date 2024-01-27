@@ -7,8 +7,9 @@ export function enterGameLoop(setUI: SetUI) {
   const gameState: GameState = new GameState(setUI, canvas, context);
 
   function gameLoop(timeStamp: number) {
-    if (gameState.isWinState("lose")) return handleLose(gameState.score);
-
+    if (gameState.currStateOfGame === "lose") {
+      return handleLose(gameState.score);
+    }
     gameState.update(timeStamp);
     gameState.render();
 

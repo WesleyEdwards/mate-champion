@@ -13,6 +13,10 @@ function relativePath() {
   };
 }
 
+
+// For deploying to github, move the mate-champion/assets directory to
+// just assets. This ensures that the path of the assets is correct.
+// Also make sure that the path to the js is correct
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   const outDir = mode === "production" ? "build" : "../docs";

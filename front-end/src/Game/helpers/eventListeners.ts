@@ -1,4 +1,5 @@
 import { Keys } from "../models";
+import { WinState } from "./types";
 
 const initialKeyStatus: Keys = {
   up: false,
@@ -13,7 +14,7 @@ const initialKeyStatus: Keys = {
   toShank: 0,
 };
 
-export function addEventListeners(): Keys {
+export function addEventListeners(togglePause: () => void): Keys {
   const keys = { ...initialKeyStatus };
   window.addEventListener("keydown", (e) => {
     switch (e.code) {
@@ -42,7 +43,6 @@ export function addEventListeners(): Keys {
         keys.down = true;
         break;
       case "Space":
-        // e.preventDefault();
         keys.jump = true;
         keys.toJump = 1;
         break;
@@ -91,6 +91,9 @@ export function addEventListeners(): Keys {
         break;
       case "KeyK":
         keys.shank = false;
+        break;
+      case "Escape":
+        togglePause();
         break;
     }
   });

@@ -5,13 +5,12 @@ export type WinState =
   | "playing"
   | "initial"
   | "nextLevel"
+  | "pause"
   | "loseLife";
 
 export type StatsManagerInfo = {
   killedOpp: number;
   packagesReceived: boolean;
-  // moveScreenLeft: boolean;
-  // moveScreenRight: boolean;
   shot: boolean;
 };
 
