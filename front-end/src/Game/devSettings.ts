@@ -20,7 +20,7 @@ export type DevStats = {
   vel: Coordinates;
 };
 
-type Settings = {
+export type Settings = {
   showDevStats: boolean;
   hideOpponents: boolean;
   sandboxDb: boolean;
@@ -38,11 +38,12 @@ class DevSettingsClass {
   modifyingItem: ItemType = "platform";
   constructor() {
     const fromStorage = localStorageManager.get("dev-settings");
-    if (!fromStorage) {
+    if (fromStorage) {
+      this.settings = fromStorage;
+    } else {
       localStorageManager.set("dev-settings", prodSettings);
+      this.settings = prodSettings;
     }
-    this.settings = prodSettings;
-    return;
   }
 
   modifySettings(setting: keyof Settings, value: boolean) {

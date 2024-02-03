@@ -123,7 +123,7 @@ export const GameEntry: FC = () => {
           id="canvas"
         ></canvas>
 
-        {screen === "levelCreator" && <LevelCreator />}
+        {/* {screen === "levelCreator" && <LevelCreator />} */}
 
         {playing && <StatsDiv stats={stats} />}
         {!playing && screen === "home" && <PersonalHigh />}

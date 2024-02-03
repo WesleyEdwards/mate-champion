@@ -12,7 +12,8 @@ import { GameEntry } from "./components/GameEntry";
 import { mateTheme } from "./theme";
 import { useAuth } from "./hooks/useAuth";
 import { AuthContext } from "./hooks/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { LevelCreator } from "./components/LevelCreator";
 
 const theme: Theme = extendTheme(mateTheme);
 
@@ -25,9 +26,12 @@ function App() {
       <ThemeProvider theme={theme}>
         <AuthContext.Provider value={authInfo}>
           <Stack alignItems="center" justifyContent="center" height="100vh">
-            <Sheet variant="outlined" sx={{ m: 2, borderRadius: 10 }}>
-              <GameEntry />
-            </Sheet>
+            <Stack direction="row">
+              <LevelCreator />
+              <Sheet variant="outlined" sx={{ m: 2, borderRadius: 10 }}>
+                <GameEntry />
+              </Sheet>
+            </Stack>
           </Stack>
         </AuthContext.Provider>
       </ThemeProvider>
