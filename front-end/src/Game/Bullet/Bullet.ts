@@ -32,5 +32,6 @@ export class Bullet implements HasPosition {
 function getDirection(dir: VagueFacing): Coordinates {
   if (dir === "left") return { x: -bulletConst.speed, y: 0 };
   if (dir === "right") return { x: bulletConst.speed, y: 0 };
+  if (dir === "down") return { x: 0, y: bulletConst.speed };
   return { x: 0, y: -bulletConst.speed };
 }

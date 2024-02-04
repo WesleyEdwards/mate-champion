@@ -8,6 +8,7 @@ import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
+import { debounceLog } from "../helpers/utils";
 
 export class GameState {
   currStateOfGame: WinState = "initial";
@@ -127,7 +128,7 @@ export class GameState {
     const showMessage = this.stats.timeInLevel < DISPLAY_LEVEL_TIME;
     if (
       !showMessage &&
-      ["initial", "loseLife"].includes(this.currStateOfGame)
+      ["initial", "loseLife", "nextLevel"].includes(this.currStateOfGame)
     ) {
       this.currStateOfGame = "playing";
     }

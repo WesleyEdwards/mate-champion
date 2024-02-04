@@ -9,9 +9,9 @@ export function randomOutOf(max: number): boolean {
   return generateRandomInt(0, max) === 1;
 }
 
-export function debounceLog(val: any, log?: any) {
+export function debounceLog(...args: any[]) {
   if (generateRandomInt(0, 10) === 1) {
-    console.log(val, log);
+    console.log(...args);
   }
 }
 

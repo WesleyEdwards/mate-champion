@@ -27,10 +27,10 @@ function App() {
         <AuthContext.Provider value={authInfo}>
           <Stack alignItems="center" justifyContent="center" height="100vh">
             <Stack direction="row">
-              <LevelCreator />
               <Sheet variant="outlined" sx={{ m: 2, borderRadius: 10 }}>
                 <GameEntry />
               </Sheet>
+              <LevelCreator />
             </Stack>
           </Stack>
         </AuthContext.Provider>

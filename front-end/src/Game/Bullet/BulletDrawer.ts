@@ -37,8 +37,7 @@ export class BulletDrawer {
         (() => {
           if (b.vector.velX > 0) return 0;
           if (b.vector.velX < 0) return Math.PI;
-          if (b.vector.velY < 0) return (Math.PI / 2) * 3;
-          return 0;
+          return (Math.PI / 2) * 3;
         })()
       );
 

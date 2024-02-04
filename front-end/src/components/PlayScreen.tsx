@@ -66,11 +66,10 @@ export const PlayScreen: FC<{
           Play Game
         </Button>
       )}
-      <Modal open={pauseModal} onClose={() => setPauseModal(false)}>
+      <Modal open={pauseModal} onClose={() => {}}>
         <ModalDialog>
-          <ModalClose />
           <DialogTitle>Pause</DialogTitle>
-          <DialogContent>{"Paused"}</DialogContent>
+          <DialogContent>{"'ESC' to unpause"}</DialogContent>
         </ModalDialog>
       </Modal>
     </>

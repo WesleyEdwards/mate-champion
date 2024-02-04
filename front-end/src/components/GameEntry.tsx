@@ -13,7 +13,6 @@ import { Login } from "./Login";
 import { CreateAccount } from "./CreateAccount";
 import { PersonalHighScore } from "./PersonalHighScore";
 import { PlayScreen } from "./PlayScreen";
-import { LevelCreator } from "./LevelCreator";
 import { camelCaseToTitleCase } from "../helpers";
 import { devSettings } from "../Game/devSettings";
 import { useAuthContext } from "../hooks/AuthContext";
@@ -122,8 +121,6 @@ export const GameEntry: FC = () => {
           style={{ height: playing ? undefined : "0px", borderRadius: "10px" }}
           id="canvas"
         ></canvas>
-
-        {/* {screen === "levelCreator" && <LevelCreator />} */}
 
         {playing && <StatsDiv stats={stats} />}
         {!playing && screen === "home" && <PersonalHigh />}
