@@ -49,6 +49,7 @@ export class DevContentCreate {
   prevColor: string = "";
   currentlyCreating: CreatingThing;
   setLevel: (level: Partial<LevelInfo>) => void;
+  lastUpdate: number = 0;
 
   creatingOptions: Record<ItemType, CreatingThing>;
 
@@ -69,7 +70,11 @@ export class DevContentCreate {
     this.setLevel = setLevel;
   }
 
-  update(offset: Coordinates) {
+  update(offset: Coordinates, timestamp: number) {
+    if (timestamp - this.lastUpdate > 5000) {
+      this.lastUpdate = timestamp;
+      this.setLevel(exportLevelInfo(this.objectManager));
+    }
     this.cameraOffset = { x: offset.x, y: offset.y };
 
     const selected = DevSettings.getInstance().modifyingItem;
