@@ -1,5 +1,6 @@
 import { localStorageManager } from "../api/localStorageManager";
 import { ItemType } from "./devTools/CreatingThing";
+import { LevelInfo } from "./level-info/levelInfo";
 import { Coordinates } from "./models";
 
 const prodSettings: Record<keyof Settings, false> = {
@@ -36,6 +37,7 @@ export type Settings = {
 class DevSettingsClass {
   settings: Settings;
   modifyingItem: ItemType = "platform";
+  creatingLevel: LevelInfo | null = null;
   constructor() {
     const fromStorage = localStorageManager.get("dev-settings");
     if (fromStorage) {
@@ -53,9 +55,13 @@ class DevSettingsClass {
   modifyItem(item: ItemType) {
     this.modifyingItem = item;
   }
+
+  setCreatingLevel(level: LevelInfo) {
+    this.creatingLevel = level;
+  }
 }
 
-const DevSettings = (() => {
+export const DevSettings = (() => {
   let instance: DevSettingsClass;
   return {
     getInstance: function () {

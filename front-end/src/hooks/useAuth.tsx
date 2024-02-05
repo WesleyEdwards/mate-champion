@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
+import { LevelInfo } from "../Game/level-info/levelInfo";
 
 export const useAuth = () => {
   const [user, setUser] = useState<User>();
+  const [creatingLevel, setCreatingLevel] = useState<LevelInfo | null>(null);
 
   const api = useMemo(() => new Api(localStorageManager.get("token")), []);
 
@@ -34,5 +36,20 @@ export const useAuth = () => {
     setUser((prev) => (prev ? { ...prev, ...partial } : prev));
   };
 
-  return { api, user, login, createAccount, logout, modifyUser };
+  const modifyLevel = (level: Partial<LevelInfo>) => {
+    console.log("modifying level: ", level)
+    setCreatingLevel((prev) => (prev ? { ...prev, ...level } : null));
+  };
+
+  return {
+    api,
+    user,
+    login,
+    createAccount,
+    logout,
+    modifyUser,
+    creatingLevel,
+    setCreatingLevel,
+    modifyLevel,
+  };
 };

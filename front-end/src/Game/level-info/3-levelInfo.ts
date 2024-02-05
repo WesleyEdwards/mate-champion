@@ -1,6 +1,8 @@
 import { LevelInfo } from "./levelInfo";
 
 export const levelThreeInfo: LevelInfo = {
+  _id: "4854dfd1-73f8-44c6-bc45-ad40c15dc865",
+  name: "Level 3",
   packages: [
     { x: 944, y: -139 },
     { x: 1838, y: 483 },

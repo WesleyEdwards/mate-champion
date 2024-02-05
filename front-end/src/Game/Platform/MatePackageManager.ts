@@ -3,21 +3,15 @@ import { MCImage } from "../Drawing/drawingUtils";
 import { packageImage } from "../Drawing/ImageRepos";
 import { updatePackageStatus } from "../GameState/GameStateFunctions";
 import Player from "../Player/Player";
-import { Canvas, DrawObjProps } from "../helpers/types";
-import { createMatePackages } from "../constructors";
+import { DrawObjProps } from "../helpers/types";
 import { devSettings } from "../devSettings";
 import { packageConst } from "../constants";
+import { LevelInfo, levelsInfo } from "../level-info/levelInfo";
+import { getLevelItem } from "../constructors";
 
 export class MatePackageManager {
-  packages: Package[];
+  packages: Package[] = [];
   image: MCImage = packageImage;
-  constructor() {
-    this.packages = createMatePackages(1);
-  }
-
-  // update(elapsedTime: number) {
-  //   this.packages.forEach((p) => p.update(elapsedTime));
-  // }
 
   draw({ cxt, camOffset }: DrawObjProps) {
     this.packages.forEach((p) => {
@@ -48,8 +42,8 @@ export class MatePackageManager {
     });
   }
 
-  reset(level: number) {
-    this.packages = createMatePackages(level);
+  reset(level: number, levels: LevelInfo[]) {
+    this.packages = getLevelItem(level, "package", levels);
   }
 
   getReceivedPackages(player: Player): boolean {

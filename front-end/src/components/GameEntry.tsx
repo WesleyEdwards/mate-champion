@@ -14,8 +14,8 @@ import { CreateAccount } from "./CreateAccount";
 import { PersonalHighScore } from "./PersonalHighScore";
 import { PlayScreen } from "./PlayScreen";
 import { camelCaseToTitleCase } from "../helpers";
-import { devSettings } from "../Game/devSettings";
 import { useAuthContext } from "../hooks/AuthContext";
+import { LevelCreateScreen } from "./LevelCreateScreen";
 
 export type MCScreen =
   | "game"
@@ -58,7 +58,7 @@ export const GameEntry: FC = () => {
           createAccount: CreateAccount,
           profile: Profile,
           settings: Settings,
-          levelCreator: () => null,
+          levelCreator: LevelCreateScreen,
         } satisfies Record<MCScreen, FC<ScreenProps>>
       )[screen]),
     [screen]

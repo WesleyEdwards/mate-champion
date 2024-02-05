@@ -1,10 +1,21 @@
 import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
+import { LevelInfo } from "./level-info/levelInfo";
 import { SetUI } from "./models";
 
-export function enterGameLoop(setUI: SetUI) {
+export function enterGameLoop(
+  setUI: SetUI,
+  levels: LevelInfo[],
+  setLevel: (level: Partial<LevelInfo>) => void
+) {
   const { canvas, context } = getCanvasContext();
-  const gameState: GameState = new GameState(setUI, canvas, context);
+  const gameState: GameState = new GameState(
+    setUI,
+    canvas,
+    context,
+    levels,
+    setLevel
+  );
 
   function gameLoop(timeStamp: number) {
     if (gameState.currStateOfGame === "lose") {

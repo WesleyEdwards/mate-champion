@@ -1,6 +1,8 @@
 import { LevelInfo } from "./levelInfo";
 
 export const levelFiveInfo: LevelInfo = {
+  _id: "06d2f079-acc5-4681-9652-f050c002fb67",
+  name: "Level 5",
   packages: [],
   opponents: {
     grog: [

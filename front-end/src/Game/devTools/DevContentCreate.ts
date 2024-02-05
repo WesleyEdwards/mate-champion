@@ -12,11 +12,18 @@ import { FloorCreator } from "./FloorCreator";
 import { GrogCreator } from "./GrogCreator";
 import { PackageCreator } from "./PackageCreator";
 import { debounceLog } from "../helpers/utils";
-import { findExistingItem, findExistingItems } from "./helpers";
+import {
+  exportLevelInfo,
+  findExistingItem,
+  findExistingItems,
+} from "./helpers";
+import { DevSettings, devSettings } from "../devSettings";
+import { LevelInfo } from "../level-info/levelInfo";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
   objectManager: ObjectManager;
+  setLevel: (level: Partial<LevelInfo>) => void;
 };
 
 /**
@@ -41,13 +48,14 @@ export class DevContentCreate {
   cameraOffset: Coordinates = { x: 0, y: 0 };
   prevColor: string = "";
   currentlyCreating: CreatingThing;
+  setLevel: (level: Partial<LevelInfo>) => void;
 
   creatingOptions: Record<ItemType, CreatingThing>;
 
   prevDrag: Coordinates | null = null;
   dragSelect: Coordinates | null = null;
 
-  constructor({ canvas, objectManager }: DevContentCreateProps) {
+  constructor({ canvas, objectManager, setLevel }: DevContentCreateProps) {
     addDevEventListeners(this, canvas);
     this.objectManager = objectManager;
     this.platforms = objectManager.platformManager.platforms;
@@ -58,13 +66,13 @@ export class DevContentCreate {
       package: new PackageCreator(objectManager),
     };
     this.currentlyCreating = this.creatingOptions.platform;
+    this.setLevel = setLevel;
   }
 
   update(offset: Coordinates) {
     this.cameraOffset = { x: offset.x, y: offset.y };
 
-    // @ts-ignore - this is a hack to get the current item type
-    const selected = (window.hackyHack ?? "platform") as ItemType;
+    const selected = DevSettings.getInstance().modifyingItem;
     if (selected !== this.currentlyCreating.itemType) {
       this.currentlyCreating = this.creatingOptions[selected];
       this.currentlyCreating.selectItem(null);
@@ -149,5 +157,8 @@ export class DevContentCreate {
 
       this.prevDrag = { ...coor };
     }
+  }
+  exportLevelInfo() {
+    this.setLevel(exportLevelInfo(this.objectManager));
   }
 }

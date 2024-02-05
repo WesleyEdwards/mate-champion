@@ -37,7 +37,7 @@ export function addDevEventListeners(
       return contentCreator.handleKeyEvent("delete");
     }
     if (e.code === "Enter") {
-      return exportLevelInfo(contentCreator.objectManager);
+      return contentCreator.exportLevelInfo();
     }
 
     if (e.ctrlKey) {

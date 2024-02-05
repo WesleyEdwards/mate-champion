@@ -12,6 +12,7 @@ import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
+import { LevelInfo } from "../level-info/levelInfo";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -20,12 +21,17 @@ export class ObjectManager {
   matePackManager: MatePackageManager = new MatePackageManager();
   platformManager: PlatformManager = new PlatformManager();
   pot: Pot = new Pot();
+  levels: LevelInfo[];
+
+  constructor(levels: LevelInfo[]) {
+    this.levels = levels;
+  }
 
   reset(level: number) {
-    this.platformManager.reset(level);
-    this.matePackManager.reset(level);
+    this.platformManager.reset(level, this.levels);
+    this.matePackManager.reset(level, this.levels);
     this.player.reset();
-    this.opponentManager.reset(level);
+    this.opponentManager.reset(level, this.levels);
     this.pot.reset();
     this.bulletManager.reset();
   }

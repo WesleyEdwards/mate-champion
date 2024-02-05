@@ -4,8 +4,8 @@ import { Coordinates, HasPosition } from "../models";
 
 const { round } = Math;
 
-export function exportLevelInfo(objManager: ObjectManager) {
-  const levelInfo: LevelInfo = {
+export function exportLevelInfo(objManager: ObjectManager): Partial<LevelInfo> {
+  return {
     packages: objManager.matePackManager.packages
       .map((p) => ({
         x: round(p.vector.posX),
@@ -40,8 +40,6 @@ export function exportLevelInfo(objManager: ObjectManager) {
       }))
       .sort((a, b) => a.x - b.x),
   };
-
-  console.log(levelInfo);
 }
 
 export function findExistingItems(

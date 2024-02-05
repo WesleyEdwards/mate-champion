@@ -13,13 +13,14 @@ import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
+import { levelsInfo } from "../Game/level-info/levelInfo";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
   screen: MCScreen;
   setScreen: (screen: MCScreen) => void;
 }> = ({ modifyStats, setScreen, screen }) => {
-  const { user, api, modifyUser } = useAuthContext();
+  const { user, api, modifyUser, modifyLevel } = useAuthContext();
 
   const [pauseModal, setPauseModal] = useState(false);
 
@@ -52,7 +53,11 @@ export const PlayScreen: FC<{
   const handleClickPlay = () => {
     modifyStats({ ...emptyStats });
     setScreen("game");
-    enterGameLoop({ modifyStats, handleLose, handlePause });
+    enterGameLoop(
+      { modifyStats, handleLose, handlePause },
+      levelsInfo,
+      modifyLevel
+    );
   };
 
   return (

@@ -1,21 +1,37 @@
 import { StaticObject } from "./models";
 import { Platform } from "./Platform/Platform";
-import { getLevelInfo } from "./level-info/levelInfo";
+import { LevelInfo, levelsInfo } from "./level-info/levelInfo";
 import { Package } from "./Bullet/Package";
 import { Grog } from "./Opponent/Grog";
 import { Opponents } from "./Opponent/OpponentManager";
 
-export function createBlocks(level: number): Platform[] {
-  const { platforms, floors } = getLevelInfo(level);
-  return [...platforms, ...floors].map((p) => new Platform(p));
-}
+type ReturnItem<T extends "blocks" | "opponents" | "package"> =
+  T extends "blocks"
+    ? Platform[]
+    : T extends "opponents"
+    ? Opponents
+    : Package[];
 
-export function createOpponents(level: number): Opponents {
-  const { opponents } = getLevelInfo(level);
-  return { grog: opponents.grog.map((o) => new Grog(o)) };
-}
+const getLevelInfo = (level: number, info: LevelInfo[]) =>
+  levelsInfo[(level - 1) % info.length];
 
-export function createMatePackages(level: number): Package[] {
-  const { packages } = getLevelInfo(level);
-  return packages.map((p) => new Package(p));
+export function getLevelItem<T extends "blocks" | "opponents" | "package">(
+  level: number,
+  item: T,
+  info: LevelInfo[]
+): ReturnItem<T> {
+  return {
+    blocks: () => {
+      const { platforms, floors } = getLevelInfo(level, info);
+      return [...platforms, ...floors].map((p) => new Platform(p));
+    },
+    opponents: () => {
+      const { opponents } = getLevelInfo(level, info);
+      return { grog: opponents.grog.map((o) => new Grog(o)) };
+    },
+    package: () => {
+      const { packages } = getLevelInfo(level, info);
+      return packages.map((p) => new Package(p));
+    },
+  }[item]() as ReturnItem<T>;
 }

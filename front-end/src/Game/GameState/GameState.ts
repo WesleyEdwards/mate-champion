@@ -8,7 +8,7 @@ import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
-import { debounceLog } from "../helpers/utils";
+import { LevelInfo } from "../level-info/levelInfo";
 
 export class GameState {
   currStateOfGame: WinState = "initial";
@@ -24,14 +24,16 @@ export class GameState {
   constructor(
     setUI: SetUI,
     canvas: HTMLCanvasElement,
-    cxt: CanvasRenderingContext2D
+    cxt: CanvasRenderingContext2D,
+    levels: LevelInfo[],
+    setLevel: (level: Partial<LevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
       const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
       setUI.handlePause(newState === "pause");
       this.currStateOfGame = newState;
     });
-    this.objectManager = new ObjectManager();
+    this.objectManager = new ObjectManager(levels);
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;
@@ -39,6 +41,7 @@ export class GameState {
       ? new DevContentCreate({
           canvas,
           objectManager: this.objectManager,
+          setLevel,
         })
       : null;
 

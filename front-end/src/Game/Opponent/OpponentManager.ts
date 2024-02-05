@@ -1,17 +1,14 @@
 import { areTouching } from "../GameState/GameStateFunctions";
 import { playerConst } from "../constants";
-import { createOpponents } from "../constructors";
+import { getLevelItem } from "../constructors";
 import { Canvas, DrawObjProps } from "../helpers/types";
+import { LevelInfo, levelsInfo } from "../level-info/levelInfo";
 import { Coordinates } from "../models";
 import { Grog } from "./Grog";
 
 export type Opponents = { grog: Grog[] };
 export class OpponentManager {
-  opponents: Opponents;
-
-  constructor() {
-    this.opponents = createOpponents(1);
-  }
+  opponents: Opponents = { grog: [] };
 
   update(elapsedTime: number) {
     this.opponents.grog.forEach((o) => o.update(elapsedTime));
@@ -33,7 +30,7 @@ export class OpponentManager {
     });
   }
 
-  reset(level: number) {
-    this.opponents = createOpponents(level);
+  reset(level: number, levels: LevelInfo[]) {
+    this.opponents = getLevelItem(level, "opponents", levels);
   }
 }

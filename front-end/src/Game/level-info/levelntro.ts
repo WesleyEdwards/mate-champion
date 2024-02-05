@@ -1,6 +1,8 @@
 import { LevelInfo } from "./levelInfo";
 
 export const levelInto: LevelInfo = {
+  _id: "2788522d-49cd-4aab-a042-461b67d95813",
+  name: "Level Intro",
   packages: [],
   opponents: { grog: [{ initPos: { x: 3000, y: 100 }, moveSpeed: 0.05 }] },
   platforms: [

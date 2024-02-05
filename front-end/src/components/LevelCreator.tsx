@@ -7,7 +7,7 @@ import { useState } from "react";
 export const LevelCreator = () => {
   const [state, setState] = useState({ ...devSettings });
   return (
-    <Stack justifyContent="flex-end" m={2} gap={2}>
+    <Stack justifyContent="flex-end" m={2} gap={0.5}>
       {Object.entries(state).map(([setting, enabled]) => (
         <Typography
           component="label"

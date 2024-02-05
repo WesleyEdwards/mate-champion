@@ -10,6 +10,8 @@ import { sandboxLevel } from "./sandbox/sandboxLevel";
 import { ammoUp } from "./ammoUp";
 
 export type LevelInfo = {
+  _id: string;
+  name: string;
   packages: PackageProps[];
   opponents: { grog: GrogProps[] };
   platforms: FloatingType[];
@@ -25,7 +27,7 @@ export type LevelInfo = {
  * levelAbandonHope
  */
 
-const levelsInfo: LevelInfo[] = [
+export const levelsInfo: LevelInfo[] = [
   // sandboxLevel,
   levelInto,
   levelTwoInfo,
@@ -34,6 +36,3 @@ const levelsInfo: LevelInfo[] = [
   ammoUp,
   levelAbandonHope,
 ];
-
-export const getLevelInfo = (level: number) =>
-  levelsInfo[(level - 1) % levelsInfo.length];

@@ -1,6 +1,8 @@
 import { LevelInfo } from "./levelInfo";
 
 export const ammoUp: LevelInfo = {
+  _id: "ee29aca9-4d39-49f9-92f6-b6339ef2b0e5",
+  name: "Ammo Up",
   packages: [
     { x: 943, y: -141 },
     { x: 2312, y: -107 },

@@ -2,6 +2,8 @@ import { LevelInfo } from "../levelInfo";
 import { sandboxOpps } from "./sandboxOpps";
 
 export const sandboxLevel: LevelInfo = {
+  _id: "0ea89995-0720-4ef2-a865-f2d37bbf4698",
+  name: "Sandbox",
   packages: [
     { x: 1187, y: 338 },
     { x: 1035, y: 341 },

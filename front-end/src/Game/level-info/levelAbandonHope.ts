@@ -1,6 +1,8 @@
 import { LevelInfo } from "./levelInfo";
 
 export const levelAbandonHope: LevelInfo = {
+  _id: "508f5258-4aca-45b4-a360-bdef9f36776a",
+  name: "Abandon all hope",
   packages: [],
   opponents: {
     grog: [
