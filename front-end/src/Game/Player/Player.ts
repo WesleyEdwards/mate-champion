@@ -7,7 +7,7 @@ import {
 } from "./PlayerVectorManager";
 import { DrawObjProps } from "../helpers/types";
 import { PlayerDrawManager } from "./PlayerDrawManager";
-import { SpriteDisplay } from "./PlayerSpriteInfo";
+import { PlayerDescription } from "./PlayerSpriteInfo";
 
 type NotNone<T> = Exclude<T, "none">;
 

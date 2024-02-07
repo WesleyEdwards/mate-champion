@@ -11,7 +11,18 @@ import {
   PlayerMove,
 } from "./PlayerVectorManager";
 
-export type ImageSource =
+export function getSpriteImages<T extends string>(
+  source: Record<T, string>
+): Record<T, HTMLImageElement> {
+  return Object.entries(source).reduce((acc, [k, v]) => {
+    const i = new Image();
+    i.src = v as string;
+    acc[k as T] = i;
+    return acc;
+  }, {} as Record<T, HTMLImageElement>);
+}
+
+export type PlayerImageSource =
   | "champIdle"
   | "champMelee"
   | "champWalk"
@@ -19,7 +30,7 @@ export type ImageSource =
   | "champJump"
   | "champRange";
 
-const imageSources: Record<ImageSource, string> = {
+const imageSources: Record<PlayerImageSource, string> = {
   champIdle: champIdle,
   champMelee: champMelee,
   champWalk: champWalk,
@@ -28,28 +39,31 @@ const imageSources: Record<ImageSource, string> = {
   champUpLookWalk: champUpLookWalk,
 };
 
-export const playerSpriteImages: Record<ImageSource, HTMLImageElement> =
-  Object.entries(imageSources).reduce((acc, [k, v]) => {
-    const i = new Image();
-    i.src = v;
-    acc[k] = i;
-    return acc;
-  }, {} as Record<string, HTMLImageElement>);
+export const playerSpriteImages = getSpriteImages(imageSources);
 
-export type SpriteDisplay = `${Exclude<
+export type PlayerDescription = `${Exclude<
   PlayerDirectionY,
   "down"
 >}-${PlayerAction}-${Exclude<PlayerMove, "jump">}`;
 
-export type ImageInfo = {
-  image: ImageSource;
+export type ImageInfo<T extends string> = {
+  image: T;
   imgCount: number;
   startX: number;
   cycleTime: number;
 };
+
 const walkCycleTime = 70;
 
-export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
+export type SpriteInfo<
+  DESCRIPTION extends string,
+  IMAGE_REF extends string
+> = Record<DESCRIPTION, ImageInfo<IMAGE_REF> | undefined>;
+
+export const playerSpritesInfo: SpriteInfo<
+  PlayerDescription,
+  PlayerImageSource
+> = {
   "none-none-none": {
     image: "champIdle",
     imgCount: 4,
@@ -125,7 +139,10 @@ export const playerSpritesInfo: Record<SpriteDisplay, ImageInfo | undefined> = {
   },
 };
 
-export const playerSpriteJumping: Record<"rising" | "falling", ImageInfo> = {
+export const playerSpriteJumping: SpriteInfo<
+  "rising" | "falling",
+  PlayerImageSource
+> = {
   rising: {
     image: "champJump",
     imgCount: 1,

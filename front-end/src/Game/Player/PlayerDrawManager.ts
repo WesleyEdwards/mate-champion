@@ -2,7 +2,6 @@ import { devSettings } from "../devSettings";
 import { DrawObjProps } from "../helpers/types";
 import { Coordinates } from "../models";
 import { playerConst } from "../constants";
-import { debounceLog } from "../helpers/utils";
 import {
   PlayerAction,
   PlayerDirectionX,
@@ -10,11 +9,12 @@ import {
   PlayerVectorManager,
 } from "./PlayerVectorManager";
 import {
-  ImageSource,
-  SpriteDisplay,
+  PlayerImageSource,
+  PlayerDescription,
   playerSpriteImages,
   playerSpriteJumping,
   playerSpritesInfo,
+  ImageInfo,
 } from "./PlayerSpriteInfo";
 import { CurrentChampAction } from "./Player";
 
@@ -35,16 +35,11 @@ const drawImageWidth = 300; // this allows room for the attacks to be drawn
 const drawImageHeight = drawImageWidth * (105 / 200);
 
 export class PlayerDrawManager {
-  // image: HTMLImageElement = new Image();
-
   imageWidth = 28;
   spriteTimer: number = 0;
-  prevAction: SpriteDisplay = "none-none-none";
-  images: Record<ImageSource, HTMLImageElement>;
+  prevAction: PlayerDescription = "none-none-none";
+  images: Record<PlayerImageSource, HTMLImageElement> = playerSpriteImages;
 
-  constructor() {
-    this.images = playerSpriteImages;
-  }
   update(elapsedTime: number) {
     this.spriteTimer += elapsedTime;
   }
@@ -52,7 +47,7 @@ export class PlayerDrawManager {
   spriteDisplay(
     vector: PlayerVectorManager,
     currAction: CurrentChampAction | null
-  ): SpriteDisplay {
+  ): PlayerDescription {
     const directionY = vector.facingY === "down" ? "none" : vector.facingY;
     const action: PlayerAction = (() => {
       if (!currAction) return "none";
@@ -61,7 +56,7 @@ export class PlayerDrawManager {
       }
       return currAction.action;
     })();
-    const move: PlayerMove = vector.velocity.x !== 0 ? "walk" : "none";
+    const move: PlayerMove = vector.velocity.x === 0 ? "none" : "walk";
     return `${directionY}-${action}-${move}`;
   }
 
@@ -86,7 +81,7 @@ export class PlayerDrawManager {
     point: Coordinates,
     directionX: PlayerDirectionX,
     inAir: "rising" | "falling" | null,
-    sprite: SpriteDisplay
+    sprite: PlayerDescription
   ) {
     if (this.prevAction !== sprite) {
       this.spriteTimer = 0;
@@ -94,7 +89,7 @@ export class PlayerDrawManager {
 
     this.prevAction = sprite;
 
-    const spriteInfo = (() => {
+    const spriteInfo: ImageInfo<PlayerImageSource> | undefined = (() => {
       if (inAir && !sprite.includes("melee")) {
         return playerSpriteJumping[inAir];
       }
@@ -102,7 +97,7 @@ export class PlayerDrawManager {
     })();
 
     if (!spriteInfo) {
-      console.log("Action has not yet been defined");
+      console.error("Action has not yet been defined");
       return;
     }
 

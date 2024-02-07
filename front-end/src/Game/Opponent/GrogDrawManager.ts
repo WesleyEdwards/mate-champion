@@ -2,41 +2,85 @@ import { devSettings } from "../devSettings";
 import { DrawObjProps } from "../helpers/types";
 import { Coordinates } from "../models";
 import { DrawInfo } from "../Drawing/drawingUtils";
-import oopSprites from "../../assets/opp-1-sprites-1.png";
 import { grogConst } from "../constants";
+import enemyDeath from "../../assets/grog/enemy_death.png";
+import enemyJump from "../../assets/grog/enemy_jump_and_fall.png";
+import enemyWalking from "../../assets/grog/enemy_walking.png";
+import { SpriteInfo, getSpriteImages } from "../Player/PlayerSpriteInfo";
+import { OpponentVectorManager } from "./OpponentVectorManager";
+
+type GrogImageSource = "enemyDeath" | "enemyJump" | "enemyWalking";
+
+const drawImageWidth = 300; // this allows room for the attacks to be drawn
+const drawImageHeight = drawImageWidth * (105 / 200);
+
+const imageSources: Record<GrogImageSource, string> = {
+  enemyDeath,
+  enemyJump,
+  enemyWalking,
+};
+
+type GrogDescription = "walk" | "die";
 
 export class GrogDrawManager {
-  image: HTMLImageElement;
+  images: Record<GrogImageSource, HTMLImageElement> =
+    getSpriteImages(imageSources);
+  spriteTimer: number = 0;
 
-  constructor() {
-    this.image = new Image();
-    this.image.src = oopSprites;
+  drawFromInfo(drawProps: DrawObjProps, vector: OpponentVectorManager) {
+    const inAir =
+      vector.velocity.y > 0
+        ? "falling"
+        : vector.velocity.y < 0
+        ? "rising"
+        : null;
+
+    const facingX = vector.velocity.x > 0 ? "right" : "left";
+
+    const spriteDisplay = "walk";
+    // const spriteDisplay = Math.abs(vector.velocity.y) > 0 ? "jump" : "walk";
+    this.draw(drawProps, vector.position, facingX, inAir, spriteDisplay);
   }
-
   draw(
     { cxt, camOffset: camOffset }: DrawObjProps,
     point: Coordinates,
-    direction: "left" | "right"
+    directionX: "left" | "right",
+    inAir: "rising" | "falling" | null,
+    sprite: GrogDescription
   ) {
     cxt.imageSmoothingEnabled = false;
     cxt.imageSmoothingQuality = "high";
     cxt.save();
     cxt.translate(point.x - camOffset.x, point.y + camOffset.y);
 
-    if (direction === "left") {
+    const spriteInfo = inAir
+      ? grogSpriteJumping[inAir]
+      : grogSpritesInfo[sprite];
+
+    if (!spriteInfo) {
+      return console.error("No sprite info provided");
+    }
+
+    const whichSprite =
+      Math.round(this.spriteTimer / spriteInfo.cycleTime) % spriteInfo.imgCount;
+    const imageWidth = 200;
+
+    if (directionX === "left") {
       cxt.scale(-1, 1);
     }
 
+    const image = this.images[spriteInfo.image];
+
     cxt.drawImage(
-      this.image,
-      32, // which sprite
+      image,
+      imageWidth * whichSprite + spriteInfo.startX * imageWidth, // which sprite
       0,
-      32,
-      32,
-      -0.5 * grogConst.width,
-      -0.5 * grogConst.height,
-      grogConst.width,
-      grogConst.height
+      imageWidth,
+      image.height,
+      -drawImageWidth / 2,
+      -(drawImageHeight - grogConst.width / 2),
+      drawImageWidth,
+      drawImageHeight
     );
 
     if (devSettings.redOutline) {
@@ -69,3 +113,36 @@ export class GrogDrawManager {
     };
   }
 }
+
+const grogSpritesInfo: SpriteInfo<GrogDescription, GrogImageSource> = {
+  walk: {
+    image: "enemyWalking",
+    imgCount: 6,
+    startX: 0,
+    cycleTime: 70,
+  },
+  die: {
+    image: "enemyDeath",
+    imgCount: 4,
+    startX: 0,
+    cycleTime: 70,
+  },
+};
+
+export const grogSpriteJumping: SpriteInfo<
+  "rising" | "falling",
+  GrogImageSource
+> = {
+  rising: {
+    image: "enemyJump",
+    imgCount: 1,
+    startX: 0,
+    cycleTime: 100,
+  },
+  falling: {
+    image: "enemyJump",
+    imgCount: 1,
+    startX: 1,
+    cycleTime: 100,
+  },
+};

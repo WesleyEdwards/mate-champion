@@ -70,7 +70,7 @@ export class GameState {
 
     if (levelInfo.nextLevel || statsRes) this.drawStats();
 
-    this.devContentCreate?.update(this.cameraDisplay.cameraOffset);
+    this.devContentCreate?.update(this.cameraDisplay.cameraOffset, timeStamp);
   }
 
   render() {

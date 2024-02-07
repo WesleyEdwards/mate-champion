@@ -37,7 +37,7 @@ export const useAuth = () => {
   };
 
   const modifyLevel = (level: Partial<LevelInfo>) => {
-    console.log("modifying level: ", level)
+    console.log("modifying level: ", level);
     setCreatingLevel((prev) => (prev ? { ...prev, ...level } : null));
   };
 

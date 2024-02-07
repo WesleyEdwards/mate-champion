@@ -45,11 +45,7 @@ export class Grog implements Character {
   }
 
   draw(drawProps: DrawObjProps) {
-    this.drawManager.draw(
-      drawProps,
-      this.position,
-      this.vector.velocity.x > 0 ? "right" : "left"
-    );
+    this.drawManager.drawFromInfo(drawProps, this.vector);
   }
 
   setOnPlatform(num: number) {
