@@ -10,10 +10,10 @@ export const LevelCreator = () => {
     <Stack justifyContent="flex-end" m={2} gap={0.5}>
       {Object.entries(state).map(([setting, enabled]) => (
         <Typography
+          key={setting}
           component="label"
           startDecorator={
             <Switch
-              key={setting}
               sx={{ ml: 1 }}
               checked={enabled}
               onChange={(e) => {

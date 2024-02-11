@@ -3,8 +3,10 @@ import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
 import { LevelInfo } from "../Game/level-info/levelInfo";
+import { AuthContextType } from "./AuthContext";
+import { modifyDevSettings } from "../Game/devSettings";
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>();
   const [creatingLevel, setCreatingLevel] = useState<LevelInfo | null>(null);
 
@@ -41,6 +43,28 @@ export const useAuth = () => {
     setCreatingLevel((prev) => (prev ? { ...prev, ...level } : null));
   };
 
+  const saveLevelToDb = () => {
+    if (!creatingLevel) {
+      console.log("Can't save it.");
+      return;
+    }
+    console.log("Saving level to local storage for now");
+    localStorageManager.saveLevel(creatingLevel);
+  };
+
+  const deleteFromDatabase = () => {
+    if (!creatingLevel) {
+      return;
+    }
+    localStorageManager.removeLevel(creatingLevel);
+    setCreatingLevel(null);
+  };
+
+  const setLevelCreating = (level: LevelInfo | null) => {
+    setCreatingLevel(level);
+    modifyDevSettings("courseBuilder", !!level);
+  };
+
   return {
     api,
     user,
@@ -49,7 +73,9 @@ export const useAuth = () => {
     logout,
     modifyUser,
     creatingLevel,
-    setCreatingLevel,
+    setLevelCreating: setLevelCreating,
     modifyLevel,
+    saveLevelToDb,
+    deleteFromDatabase,
   };
 };

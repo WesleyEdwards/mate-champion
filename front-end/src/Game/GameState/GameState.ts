@@ -26,7 +26,7 @@ export class GameState {
     canvas: HTMLCanvasElement,
     cxt: CanvasRenderingContext2D,
     levels: LevelInfo[],
-    setLevel: (level: Partial<LevelInfo>) => void
+    setLevel?: (level: Partial<LevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
       const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
@@ -34,6 +34,7 @@ export class GameState {
       this.currStateOfGame = newState;
     });
     this.objectManager = new ObjectManager(levels);
+    this.objectManager.reset(1);
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;

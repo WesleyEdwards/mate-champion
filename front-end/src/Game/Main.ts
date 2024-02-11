@@ -6,7 +6,7 @@ import { SetUI } from "./models";
 export function enterGameLoop(
   setUI: SetUI,
   levels: LevelInfo[],
-  setLevel: (level: Partial<LevelInfo>) => void
+  setLevel?: (level: Partial<LevelInfo>) => void
 ) {
   const { canvas, context } = getCanvasContext();
   const gameState: GameState = new GameState(

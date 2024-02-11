@@ -11,7 +11,7 @@ import { OpponentVectorManager } from "./OpponentVectorManager";
 
 type GrogImageSource = "enemyDeath" | "enemyJump" | "enemyWalking";
 
-const drawImageWidth = 300; // this allows room for the attacks to be drawn
+const drawImageWidth = 150; // this allows room for the attacks to be drawn
 const drawImageHeight = drawImageWidth * (105 / 200);
 
 const imageSources: Record<GrogImageSource, string> = {
@@ -63,7 +63,7 @@ export class GrogDrawManager {
 
     const whichSprite =
       Math.round(this.spriteTimer / spriteInfo.cycleTime) % spriteInfo.imgCount;
-    const imageWidth = 200;
+    const imageWidth = 75;
 
     if (directionX === "left") {
       cxt.scale(-1, 1);

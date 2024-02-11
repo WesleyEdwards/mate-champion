@@ -20,7 +20,8 @@ export const PlayScreen: FC<{
   screen: MCScreen;
   setScreen: (screen: MCScreen) => void;
 }> = ({ modifyStats, setScreen, screen }) => {
-  const { user, api, modifyUser, modifyLevel } = useAuthContext();
+  const { user, api, modifyUser, modifyLevel, creatingLevel } =
+    useAuthContext();
 
   const [pauseModal, setPauseModal] = useState(false);
 
@@ -55,8 +56,8 @@ export const PlayScreen: FC<{
     setScreen("game");
     enterGameLoop(
       { modifyStats, handleLose, handlePause },
-      levelsInfo,
-      modifyLevel
+      creatingLevel ? [creatingLevel] : levelsInfo,
+      creatingLevel ? modifyLevel : undefined
     );
   };
 
@@ -64,17 +65,25 @@ export const PlayScreen: FC<{
     <>
       {screen === "home" && (
         <Button
-          sx={{ width: "10rem", my: "2rem" }}
+          sx={{ width: "11rem", my: "2rem" }}
           size="lg"
           onClick={handleClickPlay}
         >
-          Play Game
+          {creatingLevel ? "Level Editor" : "Play Game"}
         </Button>
       )}
       <Modal open={pauseModal} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Pause</DialogTitle>
           <DialogContent>{"'ESC' to unpause"}</DialogContent>
+          <Button
+            onClick={() => {
+              setScreen(creatingLevel ? "levelCreator" : "home");
+              setPauseModal(false);
+            }}
+          >
+            Quit
+          </Button>
         </ModalDialog>
       </Modal>
     </>

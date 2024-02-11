@@ -23,7 +23,7 @@ import { LevelInfo } from "../level-info/levelInfo";
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
   objectManager: ObjectManager;
-  setLevel: (level: Partial<LevelInfo>) => void;
+  setLevel?: (level: Partial<LevelInfo>) => void;
 };
 
 /**
@@ -48,7 +48,7 @@ export class DevContentCreate {
   cameraOffset: Coordinates = { x: 0, y: 0 };
   prevColor: string = "";
   currentlyCreating: CreatingThing;
-  setLevel: (level: Partial<LevelInfo>) => void;
+  setLevel?: (level: Partial<LevelInfo>) => void;
   lastUpdate: number = 0;
 
   creatingOptions: Record<ItemType, CreatingThing>;
@@ -73,7 +73,7 @@ export class DevContentCreate {
   update(offset: Coordinates, timestamp: number) {
     if (timestamp - this.lastUpdate > 5000) {
       this.lastUpdate = timestamp;
-      this.setLevel(exportLevelInfo(this.objectManager));
+      this.setLevel?.(exportLevelInfo(this.objectManager));
     }
     this.cameraOffset = { x: offset.x, y: offset.y };
 
@@ -164,6 +164,6 @@ export class DevContentCreate {
     }
   }
   exportLevelInfo() {
-    this.setLevel(exportLevelInfo(this.objectManager));
+    this.setLevel?.(exportLevelInfo(this.objectManager));
   }
 }

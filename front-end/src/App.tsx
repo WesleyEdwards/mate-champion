@@ -1,4 +1,5 @@
 import {
+  Alert,
   CssBaseline,
   CssVarsProvider,
   Sheet,
@@ -25,6 +26,15 @@ function App() {
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <AuthContext.Provider value={authInfo}>
+          {authInfo.creatingLevel && (
+            <Alert
+              variant="soft"
+              color="success"
+              sx={{ width: "100%", borderRadius: 0, position: "fixed" }}
+            >
+              Editing <b>{authInfo.creatingLevel.name}</b>
+            </Alert>
+          )}
           <Stack alignItems="center" justifyContent="center" height="100vh">
             <Stack direction="row">
               <Sheet variant="outlined" sx={{ m: 2, borderRadius: 10 }}>
