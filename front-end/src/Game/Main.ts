@@ -3,11 +3,12 @@ import { GameState } from "./GameState/GameState";
 import { LevelInfo } from "./level-info/levelInfo";
 import { SetUI } from "./models";
 
-export function enterGameLoop(
-  setUI: SetUI,
-  levels: LevelInfo[],
-  setLevel?: (level: Partial<LevelInfo>) => void
-) {
+export function enterGameLoop(params: {
+  setUI: SetUI;
+  levels: LevelInfo[];
+  setLevel?: (level: Partial<LevelInfo>) => void;
+}) {
+  const { setUI, levels, setLevel } = params;
   const { canvas, context } = getCanvasContext();
   const gameState: GameState = new GameState(
     setUI,

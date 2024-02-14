@@ -12,7 +12,7 @@ export class CameraDisplay {
   idleTime: number = 0;
 
   constructor() {
-    if (devSettings.courseBuilder) {
+    if (devSettings.pauseOpponent) {
       this.addScrollEventListeners();
     }
   }

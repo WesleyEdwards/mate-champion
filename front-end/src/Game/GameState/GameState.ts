@@ -38,7 +38,7 @@ export class GameState {
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;
-    this.devContentCreate = devSettings.courseBuilder
+    this.devContentCreate = devSettings.pauseOpponent
       ? new DevContentCreate({
           canvas,
           objectManager: this.objectManager,

@@ -1,10 +1,12 @@
 import {
   Button,
+  ButtonProps,
   DialogContent,
   DialogTitle,
   Modal,
   ModalClose,
   ModalDialog,
+  Stack,
 } from "@mui/joy";
 import { FC, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
@@ -51,27 +53,63 @@ export const PlayScreen: FC<{
     setPauseModal(pause);
   };
 
-  const handleClickPlay = () => {
+  const handleEnterGamePlay = (gamePlay: "play" | "editor" | "test") => {
     modifyStats({ ...emptyStats });
     setScreen("game");
-    enterGameLoop(
-      { modifyStats, handleLose, handlePause },
-      creatingLevel ? [creatingLevel] : levelsInfo,
-      creatingLevel ? modifyLevel : undefined
-    );
+
+    const params = {
+      play: {
+        setUI: { modifyStats, handleLose, handlePause },
+        levels: creatingLevel ? [creatingLevel] : [],
+        setLevel: undefined,
+      },
+      editor: {
+        setUI: { modifyStats, handleLose, handlePause },
+        levels: levelsInfo,
+        setLevel: modifyLevel,
+      },
+      test: {
+        setUI: { modifyStats, handleLose, handlePause },
+        levels: creatingLevel ? [creatingLevel] : [],
+        setLevel: undefined,
+      },
+    }[gamePlay];
+
+    enterGameLoop(params);
   };
 
   return (
     <>
-      {screen === "home" && (
-        <Button
-          sx={{ width: "11rem", my: "2rem" }}
-          size="lg"
-          onClick={handleClickPlay}
-        >
-          {creatingLevel ? "Level Editor" : "Play Game"}
-        </Button>
-      )}
+      {(() => {
+        if (screen !== "home") return null;
+        const buttonProps: ButtonProps = {
+          sx: { width: "11rem", my: "2rem" },
+          size: "lg",
+        };
+        if (creatingLevel) {
+          return (
+            <Stack direction="row" gap="1rem">
+              <Button
+                {...buttonProps}
+                onClick={() => handleEnterGamePlay("editor")}
+              >
+                Level Editor
+              </Button>
+              <Button
+                {...buttonProps}
+                onClick={() => handleEnterGamePlay("play")}
+              >
+                Test Level
+              </Button>
+            </Stack>
+          );
+        }
+        return (
+          <Button {...buttonProps} onClick={() => handleEnterGamePlay("play")}>
+            Play
+          </Button>
+        );
+      })()}
       <Modal open={pauseModal} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Pause</DialogTitle>

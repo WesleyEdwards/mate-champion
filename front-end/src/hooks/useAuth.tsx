@@ -62,7 +62,7 @@ export const useAuth = (): AuthContextType => {
 
   const setLevelCreating = (level: LevelInfo | null) => {
     setCreatingLevel(level);
-    modifyDevSettings("courseBuilder", !!level);
+    modifyDevSettings("pauseOpponent", !!level);
   };
 
   return {

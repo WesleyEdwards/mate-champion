@@ -13,7 +13,7 @@ const prodSettings: Record<keyof Settings, false> = {
   noDie: false,
   unlimitedBullets: false,
   oneLife: false,
-  courseBuilder: false,
+  pauseOpponent: false,
 } as const;
 
 export type DevStats = {
@@ -31,7 +31,7 @@ export type Settings = {
   noDie: boolean;
   unlimitedBullets: boolean;
   oneLife: boolean;
-  courseBuilder: boolean;
+  pauseOpponent: boolean;
 };
 
 class DevSettingsClass {

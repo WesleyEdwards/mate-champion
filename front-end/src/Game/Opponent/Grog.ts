@@ -28,7 +28,7 @@ export class Grog implements Character {
   }
 
   update(elapsedTime: number) {
-    if (devSettings.courseBuilder) return;
+    if (devSettings.pauseOpponent) return;
     this.vector.update(elapsedTime);
     this.velocity.y += GRAVITY * elapsedTime;
 
