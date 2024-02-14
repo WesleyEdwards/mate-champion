@@ -60,7 +60,7 @@ export const getUser: ReqBuilder =
       return res.status(401).json("Unauthorized")
     }
     const user = await client.user.findOne({_id: params.id})
-    if (!user) return res.status(404)
+    if (!user) return res.status(404).json("Not found")
     return res.json(sendUserBody(user, jwtBody?.admin))
   }
 
@@ -70,7 +70,7 @@ export const getSelf: ReqBuilder =
     const user = await client.user.findOne({
       _id: jwtBody?.userId || ""
     })
-    if (!user) return res.status(404)
+    if (!user) return res.status(404).json("Not found")
     return res.json(sendUserBody(user, jwtBody?.admin))
   }
 
@@ -125,7 +125,7 @@ export const modifyUser: ReqBuilder =
       }
     }
     const user = await client.user.findOne({_id: params.id})
-    if (!user) return res.status(404)
+    if (!user) return res.status(404).json("Not found")
     const userPartial = checkPartialValidation("user", {
       ...body,
       _id: params.id,

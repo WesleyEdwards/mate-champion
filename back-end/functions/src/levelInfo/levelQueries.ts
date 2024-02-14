@@ -9,7 +9,7 @@ export const getLevel: ReqBuilder =
   (client) =>
   async ({params, jwtBody}, res) => {
     if (!params.id || typeof params.id !== "string") {
-      return res.status(400)
+      return res.status(400).json("Bad request")
     }
     const level = await client.level.findOne({_id: params.id})
     if (!level) return res.status(404).json("Not found")
@@ -30,7 +30,7 @@ export const createLevel: ReqBuilder =
         .json({error: "You can only create this for yourself"})
     }
     const user = await client.user.findOne({_id: levelBody.owner})
-    if (!user) return res.status(500)
+    if (!user) return res.status(500).json("500")
     const level = await client.level.insertOne({
       ...levelBody,
       creatorName: user.name
@@ -46,13 +46,27 @@ export const queryLevel: ReqBuilder =
     return res.json(levels)
   }
 
+export const generateLevels: ReqBuilder =
+  (client) =>
+  async ({body}, res) => {
+    const levelIds = body as string[]
+    if (!Array.isArray(levelIds)) {
+      return res.status(400).json("Please supply a list of ids of levels")
+    }
+    const levels = await client.level.findMany({_id: levelIds})
+
+    return res.json(
+      levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))
+    )
+  }
+
 export const modifyLevel: ReqBuilder =
   (client) =>
   async ({params, body, jwtBody}, res) => {
     const level = await client.level.findOne({_id: params.id})
-    if (!level) return res.status(404)
+    if (!level) return res.status(404).json("Not found")
     if (!jwtBody?.admin && jwtBody?.userId !== level.owner) {
-      return res.status(404)
+      return res.status(404).json("Not found")
     }
     const levelPartial = checkPartialValidation("level", {
       ...body,

@@ -15,7 +15,7 @@ import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
-import { levelsInfo } from "../Game/level-info/levelInfo";
+import levelsInfo from "../levels.json";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -56,11 +56,12 @@ export const PlayScreen: FC<{
   const handleEnterGamePlay = (gamePlay: "play" | "editor" | "test") => {
     modifyStats({ ...emptyStats });
     setScreen("game");
+    console.log([...levelsInfo]);
 
     const params = {
       play: {
         setUI: { modifyStats, handleLose, handlePause },
-        levels: creatingLevel ? [creatingLevel] : [],
+        levels: creatingLevel ? [creatingLevel] : levelsInfo,
         setLevel: undefined,
       },
       editor: {
