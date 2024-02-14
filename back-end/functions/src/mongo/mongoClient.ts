@@ -6,7 +6,7 @@ import {
   OptionalUnlessRequiredId
 } from "mongodb"
 import {BasicEndpoints, Condition, DbClient, HasId} from "../DbClient"
-import {Score, User} from "../types"
+import {LevelInfo, Score, User} from "../types"
 
 function conditionToFilter<T extends HasId>(
   condition: Condition<T>
@@ -33,6 +33,7 @@ export const mongoClient = (): DbClient => {
   return {
     user: functionsForModel<User>(db, "user"),
     score: functionsForModel<Score>(db, "score"),
+    level: functionsForModel<LevelInfo>(db, "level"),
     migrations: migrationsFunctions(db)
   }
 }

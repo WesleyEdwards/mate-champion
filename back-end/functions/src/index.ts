@@ -8,6 +8,7 @@ import {usersController} from "./user/user_controller"
 import {scoresController} from "./score/scoresController"
 import {mongoClient} from "./mongo/mongoClient"
 import {runMigrations} from "./migrations/runMigrations"
+import { levelsController } from "./levelInfo/level_controller"
 
 dotenv.config()
 
@@ -19,6 +20,7 @@ app.use(cookieParser())
 app.use(cors())
 
 usersController(app, client)
+levelsController(app, client)
 scoresController(app, client)
 
 app.post("/situate", async (_, res) => {

@@ -1,4 +1,4 @@
-import {Score, User} from "./types"
+import {LevelInfo, Score, User} from "./types"
 
 export type HasId = {
   _id: string
@@ -25,6 +25,7 @@ type MigrationEndpoints = {
 
 export type DbClient = {
   user: BasicEndpoints<User>
+  level: BasicEndpoints<LevelInfo>
   score: BasicEndpoints<Score>
   migrations: MigrationEndpoints
 }

@@ -11,6 +11,8 @@ import { ammoUp } from "./ammoUp";
 
 export type LevelInfo = {
   _id: string;
+  owner: string;
+  public: boolean;
   name: string;
   packages: PackageProps[];
   opponents: { grog: GrogProps[] };
