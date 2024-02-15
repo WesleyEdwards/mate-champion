@@ -2,8 +2,7 @@ import { areTouching } from "../GameState/GameStateFunctions";
 import { playerConst } from "../constants";
 import { getLevelItem } from "../constructors";
 import { Canvas, DrawObjProps } from "../helpers/types";
-import { LevelInfo } from "../level-info/levelInfo";
-import { Coordinates } from "../models";
+import { Coordinates, LevelInfo } from "../models";
 import { Grog } from "./Grog";
 
 export type Opponents = { grog: Grog[] };

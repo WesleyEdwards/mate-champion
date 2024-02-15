@@ -1,5 +1,5 @@
 import { DISPLAY_LEVEL_TIME } from "../constants";
-import { Keys, SetUI } from "../models";
+import { Keys, LevelInfo, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
 import { GameDrawer } from "./GameDrawer";
@@ -8,7 +8,6 @@ import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
-import { LevelInfo } from "../level-info/levelInfo";
 
 export class GameState {
   currStateOfGame: WinState = "initial";

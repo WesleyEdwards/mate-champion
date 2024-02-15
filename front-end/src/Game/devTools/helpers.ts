@@ -1,6 +1,5 @@
 import { ObjectManager } from "../GameState/ObjectManager";
-import { LevelInfo } from "../level-info/levelInfo";
-import { Coordinates, HasPosition } from "../models";
+import { Coordinates, HasPosition, LevelInfo } from "../models";
 
 const { round } = Math;
 

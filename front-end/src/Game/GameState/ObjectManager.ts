@@ -3,7 +3,7 @@ import {
   calcPlatPlayerCollision,
   updateLiveStatus,
 } from "./GameStateFunctions";
-import { Coordinates, Keys } from "../models";
+import { Coordinates, Keys, LevelInfo } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
@@ -12,7 +12,6 @@ import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
-import { LevelInfo } from "../level-info/levelInfo";
 
 export class ObjectManager {
   player: Player = new Player();

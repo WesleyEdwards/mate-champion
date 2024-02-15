@@ -1,7 +1,6 @@
 import { getLevelItem } from "../constructors";
 import { DrawObjProps } from "../helpers/types";
-import { LevelInfo } from "../level-info/levelInfo";
-import { StaticObject } from "../models";
+import { LevelInfo, StaticObject } from "../models";
 
 export class PlatformManager {
   platforms: StaticObject[] = [];

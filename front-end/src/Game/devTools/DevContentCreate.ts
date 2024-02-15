@@ -1,5 +1,5 @@
 import { ObjectManager } from "../GameState/ObjectManager";
-import { Coordinates, HasPosition, StaticObject } from "../models";
+import { Coordinates, HasPosition, LevelInfo, StaticObject } from "../models";
 import { PlatformCreator } from "./PlatformCreator";
 import {
   ContentEvent,
@@ -18,7 +18,6 @@ import {
   findExistingItems,
 } from "./helpers";
 import { DevSettings, devSettings } from "../devSettings";
-import { LevelInfo } from "../level-info/levelInfo";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;

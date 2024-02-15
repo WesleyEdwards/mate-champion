@@ -1,3 +1,4 @@
+import { LevelInfo } from "../Game/models";
 import { User, LoginBody, Condition, Score, TopScore } from "../types";
 import { localStorageManager } from "./localStorageManager";
 
@@ -95,6 +96,27 @@ export class Api {
     },
     delete: (id: string): Promise<User> => {
       return this.del(`user/${id}`);
+    },
+  };
+
+  readonly level = {
+    detail: (id: string): Promise<LevelInfo> => {
+      return this.get(`level/${id}`);
+    },
+    query: (filter: Condition<LevelInfo>): Promise<LevelInfo[]> => {
+      return this.post("level/query", filter);
+    },
+    create: (body: LevelInfo): Promise<LevelInfo> => {
+      return this.post("level/create", body);
+    },
+    modify: (id: string, mod: Partial<LevelInfo>): Promise<LevelInfo> => {
+      return this.put(`level/${id}`, mod);
+    },
+    delete: (id: string): Promise<LevelInfo> => {
+      return this.del(`level/${id}`);
+    },
+    generate: (ids: string[]): Promise<LevelInfo[]> => {
+      return this.post(`level/generate`, ids);
     },
   };
 

@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
-import { LevelInfo } from "../Game/level-info/levelInfo";
+import { LevelInfo } from "../Game/models";
 
 export type AuthContextType = {
   api: Api;

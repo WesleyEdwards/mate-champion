@@ -1,7 +1,6 @@
 import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
-import { LevelInfo } from "./level-info/levelInfo";
-import { SetUI } from "./models";
+import { LevelInfo, SetUI } from "./models";
 
 export function enterGameLoop(params: {
   setUI: SetUI;

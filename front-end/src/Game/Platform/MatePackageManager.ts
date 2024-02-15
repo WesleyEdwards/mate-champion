@@ -6,8 +6,8 @@ import Player from "../Player/Player";
 import { DrawObjProps } from "../helpers/types";
 import { devSettings } from "../devSettings";
 import { packageConst } from "../constants";
-import { LevelInfo } from "../level-info/levelInfo";
 import { getLevelItem } from "../constructors";
+import { LevelInfo } from "../models";
 
 export class MatePackageManager {
   packages: Package[] = [];

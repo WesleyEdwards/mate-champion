@@ -1,3 +1,6 @@
+import { PackageProps } from "./Bullet/Package";
+import { GrogProps } from "./Opponent/Grog";
+import { FloatingType, FloorType } from "./Platform/Platform";
 import { Canvas, DrawObjProps, PlayStats } from "./helpers/types";
 
 export type CharAction =
@@ -66,3 +69,14 @@ export interface Keys {
 export type OppDirections = "left" | "right";
 
 export type VagueFacing = "left" | "right" | "up" | "down";
+
+export type LevelInfo = {
+  _id: string;
+  owner: string;
+  public: boolean;
+  name: string;
+  packages: PackageProps[];
+  opponents: { grog: GrogProps[] };
+  platforms: FloatingType[];
+  floors: FloorType[];
+};

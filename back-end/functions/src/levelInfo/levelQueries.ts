@@ -22,7 +22,10 @@ export const getLevel: ReqBuilder =
 export const createLevel: ReqBuilder =
   (client) =>
   async ({jwtBody, body}, res) => {
-    const levelBody = checkValidation("level", {...body})
+    const levelBody = checkValidation("level", {
+      ...body,
+      owner: body.owner ?? jwtBody?.userId
+    })
     if (isParseError(levelBody)) return res.status(400).json(levelBody)
     if (levelBody.owner !== jwtBody?.userId) {
       return res

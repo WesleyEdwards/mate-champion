@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import { ViewHeader } from "./ViewHeader";
 import {
@@ -9,10 +9,12 @@ import {
   Select,
   Stack,
   Typography,
+  CircularProgress,
 } from "@mui/joy";
 import { Add } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
 import { localStorageManager } from "../api/localStorageManager";
+import { LevelInfo } from "../Game/models";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
   const {
@@ -20,10 +22,18 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
     creatingLevel,
     modifyLevel,
     saveLevelToDb,
+    api,
     deleteFromDatabase,
+    user,
   } = useAuthContext();
 
-  const ownedLevels = localStorageManager.getLevels();
+  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
+  const [creating, setCreating] = useState(false);
+
+  useEffect(() => {
+    setOwnedLevels(undefined);
+    api.level.query({ owner: user?._id ?? "" }).then(setOwnedLevels);
+  }, []);
 
   return (
     <>
@@ -67,6 +77,10 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
               </Stack>
             );
           }
+          if (!ownedLevels)
+            return (
+              <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
+            );
           return (
             <>
               {ownedLevels.length > 0 && (
@@ -95,15 +109,27 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
 
               <Button
                 onClick={() => {
-                  setCreatingLevel({
-                    _id: crypto.randomUUID(),
-                    name: "My level",
-                    opponents: { grog: [] },
-                    packages: [],
-                    floors: [{ x: -500, width: 2070, color: "green" }],
-                    platforms: [],
-                  });
+                  setCreating(true);
+                  api.level
+                    .create({
+                      _id: crypto.randomUUID(),
+                      owner: user?._id ?? "Anonymouse",
+                      public: false,
+                      name: "My level",
+                      opponents: { grog: [] },
+                      packages: [],
+                      floors: [{ x: -500, width: 2070, color: "green" }],
+                      platforms: [],
+                    })
+                    .then((created) => {
+                      setCreating(false)
+                      setOwnedLevels((prev) =>
+                        prev ? [...prev, created] : prev
+                      );
+                      return setCreatingLevel(created);
+                    });
                 }}
+                loading={creating}
                 sx={{ width: "12rem", alignSelf: "center" }}
                 endDecorator={<Add />}
               >

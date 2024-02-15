@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
-import { LevelInfo } from "../Game/level-info/levelInfo";
 import { AuthContextType } from "./AuthContext";
 import { modifyDevSettings } from "../Game/devSettings";
+import { LevelInfo } from "../Game/models";
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>();
