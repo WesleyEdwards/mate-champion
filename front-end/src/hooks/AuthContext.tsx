@@ -13,7 +13,9 @@ export type AuthContextType = {
   creatingLevel: LevelInfo | null;
   setLevelCreating: (level: LevelInfo | null) => void;
   modifyLevel: (level: Partial<LevelInfo>) => void;
-  saveLevelToDb: () => void;
+  setEditingLevel: (editing: boolean) => void;
+  editingLevel: boolean;
+  saveLevelToDb: () => Promise<unknown>;
   deleteFromDatabase: () => void;
 };
 

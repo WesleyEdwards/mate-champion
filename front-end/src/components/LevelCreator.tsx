@@ -1,13 +1,27 @@
-import { Stack, Switch, Typography } from "@mui/joy";
+import { Button, Stack, Switch, Typography } from "@mui/joy";
 import { Settings, devSettings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
 import { useState } from "react";
+import { useAuthContext } from "../hooks/AuthContext";
 
 export const LevelCreator = () => {
+  const { saveLevelToDb, editingLevel } = useAuthContext();
   const [state, setState] = useState({ ...devSettings });
+  const [saving, setSaving] = useState(false);
   return (
     <Stack justifyContent="flex-end" m={2} gap={0.5}>
+      {editingLevel && (
+        <Button
+          loading={saving}
+          onClick={() => {
+            setSaving(true);
+            saveLevelToDb().then(() => setSaving(false));
+          }}
+        >
+          Save
+        </Button>
+      )}
       {Object.entries(state).map(([setting, enabled]) => (
         <Typography
           key={setting}

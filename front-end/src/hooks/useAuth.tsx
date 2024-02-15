@@ -9,6 +9,7 @@ import { LevelInfo } from "../Game/models";
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>();
   const [creatingLevel, setCreatingLevel] = useState<LevelInfo | null>(null);
+  const [editingLevel, setEditingLevel] = useState(false);
 
   const api = useMemo(() => new Api(localStorageManager.get("token")), []);
 
@@ -43,13 +44,16 @@ export const useAuth = (): AuthContextType => {
     setCreatingLevel((prev) => (prev ? { ...prev, ...level } : null));
   };
 
-  const saveLevelToDb = () => {
+  const saveLevelToDb = (): Promise<unknown> => {
+    console.log("saveLevelToDb");
     if (!creatingLevel) {
-      console.log("Can't save it.");
-      return;
+      return Promise.reject("Not working on a level");
     }
-    console.log("Saving level to local storage for now");
-    localStorageManager.saveLevel(creatingLevel);
+    return api.level.modify(creatingLevel._id, {
+      floors: creatingLevel.floors,
+      platforms: creatingLevel.platforms,
+      opponents: creatingLevel.opponents,
+    });
   };
 
   const deleteFromDatabase = () => {
@@ -77,5 +81,7 @@ export const useAuth = (): AuthContextType => {
     modifyLevel,
     saveLevelToDb,
     deleteFromDatabase,
+    setEditingLevel,
+    editingLevel
   };
 };

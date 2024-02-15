@@ -22,7 +22,7 @@ export const PlayScreen: FC<{
   screen: MCScreen;
   setScreen: (screen: MCScreen) => void;
 }> = ({ modifyStats, setScreen, screen }) => {
-  const { user, api, modifyUser, modifyLevel, creatingLevel } =
+  const { user, api, modifyUser, modifyLevel, creatingLevel, setEditingLevel } =
     useAuthContext();
 
   const [pauseModal, setPauseModal] = useState(false);
@@ -56,17 +56,16 @@ export const PlayScreen: FC<{
   const handleEnterGamePlay = (gamePlay: "play" | "editor" | "test") => {
     modifyStats({ ...emptyStats });
     setScreen("game");
-    console.log([...levelsInfo]);
 
     const params = {
       play: {
         setUI: { modifyStats, handleLose, handlePause },
-        levels: creatingLevel ? [creatingLevel] : levelsInfo,
+        levels: levelsInfo,
         setLevel: undefined,
       },
       editor: {
         setUI: { modifyStats, handleLose, handlePause },
-        levels: levelsInfo,
+        levels: creatingLevel ? [creatingLevel] : [],
         setLevel: modifyLevel,
       },
       test: {
@@ -75,6 +74,7 @@ export const PlayScreen: FC<{
         setLevel: undefined,
       },
     }[gamePlay];
+    setEditingLevel(gamePlay === "editor");
 
     enterGameLoop(params);
   };
