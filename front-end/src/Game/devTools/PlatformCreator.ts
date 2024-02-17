@@ -106,7 +106,6 @@ export class PlatformCreator implements CreatingThing<"platform"> {
       this.items.push(newPlatform);
       newItems.push(newPlatform);
     });
-    console.log(newItems);
     this.unSelectAll();
     this.selectAll(newItems);
   }

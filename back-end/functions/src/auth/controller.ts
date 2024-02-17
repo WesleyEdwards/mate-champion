@@ -9,7 +9,6 @@ export const authenticationMiddleware: AuthReqHandler = async (
   res,
   next
 ) => {
-  console.log("PATH", req.url)
   const token = req.headers.authorization?.split(" ")[1]
   try {
     const jwtBody = jwt.verify(
@@ -38,7 +37,6 @@ export const controller =
       if (!route.skipAuth) {
         router.use(route.path, (req, res, next) => {
           if (req.method.toLowerCase() === route.method) {
-            console.log("authenticating", name, route.path, route.method)
             authenticationMiddleware(req, res, next)
           } else {
             next()

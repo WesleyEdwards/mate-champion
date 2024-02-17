@@ -87,7 +87,6 @@ function functionsForModel<T extends HasId>(
       return undefined
     },
     findOne: async (filter) => {
-      console.log("CONDITION", conditionToFilter(filter))
       const item = (await collection.findOne(
         conditionToFilter(filter)
       )) as T | null
@@ -97,7 +96,6 @@ function functionsForModel<T extends HasId>(
       return undefined
     },
     findMany: async (filter: Condition<T>) => {
-      console.log("CONDITION", conditionToFilter(filter))
       const items = collection.find(conditionToFilter(filter))
       return (await items.toArray()) as T[]
     },
