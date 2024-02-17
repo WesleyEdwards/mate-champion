@@ -26,13 +26,13 @@ function App() {
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <AuthContext.Provider value={authInfo}>
-          {authInfo.creatingLevel && (
+          {authInfo.editingLevel && (
             <Alert
               variant="soft"
               color="success"
               sx={{ width: "100%", borderRadius: 0, position: "fixed" }}
             >
-              Editing <b>{authInfo.creatingLevel.name}</b>
+              Editing <b>{authInfo.editingLevel.name}</b>
             </Alert>
           )}
           <Stack alignItems="center" justifyContent="center" height="100vh">

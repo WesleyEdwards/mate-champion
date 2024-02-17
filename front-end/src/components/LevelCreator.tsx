@@ -6,13 +6,16 @@ import { useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 
 export const LevelCreator = () => {
-  const { saveLevelToDb, editingLevel } = useAuthContext();
-  const {pauseOpponent, ...displaySettings} = devSettings
+  const { saveLevelToDb, gameMode } = useAuthContext();
+  const { pauseOpponent, ...displaySettings } = devSettings;
   const [state, setState] = useState({ ...displaySettings });
   const [saving, setSaving] = useState(false);
+
+  if (gameMode === "play") return null;
+
   return (
     <Stack justifyContent="flex-end" m={2} gap={0.5}>
-      {editingLevel && (
+      {gameMode === "edit" && (
         <Button
           loading={saving}
           onClick={() => {

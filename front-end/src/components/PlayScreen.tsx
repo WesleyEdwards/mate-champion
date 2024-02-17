@@ -17,13 +17,14 @@ import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
 import { DevSettings, modifyDevSettings } from "../Game/devSettings";
+import { GameMode } from "../hooks/useAuth";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
   screen: MCScreen;
   setScreen: (screen: MCScreen) => void;
 }> = ({ modifyStats, setScreen, screen }) => {
-  const { user, api, modifyUser, modifyLevel, creatingLevel, setEditingLevel } =
+  const { user, api, modifyUser, modifyLevel, editingLevel, setGameMode } =
     useAuthContext();
 
   const [pauseModal, setPauseModal] = useState(false);
@@ -54,11 +55,12 @@ export const PlayScreen: FC<{
     setPauseModal(pause);
   };
 
-  const handleEnterGamePlay = (gamePlay: "play" | "editor" | "test") => {
+  const handleEnterGamePlay = (gamePlay: GameMode) => {
     modifyStats({ ...emptyStats });
     setScreen("game");
 
-    modifyDevSettings("pauseOpponent", gamePlay === "editor");
+    modifyDevSettings("pauseOpponent", gamePlay === "edit");
+    setGameMode(gamePlay);
 
     const params = {
       play: {
@@ -66,18 +68,17 @@ export const PlayScreen: FC<{
         levels: levelsInfo,
         setLevel: undefined,
       },
-      editor: {
+      edit: {
         setUI: { modifyStats, handleLose, handlePause },
-        levels: creatingLevel ? [creatingLevel] : [],
+        levels: editingLevel ? [editingLevel] : [],
         setLevel: modifyLevel,
       },
       test: {
         setUI: { modifyStats, handleLose, handlePause },
-        levels: creatingLevel ? [creatingLevel] : [],
+        levels: editingLevel ? [editingLevel] : [],
         setLevel: undefined,
       },
     }[gamePlay];
-    setEditingLevel(gamePlay === "editor");
 
     enterGameLoop(params);
   };
@@ -90,12 +91,12 @@ export const PlayScreen: FC<{
           sx: { width: "11rem", my: "2rem" },
           size: "lg",
         };
-        if (creatingLevel) {
+        if (editingLevel) {
           return (
             <Stack direction="row" gap="1rem">
               <Button
                 {...buttonProps}
-                onClick={() => handleEnterGamePlay("editor")}
+                onClick={() => handleEnterGamePlay("edit")}
               >
                 Level Editor
               </Button>
@@ -120,7 +121,8 @@ export const PlayScreen: FC<{
           <DialogContent>{"'ESC' to unpause"}</DialogContent>
           <Button
             onClick={() => {
-              setScreen(creatingLevel ? "levelCreator" : "home");
+              setGameMode("play");
+              setScreen(editingLevel ? "levelCreator" : "home");
               setPauseModal(false);
             }}
           >
