@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LevelInfo } from "../Game/models";
 import { LevelsContextType } from "./LevelsContext";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
+import { User } from "../types";
 
 export const useLevels: (params: {
   api: Api | undefined;
+  user: User | undefined;
 }) => LevelsContextType = ({ api }) => {
   const [originalLevel, setOriginalLevel] = useState<LevelInfo | null>(null);
   const [editingLevel, setEditingLevel] = useState<LevelInfo | null>(null);
   const [gameMode, setGameMode] = useState<GameMode>("play");
+  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
+
   const saveLevelToDb = (): Promise<LevelInfo> => {
     console.log("saveLevelToDb");
     if (!editingLevel || !originalLevel || !api) {
+      console.log(editingLevel, originalLevel, api);
       return Promise.reject("Not working on a level");
     }
 
@@ -82,12 +87,15 @@ export const useLevels: (params: {
     setOriginalLevel(level ? { ...level } : null);
     setEditingLevel(level ? { ...level } : null);
   };
+
   return {
     modifyLevel,
-    setEditingLevel,
+    setEditingLevel: handleSetEditing,
     editingLevel,
     saveLevelToDb,
     gameMode,
     setGameMode,
+    ownedLevels,
+    setOwnedLevels,
   };
 };

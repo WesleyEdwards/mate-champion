@@ -22,18 +22,24 @@ import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
   const { api, user } = useAuthContext();
-  const { editingLevel, setEditingLevel, modifyLevel, saveLevelToDb } =
-    useLevelContext();
+  const {
+    editingLevel,
+    setEditingLevel,
+    modifyLevel,
+    saveLevelToDb,
+    ownedLevels,
+    setOwnedLevels,
+  } = useLevelContext();
 
-  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<LevelInfo>();
 
   if (!user) throw new Error("User must be authenticated");
 
   useEffect(() => {
+    if (ownedLevels) return;
     setOwnedLevels(undefined);
-    api.level.query({ owner: user._id }).then(setOwnedLevels);
+    api?.level.query({ owner: user?._id }).then(setOwnedLevels);
   }, []);
 
   return (

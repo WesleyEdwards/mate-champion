@@ -4,11 +4,10 @@ import {
   DialogContent,
   DialogTitle,
   Modal,
-  ModalClose,
   ModalDialog,
   Stack,
 } from "@mui/joy";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { enterGameLoop } from "../Game/Main";
 import { PlayStats } from "../Game/helpers/types";
@@ -16,7 +15,7 @@ import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
-import { DevSettings, modifyDevSettings } from "../Game/devSettings";
+import { modifyDevSettings } from "../Game/devSettings";
 import { GameMode } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/LevelsContext";
 

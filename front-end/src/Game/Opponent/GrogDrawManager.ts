@@ -30,7 +30,11 @@ export class GrogDrawManager {
   update(elapsedTime: number) {
     this.spriteTimer += elapsedTime;
   }
-  drawFromInfo(drawProps: DrawObjProps, vector: OpponentVectorManager) {
+  drawFromInfo(
+    drawProps: DrawObjProps,
+    vector: OpponentVectorManager,
+    isDying: boolean
+  ) {
     const inAir =
       vector.velocity.y > 0
         ? "falling"
@@ -40,8 +44,7 @@ export class GrogDrawManager {
 
     const facingX = vector.velocity.x > 0 ? "right" : "left";
 
-    const spriteDisplay = "walk";
-    // const spriteDisplay = Math.abs(vector.velocity.y) > 0 ? "jump" : "walk";
+    const spriteDisplay = isDying ? "die" : "walk";
     this.draw(drawProps, vector.position, facingX, inAir, spriteDisplay);
   }
   draw(
@@ -126,9 +129,9 @@ const grogSpritesInfo: SpriteInfo<GrogDescription, GrogImageSource> = {
   },
   die: {
     image: "enemyDeath",
-    imgCount: 4,
+    imgCount: 5,
     startX: 0,
-    cycleTime: 70,
+    cycleTime: 105,
   },
 };
 

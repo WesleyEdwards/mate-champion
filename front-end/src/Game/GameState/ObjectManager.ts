@@ -69,7 +69,7 @@ export class ObjectManager {
       this.opponentManager.opponents,
       this.bulletManager.bullets
     );
-    this.opponentManager.removeOpponents(opponents);
+    this.opponentManager.markAsDying(opponents);
     this.bulletManager.removeBullets(bullets);
     return opponents.grog.length;
   }

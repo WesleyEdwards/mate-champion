@@ -1,7 +1,7 @@
 import { areTouching } from "../GameState/GameStateFunctions";
 import { playerConst } from "../constants";
 import { getLevelItem } from "../constructors";
-import { Canvas, DrawObjProps } from "../helpers/types";
+import { DrawObjProps } from "../helpers/types";
 import { Coordinates, LevelInfo } from "../models";
 import { Grog } from "./Grog";
 
@@ -10,7 +10,13 @@ export class OpponentManager {
   opponents: Opponents = { grog: [] };
 
   update(elapsedTime: number) {
-    this.opponents.grog.forEach((o) => o.update(elapsedTime));
+    this.opponents.grog.forEach((o) => {
+      if (o.dyingState === "dead") {
+        this.opponents.grog.splice(this.opponents.grog.indexOf(o), 1);
+      }
+
+      o.update(elapsedTime);
+    });
   }
 
   draw(drawProps: DrawObjProps) {
@@ -23,9 +29,9 @@ export class OpponentManager {
     );
   }
 
-  removeOpponents(indexes: { grog: number[] }) {
+  markAsDying(indexes: { grog: number[] }) {
     indexes.grog.forEach((opp) => {
-      this.opponents.grog.splice(opp, 1);
+      this.opponents.grog[opp].markAsDying();
     });
   }
 

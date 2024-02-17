@@ -20,7 +20,7 @@ function createUserToken(user: User) {
   )
 }
 
-const sendUserBody = (user: User, self?: JWTBody) => {
+const sendUserBody = (user: User, self: JWTBody | undefined) => {
   if (!self) return null
   if (self.userType === "Admin" || user._id === self.userId) {
     const {passwordHash, ...userWithoutPassword} = user
@@ -60,7 +60,10 @@ export const createUser: ReqBuilder =
     if (isParseError(scoreBody)) return res.status(400).json(userBody)
     await client.score.insertOne(scoreBody)
 
-    return res.json({user: sendUserBody(user), token})
+    return res.json({
+      user: sendUserBody(user, {userId: user._id, userType: user.userType}),
+      token
+    })
   }
 
 export const getUser: ReqBuilder =

@@ -9,6 +9,8 @@ export type LevelsContextType = {
   saveLevelToDb: () => Promise<LevelInfo>;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
+  ownedLevels: LevelInfo[] | undefined;
+  setOwnedLevels: React.Dispatch<React.SetStateAction<LevelInfo[] | undefined>>;
 };
 
 export const LevelsContext = createContext({} as LevelsContextType);

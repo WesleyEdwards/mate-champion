@@ -64,7 +64,7 @@ export class GrogCreator implements CreatingThing<"grog"> {
   }
 
   handleCreate(initPos: Coordinates) {
-    this.items.push(new Grog({ initPos, moveSpeed: 0 }));
+    this.items.push(new Grog({ initPos, moveSpeed: 0.07 }));
   }
   handleDelete() {
     this.selected.forEach((g) => {

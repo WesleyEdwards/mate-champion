@@ -16,6 +16,8 @@ export class Grog implements Character {
   vector: OpponentVectorManager;
   drawManager: GrogDrawManager;
   jumpOften: boolean;
+  dyingState: "alive" | "dying" | "dead" = "alive";
+  dyingTimer: number = 0;
 
   constructor({ initPos, moveSpeed, jumpOften }: GrogProps) {
     this.vector = new OpponentVectorManager(
@@ -37,20 +39,31 @@ export class Grog implements Character {
       this.vector.stopY(MAX_CANVAS_HEIGHT - this.height / 2);
     }
 
-    if (randomOutOf(this.jumpOften ? 50 : 120)) this.move("Jump");
     if (randomOutOf(120)) this.move("MoveRight");
     if (randomOutOf(120)) this.move("MoveLeft");
+    if (this.dyingState === "alive" && randomOutOf(this.jumpOften ? 50 : 120)) {
+      this.move("Jump");
+    }
+    if (this.dyingState === "dying") {
+      this.dyingTimer += elapsedTime;
+      if (this.dyingTimer > 500) this.dyingState = "dead";
+    }
   }
   move(action: CharAction) {
     this.vector.move(action);
   }
 
   draw(drawProps: DrawObjProps) {
-    this.drawManager.drawFromInfo(drawProps, this.vector);
+    this.drawManager.drawFromInfo(drawProps, this.vector, this.dyingState !== "alive");
   }
 
   setOnPlatform(num: number) {
     return this.vector.stopY(num);
+  }
+
+  markAsDying() {
+    this.dyingState = "dying";
+    this.drawManager.spriteTimer = 0;
   }
 
   get bottomPos() {
