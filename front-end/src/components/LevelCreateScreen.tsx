@@ -2,16 +2,13 @@ import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import { ViewHeader } from "./ViewHeader";
 import {
-  Option,
   Button,
   Divider,
   Input,
-  Select,
   Stack,
   Typography,
   CircularProgress,
   Card,
-  CardContent,
   IconButton,
   Modal,
   ModalDialog,
@@ -20,18 +17,13 @@ import {
 } from "@mui/joy";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
-import { localStorageManager } from "../api/localStorageManager";
 import { LevelInfo } from "../Game/models";
+import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
-  const {
-    editingLevel,
-    setEditingLevel,
-    modifyLevel,
-    saveLevelToDb,
-    api,
-    user,
-  } = useAuthContext();
+  const { api, user } = useAuthContext();
+  const { editingLevel, setEditingLevel, modifyLevel, saveLevelToDb } =
+    useLevelContext();
 
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
   const [creating, setCreating] = useState(false);

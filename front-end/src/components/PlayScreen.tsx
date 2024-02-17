@@ -18,14 +18,15 @@ import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
 import { DevSettings, modifyDevSettings } from "../Game/devSettings";
 import { GameMode } from "../hooks/useAuth";
+import { useLevelContext } from "../hooks/LevelsContext";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
   screen: MCScreen;
   setScreen: (screen: MCScreen) => void;
 }> = ({ modifyStats, setScreen, screen }) => {
-  const { user, api, modifyUser, modifyLevel, editingLevel, setGameMode } =
-    useAuthContext();
+  const { user, api, modifyUser } = useAuthContext();
+  const { modifyLevel, editingLevel, setGameMode } = useLevelContext();
 
   const [pauseModal, setPauseModal] = useState(false);
 

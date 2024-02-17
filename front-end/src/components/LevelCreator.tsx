@@ -3,10 +3,10 @@ import { Settings, devSettings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
 import { useState } from "react";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreator = () => {
-  const { saveLevelToDb, gameMode } = useAuthContext();
+  const { saveLevelToDb, gameMode } = useLevelContext();
   const { pauseOpponent, ...displaySettings } = devSettings;
   const [state, setState] = useState({ ...displaySettings });
   const [saving, setSaving] = useState(false);

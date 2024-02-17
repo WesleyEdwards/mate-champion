@@ -11,12 +11,6 @@ export type AuthContextType = {
   user?: User;
   logout: () => void;
   modifyUser: (body: Partial<User>) => void;
-  modifyLevel: (level: Partial<LevelInfo>) => void;
-  setEditingLevel: (editing: LevelInfo | null) => void;
-  editingLevel: LevelInfo | null;
-  saveLevelToDb: () => Promise<LevelInfo>;
-  gameMode: GameMode;
-  setGameMode: (show: GameMode) => void;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
