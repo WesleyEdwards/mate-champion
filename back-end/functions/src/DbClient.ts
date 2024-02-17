@@ -4,8 +4,28 @@ export type HasId = {
   _id: string
 }
 
-export type Condition<T extends HasId> = {
-  [P in keyof T]?: T[P][] | T[P]
+export type Condition<T extends HasId> =
+  | {
+      [P in keyof T]?: T[P][] | T[P]
+    }
+  | {
+      or?: Condition<T>[]
+    }
+
+export function queryContainsKey(query: any, key: string): boolean {
+  return Object.entries(query).some(([k, v]) => {
+    if (k === key) return true
+    if (Array.isArray(v)) {
+      const isString = typeof v.at(0) === "string"
+      return isString
+        ? v.includes(key)
+        : v.some((q) => queryContainsKey(q, key))
+    }
+    if (k === "or") {
+      return queryContainsKey(v, key)
+    }
+    return false
+  })
 }
 
 export type OrError<T> = T | undefined

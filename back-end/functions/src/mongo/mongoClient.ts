@@ -12,19 +12,50 @@ import {runMigrations} from "./mongoMigrations"
 function conditionToFilter<T extends HasId>(
   condition: Condition<T>
 ): Filter<T> {
-  const filter: Filter<T> = {}
-  for (const key in condition) {
-    if (condition[key as keyof T]) {
-      if (Array.isArray(condition[key as keyof T])) {
-        filter[key as keyof Filter<T>] = {
-          $in: condition[key as keyof T]
+  // const filter: Filter<T> = {}
+  // for (const k in condition) {
+  //   const key = k as keyof Condition<T>
+  //   if (key === "or") {
+  //     const arr = condition[key]
+  //     if (!Array.isArray(arr)) {
+  //       throw new Error("or condition must be an array")
+  //     }
+  //     filter.$or = arr.map(conditionToFilter) as any
+  //     continue
+  //   }
+  //   if (condition[key]) {
+  //     if (Array.isArray(condition[key])) {
+  //       filter[key as keyof Filter<T>] = {
+  //         $in: condition[key]
+  //       }
+  //     } else {
+  //       filter[key as keyof Filter<T>] = condition[key]
+  //     }
+  //   }
+  // }
+  // return filter
+
+  return Object.entries(condition).reduce((acc, [k, v]) => {
+    const key = k as keyof Condition<T>
+    if (key === "or") {
+      const arr = v
+      if (!Array.isArray(arr)) {
+        throw new Error("or condition must be an array")
+      }
+      acc.$or = arr.map(conditionToFilter) as any
+      return acc
+    }
+    if (v) {
+      if (Array.isArray(v)) {
+        acc[key as keyof Filter<T>] = {
+          $in: v
         }
       } else {
-        filter[key as keyof Filter<T>] = condition[key as keyof T]
+        acc[key as keyof Filter<T>] = v
       }
     }
-  }
-  return filter
+    return acc
+  }, {} as Filter<T>)
 }
 
 export const mongoClient = (): DbClient => {
@@ -56,6 +87,7 @@ function functionsForModel<T extends HasId>(
       return undefined
     },
     findOne: async (filter) => {
+      console.log("CONDITION", conditionToFilter(filter))
       const item = (await collection.findOne(
         conditionToFilter(filter)
       )) as T | null
@@ -65,6 +97,7 @@ function functionsForModel<T extends HasId>(
       return undefined
     },
     findMany: async (filter: Condition<T>) => {
+      console.log("CONDITION", conditionToFilter(filter))
       const items = collection.find(conditionToFilter(filter))
       return (await items.toArray()) as T[]
     },

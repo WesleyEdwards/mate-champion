@@ -6,7 +6,8 @@ import {
   checkValidation,
   isParseError
 } from "../request_body"
-import {User, UserType} from "../types"
+import {User} from "../types"
+import {queryContainsKey} from "../DbClient"
 
 function createUserToken(user: User) {
   return jwt.sign(
@@ -19,12 +20,13 @@ function createUserToken(user: User) {
   )
 }
 
-const sendUserBody = (user: any, userType?: UserType) => {
-  if (userType === "Admin") {
+const sendUserBody = (user: User, self?: JWTBody) => {
+  if (!self) return null
+  if (self.userType === "Admin" || user._id === self.userId) {
     const {passwordHash, ...userWithoutPassword} = user
     return userWithoutPassword
   }
-  const {passwordHash, admin, ...userWithoutPassword} = user
+  const {passwordHash, userType: _, ...userWithoutPassword} = user
   return userWithoutPassword
 }
 
@@ -66,7 +68,7 @@ export const getUser: ReqBuilder =
   async ({params, jwtBody}, res) => {
     const user = await client.user.findOne({_id: params.id})
     if (!user) return res.status(404).json("Not found")
-    return res.json(sendUserBody(user, jwtBody?.userType))
+    return res.json(sendUserBody(user, jwtBody))
   }
 
 export const getSelf: ReqBuilder =
@@ -76,7 +78,7 @@ export const getSelf: ReqBuilder =
       _id: jwtBody?.userId || ""
     })
     if (!user) return res.status(404).json("Not found")
-    return res.json(sendUserBody(user, jwtBody?.userType))
+    return res.json(sendUserBody(user, jwtBody))
   }
 
 export const loginUser: ReqBuilder =
@@ -106,7 +108,7 @@ export const loginUser: ReqBuilder =
     }
 
     return res.json({
-      user: sendUserBody(user, user.userType),
+      user: sendUserBody(user, {userId: user._id, userType: user.userType}),
       token: createUserToken(user)
     })
   }
@@ -114,8 +116,13 @@ export const loginUser: ReqBuilder =
 export const queryUser: ReqBuilder =
   (client) =>
   async ({body, jwtBody}, res) => {
+    // Users should not be able to query by userType. If they were able to,
+    // they could easily identify who the admins are.
+    if (queryContainsKey(body, "userType") && jwtBody?.userType !== "Admin") {
+      return res.status(401).json("Unauthorized")
+    }
     const users = await client.user.findMany(body)
-    return res.json(users?.map((u) => sendUserBody(u, jwtBody?.userType)))
+    return res.json(users?.map((u) => sendUserBody(u, jwtBody)))
   }
 
 export const modifyUser: ReqBuilder =
@@ -136,7 +143,8 @@ export const modifyUser: ReqBuilder =
     if (isParseError(userPartial)) return res.status(400).json(userPartial)
 
     const updatedUser = await client.user.updateOne(params.id, userPartial)
-    return res.json(sendUserBody(updatedUser, jwtBody?.userType))
+    if (!updatedUser) return res.status(500).json("Error updating user")
+    return res.json(sendUserBody(updatedUser, jwtBody))
   }
 
 export const deleteUser: ReqBuilder =

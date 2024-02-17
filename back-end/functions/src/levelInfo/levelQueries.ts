@@ -52,7 +52,9 @@ export const queryLevel: ReqBuilder =
   (client) =>
   async ({jwtBody, body}, res) => {
     const query: Condition<LevelInfo> =
-      jwtBody?.userType === "Admin" ? body : {...body, owner: jwtBody?.userId}
+      jwtBody?.userType === "Admin"
+        ? body
+        : {...body, or: [{owner: jwtBody?.userId}, {public: true}]}
     const levels = await client.level.findMany(query)
     return res.json(levels)
   }
