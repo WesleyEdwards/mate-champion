@@ -1,9 +1,11 @@
+import {Condition} from "../DbClient"
 import {ReqBuilder} from "../auth/authTypes"
 import {
   checkPartialValidation,
   checkValidation,
   isParseError
 } from "../request_body"
+import {LevelInfo} from "../types"
 
 export const getLevel: ReqBuilder =
   (client) =>
@@ -13,7 +15,11 @@ export const getLevel: ReqBuilder =
     }
     const level = await client.level.findOne({_id: params.id})
     if (!level) return res.status(404).json("Not found")
-    if (level.owner !== jwtBody?.userId && !jwtBody?.admin) {
+    if (
+      level.owner !== jwtBody?.userId &&
+      jwtBody?.userType !== "Admin" &&
+      !level.public
+    ) {
       return res.status(404).json("Cant access")
     }
     return res.json(level)
@@ -45,7 +51,9 @@ export const createLevel: ReqBuilder =
 export const queryLevel: ReqBuilder =
   (client) =>
   async ({jwtBody, body}, res) => {
-    const levels = await client.level.findMany(body)
+    const query: Condition<LevelInfo> =
+      jwtBody?.userType === "Admin" ? body : {...body, owner: jwtBody?.userId}
+    const levels = await client.level.findMany(query)
     return res.json(levels)
   }
 
@@ -66,11 +74,12 @@ export const generateLevels: ReqBuilder =
 export const modifyLevel: ReqBuilder =
   (client) =>
   async ({params, body, jwtBody}, res) => {
-    const level = await client.level.findOne({_id: params.id})
+    const condition =
+      jwtBody?.userType === "Admin"
+        ? {_id: params.id}
+        : {_id: params.id, owner: jwtBody?.userId}
+    const level = await client.level.findOne(condition)
     if (!level) return res.status(404).json("Not found")
-    if (!jwtBody?.admin && jwtBody?.userId !== level.owner) {
-      return res.status(404).json("Not found")
-    }
     const levelPartial = checkPartialValidation("level", {
       ...body,
       _id: params.id,
@@ -86,12 +95,13 @@ export const deleteLevel: ReqBuilder =
   (client) =>
   async ({params, body, jwtBody}, res) => {
     if (!params.id) return res.status(400).json("Error")
-    const level = await client.level.findOne({_id: params.id})
+    const condition =
+      jwtBody?.userType === "Admin"
+        ? {_id: params.id}
+        : {_id: params.id, owner: jwtBody?.userId}
+    const level = await client.level.findOne(condition)
     if (level === undefined) {
       return res.json(404).json({"level not found": level})
-    }
-    if (level.owner !== jwtBody?.userId && !jwtBody?.admin) {
-      return res.status(403).json({error: "can't do that"})
     }
     const deleted = await client.level.deleteOne(params.id)
     return res.json(deleted)

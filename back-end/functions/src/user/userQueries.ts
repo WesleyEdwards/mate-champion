@@ -121,11 +121,8 @@ export const queryUser: ReqBuilder =
 export const modifyUser: ReqBuilder =
   (client) =>
   async ({params, body, jwtBody}, res) => {
-    if (!jwtBody?.userType) {
-      if (jwtBody?.userId !== params.id) {
-        return res.status(401).json("Unauthorized")
-      }
-      if (body.admin) {
+    if (jwtBody?.userType !== "Admin") {
+      if (jwtBody?.userId !== params.id || body.userType) {
         return res.status(401).json("Unauthorized")
       }
     }
@@ -145,7 +142,7 @@ export const modifyUser: ReqBuilder =
 export const deleteUser: ReqBuilder =
   (client) =>
   async ({params, jwtBody}, res) => {
-    if (!jwtBody?.userType) {
+    if (jwtBody?.userType !== "Admin") {
       if (jwtBody?.userId !== params.id) {
         return res.status(401).json("Unauthorized")
       }
