@@ -18,14 +18,9 @@ export type BasicEndpoints<T extends HasId> = {
   deleteOne: (id: string) => Promise<string>
 }
 
-type MigrationEndpoints = {
-  hasRun: (name: string) => Promise<boolean>
-  markAsRun: (name: string) => Promise<boolean>
-}
-
 export type DbClient = {
   user: BasicEndpoints<User>
   level: BasicEndpoints<LevelInfo>
   score: BasicEndpoints<Score>
-  migrations: MigrationEndpoints
+  runMigrations: () => Promise<boolean>
 }

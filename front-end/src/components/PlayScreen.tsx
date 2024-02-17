@@ -16,6 +16,7 @@ import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
+import { DevSettings, modifyDevSettings } from "../Game/devSettings";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -56,6 +57,8 @@ export const PlayScreen: FC<{
   const handleEnterGamePlay = (gamePlay: "play" | "editor" | "test") => {
     modifyStats({ ...emptyStats });
     setScreen("game");
+
+    modifyDevSettings("pauseOpponent", gamePlay === "editor");
 
     const params = {
       play: {
@@ -98,7 +101,7 @@ export const PlayScreen: FC<{
               </Button>
               <Button
                 {...buttonProps}
-                onClick={() => handleEnterGamePlay("play")}
+                onClick={() => handleEnterGamePlay("test")}
               >
                 Test Level
               </Button>

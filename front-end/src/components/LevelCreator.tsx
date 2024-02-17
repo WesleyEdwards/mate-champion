@@ -7,7 +7,8 @@ import { useAuthContext } from "../hooks/AuthContext";
 
 export const LevelCreator = () => {
   const { saveLevelToDb, editingLevel } = useAuthContext();
-  const [state, setState] = useState({ ...devSettings });
+  const {pauseOpponent, ...displaySettings} = devSettings
+  const [state, setState] = useState({ ...displaySettings });
   const [saving, setSaving] = useState(false);
   return (
     <Stack justifyContent="flex-end" m={2} gap={0.5}>

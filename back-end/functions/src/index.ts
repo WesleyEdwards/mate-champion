@@ -7,8 +7,7 @@ import {DbClient} from "./DbClient"
 import {usersController} from "./user/user_controller"
 import {scoresController} from "./score/scoresController"
 import {mongoClient} from "./mongo/mongoClient"
-import {runMigrations} from "./migrations/runMigrations"
-import { levelsController } from "./levelInfo/level_controller"
+import {levelsController} from "./levelInfo/level_controller"
 
 dotenv.config()
 
@@ -24,8 +23,12 @@ levelsController(app, client)
 scoresController(app, client)
 
 app.post("/situate", async (_, res) => {
-  await runMigrations(client)
-  res.send("Migrations have ran successfully")
+  try {
+    await client.runMigrations()
+    res.send("Migrations have ran successfully")
+  } catch {
+    res.status(500).send("Error running migration")
+  }
 })
 
 app.get("/", (_, res) => {

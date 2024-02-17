@@ -78,7 +78,7 @@ export const modifyLevel: ReqBuilder =
     })
     if (isParseError(levelPartial)) return res.status(400).json(levelPartial)
 
-    const updatedLevel = await client.user.updateOne(params.id, levelPartial)
+    const updatedLevel = await client.level.updateOne(params.id, levelPartial)
     return res.json(updatedLevel)
   }
 

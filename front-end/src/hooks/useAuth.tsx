@@ -3,7 +3,6 @@ import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
 import { AuthContextType } from "./AuthContext";
-import { modifyDevSettings } from "../Game/devSettings";
 import { LevelInfo } from "../Game/models";
 
 export const useAuth = (): AuthContextType => {
@@ -40,7 +39,6 @@ export const useAuth = (): AuthContextType => {
   };
 
   const modifyLevel = (level: Partial<LevelInfo>) => {
-    console.log("modifying level: ", level);
     setCreatingLevel((prev) => (prev ? { ...prev, ...level } : null));
   };
 
@@ -64,11 +62,6 @@ export const useAuth = (): AuthContextType => {
     setCreatingLevel(null);
   };
 
-  const setLevelCreating = (level: LevelInfo | null) => {
-    setCreatingLevel(level);
-    modifyDevSettings("pauseOpponent", !!level);
-  };
-
   return {
     api,
     user,
@@ -77,11 +70,11 @@ export const useAuth = (): AuthContextType => {
     logout,
     modifyUser,
     creatingLevel,
-    setLevelCreating: setLevelCreating,
+    setLevelCreating: setCreatingLevel,
     modifyLevel,
     saveLevelToDb,
     deleteFromDatabase,
     setEditingLevel,
-    editingLevel
+    editingLevel,
   };
 };

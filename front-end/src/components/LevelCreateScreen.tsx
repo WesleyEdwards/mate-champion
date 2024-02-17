@@ -65,13 +65,14 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
                   >
                     Delete
                   </Button>
+                  <Button variant="plain" onClick={() => setCreatingLevel(null)}>Cancel</Button>
                   <Button
                     onClick={() => {
                       saveLevelToDb();
                       return setCreatingLevel(null);
                     }}
                   >
-                    Close
+                    Save
                   </Button>
                 </Stack>
               </Stack>
@@ -113,7 +114,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
                   api.level
                     .create({
                       _id: crypto.randomUUID(),
-                      owner: user?._id ?? "Anonymouse",
+                      owner: user?._id ?? "Anonymous",
                       public: false,
                       name: "My level",
                       opponents: { grog: [] },
@@ -122,7 +123,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
                       platforms: [],
                     })
                     .then((created) => {
-                      setCreating(false)
+                      setCreating(false);
                       setOwnedLevels((prev) =>
                         prev ? [...prev, created] : prev
                       );

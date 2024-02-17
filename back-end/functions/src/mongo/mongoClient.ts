@@ -7,6 +7,7 @@ import {
 } from "mongodb"
 import {BasicEndpoints, Condition, DbClient, HasId} from "../DbClient"
 import {LevelInfo, Score, User} from "../types"
+import {runMigrations} from "./mongoMigrations"
 
 function conditionToFilter<T extends HasId>(
   condition: Condition<T>
@@ -34,7 +35,7 @@ export const mongoClient = (): DbClient => {
     user: functionsForModel<User>(db, "user"),
     score: functionsForModel<Score>(db, "score"),
     level: functionsForModel<LevelInfo>(db, "level"),
-    migrations: migrationsFunctions(db)
+    runMigrations: () => runMigrations(db)
   }
 }
 
@@ -84,21 +85,6 @@ function functionsForModel<T extends HasId>(
         throw new Error("Item not found")
       }
       return item._id
-    }
-  }
-}
-
-function migrationsFunctions(db: Db): DbClient["migrations"] {
-  const collection = db.collection("migrations")
-
-  return {
-    hasRun: async (name: string) => {
-      const migration = await collection.findOne({name})
-      return !!migration
-    },
-    markAsRun: async (name: string) => {
-      const {acknowledged} = await collection.insertOne({name})
-      return acknowledged
     }
   }
 }
