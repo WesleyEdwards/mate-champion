@@ -7,6 +7,8 @@ const baseObjectSchema = z.object({
   updatedAt: z.string().default(new Date().toISOString())
 })
 
+const userTypeSchema = z.enum(["User", "Editor", "Admin"])
+
 const userSchema = z
   .object({
     name: z.string({required_error: "Name is required"}),
@@ -16,7 +18,7 @@ const userSchema = z
       .optional(),
     passwordHash: z.string(),
     highScore: z.number().default(0),
-    userType: z.enum(["User", "Editor", "Admin"]).default("User")
+    userType: userTypeSchema.default("User")
   })
   .merge(baseObjectSchema)
 
@@ -71,6 +73,7 @@ const levelSchema = z
   })
   .merge(baseObjectSchema)
 
+export type UserType = z.infer<typeof userTypeSchema>
 export type User = z.infer<typeof userSchema>
 export type Score = z.infer<typeof scoreSchema>
 export type LevelInfo = z.infer<typeof levelSchema>

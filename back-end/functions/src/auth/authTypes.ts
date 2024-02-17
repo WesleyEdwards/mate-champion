@@ -1,9 +1,10 @@
 import {NextFunction, Request, Response} from "express"
 import {DbClient} from "../DbClient"
+import {UserType} from "../types"
 
 export type JWTBody = {
-  userId: string,
-  admin: boolean
+  userId: string
+  userType: UserType
 }
 
 type RequestWithJWTBody = Request & {
