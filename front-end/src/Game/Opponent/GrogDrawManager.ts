@@ -27,6 +27,9 @@ export class GrogDrawManager {
     getSpriteImages(imageSources);
   spriteTimer: number = 0;
 
+  update(elapsedTime: number) {
+    this.spriteTimer += elapsedTime;
+  }
   drawFromInfo(drawProps: DrawObjProps, vector: OpponentVectorManager) {
     const inAir =
       vector.velocity.y > 0
@@ -119,7 +122,7 @@ const grogSpritesInfo: SpriteInfo<GrogDescription, GrogImageSource> = {
     image: "enemyWalking",
     imgCount: 6,
     startX: 0,
-    cycleTime: 70,
+    cycleTime: 120,
   },
   die: {
     image: "enemyDeath",

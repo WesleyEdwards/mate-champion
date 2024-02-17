@@ -30,6 +30,7 @@ export class Grog implements Character {
   update(elapsedTime: number) {
     if (devSettings.pauseOpponent) return;
     this.vector.update(elapsedTime);
+    this.drawManager.update(elapsedTime);
     this.velocity.y += GRAVITY * elapsedTime;
 
     if (this.bottomPos > MAX_CANVAS_HEIGHT) {
