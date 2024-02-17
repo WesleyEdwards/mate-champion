@@ -16,7 +16,7 @@ const userSchema = z
       .optional(),
     passwordHash: z.string(),
     highScore: z.number().default(0),
-    admin: z.boolean().default(false)
+    userType: z.enum(["User", "Editor", "Admin"]).default("User")
   })
   .merge(baseObjectSchema)
 

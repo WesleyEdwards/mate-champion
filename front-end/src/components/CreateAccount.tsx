@@ -36,7 +36,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
         email: email === "" ? undefined : email,
         password,
         highScore: score ?? 0,
-        admin: false,
+        userType: "User",
         updatedAt: new Date().toISOString(),
         createdAt: new Date().toISOString(),
       });

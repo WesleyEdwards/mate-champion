@@ -94,7 +94,8 @@ export const GameEntry: FC = () => {
               highScores: true,
               controls: true,
               profile: true,
-              levelCreator: user?.admin,
+              levelCreator:
+                user?.userType === "Editor" || user?.userType === "Admin",
             } satisfies Partial<Record<MCScreen, boolean>>).map(
               ([view, show]) =>
                 show ? (
