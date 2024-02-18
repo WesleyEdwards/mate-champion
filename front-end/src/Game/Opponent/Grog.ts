@@ -3,7 +3,6 @@ import { Character, OppDirections, CharAction, Coordinates } from "../models";
 import { randomOutOf } from "../helpers/utils";
 import { OpponentVectorManager } from "./OpponentVectorManager";
 import { DrawObjProps } from "../helpers/types";
-import { devSettings } from "../devSettings";
 import { GrogDrawManager } from "./GrogDrawManager";
 
 export type GrogProps = {
