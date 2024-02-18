@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LevelInfo } from "../Game/models";
 import { LevelsContextType } from "./LevelsContext";
 import { Api } from "../api/Api";
@@ -8,7 +8,7 @@ import { User } from "../types";
 export const useLevels: (params: {
   api: Api | undefined;
   user: User | undefined;
-}) => LevelsContextType = ({ api }) => {
+}) => LevelsContextType = ({ api, user }) => {
   const [originalLevel, setOriginalLevel] = useState<LevelInfo | null>(null);
   const [editingLevel, setEditingLevel] = useState<LevelInfo | null>(null);
   const [gameMode, setGameMode] = useState<GameMode>("play");
@@ -73,6 +73,14 @@ export const useLevels: (params: {
     if (Object.keys(partial).length === 0) return Promise.resolve(editingLevel);
 
     return api.level.modify(editingLevel._id, partial).then((res) => {
+      setOwnedLevels((prev) => {
+        if (!prev) return prev;
+        const index = prev.findIndex((l) => l._id === res._id);
+        if (index === -1) return prev;
+        const copy = [...prev];
+        copy[index] = res;
+        return copy;
+      });
       handleSetEditing(res);
       return res;
     });
@@ -88,6 +96,38 @@ export const useLevels: (params: {
     setEditingLevel(level ? { ...level } : null);
   };
 
+  const createLevel = async (name: string) => {
+    if (!api) return Promise.reject();
+    const created = await api.level.create({
+      _id: crypto.randomUUID(),
+      owner: user?._id ?? "",
+      public: false,
+      name: name,
+      opponents: { grog: [] },
+      packages: [],
+      floors: [{ x: -500, width: 7000, color: "green" }],
+      platforms: [],
+    });
+    setOwnedLevels((prev) => (prev ? [...prev, created] : prev));
+    return created;
+  };
+
+  const fetchOwnLevels = () => {
+    if (!api) return Promise.reject();
+    if (ownedLevels) return Promise.resolve();
+    setOwnedLevels(undefined);
+    return api.level.query({ owner: user?._id ?? "" }).then(setOwnedLevels);
+  };
+
+  const deleteLevel = (level: string) => {
+    if (!api) return Promise.reject();
+    return api.level.delete(level).then(() => {
+      setOwnedLevels((prev) => prev?.filter((l) => l._id !== level));
+      setEditingLevel(null);
+      setOriginalLevel(null);
+    });
+  };
+
   return {
     modifyLevel,
     setEditingLevel: handleSetEditing,
@@ -97,5 +137,8 @@ export const useLevels: (params: {
     setGameMode,
     ownedLevels,
     setOwnedLevels,
+    fetchOwnLevels,
+    deleteLevel,
+    createLevel,
   };
 };

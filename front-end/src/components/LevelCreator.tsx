@@ -2,10 +2,13 @@ import { Button, Stack, Switch, Typography } from "@mui/joy";
 import { Settings, devSettings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useLevelContext } from "../hooks/LevelsContext";
+import { MCScreen } from "./GameEntry";
 
-export const LevelCreator = () => {
+export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
+  changeScreen,
+}) => {
   const { saveLevelToDb, gameMode, editingLevel, setEditingLevel } =
     useLevelContext();
   const [state, setState] = useState(devSettings);
@@ -18,6 +21,7 @@ export const LevelCreator = () => {
       <Button
         color="neutral"
         onClick={() => {
+          changeScreen("home");
           return setEditingLevel(null);
         }}
       >

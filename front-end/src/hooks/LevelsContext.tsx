@@ -11,6 +11,9 @@ export type LevelsContextType = {
   setGameMode: (show: GameMode) => void;
   ownedLevels: LevelInfo[] | undefined;
   setOwnedLevels: React.Dispatch<React.SetStateAction<LevelInfo[] | undefined>>;
+  createLevel: (name: string) => Promise<LevelInfo>;
+  fetchOwnLevels: () => Promise<unknown>;
+  deleteLevel: (level: string) => Promise<unknown>;
 };
 
 export const LevelsContext = createContext({} as LevelsContextType);

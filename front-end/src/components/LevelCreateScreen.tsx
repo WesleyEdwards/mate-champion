@@ -21,14 +21,16 @@ import { LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
-  const { api, user } = useAuthContext();
+  const { user } = useAuthContext();
   const {
     editingLevel,
     setEditingLevel,
     modifyLevel,
     saveLevelToDb,
+    createLevel,
+    fetchOwnLevels,
+    deleteLevel,
     ownedLevels,
-    setOwnedLevels,
   } = useLevelContext();
 
   const [creating, setCreating] = useState(false);
@@ -38,9 +40,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
   if (!user) throw new Error("User must be authenticated");
 
   useEffect(() => {
-    if (ownedLevels) return;
-    setOwnedLevels(undefined);
-    api?.level.query({ owner: user?._id }).then(setOwnedLevels);
+    fetchOwnLevels();
   }, []);
 
   return (
@@ -69,12 +69,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
                   </Button>
                   <Button
                     onClick={() =>
-                      saveLevelToDb().then((res) => {
-                        setOwnedLevels((prev) =>
-                          prev?.map((l) => (l._id === res._id ? res : l))
-                        );
-                        setEditingLevel(null);
-                      })
+                      saveLevelToDb().then(() => setEditingLevel(null))
                     }
                   >
                     Save
@@ -145,14 +140,11 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
             endDecorator={<Delete />}
             color="danger"
             sx={{ alignSelf: "flex-end" }}
-            onClick={() => {
-              api.level.delete(deleting?._id ?? "");
-              setOwnedLevels((prev) =>
-                prev?.filter((l) => l._id !== deleting?._id)
-              );
-              setDeleting(undefined);
-              setEditingLevel(null);
-            }}
+            onClick={() =>
+              deleteLevel(deleting?._id ?? "").then(() => {
+                setDeleting(undefined);
+              })
+            }
           >
             Delete
           </Button>
@@ -175,24 +167,10 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
             sx={{ alignSelf: "flex-end" }}
             onClick={() => {
               setCreating(true);
-              api.level
-                .create({
-                  _id: crypto.randomUUID(),
-                  owner: user._id,
-                  public: false,
-                  name: makingNew ?? "",
-                  opponents: { grog: [] },
-                  packages: [],
-                  floors: [{ x: -500, width: 7000, color: "green" }],
-                  platforms: [],
-                })
-                .then((created) => {
-                  setCreating(false);
-                  setOwnedLevels((prev) => (prev ? [...prev, created] : prev));
-                  setEditingLevel(created);
-                  setMakingNew(undefined);
-                  changeScreen("home");
-                });
+              createLevel(makingNew ?? "").then(() => {
+                setCreating(false);
+                changeScreen("home");
+              });
             }}
           >
             Create

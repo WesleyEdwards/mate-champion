@@ -35,12 +35,13 @@ export interface ScreenProps {
   score?: number;
 }
 
-export const GameEntry: FC = () => {
+export const GameEntry: FC<{
+  screen: MCScreen;
+  changeScreen: (screen: MCScreen) => void;
+}> = ({ screen, changeScreen }) => {
   const { user } = useAuthContext();
   const { editingLevel } = useLevelContext();
   const [stats, setStats] = useState<PlayStats>(emptyStats);
-
-  const [screen, setScreen] = useState<MCScreen>("home");
 
   const playing = useMemo(() => screen === "game", [screen]);
 
@@ -85,7 +86,7 @@ export const GameEntry: FC = () => {
         <PlayScreen
           modifyStats={modifyStats}
           screen={screen}
-          setScreen={setScreen}
+          setScreen={changeScreen}
         />
         {screen === "home" && (
           <Stack
@@ -108,7 +109,7 @@ export const GameEntry: FC = () => {
                     key={view}
                     variant="outlined"
                     sx={{ width: "10rem" }}
-                    onClick={() => setScreen(view as MCScreen)}
+                    onClick={() => changeScreen(view as MCScreen)}
                   >
                     {camelCaseToTitleCase(view)}
                   </Button>
@@ -119,7 +120,7 @@ export const GameEntry: FC = () => {
       </Stack>
 
       <Stack minWidth="24rem" mb={2}>
-        <RenderScreen changeScreen={setScreen} score={stats.score} />
+        <RenderScreen changeScreen={changeScreen} score={stats.score} />
       </Stack>
 
       <Stack>
