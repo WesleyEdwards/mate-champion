@@ -12,6 +12,7 @@ import { MatePackageManager } from "../Platform/MatePackageManager";
 import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
+import { GameMode } from "../../hooks/useAuth";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -21,9 +22,11 @@ export class ObjectManager {
   platformManager: PlatformManager = new PlatformManager();
   pot: Pot = new Pot();
   levels: LevelInfo[];
+  gameMode: GameMode;
 
-  constructor(levels: LevelInfo[]) {
+  constructor(levels: LevelInfo[], gameMode: GameMode) {
     this.levels = levels;
+    this.gameMode = gameMode;
   }
 
   reset(level: number) {
@@ -37,7 +40,9 @@ export class ObjectManager {
 
   updateAll(keys: Keys, elapsedTime: number, ammo: number): UpdateStatus {
     this.player.update(keys, elapsedTime);
-    this.opponentManager.update(elapsedTime);
+    if (this.gameMode !== "edit") {
+      this.opponentManager.update(elapsedTime);
+    }
     this.bulletManager.update(elapsedTime, this.player.position);
 
     this.calcPersonColl();
@@ -64,6 +69,7 @@ export class ObjectManager {
   }
 
   private getKilledOpponents(): number {
+    if (this.gameMode === "edit") return 0;
     const { opponents, bullets } = updateLiveStatus(
       this.player,
       this.opponentManager.opponents,

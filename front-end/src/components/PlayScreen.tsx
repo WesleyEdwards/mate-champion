@@ -59,28 +59,29 @@ export const PlayScreen: FC<{
     modifyStats({ ...emptyStats });
     setScreen("game");
 
-    modifyDevSettings("pauseOpponent", gamePlay === "edit");
     setGameMode(gamePlay);
+
+    const constantParams = {
+      setUI: { modifyStats, handleLose, handlePause },
+      gameMode: gamePlay,
+    };
 
     const params = {
       play: {
-        setUI: { modifyStats, handleLose, handlePause },
         levels: levelsInfo,
         setLevel: undefined,
       },
       edit: {
-        setUI: { modifyStats, handleLose, handlePause },
         levels: editingLevel ? [editingLevel] : [],
         setLevel: modifyLevel,
       },
       test: {
-        setUI: { modifyStats, handleLose, handlePause },
         levels: editingLevel ? [editingLevel] : [],
         setLevel: undefined,
       },
     }[gamePlay];
 
-    enterGameLoop(params);
+    enterGameLoop({ ...params, ...constantParams });
   };
 
   return (
@@ -98,7 +99,7 @@ export const PlayScreen: FC<{
                 {...buttonProps}
                 onClick={() => handleEnterGamePlay("edit")}
               >
-                Level Editor
+                Edit Level
               </Button>
               <Button
                 {...buttonProps}
@@ -124,6 +125,7 @@ export const PlayScreen: FC<{
               setGameMode("play");
               setScreen(editingLevel ? "levelCreator" : "home");
               setPauseModal(false);
+              setScreen("home");
             }}
           >
             Quit

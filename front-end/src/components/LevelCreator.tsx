@@ -6,16 +6,24 @@ import { useState } from "react";
 import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreator = () => {
-  const { saveLevelToDb, gameMode } = useLevelContext();
-  const { pauseOpponent, ...displaySettings } = devSettings;
-  const [state, setState] = useState({ ...displaySettings });
+  const { saveLevelToDb, gameMode, editingLevel, setEditingLevel } =
+    useLevelContext();
+  const [state, setState] = useState(devSettings);
   const [saving, setSaving] = useState(false);
 
-  if (gameMode === "play") return null;
+  if (gameMode === "play" && !editingLevel) return null;
 
   return (
-    <Stack justifyContent="flex-end" m={2} gap={0.5}>
-      {gameMode === "edit" && (
+    <Stack justifyContent="flex-end" m={2} gap={1}>
+      <Button
+        color="neutral"
+        onClick={() => {
+          return setEditingLevel(null);
+        }}
+      >
+        Exit level creator
+      </Button>
+      {gameMode === "edit" && editingLevel && (
         <Button
           loading={saving}
           onClick={() => {
@@ -26,6 +34,7 @@ export const LevelCreator = () => {
           Save
         </Button>
       )}
+
       {Object.entries(state).map(([setting, enabled]) => (
         <Typography
           key={setting}

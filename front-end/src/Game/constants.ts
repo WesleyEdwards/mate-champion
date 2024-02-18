@@ -1,9 +1,7 @@
 import { devSettings } from "./devSettings";
 
 export const MAX_CANVAS_HEIGHT = 576;
-export const MAX_CANVAS_WIDTH = MAX_CANVAS_HEIGHT * 1.777777777777778;
-
-export const DISPLAY_LEVEL_TIME = devSettings.shortLevelScreen ? 100 : 2000;
+export const MAX_CANVAS_WIDTH = MAX_CANVAS_HEIGHT * 1.78;
 
 // export const GRAVITY = 0.001;
 export const GRAVITY = 0.004;

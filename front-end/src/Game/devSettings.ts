@@ -6,13 +6,11 @@ const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,
   hideOpponents: false,
   sandboxDb: false,
-  shortLevelScreen: false,
   redOutline: false,
   cameraLines: false,
   noDie: false,
   unlimitedBullets: false,
   oneLife: false,
-  pauseOpponent: false,
 } as const;
 
 export type DevStats = {
@@ -24,13 +22,11 @@ export type Settings = {
   showDevStats: boolean;
   hideOpponents: boolean;
   sandboxDb: boolean;
-  shortLevelScreen: boolean;
   redOutline: boolean;
   cameraLines: boolean;
   noDie: boolean;
   unlimitedBullets: boolean;
   oneLife: boolean;
-  pauseOpponent: boolean;
 };
 
 class DevSettingsClass {

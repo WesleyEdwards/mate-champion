@@ -1,4 +1,3 @@
-import { DISPLAY_LEVEL_TIME } from "../constants";
 import { Keys, LevelInfo, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
@@ -8,6 +7,7 @@ import { addEventListeners } from "../helpers/eventListeners";
 import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
+import { GameMode } from "../../hooks/useAuth";
 
 export class GameState {
   currStateOfGame: WinState = "initial";
@@ -18,13 +18,15 @@ export class GameState {
   private stats: GameStatsManager = new GameStatsManager();
   private cxt: Canvas;
   private devContentCreate: DevContentCreate | null;
-  private cameraDisplay: CameraDisplay = new CameraDisplay();
+  private cameraDisplay: CameraDisplay;
+  private delayLevelTime: number;
 
   constructor(
     setUI: SetUI,
     canvas: HTMLCanvasElement,
     cxt: CanvasRenderingContext2D,
     levels: LevelInfo[],
+    gameMode: GameMode,
     setLevel?: (level: Partial<LevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
@@ -32,18 +34,21 @@ export class GameState {
       setUI.handlePause(newState === "pause");
       this.currStateOfGame = newState;
     });
-    this.objectManager = new ObjectManager(levels);
+    this.objectManager = new ObjectManager(levels, gameMode);
     this.objectManager.reset(1);
     this.setUI = setUI;
     this.gameDrawer = new GameDrawer();
     this.cxt = cxt;
-    this.devContentCreate = devSettings.pauseOpponent
-      ? new DevContentCreate({
-          canvas,
-          objectManager: this.objectManager,
-          setLevel,
-        })
-      : null;
+    this.devContentCreate =
+      gameMode === "edit"
+        ? new DevContentCreate({
+            canvas,
+            objectManager: this.objectManager,
+            setLevel,
+          })
+        : null;
+    this.cameraDisplay = new CameraDisplay(gameMode);
+    this.delayLevelTime = gameMode === "play" ? 2000 : 100;
 
     this.drawStats();
   }
@@ -128,7 +133,7 @@ export class GameState {
   }
 
   private get showMessage() {
-    const showMessage = this.stats.timeInLevel < DISPLAY_LEVEL_TIME;
+    const showMessage = this.stats.timeInLevel < this.delayLevelTime;
     if (
       !showMessage &&
       ["initial", "loseLife", "nextLevel"].includes(this.currStateOfGame)

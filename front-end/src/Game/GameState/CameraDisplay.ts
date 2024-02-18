@@ -1,3 +1,4 @@
+import { GameMode } from "../../hooks/useAuth";
 import { PlayerVectorManager } from "../Player/PlayerVectorManager";
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH, cameraConst } from "../constants";
 import { devSettings } from "../devSettings";
@@ -11,8 +12,8 @@ export class CameraDisplay {
   // it starts eating up computing power and the camera shifts to somewhere else
   idleTime: number = 0;
 
-  constructor() {
-    if (devSettings.pauseOpponent) {
+  constructor(gameMode: GameMode) {
+    if (gameMode === "edit") {
       this.addScrollEventListeners();
     }
   }

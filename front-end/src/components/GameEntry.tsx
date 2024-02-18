@@ -16,6 +16,7 @@ import { PlayScreen } from "./PlayScreen";
 import { camelCaseToTitleCase } from "../helpers";
 import { useAuthContext } from "../hooks/AuthContext";
 import { LevelCreateScreen } from "./LevelCreateScreen";
+import { useLevelContext } from "../hooks/LevelsContext";
 
 export type MCScreen =
   | "game"
@@ -36,6 +37,7 @@ export interface ScreenProps {
 
 export const GameEntry: FC = () => {
   const { user } = useAuthContext();
+  const { editingLevel } = useLevelContext();
   const [stats, setStats] = useState<PlayStats>(emptyStats);
 
   const [screen, setScreen] = useState<MCScreen>("home");
@@ -71,11 +73,14 @@ export const GameEntry: FC = () => {
       justifyContent="center"
     >
       <Stack width="100%" gap="1rem" alignItems="center">
-        {screen === "home" && (
+        {screen === "home" && !editingLevel && (
           <>
             <Typography level="h1">Mate Champion</Typography>
             <Instructions />
           </>
+        )}
+        {screen === "home" && editingLevel && (
+          <Typography level="h1">{editingLevel.name}</Typography>
         )}
         <PlayScreen
           modifyStats={modifyStats}
@@ -91,9 +96,9 @@ export const GameEntry: FC = () => {
             mb={4}
           >
             {Object.entries({
-              highScores: true,
-              controls: true,
-              profile: true,
+              highScores: !editingLevel,
+              controls: !editingLevel,
+              profile: !editingLevel,
               levelCreator:
                 user?.userType === "Editor" || user?.userType === "Admin",
             } satisfies Partial<Record<MCScreen, boolean>>).map(
