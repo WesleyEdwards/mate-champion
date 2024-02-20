@@ -59,6 +59,23 @@ export const queryLevel: ReqBuilder =
     return res.json(levels)
   }
 
+export const queryPartialLevel: ReqBuilder =
+  (client) =>
+  async ({jwtBody, body}, res) => {
+    if (!("condition" in body)) {
+      return res.status(400).json("Please provide a condition")
+    }
+    if (!("fields" in body) || !Array.isArray(body.fields)) {
+      return res.status(400).json("Please provide fields to query by")
+    }
+    const query: Condition<LevelInfo> =
+      jwtBody?.userType === "Admin"
+        ? body.condition
+        : {...body.condition, or: [{owner: jwtBody?.userId}, {public: true}]}
+    const levels = await client.level.queryPartial(query, body.fields)
+    return res.json(levels)
+  }
+
 export const generateLevels: ReqBuilder =
   (client) =>
   async ({body}, res) => {

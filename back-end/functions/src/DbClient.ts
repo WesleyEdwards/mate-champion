@@ -34,6 +34,10 @@ export type BasicEndpoints<T extends HasId> = {
   insertOne: (item: T) => Promise<OrError<T>>
   findOne: (filter: Condition<T>) => Promise<OrError<T>>
   findMany: (filter: Condition<T>) => Promise<T[]>
+  queryPartial: (
+    filter: Condition<T>,
+    fields: string[]
+  ) => Promise<Partial<T>[]>
   updateOne: (id: string, update: Partial<T>) => Promise<OrError<T>>
   deleteOne: (id: string) => Promise<string>
 }

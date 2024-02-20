@@ -99,6 +99,15 @@ function functionsForModel<T extends HasId>(
       const items = collection.find(conditionToFilter(filter))
       return (await items.toArray()) as T[]
     },
+    queryPartial: async (filter: Condition<T>, fields: string[]) => {
+      const items = collection.find(conditionToFilter(filter), {
+        projection: fields.reduce((acc, field) => {
+          acc[field] = 1
+          return acc
+        }, {} as Record<string, 1>)
+      })
+      return (await items.toArray()) as T[]
+    },
     updateOne: async (id, item) => {
       const value = await collection.findOneAndUpdate(
         {_id: id} as Filter<T>,
