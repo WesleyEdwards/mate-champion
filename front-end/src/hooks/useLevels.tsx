@@ -14,16 +14,14 @@ export const useLevels: (params: {
   const [gameMode, setGameMode] = useState<GameMode>("play");
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
 
-  const saveLevelToDb = (): Promise<LevelInfo> => {
+  const saveLevelToDb = (name?: string): Promise<LevelInfo> => {
     console.log("saveLevelToDb");
     if (!editingLevel || !originalLevel || !api) {
-      console.log(editingLevel, originalLevel, api);
       return Promise.reject("Not working on a level");
     }
 
     const diffLengths = (a: any[], b: any[]) => a.length !== b.length;
 
-    const editedName = originalLevel.name !== editingLevel.name;
     const editFloors =
       diffLengths(originalLevel.floors, editingLevel.floors) ||
       !originalLevel.floors.every((floor) =>
@@ -52,7 +50,7 @@ export const useLevels: (params: {
       );
 
     const list: Partial<Record<keyof LevelInfo, boolean>> = {
-      name: editedName,
+      name: !!name,
       floors: editFloors,
       platforms: editPlatforms,
       opponents: editOpps,
@@ -87,7 +85,6 @@ export const useLevels: (params: {
   };
 
   const modifyLevel = (level: Partial<LevelInfo>) => {
-    console.log("Modifying level", level);
     setEditingLevel((prev) => (prev ? { ...prev, ...level } : null));
   };
 
@@ -108,6 +105,8 @@ export const useLevels: (params: {
       floors: [{ x: -500, width: 7000, color: "green" }],
       platforms: [],
     });
+    setOriginalLevel(created);
+    setEditingLevel(created);
     setOwnedLevels((prev) => (prev ? [...prev, created] : prev));
     return created;
   };

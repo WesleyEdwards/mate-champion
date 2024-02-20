@@ -17,6 +17,7 @@ import { camelCaseToTitleCase } from "../helpers";
 import { useAuthContext } from "../hooks/AuthContext";
 import { LevelCreateScreen } from "./LevelCreateScreen";
 import { useLevelContext } from "../hooks/LevelsContext";
+import { EditLevelButtons } from "./EditLevelButtons";
 
 export type MCScreen =
   | "game"
@@ -80,14 +81,19 @@ export const GameEntry: FC<{
             <Instructions />
           </>
         )}
-        {screen === "home" && editingLevel && (
-          <Typography level="h1">{editingLevel.name}</Typography>
+        {editingLevel ? (
+          <EditLevelButtons
+            modifyStats={modifyStats}
+            screen={screen}
+            setScreen={changeScreen}
+          />
+        ) : (
+          <PlayScreen
+            modifyStats={modifyStats}
+            screen={screen}
+            setScreen={changeScreen}
+          />
         )}
-        <PlayScreen
-          modifyStats={modifyStats}
-          screen={screen}
-          setScreen={changeScreen}
-        />
         {screen === "home" && (
           <Stack
             direction="row"
@@ -101,7 +107,8 @@ export const GameEntry: FC<{
               controls: !editingLevel,
               profile: !editingLevel,
               levelCreator:
-                user?.userType === "Editor" || user?.userType === "Admin",
+                !editingLevel &&
+                (user?.userType === "Editor" || user?.userType === "Admin"),
             } satisfies Partial<Record<MCScreen, boolean>>).map(
               ([view, show]) =>
                 show ? (

@@ -32,7 +32,6 @@ export type Settings = {
 class DevSettingsClass {
   settings: Settings;
   modifyingItem: ItemType = "platform";
-  creatingLevel: LevelInfo | null = null;
   constructor() {
     const fromStorage = localStorageManager.get("dev-settings");
     if (fromStorage) {
@@ -51,8 +50,9 @@ class DevSettingsClass {
     this.modifyingItem = item;
   }
 
-  setCreatingLevel(level: LevelInfo) {
-    this.creatingLevel = level;
+  noDevSettings() {
+    this.settings = { ...prodSettings };
+    console.log("noDevSettings", this.settings);
   }
 }
 
@@ -68,12 +68,14 @@ export const DevSettings = (() => {
   };
 })();
 
-export const devSettings = import.meta.env.DEV
-  ? DevSettings.getInstance().settings
-  : prodSettings;
+export const devSettings = DevSettings.getInstance().settings;
 
 export const modifyDevSettings = (setting: keyof Settings, value: boolean) => {
   DevSettings.getInstance().modifySettings(setting, value);
+};
+
+export const setToNoDevSettings = () => {
+  DevSettings.getInstance().noDevSettings();
 };
 
 export const contentCreatorModifyObject = (item: ItemType) => {

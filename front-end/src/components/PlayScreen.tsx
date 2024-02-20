@@ -15,9 +15,9 @@ import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
-import { modifyDevSettings } from "../Game/devSettings";
 import { GameMode } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/LevelsContext";
+import { setToNoDevSettings } from "../Game/devSettings";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -25,7 +25,7 @@ export const PlayScreen: FC<{
   setScreen: (screen: MCScreen) => void;
 }> = ({ modifyStats, setScreen, screen }) => {
   const { user, api, modifyUser } = useAuthContext();
-  const { modifyLevel, editingLevel, setGameMode } = useLevelContext();
+  const { setGameMode } = useLevelContext();
 
   const [pauseModal, setPauseModal] = useState(false);
 
@@ -55,67 +55,29 @@ export const PlayScreen: FC<{
     setPauseModal(pause);
   };
 
-  const handleEnterGamePlay = (gamePlay: GameMode) => {
-    modifyStats({ ...emptyStats });
-    setScreen("game");
-
-    setGameMode(gamePlay);
-
-    const constantParams = {
-      setUI: { modifyStats, handleLose, handlePause },
-      gameMode: gamePlay,
-    };
-
-    const params = {
-      play: {
-        levels: levelsInfo,
-        setLevel: undefined,
-      },
-      edit: {
-        levels: editingLevel ? [editingLevel] : [],
-        setLevel: modifyLevel,
-      },
-      test: {
-        levels: editingLevel ? [editingLevel] : [],
-        setLevel: undefined,
-      },
-    }[gamePlay];
-
-    enterGameLoop({ ...params, ...constantParams });
-  };
-
   return (
     <>
-      {(() => {
-        if (screen !== "home") return null;
-        const buttonProps: ButtonProps = {
-          sx: { width: "11rem", my: "2rem" },
-          size: "lg",
-        };
-        if (editingLevel) {
-          return (
-            <Stack direction="row" gap="1rem">
-              <Button
-                {...buttonProps}
-                onClick={() => handleEnterGamePlay("edit")}
-              >
-                Edit Level
-              </Button>
-              <Button
-                {...buttonProps}
-                onClick={() => handleEnterGamePlay("test")}
-              >
-                Test Level
-              </Button>
-            </Stack>
-          );
-        }
-        return (
-          <Button {...buttonProps} onClick={() => handleEnterGamePlay("play")}>
-            Play
-          </Button>
-        );
-      })()}
+      {screen === "home" && (
+        <Button
+          sx={{ width: "11rem", my: "2rem" }}
+          onClick={() => {
+            modifyStats({ ...emptyStats });
+            setScreen("game");
+
+            setGameMode("play");
+            setToNoDevSettings();
+
+            enterGameLoop({
+              setUI: { modifyStats, handleLose, handlePause },
+              gameMode: "play",
+              levels: levelsInfo,
+              setLevel: undefined,
+            });
+          }}
+        >
+          Play
+        </Button>
+      )}
       <Modal open={pauseModal} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Pause</DialogTitle>
@@ -123,9 +85,8 @@ export const PlayScreen: FC<{
           <Button
             onClick={() => {
               setGameMode("play");
-              setScreen(editingLevel ? "levelCreator" : "home");
-              setPauseModal(false);
               setScreen("home");
+              setPauseModal(false);
             }}
           >
             Quit
