@@ -29,7 +29,7 @@ export type MCScreen =
   | "createAccount"
   | "profile"
   | "settings"
-  | "levelCreator";
+  | "levelEditor";
 
 export interface ScreenProps {
   changeScreen: (screen: MCScreen) => void;
@@ -62,7 +62,7 @@ export const GameEntry: FC<{
           createAccount: CreateAccount,
           profile: Profile,
           settings: Settings,
-          levelCreator: LevelCreateScreen,
+          levelEditor: LevelCreateScreen,
         } satisfies Record<MCScreen, FC<ScreenProps>>
       )[screen]),
     [screen]
@@ -106,7 +106,7 @@ export const GameEntry: FC<{
               highScores: !editingLevel,
               controls: !editingLevel,
               profile: !editingLevel,
-              levelCreator:
+              levelEditor:
                 !editingLevel &&
                 (user?.userType === "Editor" || user?.userType === "Admin"),
             } satisfies Partial<Record<MCScreen, boolean>>).map(

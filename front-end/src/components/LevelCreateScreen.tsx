@@ -14,6 +14,7 @@ import {
   ModalDialog,
   DialogTitle,
   DialogContent,
+  Tooltip,
 } from "@mui/joy";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
@@ -100,14 +101,16 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
                         >
                           <Delete />
                         </IconButton>
-                        <IconButton
-                          onClick={() => {
-                            setEditingLevel(level);
-                            changeScreen("home");
-                          }}
-                        >
-                          <Edit />
-                        </IconButton>
+                        <Tooltip title="Edit">
+                          <IconButton
+                            onClick={() => {
+                              setEditingLevel(level);
+                              changeScreen("home");
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
+                        </Tooltip>
                       </Stack>
                     </Stack>
                   </Card>

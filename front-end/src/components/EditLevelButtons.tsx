@@ -7,6 +7,7 @@ import {
   Modal,
   ModalDialog,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/joy";
 import { FC, useState } from "react";
@@ -68,9 +69,10 @@ export const EditLevelButtons: FC<{
             >
               <div></div>
               <Typography level="h1">{editingLevel.name}</Typography>
+              <Tooltip title="Edit Name">
               <IconButton onClick={() => setEditingName(editingLevel.name)}>
                 <Edit />
-              </IconButton>
+              </IconButton></Tooltip>
             </Stack>
           ) : (
             <Stack
@@ -85,20 +87,24 @@ export const EditLevelButtons: FC<{
                 onChange={(e) => setEditingName(e.target.value)}
               />
               <Stack direction="row" gap="1rem">
-                <IconButton
-                  variant="plain"
-                  onClick={() => setEditingName(undefined)}
-                >
-                  <Undo />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    saveLevelToDb(editingName);
-                    setEditingName(undefined);
-                  }}
-                >
-                  <Check />
-                </IconButton>
+                <Tooltip title="Undo">
+                  <IconButton
+                    variant="plain"
+                    onClick={() => setEditingName(undefined)}
+                  >
+                    <Undo />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Save">
+                  <IconButton
+                    onClick={() => {
+                      saveLevelToDb(editingName);
+                      setEditingName(undefined);
+                    }}
+                  >
+                    <Check />
+                  </IconButton>
+                </Tooltip>
               </Stack>
             </Stack>
           )}
