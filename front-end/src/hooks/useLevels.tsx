@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LevelInfo, PartialLevelInfo } from "../Game/models";
 import { LevelsContextType } from "./LevelsContext";
 import { Api } from "../api/Api";
@@ -125,7 +125,6 @@ export const useLevels: (params: {
 
   const fetchOwnLevels = () => {
     if (!api) return Promise.reject();
-    if (ownedLevels) return Promise.resolve();
     setOwnedLevels(undefined);
     return api.level
       .queryPartial({ owner: user?._id ?? "" }, [
@@ -133,6 +132,7 @@ export const useLevels: (params: {
         "name",
         "owner",
         "public",
+        "creatorName",
       ])
       .then((res) => setOwnedLevels(res as PartialLevelInfo[]));
   };
@@ -146,6 +146,10 @@ export const useLevels: (params: {
     });
   };
 
+  useEffect(() => {
+    if (user && user.userType !== "User") fetchOwnLevels();
+  }, [user]);
+
   return {
     modifyLevel,
     setEditingLevel: handleSetEditing,
@@ -155,7 +159,6 @@ export const useLevels: (params: {
     setGameMode,
     ownedLevels,
     setOwnedLevels,
-    fetchOwnLevels,
     deleteLevel,
     createLevel,
   };

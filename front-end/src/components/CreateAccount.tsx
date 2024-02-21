@@ -93,6 +93,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
         <Typography variant="soft" level="body-xs">
           Your email will be used in case you forget your password
         </Typography>
+        {error && <Alert color="danger">{error}</Alert>}
         <Button
           disabled={[name, password, email].some((v) => !v)}
           loading={submitting}
@@ -101,7 +102,6 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
         >
           Create Account
         </Button>
-        {error && <Alert color="danger">{error}</Alert>}
       </Stack>
     </Stack>
   );

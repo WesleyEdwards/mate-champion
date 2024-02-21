@@ -47,7 +47,7 @@ export const PublicLevelsScreen: FC<{
   };
   useEffect(() => {
     api.level
-      .queryPartial({ public: true }, ["_id", "name", "owner"])
+      .queryPartial({ public: true }, ["_id", "name", "owner", "creatorName"])
       .then((res) => setLevels(res as PartialLevelInfo[]));
   }, []);
 
@@ -55,20 +55,22 @@ export const PublicLevelsScreen: FC<{
     <>
       <ViewHeader changeScreen={setScreen} title="Public Levels" />
       {levels.map((level) => (
-        <Card key={level._id}>
+        <Card key={level._id} sx={{ padding: "5px", width: "24rem" }}>
           <Stack
             direction="row"
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography level="h4">{level.name}</Typography>
-            <Typography level="body-sm">{level.creatorName}</Typography>
-
+            <Stack>
+              <Typography level="h4">{level.name}</Typography>
+              <Typography level="body-sm">{level.creatorName}</Typography>
+            </Stack>
             <IconButton
               onClick={() => {
                 handleEnterGamePlay(level._id);
                 setScreen("game");
               }}
+              color="success"
             >
               <PlayArrow />
             </IconButton>

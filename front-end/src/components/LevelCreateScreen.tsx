@@ -23,23 +23,14 @@ import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
   const { user } = useAuthContext();
-  const {
-    setEditingLevel,
-    createLevel,
-    fetchOwnLevels,
-    deleteLevel,
-    ownedLevels,
-  } = useLevelContext();
+  const { setEditingLevel, createLevel, deleteLevel, ownedLevels } =
+    useLevelContext();
 
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<PartialLevelInfo>();
   const [makingNew, setMakingNew] = useState<string>();
 
   if (!user) throw new Error("User must be authenticated");
-
-  useEffect(() => {
-    fetchOwnLevels();
-  }, []);
 
   return (
     <>
@@ -98,10 +89,10 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
               </Button>
               <Button
                 onClick={() => changeScreen("publicLevels")}
-                sx={{ width: "12rem", alignSelf: "center" }}
+                sx={{ alignSelf: "center" }}
                 variant="outlined"
               >
-                See what others have made
+                See levels that other people have made
               </Button>
             </>
           );

@@ -17,7 +17,6 @@ export type LevelsContextType = {
     React.SetStateAction<PartialLevelInfo[] | undefined>
   >;
   createLevel: (name: string) => Promise<LevelInfo>;
-  fetchOwnLevels: () => Promise<unknown>;
   deleteLevel: (level: string) => Promise<unknown>;
 };
 
