@@ -4,13 +4,9 @@ import { MCScreen, ScreenProps } from "./GameEntry";
 import { ViewHeader } from "./ViewHeader";
 import { PartialLevelInfo } from "../Game/models";
 import {
-  Button,
   Card,
-  DialogContent,
-  DialogTitle,
+  CircularProgress,
   IconButton,
-  Modal,
-  ModalDialog,
   Stack,
   Typography,
 } from "@mui/joy";
@@ -27,19 +23,16 @@ export const PublicLevelsScreen: FC<{
   const { api } = useAuthContext();
   const { setGameMode } = useLevelContext();
 
-  const [pauseModal, setPauseModal] = useState(false);
-
   const [levels, setLevels] = useState<PartialLevelInfo[]>([]);
 
   const handleEnterGamePlay = async (levelId: string) => {
     const level = await api.level.detail(levelId);
     modifyStats({ ...emptyStats });
-    setScreen("game");
 
     setGameMode("test");
 
     enterGameLoop({
-      setUI: { modifyStats, handleLose: () => {}, handlePause: setPauseModal },
+      setUI: { modifyStats, handleLose: () => {}, handlePause: () => {} },
       gameMode: "test",
       levels: [level],
       setLevel: () => {},
@@ -54,6 +47,9 @@ export const PublicLevelsScreen: FC<{
   return (
     <>
       <ViewHeader changeScreen={setScreen} title="Public Levels" />
+      {levels.length === 0 && (
+        <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
+      )}
       {levels.map((level) => (
         <Card key={level._id} sx={{ padding: "5px", width: "24rem" }}>
           <Stack
@@ -77,20 +73,6 @@ export const PublicLevelsScreen: FC<{
           </Stack>
         </Card>
       ))}
-      <Modal open={pauseModal} onClose={() => {}}>
-        <ModalDialog>
-          <DialogTitle>Pause</DialogTitle>
-          <DialogContent>{"'ESC' to unpause"}</DialogContent>
-          <Button
-            onClick={() => {
-              setPauseModal(false);
-              setScreen("home");
-            }}
-          >
-            Quit
-          </Button>
-        </ModalDialog>
-      </Modal>
     </>
   );
 };

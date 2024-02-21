@@ -90,7 +90,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
               <Button
                 onClick={() => changeScreen("publicLevels")}
                 sx={{ alignSelf: "center" }}
-                variant="outlined"
+                variant="plain"
               >
                 See levels that other people have made
               </Button>

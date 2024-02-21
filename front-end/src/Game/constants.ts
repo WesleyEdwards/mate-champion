@@ -52,6 +52,4 @@ export const platformConst = {
   floorHeight: 60,
 } as const;
 
-export const firebaseCollection = devSettings.sandboxDb
-  ? "scores-test-1"
-  : "scores";
+export const firebaseCollection = "scores-test-1";

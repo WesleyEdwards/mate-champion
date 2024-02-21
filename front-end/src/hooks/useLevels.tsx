@@ -70,7 +70,7 @@ export const useLevels: (params: {
     );
 
     if (params?.name) partial["name"] = params.name;
-    if (params?.public) partial["public"] = params.public;
+    if (params?.public !== undefined) partial["public"] = params.public;
 
     if (Object.keys(partial).length === 0) return Promise.resolve(editingLevel);
 

@@ -20,6 +20,7 @@ export class GameState {
   private devContentCreate: DevContentCreate | null;
   private cameraDisplay: CameraDisplay;
   private delayLevelTime: number;
+  private gameMode: GameMode;
 
   constructor(
     setUI: SetUI,
@@ -49,6 +50,7 @@ export class GameState {
         : null;
     this.cameraDisplay = new CameraDisplay(gameMode);
     this.delayLevelTime = gameMode === "play" ? 2000 : 100;
+    this.gameMode = gameMode;
 
     this.drawStats();
   }
@@ -109,8 +111,11 @@ export class GameState {
 
   private handleLoseLife() {
     if (devSettings.noDie) return;
+    if (this.gameMode === "edit") return;
     this.currStateOfGame = "loseLife";
-    this.stats.addLives(-1);
+    if (this.gameMode !== "test") {
+      this.stats.addLives(-1);
+    }
     this.resetLevel();
     if (this.stats.lives === 0) {
       this.currStateOfGame = "lose";

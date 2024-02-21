@@ -17,7 +17,7 @@ export function debounceLog(...args: any[]) {
 
 export const emptyStats = {
   score: 0,
-  lives: devSettings.oneLife ? 1 : 3,
+  lives: 3,
   level: 1,
-  ammo: devSettings.unlimitedBullets ? 9000 : 20,
+  ammo: 20,
 };

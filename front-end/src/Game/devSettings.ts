@@ -4,13 +4,9 @@ import { Coordinates, LevelInfo } from "./models";
 
 const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,
-  hideOpponents: false,
-  sandboxDb: false,
   redOutline: false,
   cameraLines: false,
   noDie: false,
-  unlimitedBullets: false,
-  oneLife: false,
 } as const;
 
 export type DevStats = {
@@ -20,13 +16,9 @@ export type DevStats = {
 
 export type Settings = {
   showDevStats: boolean;
-  hideOpponents: boolean;
-  sandboxDb: boolean;
   redOutline: boolean;
   cameraLines: boolean;
   noDie: boolean;
-  unlimitedBullets: boolean;
-  oneLife: boolean;
 };
 
 class DevSettingsClass {

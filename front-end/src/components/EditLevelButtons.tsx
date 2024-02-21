@@ -124,12 +124,12 @@ export const EditLevelButtons: FC<{
             </Button>
           </Stack>
           {editingLevel.public ? (
-            <Typography level="body-xs">
-              This level is public. Anyone can play it.
+            <Typography level="body-md">
+              This level is <b>public</b>. Anyone can play it.
             </Typography>
           ) : (
-            <Typography level="body-xs">
-              This level is private. Only you can play it.
+            <Typography level="body-md">
+              This level is <b>private</b>. Only you can play it.
             </Typography>
           )}
           <Button
