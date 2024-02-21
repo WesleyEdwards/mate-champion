@@ -6,7 +6,10 @@ export type LevelsContextType = {
   modifyLevel: (level: Partial<LevelInfo>) => void;
   setEditingLevel: (editing: PartialLevelInfo | null) => void;
   editingLevel: LevelInfo | null;
-  saveLevelToDb: (name?: string) => Promise<LevelInfo>;
+  saveLevelToDb: (props?: {
+    name?: string;
+    public?: boolean;
+  }) => Promise<LevelInfo>;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
   ownedLevels: PartialLevelInfo[] | undefined;

@@ -22,6 +22,11 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
   const [password, setPassword] = useState("");
 
   const handleSubmitNew = async () => {
+    if (!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)) {
+      setError("Invalid email");
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
     if (!name) return;
@@ -81,12 +86,15 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Input
-          placeholder="Email (Optional)"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        <Typography variant="soft" level="body-xs">
+          Your email will be used in case you forget your password
+        </Typography>
         <Button
-          disabled={[name, password].some((v) => !v)}
+          disabled={[name, password, email].some((v) => !v)}
           loading={submitting}
           onClick={handleSubmitNew}
           type="submit"

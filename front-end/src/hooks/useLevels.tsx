@@ -14,7 +14,10 @@ export const useLevels: (params: {
   const [gameMode, setGameMode] = useState<GameMode>("play");
   const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
 
-  const saveLevelToDb = (name?: string): Promise<LevelInfo> => {
+  const saveLevelToDb = (params?: {
+    name?: string;
+    public?: boolean;
+  }): Promise<LevelInfo> => {
     if (!editingLevel || !originalLevel || !api) {
       return Promise.reject("Not working on a level");
     }
@@ -66,9 +69,9 @@ export const useLevels: (params: {
       {} as Partial<LevelInfo>
     );
 
-    if (name) {
-      partial["name"] = name;
-    }
+    if (params?.name) partial["name"] = params.name;
+    if (params?.public) partial["public"] = params.public;
+
     if (Object.keys(partial).length === 0) return Promise.resolve(editingLevel);
 
     return api.level.modify(editingLevel._id, partial).then((res) => {

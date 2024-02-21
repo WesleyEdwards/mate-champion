@@ -70,9 +70,10 @@ export const EditLevelButtons: FC<{
               <div></div>
               <Typography level="h1">{editingLevel.name}</Typography>
               <Tooltip title="Edit Name">
-              <IconButton onClick={() => setEditingName(editingLevel.name)}>
-                <Edit />
-              </IconButton></Tooltip>
+                <IconButton onClick={() => setEditingName(editingLevel.name)}>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
             </Stack>
           ) : (
             <Stack
@@ -98,7 +99,7 @@ export const EditLevelButtons: FC<{
                 <Tooltip title="Save">
                   <IconButton
                     onClick={() => {
-                      saveLevelToDb(editingName);
+                      saveLevelToDb({ name: editingName });
                       setEditingName(undefined);
                     }}
                   >
@@ -122,6 +123,22 @@ export const EditLevelButtons: FC<{
               Test Level
             </Button>
           </Stack>
+          {editingLevel.public ? (
+            <Typography level="body-xs">
+              This level is public. Anyone can play it.
+            </Typography>
+          ) : (
+            <Typography level="body-xs">
+              This level is private. Only you can play it.
+            </Typography>
+          )}
+          <Button
+            sx={{ width: "11rem" }}
+            onClick={() => saveLevelToDb({ public: !editingLevel.public })}
+            variant="outlined"
+          >
+            Make {editingLevel.public ? "Private" : "Public"}
+          </Button>
         </>
       )}
       <Modal open={pauseModal} onClose={() => {}}>
