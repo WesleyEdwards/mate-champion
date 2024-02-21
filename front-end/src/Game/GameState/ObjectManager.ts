@@ -51,7 +51,7 @@ export class ObjectManager {
       statsInfo: {
         killedOpp: this.getKilledOpponents(),
         shot: this.calcBullets(ammo),
-        packagesReceived: this.matePackManager.getReceivedPackages(this.player),
+        packagesReceived: this.matePackManager.getReceivedPackages(this.player, this.gameMode),
       },
       levelInfo: {
         isCaught: this.playerDies,

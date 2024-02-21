@@ -18,7 +18,7 @@ import {
 } from "@mui/joy";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
-import { LevelInfo } from "../Game/models";
+import { LevelInfo, PartialLevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
@@ -35,7 +35,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
   } = useLevelContext();
 
   const [creating, setCreating] = useState(false);
-  const [deleting, setDeleting] = useState<LevelInfo>();
+  const [deleting, setDeleting] = useState<PartialLevelInfo>();
   const [makingNew, setMakingNew] = useState<string>();
 
   if (!user) throw new Error("User must be authenticated");
@@ -79,10 +79,11 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
               </Stack>
             );
           }
-          if (!ownedLevels)
+          if (!ownedLevels) {
             return (
               <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
             );
+          }
           return (
             <>
               <Stack gap="1rem">

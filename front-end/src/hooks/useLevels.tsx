@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LevelInfo } from "../Game/models";
+import { LevelInfo, PartialLevelInfo } from "../Game/models";
 import { LevelsContextType } from "./LevelsContext";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
@@ -12,7 +12,7 @@ export const useLevels: (params: {
   const [originalLevel, setOriginalLevel] = useState<LevelInfo | null>(null);
   const [editingLevel, setEditingLevel] = useState<LevelInfo | null>(null);
   const [gameMode, setGameMode] = useState<GameMode>("play");
-  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
+  const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
 
   const saveLevelToDb = (name?: string): Promise<LevelInfo> => {
     if (!editingLevel || !originalLevel || !api) {
@@ -89,9 +89,16 @@ export const useLevels: (params: {
     setEditingLevel((prev) => (prev ? { ...prev, ...level } : null));
   };
 
-  const handleSetEditing = (level: LevelInfo | null) => {
-    setOriginalLevel(level ? { ...level } : null);
-    setEditingLevel(level ? { ...level } : null);
+  const handleSetEditing = (level: PartialLevelInfo | null) => {
+    if (!api) return Promise.reject();
+    if (level === null) {
+      setOriginalLevel(null);
+      return setEditingLevel(null);
+    }
+    api.level.detail(level._id).then((res) => {
+      setOriginalLevel(res);
+      setEditingLevel(res);
+    });
   };
 
   const createLevel = async (name: string) => {
@@ -116,7 +123,14 @@ export const useLevels: (params: {
     if (!api) return Promise.reject();
     if (ownedLevels) return Promise.resolve();
     setOwnedLevels(undefined);
-    return api.level.query({ owner: user?._id ?? "" }).then(setOwnedLevels);
+    return api.level
+      .queryPartial({ owner: user?._id ?? "" }, [
+        "_id",
+        "name",
+        "owner",
+        "public",
+      ])
+      .then((res) => setOwnedLevels(res as PartialLevelInfo[]));
   };
 
   const deleteLevel = (level: string) => {

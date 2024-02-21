@@ -8,6 +8,7 @@ import { devSettings } from "../devSettings";
 import { packageConst } from "../constants";
 import { getLevelItem } from "../constructors";
 import { LevelInfo } from "../models";
+import { GameMode } from "../../hooks/useAuth";
 
 export class MatePackageManager {
   packages: Package[] = [];
@@ -46,7 +47,8 @@ export class MatePackageManager {
     this.packages = getLevelItem(level, "package", levels);
   }
 
-  getReceivedPackages(player: Player): boolean {
+  getReceivedPackages(player: Player, gameMode: GameMode): boolean {
+    if (gameMode === "edit") return false;
     const matePackage = updatePackageStatus(player, this.packages);
     if (!matePackage) return false;
     this.packages.splice(this.packages.indexOf(matePackage), 1);

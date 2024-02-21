@@ -80,3 +80,8 @@ export type LevelInfo = {
   platforms: FloatingType[];
   floors: FloorType[];
 };
+
+export type PartialLevelInfo = Pick<
+  LevelInfo,
+  "_id" | "owner" | "name" | "public"
+>;
