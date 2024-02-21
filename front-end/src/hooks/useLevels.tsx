@@ -109,6 +109,7 @@ export const useLevels: (params: {
     const created = await api.level.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
+      creatorName: user?.name ?? "",
       public: false,
       name: name,
       opponents: { grog: [] },

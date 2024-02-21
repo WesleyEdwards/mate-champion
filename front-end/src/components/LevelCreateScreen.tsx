@@ -24,10 +24,7 @@ import { useLevelContext } from "../hooks/LevelsContext";
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
   const { user } = useAuthContext();
   const {
-    editingLevel,
     setEditingLevel,
-    modifyLevel,
-    saveLevelToDb,
     createLevel,
     fetchOwnLevels,
     deleteLevel,
@@ -49,36 +46,6 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
       <ViewHeader changeScreen={changeScreen} title="Level Creator" />
       <Stack my={4} gap={4}>
         {(() => {
-          if (editingLevel) {
-            return (
-              <Stack justifyContent="space-between" height="12rem">
-                <Stack direction="row" alignItems="center" gap="1rem">
-                  <Typography>Editing:</Typography>
-                  <Input
-                    placeholder="Name"
-                    value={editingLevel.name}
-                    onChange={(e) => modifyLevel({ name: e.target.value })}
-                  />
-                </Stack>
-                <Stack
-                  direction="row"
-                  sx={{ alignSelf: "flex-end" }}
-                  gap="1rem"
-                >
-                  <Button variant="plain" onClick={() => setEditingLevel(null)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      saveLevelToDb().then(() => setEditingLevel(null))
-                    }
-                  >
-                    Save
-                  </Button>
-                </Stack>
-              </Stack>
-            );
-          }
           if (!ownedLevels) {
             return (
               <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
@@ -128,6 +95,13 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
                 endDecorator={<Add />}
               >
                 Create New Level
+              </Button>
+              <Button
+                onClick={() => changeScreen("publicLevels")}
+                sx={{ width: "12rem", alignSelf: "center" }}
+                variant="outlined"
+              >
+                See what others have made
               </Button>
             </>
           );

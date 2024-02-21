@@ -74,6 +74,7 @@ export type LevelInfo = {
   _id: string;
   owner: string;
   public: boolean;
+  creatorName: string;
   name: string;
   packages: PackageProps[];
   opponents: { grog: GrogProps[] };
@@ -83,5 +84,5 @@ export type LevelInfo = {
 
 export type PartialLevelInfo = Pick<
   LevelInfo,
-  "_id" | "owner" | "name" | "public"
+  "_id" | "owner" | "name" | "public" | "creatorName"
 >;

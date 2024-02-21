@@ -18,6 +18,7 @@ import { useAuthContext } from "../hooks/AuthContext";
 import { LevelCreateScreen } from "./LevelCreateScreen";
 import { useLevelContext } from "../hooks/LevelsContext";
 import { EditLevelButtons } from "./EditLevelButtons";
+import { PublicLevelsScreen } from "./PublicLevelsScreen";
 
 export type MCScreen =
   | "game"
@@ -29,7 +30,8 @@ export type MCScreen =
   | "createAccount"
   | "profile"
   | "settings"
-  | "levelEditor";
+  | "levelEditor"
+  | "publicLevels";
 
 export interface ScreenProps {
   changeScreen: (screen: MCScreen) => void;
@@ -55,6 +57,7 @@ export const GameEntry: FC<{
         {
           game: () => null,
           home: () => null,
+          publicLevels: () => null,
           highScores: HighScores,
           personalHigh: PersonalHighScore,
           controls: Controls,
@@ -92,6 +95,12 @@ export const GameEntry: FC<{
             modifyStats={modifyStats}
             screen={screen}
             setScreen={changeScreen}
+          />
+        )}
+        {screen === "publicLevels" && (
+          <PublicLevelsScreen
+            setScreen={changeScreen}
+            modifyStats={modifyStats}
           />
         )}
         {screen === "home" && (
