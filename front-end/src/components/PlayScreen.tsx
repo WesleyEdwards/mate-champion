@@ -1,11 +1,9 @@
 import {
   Button,
-  ButtonProps,
   DialogContent,
   DialogTitle,
   Modal,
   ModalDialog,
-  Stack,
 } from "@mui/joy";
 import { FC, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
@@ -18,6 +16,8 @@ import levelsInfo from "../levels.json";
 import { GameMode } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/LevelsContext";
 import { setToNoDevSettings } from "../Game/devSettings";
+import { usePauseModalContext } from "../hooks/PauseModalContext";
+
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -27,7 +27,7 @@ export const PlayScreen: FC<{
   const { user, api, modifyUser } = useAuthContext();
   const { setGameMode } = useLevelContext();
 
-  const [pauseModal, setPauseModal] = useState(false);
+  const { openPauseModal } = usePauseModalContext();
 
   const handleLose = (score: number) => {
     const personalHigh =
@@ -51,48 +51,27 @@ export const PlayScreen: FC<{
     return setScreen("highScores");
   };
 
-  const handlePause = (pause: boolean) => {
-    setPauseModal(pause);
-  };
+  if (screen !== "home") return null;
 
   return (
-    <>
-      {screen === "home" && (
-        <Button
-          sx={{ width: "11rem", my: "2rem" }}
-          onClick={() => {
-            modifyStats({ ...emptyStats });
-            setScreen("game");
+    <Button
+      sx={{ width: "11rem", my: "2rem" }}
+      onClick={() => {
+        modifyStats({ ...emptyStats });
+        setScreen("game");
 
-            setGameMode("play");
-            setToNoDevSettings();
+        setGameMode("play");
+        setToNoDevSettings();
 
-            enterGameLoop({
-              setUI: { modifyStats, handleLose, handlePause },
-              gameMode: "play",
-              levels: levelsInfo,
-              setLevel: undefined,
-            });
-          }}
-        >
-          Play
-        </Button>
-      )}
-      <Modal open={pauseModal} onClose={() => {}}>
-        <ModalDialog>
-          <DialogTitle>Pause</DialogTitle>
-          <DialogContent>{"'ESC' to unpause"}</DialogContent>
-          <Button
-            onClick={() => {
-              setGameMode("play");
-              setScreen("home");
-              setPauseModal(false);
-            }}
-          >
-            Quit
-          </Button>
-        </ModalDialog>
-      </Modal>
-    </>
+        enterGameLoop({
+          setUI: { modifyStats, handleLose, handlePause: openPauseModal },
+          gameMode: "play",
+          levels: levelsInfo,
+          setLevel: undefined,
+        });
+      }}
+    >
+      Play
+    </Button>
   );
 };

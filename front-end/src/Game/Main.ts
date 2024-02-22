@@ -21,6 +21,10 @@ export function enterGameLoop(params: {
   );
 
   function gameLoop(timeStamp: number) {
+    if (window.stopLoop === true) {
+      window.stopLoop = false;
+      return;
+    }
     if (gameState.currStateOfGame === "lose") {
       return handleLose(gameState.score);
     }

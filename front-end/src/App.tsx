@@ -12,6 +12,12 @@ import { useLevels } from "./hooks/useLevels";
 import { LevelsContext } from "./hooks/LevelsContext";
 import { Layout } from "./components/Layout";
 
+declare global {
+  interface Window {
+    stopLoop: boolean;
+  }
+}
+
 const theme: Theme = extendTheme(mateTheme);
 
 function App() {

@@ -3,6 +3,7 @@ import { useLevelContext } from "../hooks/LevelsContext";
 import { GameEntry, MCScreen } from "./GameEntry";
 import { LevelCreator } from "./LevelCreator";
 import { useState } from "react";
+import { PauseModalProvider } from "../hooks/PauseModalContext";
 
 export const Layout = () => {
   const { editingLevel } = useLevelContext();
@@ -10,7 +11,7 @@ export const Layout = () => {
   const [screen, setScreen] = useState<MCScreen>("home");
 
   return (
-    <>
+    <PauseModalProvider setScreen={setScreen}>
       {editingLevel && (
         <Alert
           variant="soft"
@@ -28,6 +29,6 @@ export const Layout = () => {
           <LevelCreator changeScreen={setScreen} />
         </Stack>
       </Stack>
-    </>
+    </PauseModalProvider>
   );
 };

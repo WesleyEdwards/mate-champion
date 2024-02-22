@@ -18,7 +18,7 @@ import {
 } from "@mui/joy";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
-import { LevelInfo, PartialLevelInfo } from "../Game/models";
+import { PartialLevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/LevelsContext";
 
 export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {

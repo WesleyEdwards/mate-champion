@@ -1,11 +1,7 @@
 import {
   Button,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Input,
-  Modal,
-  ModalDialog,
   Stack,
   Tooltip,
   Typography,
@@ -17,6 +13,7 @@ import { useLevelContext } from "../hooks/LevelsContext";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
 import { Check, Edit, Undo } from "@mui/icons-material";
+import { usePauseModalContext } from "../hooks/PauseModalContext";
 
 export const EditLevelButtons: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -28,8 +25,9 @@ export const EditLevelButtons: FC<{
 
   if (!editingLevel) return null;
 
-  const [pauseModal, setPauseModal] = useState(false);
   const [editingName, setEditingName] = useState<string>();
+
+  const { openPauseModal } = usePauseModalContext();
 
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
     modifyStats({ ...emptyStats });
@@ -37,23 +35,30 @@ export const EditLevelButtons: FC<{
 
     setGameMode(gamePlay);
 
-    const constantParams = {
-      setUI: { modifyStats, handleLose: () => {}, handlePause: setPauseModal },
-      gameMode: gamePlay,
-    };
-
     const params = {
       edit: {
+        setUI: {
+          modifyStats,
+          handleLose: () => {},
+          handlePause: openPauseModal,
+        },
+        gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],
         setLevel: modifyLevel,
       },
       test: {
+        setUI: {
+          modifyStats,
+          handleLose: () => {},
+          handlePause: openPauseModal,
+        },
+        gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],
         setLevel: undefined,
       },
     }[gamePlay];
 
-    enterGameLoop({ ...params, ...constantParams });
+    enterGameLoop(params);
   };
 
   return (
@@ -141,20 +146,6 @@ export const EditLevelButtons: FC<{
           </Button>
         </>
       )}
-      <Modal open={pauseModal} onClose={() => {}}>
-        <ModalDialog>
-          <DialogTitle>Pause</DialogTitle>
-          <DialogContent>{"'ESC' to unpause"}</DialogContent>
-          <Button
-            onClick={() => {
-              setPauseModal(false);
-              setScreen("home");
-            }}
-          >
-            Quit
-          </Button>
-        </ModalDialog>
-      </Modal>
     </>
   );
 };

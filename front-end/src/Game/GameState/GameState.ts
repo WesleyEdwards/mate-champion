@@ -8,6 +8,7 @@ import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
 import { GameMode } from "../../hooks/useAuth";
+import { debounceLog } from "../helpers/utils";
 
 export class GameState {
   currStateOfGame: WinState = "initial";
@@ -21,6 +22,7 @@ export class GameState {
   private cameraDisplay: CameraDisplay;
   private delayLevelTime: number;
   private gameMode: GameMode;
+  private id: string = crypto.randomUUID();
 
   constructor(
     setUI: SetUI,
@@ -56,6 +58,7 @@ export class GameState {
   }
 
   update(timeStamp: number) {
+    debounceLog("update", 1000, timeStamp, this.id);
     this.stats.updateTime(timeStamp);
     if (this.currStateOfGame !== "playing") {
       return;
