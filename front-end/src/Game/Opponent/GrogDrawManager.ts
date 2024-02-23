@@ -89,7 +89,7 @@ export class GrogDrawManager {
       drawImageHeight
     );
 
-    if (devSettings.redOutline) {
+    if (devSettings.collisionBoxesVisible) {
       cxt.strokeStyle = "red";
       cxt.lineWidth = 2;
       cxt.strokeRect(

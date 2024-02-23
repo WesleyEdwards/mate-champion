@@ -5,24 +5,31 @@ import { camelCaseToTitleCase } from "../helpers";
 import { FC, useState } from "react";
 import { useLevelContext } from "../hooks/LevelsContext";
 import { MCScreen } from "./GameEntry";
+import { usePauseModalContext } from "../hooks/PauseModalContext";
 
 export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
   changeScreen,
 }) => {
   const { saveLevelToDb, gameMode, editingLevel, setEditingLevel } =
     useLevelContext();
+
+  const { setModal } = usePauseModalContext();
   const [state, setState] = useState(devSettings);
   const [saving, setSaving] = useState(false);
 
-  if (gameMode === "play" && !editingLevel) return null;
+  if (gameMode === "idle" || gameMode === "play") return null;
 
   return (
     <Stack justifyContent="flex-end" m={2} gap={1}>
       <Button
         color="neutral"
         onClick={() => {
-          changeScreen("home");
-          return setEditingLevel(null);
+          if (gameMode === "edit") {
+            setModal("save");
+          } else {
+            setEditingLevel(null);
+            changeScreen("home");
+          }
         }}
       >
         Exit level creator

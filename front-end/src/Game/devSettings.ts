@@ -4,9 +4,9 @@ import { Coordinates, LevelInfo } from "./models";
 
 const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,
-  redOutline: false,
+  collisionBoxesVisible: false,
   cameraLines: false,
-  noDie: false,
+  invincibility: false,
 } as const;
 
 export type DevStats = {
@@ -16,9 +16,9 @@ export type DevStats = {
 
 export type Settings = {
   showDevStats: boolean;
-  redOutline: boolean;
+  collisionBoxesVisible: boolean;
   cameraLines: boolean;
-  noDie: boolean;
+  invincibility: boolean;
 };
 
 class DevSettingsClass {
@@ -26,7 +26,7 @@ class DevSettingsClass {
   modifyingItem: ItemType = "platform";
   constructor() {
     const fromStorage = localStorageManager.get("dev-settings");
-    if (fromStorage) {
+    if (fromStorage && !("noDie" in fromStorage)) {
       this.settings = fromStorage;
     } else {
       localStorageManager.set("dev-settings", prodSettings);

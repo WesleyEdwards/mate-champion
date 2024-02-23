@@ -13,11 +13,9 @@ import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
-import { GameMode } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/LevelsContext";
 import { setToNoDevSettings } from "../Game/devSettings";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
-
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -27,7 +25,7 @@ export const PlayScreen: FC<{
   const { user, api, modifyUser } = useAuthContext();
   const { setGameMode } = useLevelContext();
 
-  const { openPauseModal } = usePauseModalContext();
+  const { setModal } = usePauseModalContext();
 
   const handleLose = (score: number) => {
     const personalHigh =
@@ -64,7 +62,11 @@ export const PlayScreen: FC<{
         setToNoDevSettings();
 
         enterGameLoop({
-          setUI: { modifyStats, handleLose, handlePause: openPauseModal },
+          setUI: {
+            modifyStats,
+            handleLose,
+            handlePause: (pause) => setModal(pause ? "pause" : null),
+          },
           gameMode: "play",
           levels: levelsInfo,
           setLevel: undefined,

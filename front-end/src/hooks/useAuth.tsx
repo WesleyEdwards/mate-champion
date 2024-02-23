@@ -3,9 +3,8 @@ import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
 import { AuthContextType } from "./AuthContext";
-import { LevelInfo } from "../Game/models";
 
-export type GameMode = "play" | "edit" | "test";
+export type GameMode = "play" | "edit" | "test" | "idle";
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>();

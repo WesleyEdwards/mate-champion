@@ -27,7 +27,7 @@ export const EditLevelButtons: FC<{
 
   const [editingName, setEditingName] = useState<string>();
 
-  const { openPauseModal } = usePauseModalContext();
+  const { setModal } = usePauseModalContext();
 
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
     modifyStats({ ...emptyStats });
@@ -40,7 +40,9 @@ export const EditLevelButtons: FC<{
         setUI: {
           modifyStats,
           handleLose: () => {},
-          handlePause: openPauseModal,
+          handlePause: (pause: boolean) => {
+            return setModal(pause ? "save" : null);
+          },
         },
         gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],
@@ -50,7 +52,9 @@ export const EditLevelButtons: FC<{
         setUI: {
           modifyStats,
           handleLose: () => {},
-          handlePause: openPauseModal,
+          handlePause: (pause: boolean) => {
+            return setModal(pause ? "save" : null);
+          },
         },
         gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],

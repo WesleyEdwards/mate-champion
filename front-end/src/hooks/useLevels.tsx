@@ -11,7 +11,7 @@ export const useLevels: (params: {
 }) => LevelsContextType = ({ api, user }) => {
   const [originalLevel, setOriginalLevel] = useState<LevelInfo | null>(null);
   const [editingLevel, setEditingLevel] = useState<LevelInfo | null>(null);
-  const [gameMode, setGameMode] = useState<GameMode>("play");
+  const [gameMode, setGameMode] = useState<GameMode>("idle");
   const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
 
   const saveLevelToDb = (params?: {
@@ -149,6 +149,12 @@ export const useLevels: (params: {
   useEffect(() => {
     if (user && user.userType !== "User") fetchOwnLevels();
   }, [user]);
+
+  useEffect(() => {
+    console.log("Game Mode", gameMode);
+  }, [gameMode]);
+
+
 
   return {
     modifyLevel,

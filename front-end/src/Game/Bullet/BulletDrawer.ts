@@ -53,7 +53,7 @@ export class BulletDrawer {
         bulletConst.height
       );
 
-      if (devSettings.redOutline) {
+      if (devSettings.collisionBoxesVisible) {
         cxt.strokeStyle = "red";
         cxt.lineWidth = 2;
         cxt.strokeRect(

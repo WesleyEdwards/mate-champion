@@ -129,7 +129,7 @@ export class PlayerDrawManager {
       drawImageHeight
     );
 
-    if (devSettings.redOutline) {
+    if (devSettings.collisionBoxesVisible) {
       cxt.strokeStyle = "red";
       cxt.beginPath();
       cxt.arc(0, 0, 1, 0, 2 * Math.PI);

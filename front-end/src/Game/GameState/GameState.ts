@@ -58,7 +58,6 @@ export class GameState {
   }
 
   update(timeStamp: number) {
-    debounceLog("update", 1000, timeStamp, this.id);
     this.stats.updateTime(timeStamp);
     if (this.currStateOfGame !== "playing") {
       return;
@@ -113,7 +112,7 @@ export class GameState {
   }
 
   private handleLoseLife() {
-    if (devSettings.noDie) return;
+    if (devSettings.invincibility) return;
     if (this.gameMode === "edit") return;
     this.currStateOfGame = "loseLife";
     if (this.gameMode !== "test") {
