@@ -27,7 +27,6 @@ export const PauseModalProvider = ({
   const [open, setOpen] = useState<"save" | "pause" | null>(null);
 
   const handleSetModal = (modal: "save" | "pause" | null) => {
-    console.log("modal", modal);
     setOpen(modal);
   };
 
@@ -41,7 +40,7 @@ export const PauseModalProvider = ({
           <Button
             onClick={() => {
               window.stopLoop = true;
-              setGameMode("play");
+              setGameMode("idle");
               setScreen("home");
               setOpen(null);
             }}
@@ -61,7 +60,7 @@ export const PauseModalProvider = ({
               variant="plain"
               onClick={() => {
                 window.stopLoop = true;
-                setGameMode("play");
+                setGameMode("idle");
                 setScreen("home");
                 setOpen(null);
               }}
@@ -72,7 +71,7 @@ export const PauseModalProvider = ({
               onClick={() => {
                 saveLevelToDb();
                 window.stopLoop = true;
-                setGameMode("play");
+                setGameMode("idle");
                 setScreen("home");
                 setOpen(null);
               }}

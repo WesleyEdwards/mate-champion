@@ -15,6 +15,7 @@ import { useLevelContext } from "../hooks/LevelsContext";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
+import { usePauseModalContext } from "../hooks/PauseModalContext";
 
 export const PublicLevelsScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -22,17 +23,25 @@ export const PublicLevelsScreen: FC<{
 }> = ({ modifyStats, setScreen }) => {
   const { api } = useAuthContext();
   const { setGameMode } = useLevelContext();
+  const { setModal } = usePauseModalContext();
 
   const [levels, setLevels] = useState<PartialLevelInfo[]>([]);
 
   const handleEnterGamePlay = async (levelId: string) => {
     const level = await api.level.detail(levelId);
+    setScreen("game");
     modifyStats({ ...emptyStats });
 
     setGameMode("test");
 
     enterGameLoop({
-      setUI: { modifyStats, handleLose: () => {}, handlePause: () => {} },
+      setUI: {
+        modifyStats,
+        handleLose: () => {},
+        handlePause: (pause: boolean) => {
+          return setModal(pause ? "pause" : null);
+        },
+      },
       gameMode: "test",
       levels: [level],
       setLevel: () => {},
@@ -64,7 +73,6 @@ export const PublicLevelsScreen: FC<{
             <IconButton
               onClick={() => {
                 handleEnterGamePlay(level._id);
-                setScreen("game");
               }}
               color="success"
             >

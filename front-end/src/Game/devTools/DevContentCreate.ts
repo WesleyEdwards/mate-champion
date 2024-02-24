@@ -17,7 +17,7 @@ import {
   findExistingItem,
   findExistingItems,
 } from "./helpers";
-import { DevSettings, devSettings } from "../devSettings";
+import { devSettings } from "../devSettings";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
@@ -76,7 +76,7 @@ export class DevContentCreate {
     }
     this.cameraOffset = { x: offset.x, y: offset.y };
 
-    const selected = DevSettings.getInstance().modifyingItem;
+    const selected = window.selectedItem;
     if (selected !== this.currentlyCreating.itemType) {
       this.currentlyCreating = this.creatingOptions[selected];
       this.currentlyCreating.selectItem(null);

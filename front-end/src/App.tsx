@@ -11,12 +11,23 @@ import { AuthContext } from "./hooks/AuthContext";
 import { useLevels } from "./hooks/useLevels";
 import { LevelsContext } from "./hooks/LevelsContext";
 import { Layout } from "./components/Layout";
+import { ItemType } from "./Game/devTools/CreatingThing";
+import { initializeDevSettings } from "./Game/devSettings";
 
 declare global {
   interface Window {
     stopLoop: boolean;
+    mateSettings: {
+      showDevStats: boolean;
+      collisionBoxesVisible: boolean;
+      cameraLines: boolean;
+      invincibility: boolean;
+    };
+    selectedItem: ItemType;
   }
 }
+
+initializeDevSettings();
 
 const theme: Theme = extendTheme(mateTheme);
 

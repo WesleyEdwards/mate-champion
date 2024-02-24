@@ -1,11 +1,5 @@
-import {
-  Button,
-  DialogContent,
-  DialogTitle,
-  Modal,
-  ModalDialog,
-} from "@mui/joy";
-import { FC, useState } from "react";
+import { Button } from "@mui/joy";
+import { FC } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { enterGameLoop } from "../Game/Main";
 import { PlayStats } from "../Game/helpers/types";
@@ -61,6 +55,7 @@ export const PlayScreen: FC<{
         setGameMode("play");
         setToNoDevSettings();
 
+        window.stopLoop = false;
         enterGameLoop({
           setUI: {
             modifyStats,

@@ -53,7 +53,7 @@ export const EditLevelButtons: FC<{
           modifyStats,
           handleLose: () => {},
           handlePause: (pause: boolean) => {
-            return setModal(pause ? "save" : null);
+            return setModal(pause ? "pause" : null);
           },
         },
         gameMode: gamePlay,

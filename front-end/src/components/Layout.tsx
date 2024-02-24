@@ -16,6 +16,7 @@ export const Layout = () => {
         <Alert
           variant="soft"
           color="success"
+          size="lg"
           sx={{ width: "100%", borderRadius: 0, position: "fixed" }}
         >
           Editing <b>{editingLevel.name}</b>

@@ -150,12 +150,6 @@ export const useLevels: (params: {
     if (user && user.userType !== "User") fetchOwnLevels();
   }, [user]);
 
-  useEffect(() => {
-    console.log("Game Mode", gameMode);
-  }, [gameMode]);
-
-
-
   return {
     modifyLevel,
     setEditingLevel: handleSetEditing,

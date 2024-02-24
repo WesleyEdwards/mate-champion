@@ -22,6 +22,7 @@ export function enterGameLoop(params: {
 
   function gameLoop(timeStamp: number) {
     if (window.stopLoop === true) {
+      gameState.removeSetUi();
       window.stopLoop = false;
       return;
     }

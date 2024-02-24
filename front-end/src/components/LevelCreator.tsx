@@ -10,14 +10,21 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
   changeScreen,
 }) => {
-  const { saveLevelToDb, gameMode, editingLevel, setEditingLevel } =
-    useLevelContext();
+  const {
+    saveLevelToDb,
+    gameMode,
+    editingLevel,
+    setEditingLevel,
+    setGameMode,
+  } = useLevelContext();
 
   const { setModal } = usePauseModalContext();
-  const [state, setState] = useState(devSettings);
+  const [state, setState] = useState({ ...window.window.mateSettings });
   const [saving, setSaving] = useState(false);
 
-  if (gameMode === "idle" || gameMode === "play") return null;
+  if ((gameMode === "idle" && !editingLevel) || gameMode === "play") {
+    return null;
+  }
 
   return (
     <Stack justifyContent="flex-end" m={2} gap={1}>
@@ -27,7 +34,9 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
           if (gameMode === "edit") {
             setModal("save");
           } else {
+            window.stopLoop = true;
             setEditingLevel(null);
+            setGameMode("idle");
             changeScreen("home");
           }
         }}

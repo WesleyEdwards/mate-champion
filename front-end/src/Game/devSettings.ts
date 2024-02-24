@@ -21,55 +21,38 @@ export type Settings = {
   invincibility: boolean;
 };
 
-class DevSettingsClass {
-  settings: Settings;
-  modifyingItem: ItemType = "platform";
-  constructor() {
-    const fromStorage = localStorageManager.get("dev-settings");
-    if (fromStorage && !("noDie" in fromStorage)) {
-      this.settings = fromStorage;
-    } else {
-      localStorageManager.set("dev-settings", prodSettings);
-      this.settings = prodSettings;
-    }
-  }
-
-  modifySettings(setting: keyof Settings, value: boolean) {
-    this.settings[setting] = value;
-    localStorageManager.set("dev-settings", this.settings);
-  }
-  modifyItem(item: ItemType) {
-    this.modifyingItem = item;
-  }
-
-  noDevSettings() {
-    this.settings = { ...prodSettings };
-    console.log("noDevSettings", this.settings);
-  }
-}
-
-export const DevSettings = (() => {
-  let instance: DevSettingsClass;
+export const devSettings = (() => {
+  console.log({
+    modifyingItem: window.selectedItem,
+    mateSettings: window.mateSettings,
+  });
   return {
-    getInstance: function () {
-      if (!instance) {
-        instance = new DevSettingsClass();
-      }
-      return instance;
-    },
+    modifyingItem: window.selectedItem,
+    mateSettings: window.mateSettings,
   };
 })();
 
-export const devSettings = DevSettings.getInstance().settings;
-
 export const modifyDevSettings = (setting: keyof Settings, value: boolean) => {
-  DevSettings.getInstance().modifySettings(setting, value);
+  window.mateSettings[setting] = value;
+  localStorageManager.set("dev-settings", window.mateSettings);
 };
 
 export const setToNoDevSettings = () => {
-  DevSettings.getInstance().noDevSettings();
+  window.mateSettings = { ...prodSettings };
+  localStorageManager.set("dev-settings", window.mateSettings);
 };
 
 export const contentCreatorModifyObject = (item: ItemType) => {
-  DevSettings.getInstance().modifyItem(item);
+  window.selectedItem = item;
+};
+
+export const initializeDevSettings = () => {
+  const fromStorage = localStorageManager.get("dev-settings");
+  if (fromStorage && !("noDie" in fromStorage)) {
+    window.mateSettings = fromStorage;
+  } else {
+    localStorageManager.set("dev-settings", prodSettings);
+    window.mateSettings = prodSettings;
+  }
+  window.selectedItem = "platform";
 };

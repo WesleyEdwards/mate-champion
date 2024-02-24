@@ -34,7 +34,7 @@ export class GameState {
   ) {
     this.keys = addEventListeners(() => {
       const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
-      setUI.handlePause(newState === "pause");
+      this.setUI.handlePause(newState === "pause");
       this.currStateOfGame = newState;
     });
     this.objectManager = new ObjectManager(levels, gameMode);
@@ -93,7 +93,7 @@ export class GameState {
     if (!this.showMessage) {
       this.objectManager.drawObjects(this.cxt, this.cameraDisplay.cameraOffset);
     }
-    if (devSettings.showDevStats) {
+    if (window.window.mateSettings.showDevStats) {
       this.gameDrawer.showDevStats(
         this.cxt,
         this.objectManager.player.vector.position,
@@ -112,7 +112,7 @@ export class GameState {
   }
 
   private handleLoseLife() {
-    if (devSettings.invincibility) return;
+    if (window.window.mateSettings.invincibility) return;
     if (this.gameMode === "edit") return;
     this.currStateOfGame = "loseLife";
     if (this.gameMode !== "test") {
@@ -152,5 +152,13 @@ export class GameState {
 
   get score() {
     return this.stats.score;
+  }
+
+  removeSetUi() {
+    this.setUI = {
+      handlePause: () => {},
+      handleLose: () => {},
+      modifyStats: () => {},
+    };
   }
 }

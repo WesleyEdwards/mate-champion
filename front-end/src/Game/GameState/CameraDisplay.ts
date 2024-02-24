@@ -61,7 +61,7 @@ export class CameraDisplay {
   }
 
   draw(cxt: CanvasRenderingContext2D) {
-    if (devSettings.cameraLines) {
+    if (window.window.mateSettings.cameraLines) {
       cxt.fillStyle = "red";
       cxt.moveTo(cameraConst.idealDistFromLeftWall, 0);
       cxt.lineTo(cameraConst.idealDistFromLeftWall, MAX_CANVAS_HEIGHT);
