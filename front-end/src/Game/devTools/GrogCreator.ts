@@ -1,6 +1,5 @@
 import { ObjectManager } from "../GameState/ObjectManager";
 import { Grog } from "../Opponent/Grog";
-import { grogConst } from "../constants";
 import { Coordinates } from "../models";
 import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 

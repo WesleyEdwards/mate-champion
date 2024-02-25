@@ -1,23 +1,16 @@
 import { ObjectManager } from "../GameState/ObjectManager";
-import { Coordinates, HasPosition, LevelInfo, StaticObject } from "../models";
+import { Coordinates, LevelInfo, StaticObject } from "../models";
 import { PlatformCreator } from "./PlatformCreator";
-import {
-  ContentEvent,
-  CreatingThing,
-  CreatorItem,
-  ItemType,
-} from "./CreatingThing";
+import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 import { addDevEventListeners } from "./eventListeners";
 import { FloorCreator } from "./FloorCreator";
 import { GrogCreator } from "./GrogCreator";
 import { PackageCreator } from "./PackageCreator";
-import { debounceLog } from "../helpers/utils";
 import {
   exportLevelInfo,
   findExistingItem,
   findExistingItems,
 } from "./helpers";
-import { devSettings } from "../devSettings";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
@@ -46,7 +39,7 @@ export class DevContentCreate {
   platforms: StaticObject[];
   cameraOffset: Coordinates = { x: 0, y: 0 };
   prevColor: string = "";
-  currentlyCreating: CreatingThing;
+  prevCurrCreating: ItemType = "platform";
   setLevel?: (level: Partial<LevelInfo>) => void;
   lastUpdate: number = 0;
 
@@ -65,22 +58,20 @@ export class DevContentCreate {
       grog: new GrogCreator(objectManager),
       package: new PackageCreator(objectManager),
     };
-    this.currentlyCreating = this.creatingOptions.platform;
     this.setLevel = setLevel;
   }
 
   update(offset: Coordinates, timestamp: number) {
-    if (timestamp - this.lastUpdate > 5000) {
+    if (timestamp - this.lastUpdate > 1000) {
       this.lastUpdate = timestamp;
       this.setLevel?.(exportLevelInfo(this.objectManager));
     }
     this.cameraOffset = { x: offset.x, y: offset.y };
 
-    const selected = window.selectedItem;
-    if (selected !== this.currentlyCreating.itemType) {
-      this.currentlyCreating = this.creatingOptions[selected];
+    if (window.selectedItem !== this.prevCurrCreating) {
       this.currentlyCreating.selectItem(null);
     }
+    this.prevCurrCreating = window.selectedItem;
   }
 
   selectOneItem(xNoOffset: number, y: number, shiftKey: boolean) {
@@ -89,6 +80,21 @@ export class DevContentCreate {
       y - this.cameraOffset.y,
       this.currentlyCreating.items
     );
+
+    if (!existingItem) {
+      Object.values(this.creatingOptions).forEach((c) => {
+        const existsInOther = findExistingItem(
+          xNoOffset + this.cameraOffset.x,
+          y - this.cameraOffset.y,
+          c.items
+        );
+        if (existsInOther) {
+          console.log(existsInOther);
+          c.selectItem(existsInOther);
+          window.selectedItem = c.itemType;
+        }
+      });
+    }
 
     if (shiftKey && existingItem === null) return;
 
@@ -162,7 +168,8 @@ export class DevContentCreate {
       this.prevDrag = { ...coor };
     }
   }
-  exportLevelInfo() {
-    this.setLevel?.(exportLevelInfo(this.objectManager));
+
+  get currentlyCreating() {
+    return this.creatingOptions[window.selectedItem];
   }
 }

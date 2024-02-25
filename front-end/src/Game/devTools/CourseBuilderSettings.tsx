@@ -1,12 +1,21 @@
 import { Select, Option } from "@mui/joy";
 import { contentCreatorModifyObject } from "../devSettings";
 import { ItemType } from "./CreatingThing";
+import { useEffect, useState } from "react";
 
 export const CourseBuilderSettings = () => {
+  const [value, setValue] = useState(window.selectedItem);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setValue(window.selectedItem);
+    }, 300);
+    return () => clearInterval(interval);
+  });
   return (
     <Select
       sx={{ minWidth: "10rem" }}
-      defaultValue="platform"
+      value={value}
       onChange={(_, value) => {
         contentCreatorModifyObject(value as ItemType);
       }}

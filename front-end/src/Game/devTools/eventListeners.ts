@@ -1,5 +1,4 @@
 import { DevContentCreate } from "./DevContentCreate";
-import { exportLevelInfo } from "./helpers";
 
 export function addDevEventListeners(
   contentCreator: DevContentCreate,
@@ -9,7 +8,7 @@ export function addDevEventListeners(
     contentCreator.mouseDown(e.offsetX, e.offsetY, e.shiftKey);
   });
   canvas.addEventListener("mousemove", (e) => {
-    contentCreator.handleKeyEvent("drag",e.shiftKey, {
+    contentCreator.handleKeyEvent("drag", e.shiftKey, {
       x: e.offsetX,
       y: e.offsetY,
     });
@@ -35,9 +34,6 @@ export function addDevEventListeners(
   window.addEventListener("keydown", (e) => {
     if (e.code === "Delete") {
       return contentCreator.handleKeyEvent("delete");
-    }
-    if (e.code === "Enter") {
-      return contentCreator.exportLevelInfo();
     }
 
     if (e.ctrlKey) {
