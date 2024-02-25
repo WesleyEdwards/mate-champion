@@ -85,6 +85,21 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
         </Typography>
       ))}
       <CourseBuilderSettings />
+      <Button
+        color="neutral"
+        variant="plain"
+        onClick={(e) => {
+          if (
+            "pointerType" in e.nativeEvent &&
+            e.nativeEvent["pointerType"] === "mouse"
+          ) {
+            setModal("help");
+          }
+        }}
+        endDecorator="?"
+      >
+        Help
+      </Button>
     </Stack>
   );
 };

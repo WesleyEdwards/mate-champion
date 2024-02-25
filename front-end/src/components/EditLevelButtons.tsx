@@ -32,6 +32,7 @@ export const EditLevelButtons: FC<{
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
     modifyStats({ ...emptyStats });
     setScreen("game");
+    window.stopLoop = false;
 
     setGameMode(gamePlay);
 

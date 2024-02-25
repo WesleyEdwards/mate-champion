@@ -108,7 +108,7 @@ export function updateLiveStatus(
           opp.vector.position,
           bullet.position,
           bulletConst.distFromOppHit
-        )
+        ) && opp.dyingState === "alive"
       ) {
         shankedGrogs.push(grogI);
         spentBulletsIndex.push(i);
