@@ -42,8 +42,8 @@ export class MatePackageManager {
     });
   }
 
-  reset(level: number, levels: LevelInfo[]) {
-    this.packages = getLevelItem(level, "package", levels);
+  reset(info: LevelInfo) {
+    this.packages = getLevelItem("package", info);
   }
 
   getReceivedPackages(player: Player, gameMode: GameMode): boolean {

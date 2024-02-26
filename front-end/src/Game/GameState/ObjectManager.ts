@@ -13,6 +13,7 @@ import { OpponentManager } from "../Opponent/OpponentManager";
 import { PlatformManager } from "../Platform/PlatformManager";
 import { Canvas, DrawObjProps, UpdateStatus } from "../helpers/types";
 import { GameMode } from "../../hooks/useAuth";
+import { getLevelInfo } from "../constructors";
 
 export class ObjectManager {
   player: Player = new Player();
@@ -30,11 +31,12 @@ export class ObjectManager {
   }
 
   reset(level: number) {
-    this.platformManager.reset(level, this.levels);
-    this.matePackManager.reset(level, this.levels);
+    const levelInfo = getLevelInfo(level, this.levels);
+    this.platformManager.reset(levelInfo);
+    this.matePackManager.reset(levelInfo);
     this.player.reset();
-    this.opponentManager.reset(level, this.levels);
-    this.pot.reset();
+    this.opponentManager.reset(levelInfo);
+    this.pot.reset(levelInfo.endPosition);
     this.bulletManager.reset();
   }
 
@@ -51,7 +53,10 @@ export class ObjectManager {
       statsInfo: {
         killedOpp: this.getKilledOpponents(),
         shot: this.calcBullets(ammo),
-        packagesReceived: this.matePackManager.getReceivedPackages(this.player, this.gameMode),
+        packagesReceived: this.matePackManager.getReceivedPackages(
+          this.player,
+          this.gameMode
+        ),
       },
       levelInfo: {
         isCaught: this.playerDies,

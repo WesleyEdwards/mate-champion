@@ -2,7 +2,7 @@ import { BaseVectorMan } from "./VectorManager/BaseVectorMan";
 import { levelConst } from "./constants";
 import { potImage } from "./Drawing/ImageRepos";
 import { StaticObject } from "./models";
-import { Canvas, DrawObjProps } from "./helpers/types";
+import { DrawObjProps } from "./helpers/types";
 
 export class Pot implements StaticObject {
   color: string = "black";
@@ -12,7 +12,7 @@ export class Pot implements StaticObject {
 
   constructor() {
     this.vector = new PotVector(
-      { x: levelConst.endPos + 750, y: 100 },
+      { x: 5000, y: 100 },
       potImage.width,
       potImage.height
     );
@@ -26,8 +26,8 @@ export class Pot implements StaticObject {
     );
   }
 
-  reset() {
-    this.vector.setPosX(levelConst.endPos + 750);
+  reset(endPosition: number) {
+    this.vector.setPosX(endPosition);
   }
 }
 

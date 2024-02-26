@@ -11,25 +11,24 @@ type ReturnItem<T extends "blocks" | "opponents" | "package"> =
     ? Opponents
     : Package[];
 
-const getLevelInfo = (level: number, info: LevelInfo[]) =>
+export const getLevelInfo = (level: number, info: LevelInfo[]): LevelInfo =>
   info[(level - 1) % info.length];
 
 export function getLevelItem<T extends "blocks" | "opponents" | "package">(
-  level: number,
   item: T,
-  info: LevelInfo[]
+  info: LevelInfo
 ): ReturnItem<T> {
   return {
     blocks: () => {
-      const { platforms, floors } = getLevelInfo(level, info);
+      const { platforms, floors } = info;
       return [...platforms, ...floors].map((p) => new Platform(p));
     },
     opponents: () => {
-      const { opponents } = getLevelInfo(level, info);
+      const { opponents } = info;
       return { grog: opponents.grog.map((o) => new Grog(o)) };
     },
     package: () => {
-      const { packages } = getLevelInfo(level, info);
+      const { packages } = info;
       return packages.map((p) => new Package(p));
     },
   }[item]() as ReturnItem<T>;

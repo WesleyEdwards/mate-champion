@@ -17,6 +17,7 @@ export const useLevels: (params: {
   const saveLevelToDb = (params?: {
     name?: string;
     public?: boolean;
+    length?: number;
   }): Promise<LevelInfo> => {
     if (!editingLevel || !originalLevel || !api) {
       return Promise.reject("Not working on a level");
@@ -71,6 +72,7 @@ export const useLevels: (params: {
 
     if (params?.name) partial["name"] = params.name;
     if (params?.public !== undefined) partial["public"] = params.public;
+    if (params?.length !== undefined) partial["endPosition"] = params.length;
 
     if (Object.keys(partial).length === 0) return Promise.resolve(editingLevel);
 

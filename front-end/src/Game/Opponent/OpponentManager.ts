@@ -35,7 +35,7 @@ export class OpponentManager {
     });
   }
 
-  reset(level: number, levels: LevelInfo[]) {
-    this.opponents = getLevelItem(level, "opponents", levels);
+  reset(info: LevelInfo) {
+    this.opponents = getLevelItem("opponents", info);
   }
 }

@@ -9,6 +9,7 @@ export type LevelsContextType = {
   saveLevelToDb: (props?: {
     name?: string;
     public?: boolean;
+    length?: number;
   }) => Promise<LevelInfo>;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;

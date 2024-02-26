@@ -9,7 +9,7 @@ export class PlatformManager {
     this.platforms.forEach((p) => p.draw(drawProps));
   }
 
-  reset(level: number, levels: LevelInfo[]) {
-    this.platforms = getLevelItem(level, "blocks", levels);
+  reset(info: LevelInfo) {
+    this.platforms = getLevelItem("blocks", info);
   }
 }

@@ -1,29 +1,106 @@
-import { Select, Option } from "@mui/joy";
+import {
+  Select,
+  Option,
+  Stack,
+  Tooltip,
+  IconButton,
+  Input,
+  Typography,
+} from "@mui/joy";
 import { contentCreatorModifyObject } from "../devSettings";
 import { ItemType } from "./CreatingThing";
 import { useEffect, useState } from "react";
+import { useLevelContext } from "../../hooks/LevelsContext";
+import { Check, Edit, Undo } from "@mui/icons-material";
 
 export const CourseBuilderSettings = () => {
-  const [value, setValue] = useState(window.selectedItem);
+  const { editingLevel, saveLevelToDb } = useLevelContext();
+  const [setEditingItemType, editingItemType] = useState(window.selectedItem);
+  const [editingLength, setEditingLength] = useState<number>();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setValue(window.selectedItem);
+      editingItemType(window.selectedItem);
     }, 300);
     return () => clearInterval(interval);
   });
+
   return (
-    <Select
-      sx={{ minWidth: "10rem" }}
-      value={value}
-      onChange={(_, value) => {
-        contentCreatorModifyObject(value as ItemType);
-      }}
-    >
-      <Option value="platform">Platform</Option>
-      <Option value="floor">Floor</Option>
-      <Option value="grog">Grog</Option>
-      <Option value="package">Package</Option>
-    </Select>
+    <Stack gap="1rem">
+      <Select
+        sx={{ minWidth: "10rem" }}
+        value={setEditingItemType}
+        onChange={(_, value) => {
+          contentCreatorModifyObject(value as ItemType);
+        }}
+      >
+        <Option value="platform">Platform</Option>
+        <Option value="floor">Floor</Option>
+        <Option value="grog">Grog</Option>
+        <Option value="package">Package</Option>
+      </Select>
+      <Stack
+        direction="row"
+        alignItems="center"
+        width="100%"
+        justifyContent="space-between"
+      >
+        {editingLength === undefined ? (
+          <Stack
+            width="100%"
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography>End: {editingLevel?.endPosition}</Typography>
+            <Tooltip title="Edit">
+              <IconButton
+                onClick={() => setEditingLength(editingLevel?.endPosition ?? 0)}
+              >
+                <Edit />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ) : (
+          <Stack
+            width="100%"
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            {" "}
+            <Typography>End:</Typography>
+            <Input
+              value={editingLength}
+              type="number"
+              sx={{ maxWidth: "8rem" }}
+              onChange={(e) =>
+                setEditingLength(isNaN(+e.target.value) ? 0 : +e.target.value)
+              }
+            />
+            <Stack direction="row" gap="1rem">
+              <Tooltip title="Undo">
+                <IconButton
+                  variant="plain"
+                  onClick={() => setEditingLength(undefined)}
+                >
+                  <Undo />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Save">
+                <IconButton
+                  onClick={() => {
+                    saveLevelToDb({ length: editingLength });
+                    setEditingLength(undefined);
+                  }}
+                >
+                  <Check />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Stack>
+        )}
+      </Stack>
+    </Stack>
   );
 };

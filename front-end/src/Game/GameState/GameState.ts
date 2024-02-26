@@ -22,7 +22,6 @@ export class GameState {
   private cameraDisplay: CameraDisplay;
   private delayLevelTime: number;
   private gameMode: GameMode;
-  private id: string = crypto.randomUUID();
 
   constructor(
     setUI: SetUI,
