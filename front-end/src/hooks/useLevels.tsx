@@ -110,6 +110,7 @@ export const useLevels: (params: {
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
       creatorName: user?.name ?? "",
+      endPosition: 4500,
       public: false,
       name: name,
       opponents: { grog: [] },

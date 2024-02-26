@@ -6,6 +6,7 @@ export const sandboxLevel: LevelInfo = {
   owner: "",
   public: true,
   creatorName: "OWNER",
+  endPosition: 4500,
   name: "Sandbox",
   packages: [
     { x: 1187, y: 338 },

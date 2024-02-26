@@ -1,9 +1,10 @@
 import {Db, Collection} from "mongodb"
 
 export async function runMigrations(db: Db): Promise<boolean> {
-  const migrationCollection: Collection<any> = db.collection("users")
-  const userCollection: Collection<any> = db.collection("user")
-  const migrationName = "addEditorUserType"
+  const levelCollection: Collection<any> = db.collection("level")
+  const migrationCollection: Collection<any> = db.collection("migrations")
+
+  const migrationName = "addEndPositionField"
 
   const hasRun = await migrationCollection.findOne({name: migrationName})
   if (hasRun) {
@@ -11,16 +12,13 @@ export async function runMigrations(db: Db): Promise<boolean> {
     return true
   }
 
-  const usersToUpdate = await userCollection.find({}).toArray()
-  console.log("usersToUpdate", usersToUpdate)
-  for (const user of usersToUpdate) {
-    const userType = user.admin ? "Admin" : "User"
-
-    await userCollection.updateOne(
-      {_id: user._id},
+  const levelsToUpdate = await levelCollection.find({}).toArray()
+  console.log("levelsToUpdate", levelsToUpdate)
+  for (const level of levelsToUpdate) {
+    await levelCollection.updateOne(
+      {_id: level._id},
       {
-        $unset: {admin: ""},
-        $set: {userType}
+        $set: {endPosition: 4500}
       }
     )
   }

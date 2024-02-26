@@ -75,6 +75,7 @@ export type LevelInfo = {
   owner: string;
   public: boolean;
   creatorName: string;
+  endPosition: number;
   name: string;
   packages: PackageProps[];
   opponents: { grog: GrogProps[] };

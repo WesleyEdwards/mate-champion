@@ -41,6 +41,7 @@ const levelSchema = z
     name: z.string(),
     creatorName: z.string().default(""),
     packages: coordinates.array().default([]),
+    endPosition: z.number().default(4500),
     opponents: z
       .object({
         grog: z
