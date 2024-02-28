@@ -89,12 +89,14 @@ export class ObjectManager {
     if (
       this.player.vector.position.y + this.player.vector.height >
       MAX_CANVAS_HEIGHT
-    )
+    ) {
       return true;
+    }
     return this.opponentManager.touchingPlayer(this.player.position);
   }
 
   get nextLevel() {
+    if (this.gameMode === "edit") return false;
     return this.player.position.x > this.pot.vector.posX;
   }
 

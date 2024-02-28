@@ -108,6 +108,10 @@ export class GameState {
     this.objectManager.reset(this.stats.level);
     this.cameraDisplay.reset();
     this.drawStats();
+    this.setUI.modifyStats({
+      levelCreator:
+        this.objectManager.levels.at(this.stats.level - 1)?.creatorName ?? "",
+    });
   }
 
   private handleLoseLife() {

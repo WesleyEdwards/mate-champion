@@ -20,4 +20,5 @@ export const emptyStats = {
   lives: 3,
   level: 1,
   ammo: 20,
+  levelCreator: ""
 };

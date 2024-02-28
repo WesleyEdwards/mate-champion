@@ -27,6 +27,7 @@ export type PlayStats = {
   lives: number;
   level: number;
   ammo: number;
+  levelCreator: string;
 };
 
 export type Canvas = CanvasRenderingContext2D;

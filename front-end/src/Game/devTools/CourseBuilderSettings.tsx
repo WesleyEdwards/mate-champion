@@ -101,70 +101,85 @@ export const CourseBuilderSettings = () => {
             </Stack>
           </Stack>
         )}
-
-        {editingOpponentSpeed === undefined ? (
-          <Stack
-            width="100%"
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography>
-              Grog speed:{" "}
-              {(editingLevel?.opponents.grog.at(0)?.moveSpeed ?? 0.07) * 100}
-            </Typography>
-            <Tooltip title="Edit">
+      </Stack>
+      {editingOpponentSpeed === undefined ? (
+        <Stack
+          width="100%"
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography>
+            Grog speed:{" "}
+            {(
+              (editingLevel?.opponents.grog.at(0)?.moveSpeed ?? 0.07) * 100
+            ).toFixed(0)}
+          </Typography>
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() =>
+                setEditingOpponentSpeed(
+                  +(
+                    (editingLevel?.opponents.grog.at(0)?.moveSpeed ?? 0.07) *
+                    100
+                  ).toFixed(0)
+                )
+              }
+            >
+              <Edit />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      ) : (
+        <Stack
+          width="100%"
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          {" "}
+          <Typography>Grog speed:</Typography>
+          <Input
+            value={editingOpponentSpeed}
+            type="number"
+            sx={{ maxWidth: "8rem" }}
+            onChange={(e) =>
+              setEditingOpponentSpeed(
+                isNaN(+e.target.value) ? 0 : +e.target.value
+              )
+            }
+          />
+          <Stack direction="row" gap="1rem">
+            <Tooltip title="Undo">
               <IconButton
-                onClick={() =>
-                  setEditingOpponentSpeed(editingLevel?.endPosition ?? 0)
-                }
+                variant="plain"
+                onClick={() => setEditingOpponentSpeed(undefined)}
               >
-                <Edit />
+                <Undo />
+              </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                editingOpponentSpeed > 100 || editingOpponentSpeed < 0
+                  ? "Invalid speed"
+                  : "Save"
+              }
+            >
+              <IconButton
+                disabled={
+                  editingOpponentSpeed > 100 || editingOpponentSpeed < 0
+                }
+                onClick={() => {
+                  saveLevelToDb({ grogSpeed: editingOpponentSpeed / 100 });
+                  setEditingOpponentSpeed(undefined);
+                }}
+              >
+                <Check />
               </IconButton>
             </Tooltip>
           </Stack>
-        ) : (
-          <Stack
-            width="100%"
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            {" "}
-            <Typography>End:</Typography>
-            <Input
-              value={editingOpponentSpeed}
-              type="number"
-              sx={{ maxWidth: "8rem" }}
-              onChange={(e) =>
-                setEditingOpponentSpeed(
-                  isNaN(+e.target.value) ? 0 : +e.target.value
-                )
-              }
-            />
-            <Stack direction="row" gap="1rem">
-              <Tooltip title="Undo">
-                <IconButton
-                  variant="plain"
-                  onClick={() => setEditingOpponentSpeed(undefined)}
-                >
-                  <Undo />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Save">
-                <IconButton
-                  onClick={() => {
-                    saveLevelToDb({ grogSpeed: editingOpponentSpeed / 100 });
-                    setEditingOpponentSpeed(undefined);
-                  }}
-                >
-                  <Check />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          </Stack>
-        )}
-      </Stack>
+        </Stack>
+      )}
     </Stack>
   );
 };

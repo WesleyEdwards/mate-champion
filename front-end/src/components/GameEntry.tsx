@@ -140,6 +140,7 @@ export const GameEntry: FC<{
       </Stack>
 
       <Stack>
+        {playing && <div>Level Author: {stats.levelCreator}</div>}
         <canvas
           style={{ height: playing ? undefined : "0px", borderRadius: "10px" }}
           id="canvas"
