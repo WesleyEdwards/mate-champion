@@ -17,6 +17,7 @@ export const CourseBuilderSettings = () => {
   const { editingLevel, saveLevelToDb } = useLevelContext();
   const [setEditingItemType, editingItemType] = useState(window.selectedItem);
   const [editingLength, setEditingLength] = useState<number>();
+  const [editingOpponentSpeed, setEditingOpponentSpeed] = useState<number>();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -92,6 +93,69 @@ export const CourseBuilderSettings = () => {
                   onClick={() => {
                     saveLevelToDb({ length: editingLength });
                     setEditingLength(undefined);
+                  }}
+                >
+                  <Check />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Stack>
+        )}
+
+        {editingOpponentSpeed === undefined ? (
+          <Stack
+            width="100%"
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography>
+              Grog speed:{" "}
+              {(editingLevel?.opponents.grog.at(0)?.moveSpeed ?? 0.07) * 100}
+            </Typography>
+            <Tooltip title="Edit">
+              <IconButton
+                onClick={() =>
+                  setEditingOpponentSpeed(editingLevel?.endPosition ?? 0)
+                }
+              >
+                <Edit />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        ) : (
+          <Stack
+            width="100%"
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            {" "}
+            <Typography>End:</Typography>
+            <Input
+              value={editingOpponentSpeed}
+              type="number"
+              sx={{ maxWidth: "8rem" }}
+              onChange={(e) =>
+                setEditingOpponentSpeed(
+                  isNaN(+e.target.value) ? 0 : +e.target.value
+                )
+              }
+            />
+            <Stack direction="row" gap="1rem">
+              <Tooltip title="Undo">
+                <IconButton
+                  variant="plain"
+                  onClick={() => setEditingOpponentSpeed(undefined)}
+                >
+                  <Undo />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Save">
+                <IconButton
+                  onClick={() => {
+                    saveLevelToDb({ grogSpeed: editingOpponentSpeed / 100 });
+                    setEditingOpponentSpeed(undefined);
                   }}
                 >
                   <Check />

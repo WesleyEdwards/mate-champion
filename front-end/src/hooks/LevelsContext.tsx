@@ -10,6 +10,7 @@ export type LevelsContextType = {
     name?: string;
     public?: boolean;
     length?: number;
+    grogSpeed?: number;
   }) => Promise<LevelInfo>;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;

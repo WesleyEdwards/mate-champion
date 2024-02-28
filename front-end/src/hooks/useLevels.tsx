@@ -18,6 +18,7 @@ export const useLevels: (params: {
     name?: string;
     public?: boolean;
     length?: number;
+    grogSpeed?: number;
   }): Promise<LevelInfo> => {
     if (!editingLevel || !originalLevel || !api) {
       return Promise.reject("Not working on a level");
@@ -73,6 +74,15 @@ export const useLevels: (params: {
     if (params?.name) partial["name"] = params.name;
     if (params?.public !== undefined) partial["public"] = params.public;
     if (params?.length !== undefined) partial["endPosition"] = params.length;
+
+    if (params?.grogSpeed !== undefined) {
+      partial["opponents"] = {
+        grog: editingLevel.opponents.grog.map((g) => ({
+          ...g,
+          moveSpeed: params.grogSpeed ?? 0,
+        })),
+      };
+    }
 
     if (Object.keys(partial).length === 0) return Promise.resolve(editingLevel);
 

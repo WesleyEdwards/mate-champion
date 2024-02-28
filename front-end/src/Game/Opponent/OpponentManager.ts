@@ -24,8 +24,10 @@ export class OpponentManager {
   }
 
   touchingPlayer(playerPos: Coordinates) {
-    return this.opponents.grog.some((opp) =>
-      areTouching(playerPos, opp.vector.position, playerConst.radius * 2)
+    return this.opponents.grog.some(
+      (opp) =>
+        opp.dyingState === "alive" &&
+        areTouching(playerPos, opp.vector.position, playerConst.radius * 2)
     );
   }
 

@@ -63,7 +63,8 @@ export class GrogCreator implements CreatingThing<"grog"> {
   }
 
   handleCreate(initPos: Coordinates) {
-    this.items.push(new Grog({ initPos, moveSpeed: 0.07 }));
+    const existsInOther = this.items.at(0)?.vector.moveSpeed ?? 0.07;
+    this.items.push(new Grog({ initPos, moveSpeed: existsInOther }));
   }
   handleDelete() {
     this.selected.forEach((g) => {
