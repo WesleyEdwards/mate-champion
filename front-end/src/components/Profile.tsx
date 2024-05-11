@@ -9,7 +9,7 @@ import {
 import { Button, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { FC } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
-import { MCScreen, ScreenProps } from "./GameEntry";
+import { ScreenProps } from "./GameEntry";
 import { EditEmailOrName } from "./EditEmailOrName";
 
 export const Profile: FC<ScreenProps> = ({ changeScreen }) => {
@@ -17,13 +17,6 @@ export const Profile: FC<ScreenProps> = ({ changeScreen }) => {
 
   return (
     <Stack gap="1rem" mb={2}>
-      <Stack direction="row" justifyContent="space-between" width="100%">
-        <IconButton onClick={() => changeScreen("home")}>
-          <ArrowBack />
-        </IconButton>
-        <Typography level="h2">Profile</Typography>
-        <div style={{ width: "2rem" }}></div>
-      </Stack>
 
       {user ? (
         <>

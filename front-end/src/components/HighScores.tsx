@@ -13,9 +13,8 @@ import { TopScore } from "../types";
 import { useAuthContext } from "../hooks/AuthContext";
 import { localStorageManager } from "../api/localStorageManager";
 import { ScreenProps } from "./GameEntry";
-import { ViewHeader } from "./ViewHeader";
 
-export const HighScores: FC<ScreenProps> = ({ changeScreen, score }) => {
+export const HighScores: FC<ScreenProps> = ({ score }) => {
   const [highScores, setHighScores] = useState<TopScore[]>();
   const [error, setError] = useState<string>();
   const { api } = useAuthContext();
@@ -29,8 +28,6 @@ export const HighScores: FC<ScreenProps> = ({ changeScreen, score }) => {
 
   return (
     <Stack gap="1rem">
-      <ViewHeader title="High Scores" changeScreen={changeScreen} />
-      <Divider />
       <Stack alignSelf="center">
         {!highScores &&
           !error &&

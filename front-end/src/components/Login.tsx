@@ -3,7 +3,6 @@ import { Stack, Divider, Button, Input, Alert } from "@mui/joy";
 import { FC, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
-import { ViewHeader } from "./ViewHeader";
 
 export const Login: FC<ScreenProps> = ({ changeScreen }) => {
   const [email, setEmail] = useState("");
@@ -33,7 +32,6 @@ export const Login: FC<ScreenProps> = ({ changeScreen }) => {
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <ViewHeader changeScreen={changeScreen} title={"Login"} />
       <Divider />
       <Stack gap="1rem" my={2}>
         <Input

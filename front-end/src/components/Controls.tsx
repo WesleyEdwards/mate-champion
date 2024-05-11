@@ -3,12 +3,10 @@ import instructions from "../assets/instructions.png";
 import { IconButton, Stack, Typography } from "@mui/joy";
 import { ArrowBack } from "@mui/icons-material";
 import { ScreenProps } from "./GameEntry";
-import { ViewHeader } from "./ViewHeader";
 
 export const Controls: FC<ScreenProps> = (props) => {
   return (
     <Stack gap="1rem">
-      <ViewHeader title={"Controls"} {...props} />
       <div
         style={{
           width: 750,

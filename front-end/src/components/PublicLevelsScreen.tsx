@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
-import { ViewHeader } from "./ViewHeader";
 import { PartialLevelInfo } from "../Game/models";
 import {
   Card,
@@ -12,15 +11,14 @@ import {
 } from "@mui/joy";
 import { PlayArrow } from "@mui/icons-material";
 import { useLevelContext } from "../hooks/LevelsContext";
-import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 
-export const PublicLevelsScreen: FC<{
-  modifyStats: (newStats: Partial<PlayStats>) => void;
-  setScreen: (screen: MCScreen) => void;
-}> = ({ modifyStats, setScreen }) => {
+export const PublicLevelsScreen: FC<ScreenProps> = ({
+  modifyStats,
+  changeScreen,
+}) => {
   const { api } = useAuthContext();
   const { setGameMode } = useLevelContext();
   const { setModal } = usePauseModalContext();
@@ -29,7 +27,7 @@ export const PublicLevelsScreen: FC<{
 
   const handleEnterGamePlay = async (levelId: string) => {
     const level = await api.level.detail(levelId);
-    setScreen("game");
+    changeScreen("game");
     modifyStats({ ...emptyStats });
 
     setGameMode("test");
@@ -47,6 +45,7 @@ export const PublicLevelsScreen: FC<{
       setLevel: () => {},
     });
   };
+
   useEffect(() => {
     api.level
       .queryPartial({ public: true }, ["_id", "name", "owner", "creatorName"])
@@ -54,8 +53,7 @@ export const PublicLevelsScreen: FC<{
   }, []);
 
   return (
-    <>
-      <ViewHeader changeScreen={setScreen} title="Public Levels" />
+    <Stack gap="1rem" maxHeight="calc(100vh - 8rem)" sx={{overflowY: "auto"}}>
       {levels.length === 0 && (
         <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
       )}
@@ -81,6 +79,6 @@ export const PublicLevelsScreen: FC<{
           </Stack>
         </Card>
       ))}
-    </>
+    </Stack>
   );
 };

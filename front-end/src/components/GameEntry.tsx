@@ -7,18 +7,15 @@ import HighScores from "./HighScores";
 import Settings from "./Settings";
 import StatsDiv from "./StatsDiv";
 import Controls from "./Controls";
-import { PersonalHigh } from "./PersonalHigh";
 import { Profile } from "./Profile";
 import { Login } from "./Login";
 import { CreateAccount } from "./CreateAccount";
 import { PersonalHighScore } from "./PersonalHighScore";
-import { PlayScreen } from "./PlayScreen";
-import { camelCaseToTitleCase } from "../helpers";
-import { useAuthContext } from "../hooks/AuthContext";
-import { LevelCreateScreen } from "./LevelCreateScreen";
-import { useLevelContext } from "../hooks/LevelsContext";
-import { EditLevelButtons } from "./EditLevelButtons";
+import { EditLevelHome } from "./EditLevelHome";
+import { EditLevelDetail } from "./EditLevelDetail";
 import { PublicLevelsScreen } from "./PublicLevelsScreen";
+import { HomeScreen } from "./HomeScreen";
+import { EditLevelDetailHeader, ViewHeaderSubScreen } from "./ViewHeader";
 
 export type MCScreen =
   | "game"
@@ -31,19 +28,19 @@ export type MCScreen =
   | "profile"
   | "settings"
   | "levelEditor"
+  | "editorDetail"
   | "publicLevels";
 
 export interface ScreenProps {
   changeScreen: (screen: MCScreen) => void;
-  score?: number;
+  score: number;
+  modifyStats: (newStats: Partial<PlayStats>) => void;
 }
 
 export const GameEntry: FC<{
   screen: MCScreen;
   changeScreen: (screen: MCScreen) => void;
 }> = ({ screen, changeScreen }) => {
-  const { user } = useAuthContext();
-  const { editingLevel } = useLevelContext();
   const [stats, setStats] = useState<PlayStats>(emptyStats);
 
   const playing = useMemo(() => screen === "game", [screen]);
@@ -51,13 +48,65 @@ export const GameEntry: FC<{
   const modifyStats = (newStats: Partial<PlayStats>) =>
     setStats((prev) => ({ ...prev, ...newStats }));
 
+  const ScreenViewHeader: JSX.Element = useMemo(() => {
+    return (
+      {
+        game: <></>,
+        home: <></>,
+        publicLevels: (
+          <ViewHeaderSubScreen
+            title="Public Levels"
+            changeScreen={changeScreen}
+          />
+        ),
+        highScores: (
+          <ViewHeaderSubScreen
+            title="High Scores"
+            changeScreen={changeScreen}
+          />
+        ),
+        personalHigh: (
+          <ViewHeaderSubScreen
+            title="Personal High"
+            changeScreen={changeScreen}
+          />
+        ),
+        controls: (
+          <ViewHeaderSubScreen title="Controls" changeScreen={changeScreen} />
+        ),
+        login: (
+          <ViewHeaderSubScreen title="Login" changeScreen={changeScreen} />
+        ),
+        createAccount: (
+          <ViewHeaderSubScreen
+            title="Create Account"
+            changeScreen={changeScreen}
+          />
+        ),
+        profile: (
+          <ViewHeaderSubScreen title="Profile" changeScreen={changeScreen} />
+        ),
+        settings: (
+          <ViewHeaderSubScreen title="Settings" changeScreen={changeScreen} />
+        ),
+        levelEditor: (
+          <ViewHeaderSubScreen
+            title="Level Editor"
+            changeScreen={changeScreen}
+          />
+        ),
+        editorDetail: <EditLevelDetailHeader changeScreen={changeScreen} />,
+      } satisfies Record<MCScreen, JSX.Element>
+    )[screen];
+  }, [screen]);
+
   const RenderScreen: FC<ScreenProps> = useMemo(
     () =>
       ((
         {
           game: () => null,
-          home: () => null,
-          publicLevels: () => null,
+          home: HomeScreen,
+          publicLevels: PublicLevelsScreen,
           highScores: HighScores,
           personalHigh: PersonalHighScore,
           controls: Controls,
@@ -65,7 +114,8 @@ export const GameEntry: FC<{
           createAccount: CreateAccount,
           profile: Profile,
           settings: Settings,
-          levelEditor: LevelCreateScreen,
+          levelEditor: EditLevelHome,
+          editorDetail: EditLevelDetail,
         } satisfies Record<MCScreen, FC<ScreenProps>>
       )[screen]),
     [screen]
@@ -77,66 +127,18 @@ export const GameEntry: FC<{
       alignItems="center"
       justifyContent="center"
     >
-      <Stack width="100%" gap="1rem" alignItems="center">
-        {screen === "home" && !editingLevel && (
-          <>
-            <Typography level="h1">Mate Champion</Typography>
-            <Instructions />
-          </>
-        )}
-        {editingLevel ? (
-          <EditLevelButtons
-            modifyStats={modifyStats}
-            screen={screen}
-            setScreen={changeScreen}
-          />
-        ) : (
-          <PlayScreen
-            modifyStats={modifyStats}
-            screen={screen}
-            setScreen={changeScreen}
-          />
-        )}
-        {screen === "publicLevels" && (
-          <PublicLevelsScreen
-            setScreen={changeScreen}
-            modifyStats={modifyStats}
-          />
-        )}
-        {screen === "home" && (
-          <Stack
-            direction="row"
-            width="100%"
-            justifyContent="center"
-            gap="1rem"
-            mb={4}
-          >
-            {Object.entries({
-              highScores: !editingLevel,
-              controls: !editingLevel,
-              profile: !editingLevel,
-              levelEditor:
-                !editingLevel &&
-                (user?.userType === "Editor" || user?.userType === "Admin"),
-            } satisfies Partial<Record<MCScreen, boolean>>).map(
-              ([view, show]) =>
-                show ? (
-                  <Button
-                    key={view}
-                    variant="outlined"
-                    sx={{ width: "10rem" }}
-                    onClick={() => changeScreen(view as MCScreen)}
-                  >
-                    {camelCaseToTitleCase(view)}
-                  </Button>
-                ) : null
-            )}
-          </Stack>
-        )}
-      </Stack>
-
-      <Stack minWidth="24rem" mb={2}>
-        <RenderScreen changeScreen={changeScreen} score={stats.score} />
+      <Stack
+        minWidth="24rem"
+        mb={2}
+        maxHeight={"calc(100vh - 300px)"}
+        sx={{ overflowY: "auto" }}
+      >
+        {ScreenViewHeader}
+        <RenderScreen
+          changeScreen={changeScreen}
+          score={stats.score}
+          modifyStats={modifyStats}
+        />
       </Stack>
 
       <Stack>
@@ -147,7 +149,6 @@ export const GameEntry: FC<{
         ></canvas>
 
         {playing && <StatsDiv stats={stats} />}
-        {!playing && screen === "home" && <PersonalHigh />}
       </Stack>
     </Stack>
   );

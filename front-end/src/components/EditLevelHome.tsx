@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
-import { ViewHeader } from "./ViewHeader";
 import {
   Button,
   Divider,
@@ -16,25 +15,23 @@ import {
   DialogContent,
   Tooltip,
 } from "@mui/joy";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
-import { PartialLevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/LevelsContext";
+import { DeleteLevel } from "./DeleteLevel";
 
-export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
+export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
   const { user } = useAuthContext();
-  const { setEditingLevel, createLevel, deleteLevel, ownedLevels } =
-    useLevelContext();
+  const { setEditingLevel, createLevel, ownedLevels } = useLevelContext();
 
   const [creating, setCreating] = useState(false);
-  const [deleting, setDeleting] = useState<PartialLevelInfo>();
+
   const [makingNew, setMakingNew] = useState<string>();
 
   if (!user) throw new Error("User must be authenticated");
 
   return (
     <>
-      <ViewHeader changeScreen={changeScreen} title="Level Creator" />
       <Stack my={4} gap={4}>
         {(() => {
           if (!ownedLevels) {
@@ -46,30 +43,28 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
             <>
               <Stack gap="1rem">
                 {ownedLevels.map((level) => (
-                  <Card variant="soft" key={level._id}>
+                  <Card
+                    variant="soft"
+                    key={level._id}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        opacity: 0.8,
+                      },
+                    }}
+                  >
                     <Stack
+                      onClick={() => {
+                        setEditingLevel(level);
+                        changeScreen("editorDetail");
+                      }}
                       direction="row"
                       justifyContent="space-between"
                       alignItems="center"
                     >
                       <Typography level="h4">{level.name}</Typography>
                       <Stack direction="row" gap="1rem">
-                        <IconButton
-                          color="danger"
-                          onClick={() => setDeleting(level)}
-                        >
-                          <Delete />
-                        </IconButton>
-                        <Tooltip title="Edit">
-                          <IconButton
-                            onClick={() => {
-                              setEditingLevel(level);
-                              changeScreen("home");
-                            }}
-                          >
-                            <Edit />
-                          </IconButton>
-                        </Tooltip>
+                        <DeleteLevel name={level.name} id={level._id} />
                       </Stack>
                     </Stack>
                   </Card>
@@ -98,27 +93,7 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
           );
         })()}
       </Stack>
-      <Modal open={!!deleting} onClose={() => setDeleting(undefined)}>
-        <ModalDialog>
-          <DialogTitle>Delete Level</DialogTitle>
-          <DialogContent>
-            Are you sure you want to delete {deleting?.name}? This action cannot
-            be undone
-          </DialogContent>
-          <Button
-            endDecorator={<Delete />}
-            color="danger"
-            sx={{ alignSelf: "flex-end" }}
-            onClick={() =>
-              deleteLevel(deleting?._id ?? "").then(() => {
-                setDeleting(undefined);
-              })
-            }
-          >
-            Delete
-          </Button>
-        </ModalDialog>
-      </Modal>
+
       <Modal
         open={makingNew !== undefined}
         onClose={() => setMakingNew(undefined)}
@@ -126,24 +101,31 @@ export const LevelCreateScreen: FC<ScreenProps> = ({ changeScreen }) => {
         <ModalDialog>
           <DialogTitle>New Level</DialogTitle>
           <DialogContent>Choose a name for your new level</DialogContent>
-          <Input
-            value={makingNew}
-            onChange={(e) => setMakingNew(e.target.value)}
-            placeholder="My level"
-          />
-          <Button
-            disabled={!makingNew}
-            sx={{ alignSelf: "flex-end" }}
-            onClick={() => {
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
               setCreating(true);
               createLevel(makingNew ?? "").then(() => {
                 setCreating(false);
-                changeScreen("home");
+                changeScreen("editorDetail");
               });
             }}
           >
-            Create
-          </Button>
+            <Stack gap="1rem">
+              <Input
+                value={makingNew}
+                onChange={(e) => setMakingNew(e.target.value)}
+                placeholder="My level"
+              />
+              <Button
+                disabled={!makingNew}
+                sx={{ alignSelf: "flex-end" }}
+                type="submit"
+              >
+                Create
+              </Button>
+            </Stack>
+          </form>
         </ModalDialog>
       </Modal>
     </>

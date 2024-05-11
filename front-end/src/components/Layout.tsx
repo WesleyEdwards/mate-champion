@@ -1,12 +1,13 @@
-import { Alert, Sheet, Stack } from "@mui/joy";
+import { Alert, IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import { useLevelContext } from "../hooks/LevelsContext";
 import { GameEntry, MCScreen } from "./GameEntry";
 import { LevelCreator } from "./LevelCreator";
 import { useState } from "react";
 import { PauseModalProvider } from "../hooks/PauseModalContext";
+import { Close } from "@mui/icons-material";
 
 export const Layout = () => {
-  const { editingLevel } = useLevelContext();
+  const { editingLevel, setEditingLevel } = useLevelContext();
 
   const [screen, setScreen] = useState<MCScreen>("home");
 
@@ -19,7 +20,25 @@ export const Layout = () => {
           size="lg"
           sx={{ width: "100%", borderRadius: 0, position: "fixed" }}
         >
-          Editing <b>{editingLevel.name}</b>
+          <Stack
+            width="100%"
+            direction="row"
+            alignItems="center"
+            justifyContent={"space-between"}
+          >
+            <Typography>
+              Editing <b>{editingLevel.name}</b>
+            </Typography>
+            <IconButton
+              sx={{ borderRadius: "0.5rem" }}
+              onClick={() => {
+                setEditingLevel(null);
+                setScreen("home");
+              }}
+            >
+              <Close />
+            </IconButton>
+          </Stack>
         </Alert>
       )}
       <Stack alignItems="center" justifyContent="center" height="100vh">

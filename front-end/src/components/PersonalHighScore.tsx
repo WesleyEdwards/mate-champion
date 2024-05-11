@@ -4,7 +4,11 @@ import { Button, Stack, Typography } from "@mui/joy";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
 
-export const PersonalHighScore: FC<ScreenProps> = ({ score, changeScreen }) => {
+export const PersonalHighScore: FC<ScreenProps> = ({
+  score,
+  changeScreen,
+  modifyStats,
+}) => {
   const { user } = useAuthContext();
 
   if (user) {
@@ -25,5 +29,11 @@ export const PersonalHighScore: FC<ScreenProps> = ({ score, changeScreen }) => {
     );
   }
 
-  return <CreateAccount score={score} changeScreen={changeScreen} />;
+  return (
+    <CreateAccount
+      score={score}
+      changeScreen={changeScreen}
+      modifyStats={modifyStats}
+    />
+  );
 };
