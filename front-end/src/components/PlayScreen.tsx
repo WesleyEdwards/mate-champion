@@ -7,9 +7,9 @@ import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
-import { useLevelContext } from "../hooks/LevelsContext";
 import { setToNoDevSettings } from "../Game/devSettings";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
+import { useLevelContext } from "../hooks/useLevels";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;

@@ -10,10 +10,10 @@ import {
   Typography,
 } from "@mui/joy";
 import { PlayArrow } from "@mui/icons-material";
-import { useLevelContext } from "../hooks/LevelsContext";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
+import { useLevelContext } from "../hooks/useLevels";
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({
   modifyStats,
@@ -53,7 +53,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({
   }, []);
 
   return (
-    <Stack gap="1rem" maxHeight="calc(100vh - 8rem)" sx={{overflowY: "auto"}}>
+    <Stack gap="1rem" maxHeight="calc(100vh - 8rem)" sx={{ overflowY: "auto" }}>
       {levels.length === 0 && (
         <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
       )}

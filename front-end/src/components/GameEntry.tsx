@@ -15,7 +15,11 @@ import { EditLevelHome } from "./EditLevelHome";
 import { EditLevelDetail } from "./EditLevelDetail";
 import { PublicLevelsScreen } from "./PublicLevelsScreen";
 import { HomeScreen } from "./HomeScreen";
-import { EditLevelDetailHeader, ViewHeaderSubScreen } from "./ViewHeader";
+import {
+  EditLevelDetailHeader,
+  PlayingHeader,
+  ViewHeaderSubScreen,
+} from "./ViewHeader";
 
 export type MCScreen =
   | "game"
@@ -51,7 +55,7 @@ export const GameEntry: FC<{
   const ScreenViewHeader: JSX.Element = useMemo(() => {
     return (
       {
-        game: <></>,
+        game: <PlayingHeader changeScreen={changeScreen} />,
         home: <></>,
         publicLevels: (
           <ViewHeaderSubScreen
@@ -122,11 +126,7 @@ export const GameEntry: FC<{
   );
 
   return (
-    <Stack
-      sx={{ px: "1rem", pt: "1rem" }}
-      alignItems="center"
-      justifyContent="center"
-    >
+    <Stack sx={{ px: "1rem", pt: "1rem" }}>
       <Stack
         minWidth="24rem"
         mb={2}

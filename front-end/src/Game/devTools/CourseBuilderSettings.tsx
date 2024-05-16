@@ -10,11 +10,11 @@ import {
 import { contentCreatorModifyObject } from "../devSettings";
 import { ItemType } from "./CreatingThing";
 import { useEffect, useState } from "react";
-import { useLevelContext } from "../../hooks/LevelsContext";
 import { Check, Edit, Undo } from "@mui/icons-material";
+import { useLevelContext } from "../../hooks/useLevels";
 
 export const CourseBuilderSettings = () => {
-  const { editingLevel, saveLevelToDb } = useLevelContext();
+  const { editingLevel, modifyLevel } = useLevelContext();
   const [setEditingItemType, editingItemType] = useState(window.selectedItem);
   const [editingLength, setEditingLength] = useState<number>();
   const [editingOpponentSpeed, setEditingOpponentSpeed] = useState<number>();
@@ -91,7 +91,10 @@ export const CourseBuilderSettings = () => {
               <Tooltip title="Save">
                 <IconButton
                   onClick={() => {
-                    saveLevelToDb({ length: editingLength });
+                    modifyLevel({
+                      level: { endPosition: editingLength },
+                      saveToDb: true,
+                    });
                     setEditingLength(undefined);
                   }}
                 >
@@ -170,7 +173,17 @@ export const CourseBuilderSettings = () => {
                   editingOpponentSpeed > 100 || editingOpponentSpeed < 0
                 }
                 onClick={() => {
-                  saveLevelToDb({ grogSpeed: editingOpponentSpeed / 100 });
+                  modifyLevel({
+                    level: {
+                      opponents: {
+                        grog:
+                          editingLevel?.opponents.grog.map((g) => ({
+                            ...g,
+                            moveSpeed: editingOpponentSpeed / 100,
+                          })) ?? [],
+                      },
+                    },
+                  });
                   setEditingOpponentSpeed(undefined);
                 }}
               >

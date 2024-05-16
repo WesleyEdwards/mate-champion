@@ -8,8 +8,8 @@ import {
   Typography,
 } from "@mui/joy";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useLevelContext } from "./LevelsContext";
 import { MCScreen } from "../components/GameEntry";
+import { useLevelContext } from "./useLevels";
 
 type ModalOption = "save" | "pause" | "help";
 
@@ -26,7 +26,7 @@ export const PauseModalProvider = ({
   setScreen: (screen: MCScreen) => void;
   children: React.ReactNode;
 }) => {
-  const { setGameMode, saveLevelToDb } = useLevelContext();
+  const { setGameMode, modifyLevel } = useLevelContext();
   const [open, setOpen] = useState<ModalOption | null>(null);
 
   const handleSetModal = (modal: ModalOption | null) => {
@@ -36,13 +36,13 @@ export const PauseModalProvider = ({
   return (
     <PauseModalContext.Provider value={{ setModal: handleSetModal }}>
       {children}
+
       <Modal open={open === "pause"} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Pause</DialogTitle>
           <DialogContent>{"'ESC' to unpause"}</DialogContent>
           <Button
             onClick={() => {
-              window.stopLoop = true;
               setGameMode("idle");
               setScreen("home");
               setOpen(null);
@@ -52,6 +52,7 @@ export const PauseModalProvider = ({
           </Button>
         </ModalDialog>
       </Modal>
+
       <Modal open={open === "save"} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Save</DialogTitle>
@@ -62,9 +63,8 @@ export const PauseModalProvider = ({
             <Button
               variant="plain"
               onClick={() => {
-                window.stopLoop = true;
                 setGameMode("idle");
-                setScreen("home");
+                setScreen("editorDetail");
                 setOpen(null);
               }}
             >
@@ -72,8 +72,7 @@ export const PauseModalProvider = ({
             </Button>
             <Button
               onClick={() => {
-                saveLevelToDb();
-                window.stopLoop = true;
+                modifyLevel({ level: {}, saveToDb: true });
                 setGameMode("idle");
                 setScreen("home");
                 setOpen(null);
@@ -84,6 +83,7 @@ export const PauseModalProvider = ({
           </Stack>
         </ModalDialog>
       </Modal>
+
       <Modal
         open={open === "help"}
         onClose={() => {
@@ -111,7 +111,7 @@ export const PauseModalProvider = ({
 
 export const usePauseModalContext = () => {
   const context = useContext(PauseModalContext);
-  if (!context) {
+  if (!context.setModal) {
     throw new Error(
       "usePauseModalContext must be used within a PauseModalProvider"
     );

@@ -3,20 +3,15 @@ import { Settings, devSettings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
 import { FC, useState } from "react";
-import { useLevelContext } from "../hooks/LevelsContext";
 import { MCScreen } from "./GameEntry";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
+import { useLevelContext } from "../hooks/useLevels";
 
 export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
   changeScreen,
 }) => {
-  const {
-    saveLevelToDb,
-    gameMode,
-    editingLevel,
-    setEditingLevel,
-    setGameMode,
-  } = useLevelContext();
+  const { gameMode, editingLevel, setEditingLevel, setGameMode, modifyLevel } =
+    useLevelContext();
 
   const { setModal } = usePauseModalContext();
   const [state, setState] = useState({ ...window.window.mateSettings });
@@ -48,7 +43,9 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
           loading={saving}
           onClick={() => {
             setSaving(true);
-            saveLevelToDb().then(() => setSaving(false));
+            modifyLevel({ level: {}, saveToDb: true }).then(() =>
+              setSaving(false)
+            );
           }}
         >
           Save

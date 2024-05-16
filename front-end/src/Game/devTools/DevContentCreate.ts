@@ -62,7 +62,7 @@ export class DevContentCreate {
   }
 
   update(offset: Coordinates, timestamp: number) {
-    if (timestamp - this.lastUpdate > 1000) {
+    if (timestamp - this.lastUpdate > 3000) {
       this.lastUpdate = timestamp;
       this.setLevel?.(exportLevelInfo(this.objectManager));
     }

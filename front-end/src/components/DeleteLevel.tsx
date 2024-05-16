@@ -8,8 +8,8 @@ import {
 } from "@mui/joy";
 import { FC, useState } from "react";
 import { PartialLevelInfo } from "../Game/models";
-import { useLevelContext } from "../hooks/LevelsContext";
 import { Delete } from "@mui/icons-material";
+import { useLevelContext } from "../hooks/useLevels";
 
 export const DeleteLevel: FC<{
   name: string;

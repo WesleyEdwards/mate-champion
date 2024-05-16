@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { LevelInfo, PartialLevelInfo } from "../Game/models";
-import { LevelsContextType } from "./LevelsContext";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
 import { User } from "../types";
+import { getLevelDiff } from "../helpers";
 
 export const useLevels: (params: {
   api: Api | undefined;
@@ -11,82 +11,20 @@ export const useLevels: (params: {
 }) => LevelsContextType = ({ api, user }) => {
   const [originalLevel, setOriginalLevel] = useState<LevelInfo | null>(null);
   const [editingLevel, setEditingLevel] = useState<LevelInfo | null>(null);
-  const [gameMode, setGameMode] = useState<GameMode>("idle");
+  const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
   const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
 
-  const saveLevelToDb = (params?: {
-    name?: string;
-    public?: boolean;
-    length?: number;
-    grogSpeed?: number;
-  }): Promise<LevelInfo> => {
-    if (!editingLevel || !originalLevel || !api) {
+  const saveLevelToDb = (newLevel: LevelInfo): Promise<LevelInfo> => {
+    if (!originalLevel || !api) {
       return Promise.reject("Not working on a level");
     }
 
-    const diffLengths = (a: any[], b: any[]) => a.length !== b.length;
+    const partial: Partial<LevelInfo> = getLevelDiff(originalLevel, newLevel);
 
-    const editFloors =
-      diffLengths(originalLevel.floors, editingLevel.floors) ||
-      !originalLevel.floors.every((floor) =>
-        editingLevel.floors.find(
-          (f) => f.x === floor.x && f.color === floor.color
-        )
-      );
-    const editPlatforms =
-      diffLengths(originalLevel.platforms, editingLevel.platforms) ||
-      !originalLevel.platforms.every((floor) =>
-        editingLevel.platforms.find((f) => f.x === floor.x && f.y === floor.y)
-      );
-    const editPackages =
-      diffLengths(originalLevel.packages, editingLevel.packages) ||
-      !originalLevel.packages.every((pack) =>
-        editingLevel.packages.find((p) => p.x === pack.x && p.y === pack.y)
-      );
-    const editOpps =
-      diffLengths(originalLevel.opponents.grog, editingLevel.opponents.grog) ||
-      !originalLevel.opponents.grog.every((opponent) =>
-        editingLevel.opponents.grog.find(
-          (o) =>
-            o.initPos.x === opponent.initPos.x &&
-            o.initPos.y === opponent.initPos.y
-        )
-      );
+    if (Object.keys(partial).length === 0) return Promise.resolve(newLevel);
 
-    const list: Partial<Record<keyof LevelInfo, boolean>> = {
-      floors: editFloors,
-      platforms: editPlatforms,
-      opponents: editOpps,
-      packages: editPackages,
-    };
-
-    const partial: Partial<LevelInfo> = Object.entries(list).reduce(
-      (acc, [k, v]) => {
-        const key = k as keyof LevelInfo;
-        if (v) {
-          (acc[key] as any) = editingLevel[key];
-        }
-        return acc;
-      },
-      {} as Partial<LevelInfo>
-    );
-
-    if (params?.name) partial["name"] = params.name;
-    if (params?.public !== undefined) partial["public"] = params.public;
-    if (params?.length !== undefined) partial["endPosition"] = params.length;
-
-    if (params?.grogSpeed !== undefined) {
-      partial["opponents"] = {
-        grog: editingLevel.opponents.grog.map((g) => ({
-          ...g,
-          moveSpeed: params.grogSpeed ?? 0,
-        })),
-      };
-    }
-
-    if (Object.keys(partial).length === 0) return Promise.resolve(editingLevel);
-
-    return api.level.modify(editingLevel._id, partial).then((res) => {
+    setEditingLevel({ ...newLevel });
+    return api.level.modify(newLevel._id, partial).then((res) => {
       setOwnedLevels((prev) => {
         if (!prev) return prev;
         const index = prev.findIndex((l) => l._id === res._id);
@@ -95,45 +33,38 @@ export const useLevels: (params: {
         copy[index] = res;
         return copy;
       });
-      handleSetEditing(res);
+      setOriginalLevel({ ...res });
       return res;
     });
   };
 
-  const modifyLevel = (level: Partial<LevelInfo>) => {
+  const modifyLevel: LevelsContextType["modifyLevel"] = ({
+    level,
+    saveToDb = false,
+  }: {
+    level: Partial<LevelInfo>;
+    saveToDb?: boolean;
+  }) => {
+    console.log("modifyLevel")
+    if (saveToDb) {
+      return saveLevelToDb({ ...editingLevel!, ...level });
+    }
     setEditingLevel((prev) => (prev ? { ...prev, ...level } : null));
+    return Promise.resolve();
   };
 
   const handleSetEditing = (level: PartialLevelInfo | null) => {
+    console.log("handleSetEditing")
     if (!api) return Promise.reject();
     if (level === null) {
       setOriginalLevel(null);
-      return setEditingLevel(null);
+      setEditingLevel(null);
+      return Promise.resolve();
     }
-    api.level.detail(level._id).then((res) => {
+    return api.level.detail(level._id).then((res) => {
       setOriginalLevel(res);
       setEditingLevel(res);
     });
-  };
-
-  const createLevel = async (name: string) => {
-    if (!api) return Promise.reject();
-    const created = await api.level.create({
-      _id: crypto.randomUUID(),
-      owner: user?._id ?? "",
-      creatorName: user?.name ?? "",
-      endPosition: 4500,
-      public: false,
-      name: name,
-      opponents: { grog: [] },
-      packages: [],
-      floors: [{ x: -500, width: 7000, color: "green" }],
-      platforms: [],
-    });
-    setOriginalLevel(created);
-    setEditingLevel(created);
-    setOwnedLevels((prev) => (prev ? [...prev, created] : prev));
-    return created;
   };
 
   const fetchOwnLevels = () => {
@@ -163,16 +94,49 @@ export const useLevels: (params: {
     if (user && user.userType !== "User") fetchOwnLevels();
   }, [user]);
 
+  const levelIsDirty = useMemo(() => {
+    if (!originalLevel || !editingLevel) return false;
+    console.log(getLevelDiff(originalLevel, editingLevel));
+    return Object.keys(getLevelDiff(originalLevel, editingLevel)).length > 0;
+  }, [editingLevel]);
+
+  const setGameMode = (mode: GameMode) => {
+    if (mode === "idle") {
+      window.stopLoop = false;
+    }
+    setCurrGameMode(mode);
+  };
+
   return {
     modifyLevel,
     setEditingLevel: handleSetEditing,
     editingLevel,
-    saveLevelToDb,
-    gameMode,
+    gameMode: currGameMode,
     setGameMode,
     ownedLevels,
     setOwnedLevels,
     deleteLevel,
-    createLevel,
+    levelIsDirty,
   };
 };
+
+export type LevelsContextType = {
+  modifyLevel: (params: {
+    level: Partial<LevelInfo>;
+    saveToDb?: boolean;
+  }) => Promise<unknown>;
+  setEditingLevel: (editing: PartialLevelInfo | null) => void;
+  editingLevel: LevelInfo | null;
+  gameMode: GameMode;
+  setGameMode: (show: GameMode) => void;
+  ownedLevels: PartialLevelInfo[] | undefined;
+  setOwnedLevels: React.Dispatch<
+    React.SetStateAction<PartialLevelInfo[] | undefined>
+  >;
+  deleteLevel: (level: string) => Promise<unknown>;
+  levelIsDirty: boolean;
+};
+
+export const LevelsContext = createContext({} as LevelsContextType);
+
+export const useLevelContext = () => useContext(LevelsContext);

@@ -9,7 +9,8 @@ import {
 import { MCScreen } from "./GameEntry";
 import { ArrowBack, Check, Edit, Undo } from "@mui/icons-material";
 import { FC, useState } from "react";
-import { useLevelContext } from "../hooks/LevelsContext";
+import { usePauseModalContext } from "../hooks/PauseModalContext";
+import { useLevelContext } from "../hooks/useLevels";
 
 export const ViewHeaderSubScreen: FC<{
   changeScreen: (screen: MCScreen) => void;
@@ -41,8 +42,7 @@ export const EditLevelDetailHeader: FC<{
   changeScreen: (screen: MCScreen) => void;
 }> = ({ changeScreen }) => {
   const [editingName, setEditingName] = useState<string>();
-  const { modifyLevel, editingLevel, setGameMode, saveLevelToDb } =
-    useLevelContext();
+  const { modifyLevel, editingLevel } = useLevelContext();
 
   if (!editingLevel) return null;
   return (
@@ -84,7 +84,7 @@ export const EditLevelDetailHeader: FC<{
           <Tooltip title="Save">
             <IconButton
               onClick={() => {
-                saveLevelToDb({ name: editingName });
+                modifyLevel({ level: { name: editingName }, saveToDb: true });
                 setEditingName(undefined);
               }}
             >
@@ -95,6 +95,45 @@ export const EditLevelDetailHeader: FC<{
       )}
       <div style={{ width: "2rem" }}></div>
       <Divider />
+    </Stack>
+  );
+};
+
+export const PlayingHeader: FC<{
+  changeScreen: (screen: MCScreen) => void;
+}> = ({ changeScreen }) => {
+  const { editingLevel, gameMode, setGameMode, levelIsDirty } =
+    useLevelContext();
+  const { setModal } = usePauseModalContext();
+
+  if (!editingLevel) return null;
+  return (
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      width="100%"
+    >
+      <IconButton
+        onClick={() => {
+          if (levelIsDirty) {
+            setModal("save");
+          } else {
+            setGameMode("idle");
+            changeScreen("editorDetail");
+          }
+        }}
+      >
+        <ArrowBack />
+      </IconButton>
+
+      {gameMode === "edit" && (
+        <Typography level="h1">Editing {editingLevel.name}</Typography>
+      )}
+      {gameMode === "test" && (
+        <Typography level="h1">Testing {editingLevel.name}</Typography>
+      )}
+      <div style={{ width: "2rem" }}></div>
     </Stack>
   );
 };
