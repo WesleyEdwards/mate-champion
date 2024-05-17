@@ -33,6 +33,12 @@ export const PauseModalProvider = ({
     setOpen(modal);
   };
 
+  const exit = () => {
+    setGameMode("idle");
+    setScreen("editorDetail");
+    setOpen(null);
+  };
+
   return (
     <PauseModalContext.Provider value={{ setModal: handleSetModal }}>
       {children}
@@ -64,9 +70,7 @@ export const PauseModalProvider = ({
               variant="plain"
               onClick={() => {
                 modifyLevel({ discardChanges: true });
-                setGameMode("idle");
-                setScreen("editorDetail");
-                setOpen(null);
+                exit();
               }}
             >
               Exit without saving
@@ -74,9 +78,7 @@ export const PauseModalProvider = ({
             <Button
               onClick={() => {
                 modifyLevel({ saveToDb: true });
-                setGameMode("idle");
-                setScreen("home");
-                setOpen(null);
+                exit();
               }}
             >
               Save

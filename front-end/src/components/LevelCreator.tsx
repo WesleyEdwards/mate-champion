@@ -17,7 +17,7 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
   const [state, setState] = useState({ ...window.window.mateSettings });
   const [saving, setSaving] = useState(false);
 
-  if (gameMode === "idle" || gameMode === "play") {
+  if (gameMode !== "edit") {
     return null;
   }
 
