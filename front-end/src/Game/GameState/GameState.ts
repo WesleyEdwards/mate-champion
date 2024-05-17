@@ -32,6 +32,7 @@ export class GameState {
     setLevel?: (level: Partial<LevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
+      console.log("togglePause");
       const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
       this.setUI.handlePause(newState === "pause");
       this.currStateOfGame = newState;
@@ -163,5 +164,6 @@ export class GameState {
       handleLose: () => {},
       modifyStats: () => {},
     };
+    this.devContentCreate = null;
   }
 }

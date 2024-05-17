@@ -2,6 +2,7 @@ import {
   Button,
   IconButton,
   Input,
+  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -14,7 +15,7 @@ import { Check, Edit, Undo } from "@mui/icons-material";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
 import { LevelInfo } from "../Game/models";
-import { levelIsDirty } from "../helpers";
+import { isLevelDirty } from "../helpers";
 import { useLevelContext } from "../hooks/useLevels";
 
 export const EditLevelDetail: FC<ScreenProps> = ({
@@ -39,11 +40,7 @@ export const EditLevelDetail: FC<ScreenProps> = ({
           modifyStats,
           handleLose: () => {},
           handlePause: (pause: boolean) => {
-            if (levelIsDirty) {
-              return setModal(pause ? "save" : null);
-            } else {
-              changeScreen("levelEditor");
-            }
+            return setModal(pause ? "save" : null);
           },
         },
         gameMode: gamePlay,
@@ -67,8 +64,14 @@ export const EditLevelDetail: FC<ScreenProps> = ({
     enterGameLoop(params);
   };
 
-  if (!editingLevel) return null;
-
+  if (!editingLevel) {
+    return (
+      <Stack gap="1rem" alignItems="center" height="300px" mt="1rem">
+        <Skeleton height="20px" variant="rectangular" />
+        <Skeleton height="100%" variant="rectangular" />
+      </Stack>
+    );
+  }
   return (
     <Stack alignItems="center" gap="1rem">
       <Stack direction="row" gap="1rem">

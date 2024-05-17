@@ -22,6 +22,6 @@ export const getLevelDiff = (
   }, {} as Partial<LevelInfo>);
 };
 
-export const levelIsDirty = (original: LevelInfo, override: LevelInfo) => {
+export const isLevelDirty = (original: LevelInfo, override: LevelInfo) => {
   return Object.keys(getLevelDiff(original, override)).length > 0;
 };

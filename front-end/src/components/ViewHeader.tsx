@@ -2,6 +2,7 @@ import {
   Divider,
   IconButton,
   Input,
+  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -44,7 +45,10 @@ export const EditLevelDetailHeader: FC<{
   const [editingName, setEditingName] = useState<string>();
   const { modifyLevel, editingLevel } = useLevelContext();
 
-  if (!editingLevel) return null;
+  if (!editingLevel) {
+    return <Skeleton height="40px" variant="rectangular" />;
+  }
+
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
       {editingName === undefined ? (
@@ -106,7 +110,9 @@ export const PlayingHeader: FC<{
     useLevelContext();
   const { setModal } = usePauseModalContext();
 
-  if (!editingLevel) return null;
+  if (!editingLevel) {
+    return <Skeleton variant="rectangular" height="100%" />;
+  }
   return (
     <Stack
       direction="row"

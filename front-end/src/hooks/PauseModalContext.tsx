@@ -63,6 +63,7 @@ export const PauseModalProvider = ({
             <Button
               variant="plain"
               onClick={() => {
+                modifyLevel({ discardChanges: true });
                 setGameMode("idle");
                 setScreen("editorDetail");
                 setOpen(null);
@@ -72,7 +73,7 @@ export const PauseModalProvider = ({
             </Button>
             <Button
               onClick={() => {
-                modifyLevel({ level: {}, saveToDb: true });
+                modifyLevel({ saveToDb: true });
                 setGameMode("idle");
                 setScreen("home");
                 setOpen(null);

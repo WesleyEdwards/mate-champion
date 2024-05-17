@@ -17,12 +17,24 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
   const [state, setState] = useState({ ...window.window.mateSettings });
   const [saving, setSaving] = useState(false);
 
-  if ((gameMode === "idle" && !editingLevel) || gameMode === "play") {
+  if (gameMode === "idle" || gameMode === "play") {
     return null;
   }
 
   return (
     <Stack justifyContent="flex-end" m={2} gap={1}>
+      {gameMode === "edit" && editingLevel && (
+        <Button
+          loading={saving}
+          onClick={() => {
+            setSaving(true);
+            modifyLevel({ saveToDb: true }).then(() => setSaving(false));
+          }}
+        >
+          Save
+        </Button>
+      )}
+
       <Button
         color="neutral"
         onClick={() => {
@@ -36,21 +48,8 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
           }
         }}
       >
-        Exit level creator
+        Quit
       </Button>
-      {gameMode === "edit" && editingLevel && (
-        <Button
-          loading={saving}
-          onClick={() => {
-            setSaving(true);
-            modifyLevel({ level: {}, saveToDb: true }).then(() =>
-              setSaving(false)
-            );
-          }}
-        >
-          Save
-        </Button>
-      )}
 
       {Object.entries(state).map(([setting, enabled]) => (
         <Typography

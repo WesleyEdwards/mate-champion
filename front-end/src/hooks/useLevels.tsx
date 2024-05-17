@@ -3,7 +3,7 @@ import { LevelInfo, PartialLevelInfo } from "../Game/models";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
 import { User } from "../types";
-import { getLevelDiff } from "../helpers";
+import { getLevelDiff, isLevelDirty } from "../helpers";
 
 export const useLevels: (params: {
   api: Api | undefined;
@@ -14,51 +14,63 @@ export const useLevels: (params: {
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
   const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
 
+  const updateLevelInOwned = (level: LevelInfo) => {
+    setOwnedLevels((prev) => {
+      if (!prev) return prev;
+      const index = prev.findIndex((l) => l._id === level._id);
+      if (index === -1) return prev;
+      const copy = [...prev];
+      copy[index] = level;
+      return copy;
+    });
+  };
+
   const saveLevelToDb = (newLevel: LevelInfo): Promise<LevelInfo> => {
     if (!originalLevel || !api) {
       return Promise.reject("Not working on a level");
     }
 
-    const partial: Partial<LevelInfo> = getLevelDiff(originalLevel, newLevel);
-
-    if (Object.keys(partial).length === 0) return Promise.resolve(newLevel);
+    if (!isLevelDirty(originalLevel, newLevel)) {
+      return Promise.resolve(newLevel);
+    }
 
     setEditingLevel({ ...newLevel });
-    return api.level.modify(newLevel._id, partial).then((res) => {
-      setOwnedLevels((prev) => {
-        if (!prev) return prev;
-        const index = prev.findIndex((l) => l._id === res._id);
-        if (index === -1) return prev;
-        const copy = [...prev];
-        copy[index] = res;
-        return copy;
+    return api.level
+      .modify(newLevel._id, getLevelDiff(originalLevel, newLevel))
+      .then((res) => {
+        updateLevelInOwned(res);
+        setOriginalLevel({ ...res });
+        return res;
       });
-      setOriginalLevel({ ...res });
-      return res;
-    });
   };
 
   const modifyLevel: LevelsContextType["modifyLevel"] = ({
-    level,
+    level = {},
     saveToDb = false,
-  }: {
-    level: Partial<LevelInfo>;
-    saveToDb?: boolean;
+    discardChanges = false,
   }) => {
-    console.log("modifyLevel")
     if (saveToDb) {
       return saveLevelToDb({ ...editingLevel!, ...level });
+    }
+    if (discardChanges && originalLevel) {
+      setEditingLevel({ ...originalLevel });
+      return Promise.resolve();
     }
     setEditingLevel((prev) => (prev ? { ...prev, ...level } : null));
     return Promise.resolve();
   };
 
-  const handleSetEditing = (level: PartialLevelInfo | null) => {
-    console.log("handleSetEditing")
+  const handleSetEditing: LevelsContextType["setEditingLevel"] = (level) => {
     if (!api) return Promise.reject();
+
+    setOriginalLevel(null);
+    setEditingLevel(null);
     if (level === null) {
-      setOriginalLevel(null);
-      setEditingLevel(null);
+      return Promise.resolve();
+    }
+    if ("platforms" in level) {
+      setOriginalLevel(level);
+      setEditingLevel(level);
       return Promise.resolve();
     }
     return api.level.detail(level._id).then((res) => {
@@ -96,13 +108,12 @@ export const useLevels: (params: {
 
   const levelIsDirty = useMemo(() => {
     if (!originalLevel || !editingLevel) return false;
-    console.log(getLevelDiff(originalLevel, editingLevel));
     return Object.keys(getLevelDiff(originalLevel, editingLevel)).length > 0;
   }, [editingLevel]);
 
   const setGameMode = (mode: GameMode) => {
     if (mode === "idle") {
-      window.stopLoop = false;
+      window.stopLoop = true;
     }
     setCurrGameMode(mode);
   };
@@ -122,10 +133,11 @@ export const useLevels: (params: {
 
 export type LevelsContextType = {
   modifyLevel: (params: {
-    level: Partial<LevelInfo>;
+    level?: Partial<LevelInfo>;
     saveToDb?: boolean;
+    discardChanges?: boolean;
   }) => Promise<unknown>;
-  setEditingLevel: (editing: PartialLevelInfo | null) => void;
+  setEditingLevel: (editing: PartialLevelInfo | LevelInfo | null) => void;
   editingLevel: LevelInfo | null;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;

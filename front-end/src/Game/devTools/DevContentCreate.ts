@@ -89,7 +89,6 @@ export class DevContentCreate {
           c.items
         );
         if (existsInOther) {
-          console.log(existsInOther);
           c.selectItem(existsInOther);
           window.selectedItem = c.itemType;
         }

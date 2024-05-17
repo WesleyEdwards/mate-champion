@@ -5,6 +5,7 @@ import {
   IconButton,
   Modal,
   ModalDialog,
+  Stack,
 } from "@mui/joy";
 import { FC, useState } from "react";
 import { PartialLevelInfo } from "../Game/models";
@@ -40,18 +41,23 @@ export const DeleteLevel: FC<{
           <DialogContent>
             Are you sure you want to delete {name}? This action cannot be undone
           </DialogContent>
-          <Button
-            endDecorator={<Delete />}
-            color="danger"
-            sx={{ alignSelf: "flex-end" }}
-            onClick={() =>
-              deleteLevel(id ?? "").then(() => {
-                setDeleting(false);
-              })
-            }
-          >
-            Delete
-          </Button>
+          <Stack direction="row" justifyContent="flex-end" gap="2rem">
+            <Button variant="plain" onClick={() => setDeleting(false)}>
+              Cancel
+            </Button>
+            <Button
+              endDecorator={<Delete />}
+              color="danger"
+              sx={{ alignSelf: "flex-end" }}
+              onClick={() =>
+                deleteLevel(id ?? "").then(() => {
+                  setDeleting(false);
+                })
+              }
+            >
+              Delete
+            </Button>
+          </Stack>
         </ModalDialog>
       </Modal>
     </>
