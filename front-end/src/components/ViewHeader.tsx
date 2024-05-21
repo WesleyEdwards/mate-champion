@@ -43,7 +43,7 @@ export const EditLevelDetailHeader: FC<{
   changeScreen: (screen: MCScreen) => void;
 }> = ({ changeScreen }) => {
   const [editingName, setEditingName] = useState<string>();
-  const { modifyLevel, editingLevel } = useLevelContext();
+  const { modifyLevel, editingLevel, setEditingLevel } = useLevelContext();
 
   if (!editingLevel) {
     return <Skeleton height="40px" variant="rectangular" />;
@@ -59,7 +59,12 @@ export const EditLevelDetailHeader: FC<{
           gap="1rem"
           width="100%"
         >
-          <IconButton onClick={() => changeScreen("levelEditor")}>
+          <IconButton
+            onClick={() => {
+              changeScreen("levelEditor");
+              setEditingLevel(null);
+            }}
+          >
             <ArrowBack />
           </IconButton>
 

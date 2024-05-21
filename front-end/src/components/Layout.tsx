@@ -7,7 +7,7 @@ import { Close } from "@mui/icons-material";
 import { useLevelContext } from "../hooks/useLevels";
 
 export const Layout = () => {
-  const { editingLevel, setEditingLevel } = useLevelContext();
+  const { editingLevel, setEditingLevel, gameMode } = useLevelContext();
 
   const [screen, setScreen] = useState<MCScreen>("home");
 
@@ -41,13 +41,20 @@ export const Layout = () => {
           </Stack>
         </Alert>
       )}
-      <Stack alignItems="center" justifyContent="center" height="100vh">
-        <Stack direction="row">
-          <Sheet variant="outlined" sx={{ m: 2, borderRadius: 10 }}>
-            <GameEntry screen={screen} changeScreen={setScreen} />
-          </Sheet>
-          <LevelCreator changeScreen={setScreen} />
-        </Stack>
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Sheet variant="outlined" sx={{ p: 2, m: 2, borderRadius: 10 }}>
+          <GameEntry screen={screen} changeScreen={setScreen} />
+        </Sheet>
+        {gameMode === "edit" && (
+          <div style={{ flex: 1 }}>
+            <LevelCreator changeScreen={setScreen} />
+          </div>
+        )}
       </Stack>
     </PauseModalProvider>
   );

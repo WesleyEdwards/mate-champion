@@ -66,7 +66,7 @@ export const EditLevelDetail: FC<ScreenProps> = ({
 
   if (!editingLevel) {
     return (
-      <Stack gap="1rem" alignItems="center" height="300px" mt="1rem">
+      <Stack gap="1rem" alignItems="center" height="300px" width="400px" mt="1rem">
         <Skeleton height="20px" variant="rectangular" />
         <Skeleton height="100%" variant="rectangular" />
       </Stack>

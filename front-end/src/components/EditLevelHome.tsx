@@ -3,13 +3,12 @@ import { ScreenProps } from "./GameEntry";
 import {
   Button,
   Divider,
-  Input,
   Stack,
   Typography,
   CircularProgress,
   Card,
+  Tooltip,
 } from "@mui/joy";
-import { Add, Create } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
 import { DeleteLevel } from "./DeleteLevel";
 import { CreateNewLevel } from "./CreateNewLevel";
@@ -23,7 +22,7 @@ export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
 
   return (
     <>
-      <Stack my={4} gap={4}>
+      <Stack gap={4} width={"100%"}>
         {(() => {
           if (!ownedLevels) {
             return (
@@ -32,7 +31,15 @@ export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
           }
           return (
             <>
-              <Stack gap="1rem">
+              <Stack
+                gap="1rem"
+                flexGrow={1}
+                maxHeight={"500px"}
+                sx={{
+                  width: "100%",
+                  overflowY: "auto",
+                }}
+              >
                 {ownedLevels.map((level) => (
                   <Card
                     variant="soft"
@@ -54,6 +61,7 @@ export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
                       alignItems="center"
                     >
                       <Typography level="h4">{level.name}</Typography>
+                      <div style={{ flexGrow: 1 }}></div>
                       <Stack direction="row" gap="1rem">
                         <DeleteLevel name={level.name} id={level._id} />
                       </Stack>
@@ -64,13 +72,15 @@ export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
               {ownedLevels.length > 0 && <Divider>or</Divider>}
 
               <CreateNewLevel onCreate={() => changeScreen("editorDetail")} />
-              <Button
-                onClick={() => changeScreen("publicLevels")}
-                sx={{ alignSelf: "center" }}
-                variant="plain"
-              >
-                See levels that other people have made
-              </Button>
+              <Tooltip title="See what levels other people have made">
+                <Button
+                  onClick={() => changeScreen("publicLevels")}
+                  sx={{ alignSelf: "center" }}
+                  variant="plain"
+                >
+                  Public Levels
+                </Button>
+              </Tooltip>
             </>
           );
         })()}
