@@ -5,15 +5,11 @@ import {
   Divider,
   Input,
   Stack,
-  Typography,
-  CircularProgress,
   Card,
-  IconButton,
   Modal,
   ModalDialog,
   DialogTitle,
   DialogContent,
-  Tooltip,
 } from "@mui/joy";
 import { Add } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
@@ -21,7 +17,8 @@ import { useLevelContext } from "../hooks/useLevels";
 
 export const CreateNewLevel: FC<{
   onCreate: () => void;
-}> = ({ onCreate }) => {
+  text: string;
+}> = ({ onCreate, text }) => {
   const { user, api } = useAuthContext();
   const { setEditingLevel, setOwnedLevels } = useLevelContext();
 
@@ -56,10 +53,9 @@ export const CreateNewLevel: FC<{
           setMakingNew("");
         }}
         loading={creating}
-        sx={{ width: "12rem", alignSelf: "center" }}
         endDecorator={<Add />}
       >
-        Create New Level
+        {text}
       </Button>
 
       <Modal

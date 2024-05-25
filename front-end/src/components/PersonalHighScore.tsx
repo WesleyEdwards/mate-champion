@@ -3,13 +3,14 @@ import { CreateAccount } from "./CreateAccount";
 import { Button, Stack, Typography } from "@mui/joy";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
+import { useNavigator } from "../hooks/UseNavigator";
 
 export const PersonalHighScore: FC<ScreenProps> = ({
   score,
-  changeScreen,
   modifyStats,
 }) => {
   const { user } = useAuthContext();
+  const { navigateTo } = useNavigator();
 
   if (user) {
     return (
@@ -20,7 +21,7 @@ export const PersonalHighScore: FC<ScreenProps> = ({
         <Button
           style={{ maxWidth: "12rem", alignSelf: "center" }}
           onClick={() => {
-            changeScreen("highScores");
+            navigateTo("highScores");
           }}
         >
           View Scores
@@ -32,7 +33,6 @@ export const PersonalHighScore: FC<ScreenProps> = ({
   return (
     <CreateAccount
       score={score}
-      changeScreen={changeScreen}
       modifyStats={modifyStats}
     />
   );

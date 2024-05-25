@@ -16,11 +16,8 @@ import { MCScreen } from "./GameEntry";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 
-export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
-  changeScreen,
-}) => {
-  const { gameMode, editingLevel, setEditingLevel, setGameMode, modifyLevel } =
-    useLevelContext();
+export const LevelCreator: FC = () => {
+  const { gameMode, editingLevel, modifyLevel } = useLevelContext();
 
   const { setModal } = usePauseModalContext();
   const [state, setState] = useState({ ...window.window.mateSettings });

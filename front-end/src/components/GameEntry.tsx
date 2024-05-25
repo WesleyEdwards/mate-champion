@@ -16,9 +16,12 @@ import { PublicLevelsScreen } from "./PublicLevelsScreen";
 import { HomeScreen } from "./HomeScreen";
 import {
   EditLevelDetailHeader,
+  LevelsHeader,
   PlayingHeader,
   ViewHeaderSubScreen,
 } from "./ViewHeader";
+import { LevelEditorHome } from "./LevelEditorHome";
+import { useNavigator } from "../hooks/UseNavigator";
 
 export type MCScreen =
   | "game"
@@ -31,34 +34,30 @@ export type MCScreen =
   | "profile"
   | "settings"
   | "levelEditor"
-  | "editorDetail"
-  | "publicLevels";
+  | "editorDetail";
 
 export interface ScreenProps {
-  changeScreen: (screen: MCScreen) => void;
   score: number;
   modifyStats: (newStats: Partial<PlayStats>) => void;
 }
 
-export const GameEntry: FC<{
-  screen: MCScreen;
-  changeScreen: (screen: MCScreen) => void;
-}> = ({ screen, changeScreen }) => {
+export const GameEntry: FC = () => {
   const [stats, setStats] = useState<PlayStats>(emptyStats);
+  const { currentScreen, navigateTo } = useNavigator();
 
-  const playing = useMemo(() => screen === "game", [screen]);
+  const playing = useMemo(() => currentScreen === "game", [currentScreen]);
 
   const modifyStats = (newStats: Partial<PlayStats>) =>
     setStats((prev) => ({ ...prev, ...newStats }));
 
   const ScreenViewHeader: JSX.Element = useMemo(
-    () => getSubViewHeader(screen, changeScreen),
-    [screen]
+    () => getSubViewHeader(currentScreen, navigateTo),
+    [currentScreen]
   );
 
   const RenderScreen: FC<ScreenProps> = useMemo(
-    () => getCurrentScreen(screen),
-    [screen]
+    () => getCurrentScreen(currentScreen),
+    [currentScreen]
   );
 
   return (
@@ -69,11 +68,7 @@ export const GameEntry: FC<{
         // maxHeight={"calc(100vh - 100px)"}
         sx={{ width: "100%" }}
       >
-        <RenderScreen
-          changeScreen={changeScreen}
-          score={stats.score}
-          modifyStats={modifyStats}
-        />
+        <RenderScreen score={stats.score} modifyStats={modifyStats} />
       </Stack>
 
       <Stack>
@@ -93,7 +88,7 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
   const map: Record<MCScreen, FC<ScreenProps>> = {
     game: () => null,
     home: HomeScreen,
-    publicLevels: PublicLevelsScreen,
+    levelEditor: LevelEditorHome,
     highScores: HighScores,
     personalHigh: PersonalHighScore,
     controls: Controls,
@@ -101,7 +96,6 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
     createAccount: CreateAccount,
     profile: Profile,
     settings: Settings,
-    levelEditor: MyLevels,
     editorDetail: EditLevelDetail,
   };
   return map[screen];
@@ -109,37 +103,20 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
 
 const getSubViewHeader = (
   screen: MCScreen,
-  changeScreen: (screen: MCScreen) => void
+  navigateTo: (screen: MCScreen) => void
 ): JSX.Element => {
   const subHeaders: Record<MCScreen, JSX.Element> = {
-    game: <PlayingHeader changeScreen={changeScreen} />,
+    game: <PlayingHeader />,
     home: <></>,
-    publicLevels: (
-      <ViewHeaderSubScreen title="Public Levels" changeScreen={changeScreen} />
-    ),
-    highScores: (
-      <ViewHeaderSubScreen title="High Scores" changeScreen={changeScreen} />
-    ),
-    personalHigh: (
-      <ViewHeaderSubScreen title="Personal High" changeScreen={changeScreen} />
-    ),
-    controls: (
-      <ViewHeaderSubScreen title="Controls" changeScreen={changeScreen} />
-    ),
-    login: <ViewHeaderSubScreen title="Login" changeScreen={changeScreen} />,
-    createAccount: (
-      <ViewHeaderSubScreen title="Create Account" changeScreen={changeScreen} />
-    ),
-    profile: (
-      <ViewHeaderSubScreen title="Profile" changeScreen={changeScreen} />
-    ),
-    settings: (
-      <ViewHeaderSubScreen title="Settings" changeScreen={changeScreen} />
-    ),
-    levelEditor: (
-      <ViewHeaderSubScreen title="My Levels" changeScreen={changeScreen} />
-    ),
-    editorDetail: <EditLevelDetailHeader changeScreen={changeScreen} />,
+    levelEditor: <LevelsHeader />,
+    highScores: <ViewHeaderSubScreen title="High Scores" />,
+    personalHigh: <ViewHeaderSubScreen title="Personal High" />,
+    controls: <ViewHeaderSubScreen title="Controls" />,
+    login: <ViewHeaderSubScreen title="Login" />,
+    createAccount: <ViewHeaderSubScreen title="Create Account" />,
+    profile: <ViewHeaderSubScreen title="Profile" />,
+    settings: <ViewHeaderSubScreen title="Settings" />,
+    editorDetail: <EditLevelDetailHeader />,
   };
   return subHeaders[screen];
 };

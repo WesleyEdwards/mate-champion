@@ -3,15 +3,17 @@ import { Stack, Divider, Button, Input, Alert } from "@mui/joy";
 import { FC, useState } from "react";
 import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
+import { useNavigator } from "../hooks/UseNavigator";
 
-export const Login: FC<ScreenProps> = ({ changeScreen }) => {
+export const Login: FC<ScreenProps> = () => {
+  const { login } = useAuthContext();
+  const { navigateTo } = useNavigator();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string>("");
 
   const [submitting, setSubmitting] = useState<boolean>(false);
-
-  const { login } = useAuthContext();
 
   const submit = () => {
     if (!email || !password) {
@@ -22,7 +24,7 @@ export const Login: FC<ScreenProps> = ({ changeScreen }) => {
     login({ email, password })
       .then(() => {
         setSubmitting(false);
-        changeScreen("home");
+        navigateTo("home");
       })
       .catch((err) => {
         setSubmitting(false);

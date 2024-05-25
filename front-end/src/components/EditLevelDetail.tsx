@@ -17,19 +17,17 @@ import { DeleteLevel } from "./DeleteLevel";
 import { LevelInfo } from "../Game/models";
 import { isLevelDirty } from "../helpers";
 import { useLevelContext } from "../hooks/useLevels";
+import { useNavigator } from "../hooks/UseNavigator";
 
-export const EditLevelDetail: FC<ScreenProps> = ({
-  modifyStats,
-  changeScreen,
-}) => {
-  const { modifyLevel, editingLevel, levelIsDirty, setGameMode } =
-    useLevelContext();
+export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
+  const { modifyLevel, editingLevel, setGameMode } = useLevelContext();
+  const { navigateTo } = useNavigator();
 
   const { setModal } = usePauseModalContext();
 
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
     modifyStats({ ...emptyStats });
-    changeScreen("game");
+    navigateTo("game");
     window.stopLoop = false;
 
     setGameMode(gamePlay);
@@ -66,7 +64,13 @@ export const EditLevelDetail: FC<ScreenProps> = ({
 
   if (!editingLevel) {
     return (
-      <Stack gap="1rem" alignItems="center" height="300px" width="400px" mt="1rem">
+      <Stack
+        gap="1rem"
+        alignItems="center"
+        height="300px"
+        width="400px"
+        mt="1rem"
+      >
         <Skeleton height="20px" variant="rectangular" />
         <Skeleton height="100%" variant="rectangular" />
       </Stack>

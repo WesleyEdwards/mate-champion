@@ -11,9 +11,11 @@ import {
 import { useAuthContext } from "../hooks/AuthContext";
 import { ArrowBack } from "@mui/icons-material";
 import { ScreenProps } from "./GameEntry";
+import { useNavigator } from "../hooks/UseNavigator";
 
-export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
+export const CreateAccount: FC<ScreenProps> = ({ score }) => {
   const { createAccount } = useAuthContext();
+  const { navigateTo } = useNavigator();
 
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -46,7 +48,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
         createdAt: new Date().toISOString(),
       });
 
-      return changeScreen("home");
+      return navigateTo("home");
     } catch (e) {
       setError("Error creating account");
       setSubmitting(false);
@@ -56,7 +58,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score, changeScreen }) => {
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={() => changeScreen("home")}>
+        <IconButton onClick={() => navigateTo("home")}>
           <ArrowBack />
         </IconButton>
         {score ? (

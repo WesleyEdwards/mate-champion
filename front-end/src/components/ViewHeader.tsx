@@ -12,19 +12,40 @@ import { ArrowBack, Check, Edit, Undo } from "@mui/icons-material";
 import { FC, useState } from "react";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
+import { CreateNewLevel } from "./CreateNewLevel";
+import { useNavigator } from "../hooks/UseNavigator";
 
 export const ViewHeaderSubScreen: FC<{
-  changeScreen: (screen: MCScreen) => void;
   title: string;
-}> = ({ changeScreen, title }) => {
+}> = ({ title }) => {
+  const { navigateTo } = useNavigator();
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={() => changeScreen("home")}>
+        <IconButton onClick={() => navigateTo("home")}>
           <ArrowBack />
         </IconButton>
         <Typography level="h2">{title}</Typography>
         <div style={{ width: "2rem" }}></div>
+      </Stack>
+      <Divider />
+    </Stack>
+  );
+};
+
+export const LevelsHeader: FC = () => {
+  const { navigateTo } = useNavigator();
+  return (
+    <Stack width="100%" gap="0.75rem" mb="1rem">
+      <Stack direction="row" justifyContent="space-between">
+        <IconButton onClick={() => navigateTo("home")}>
+          <ArrowBack />
+        </IconButton>
+        <Typography level="h2">Levels</Typography>
+        <CreateNewLevel
+          text="Create"
+          onCreate={() => navigateTo("editorDetail")}
+        />
       </Stack>
       <Divider />
     </Stack>
@@ -39,9 +60,8 @@ export const ViewHeaderMainScreen: FC<{ title: string }> = ({ title }) => {
   );
 };
 
-export const EditLevelDetailHeader: FC<{
-  changeScreen: (screen: MCScreen) => void;
-}> = ({ changeScreen }) => {
+export const EditLevelDetailHeader: FC = () => {
+  const { navigateTo } = useNavigator();
   const [editingName, setEditingName] = useState<string>();
   const { modifyLevel, editingLevel, setEditingLevel } = useLevelContext();
 
@@ -61,7 +81,7 @@ export const EditLevelDetailHeader: FC<{
         >
           <IconButton
             onClick={() => {
-              changeScreen("levelEditor");
+              navigateTo("levelEditor");
               setEditingLevel(null);
             }}
           >
@@ -108,16 +128,14 @@ export const EditLevelDetailHeader: FC<{
   );
 };
 
-export const PlayingHeader: FC<{
-  changeScreen: (screen: MCScreen) => void;
-}> = ({ changeScreen }) => {
+export const PlayingHeader: FC = () => {
   const { editingLevel, gameMode, setGameMode, levelIsDirty } =
     useLevelContext();
   const { setModal } = usePauseModalContext();
+  const { navigateTo } = useNavigator();
 
-  if (!editingLevel) {
-    return <Skeleton variant="rectangular" height="100%" />;
-  }
+  if (gameMode === "play") return null;
+
   return (
     <Stack
       direction="row"
@@ -131,7 +149,7 @@ export const PlayingHeader: FC<{
             setModal("save");
           } else {
             setGameMode("idle");
-            changeScreen("editorDetail");
+            navigateTo("editorDetail");
           }
         }}
       >
@@ -139,10 +157,10 @@ export const PlayingHeader: FC<{
       </IconButton>
 
       {gameMode === "edit" && (
-        <Typography level="h1">Editing {editingLevel.name}</Typography>
+        <Typography level="h1">Editing {editingLevel?.name}</Typography>
       )}
       {gameMode === "test" && (
-        <Typography level="h1">Testing {editingLevel.name}</Typography>
+        <Typography level="h1">Testing {editingLevel?.name}</Typography>
       )}
       <div style={{ width: "2rem" }}></div>
     </Stack>

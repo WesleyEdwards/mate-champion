@@ -5,9 +5,11 @@ import Instructions from "./Instructions";
 import { PlayScreen } from "./PlayScreen";
 import { useAuthContext } from "../hooks/AuthContext";
 import { PersonalHigh } from "./PersonalHigh";
+import { useNavigator } from "../hooks/UseNavigator";
 
-export const HomeScreen: FC<ScreenProps> = ({ changeScreen, modifyStats }) => {
+export const HomeScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { user } = useAuthContext();
+  const { navigateTo } = useNavigator();
   return (
     <Stack width="100%" alignItems={"center"}>
       <Typography level="h1">Mate Champion</Typography>
@@ -15,7 +17,7 @@ export const HomeScreen: FC<ScreenProps> = ({ changeScreen, modifyStats }) => {
       <PlayScreen
         modifyStats={modifyStats}
         screen={"home"}
-        setScreen={changeScreen}
+        setScreen={navigateTo}
       />
       <Stack
         direction="row"
@@ -27,21 +29,21 @@ export const HomeScreen: FC<ScreenProps> = ({ changeScreen, modifyStats }) => {
         <Button
           variant="outlined"
           sx={{ width: "10rem" }}
-          onClick={() => changeScreen("highScores")}
+          onClick={() => navigateTo("highScores")}
         >
           High Scores
         </Button>
         <Button
           variant="outlined"
           sx={{ width: "10rem" }}
-          onClick={() => changeScreen("controls")}
+          onClick={() => navigateTo("controls")}
         >
           Controls
         </Button>
         <Button
           variant="outlined"
           sx={{ width: "10rem" }}
-          onClick={() => changeScreen("profile")}
+          onClick={() => navigateTo("profile")}
         >
           Profile
         </Button>
@@ -50,7 +52,7 @@ export const HomeScreen: FC<ScreenProps> = ({ changeScreen, modifyStats }) => {
             <Button
               variant="outlined"
               sx={{ width: "10rem" }}
-              onClick={() => changeScreen("levelEditor")}
+              onClick={() => navigateTo("levelEditor")}
             >
               Level Editor
             </Button>

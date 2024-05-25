@@ -10,6 +10,7 @@ import {
 import { createContext, useContext, useEffect, useState } from "react";
 import { MCScreen } from "../components/GameEntry";
 import { useLevelContext } from "./useLevels";
+import { useNavigator } from "./UseNavigator";
 
 type ModalOption = "save" | "pause" | "help";
 
@@ -19,14 +20,9 @@ type PauseModalContextType = {
 
 const PauseModalContext = createContext({} as PauseModalContextType);
 
-export const PauseModalProvider = ({
-  setScreen,
-  children,
-}: {
-  setScreen: (screen: MCScreen) => void;
-  children: React.ReactNode;
-}) => {
+export const PauseModalProvider = (props: { children: React.ReactNode }) => {
   const { setGameMode, modifyLevel } = useLevelContext();
+  const { navigateTo } = useNavigator();
   const [open, setOpen] = useState<ModalOption | null>(null);
 
   const handleSetModal = (modal: ModalOption | null) => {
@@ -35,13 +31,13 @@ export const PauseModalProvider = ({
 
   const exit = () => {
     setGameMode("idle");
-    setScreen("editorDetail");
+    navigateTo("editorDetail");
     setOpen(null);
   };
 
   return (
     <PauseModalContext.Provider value={{ setModal: handleSetModal }}>
-      {children}
+      {props.children}
 
       <Modal open={open === "pause"} onClose={() => {}}>
         <ModalDialog>
@@ -50,7 +46,7 @@ export const PauseModalProvider = ({
           <Button
             onClick={() => {
               setGameMode("idle");
-              setScreen("home");
+              navigateTo("home");
               setOpen(null);
             }}
           >
