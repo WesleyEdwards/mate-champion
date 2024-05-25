@@ -10,7 +10,7 @@ import { Profile } from "./Profile";
 import { Login } from "./Login";
 import { CreateAccount } from "./CreateAccount";
 import { PersonalHighScore } from "./PersonalHighScore";
-import { EditLevelHome } from "./EditLevelHome";
+import { MyLevels } from "./MyLevels";
 import { EditLevelDetail } from "./EditLevelDetail";
 import { PublicLevelsScreen } from "./PublicLevelsScreen";
 import { HomeScreen } from "./HomeScreen";
@@ -101,7 +101,7 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
     createAccount: CreateAccount,
     profile: Profile,
     settings: Settings,
-    levelEditor: EditLevelHome,
+    levelEditor: MyLevels,
     editorDetail: EditLevelDetail,
   };
   return map[screen];

@@ -13,8 +13,9 @@ import { useAuthContext } from "../hooks/AuthContext";
 import { DeleteLevel } from "./DeleteLevel";
 import { CreateNewLevel } from "./CreateNewLevel";
 import { useLevelContext } from "../hooks/useLevels";
+import { Edit } from "@mui/icons-material";
 
-export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
+export const MyLevels: FC<ScreenProps> = ({ changeScreen }) => {
   const { user } = useAuthContext();
   const { setEditingLevel, ownedLevels } = useLevelContext();
 
@@ -38,14 +39,17 @@ export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
                 sx={{
                   width: "100%",
                   overflowY: "auto",
+                  cursor: "pointer",
+                  scrollbarColor: "rgb(153, 153, 153) rgba(0, 0, 0, 0)",
+                  scrollbarWidth: "thin",
+                  scrollbarGutter: "auto",
                 }}
               >
                 {ownedLevels.map((level) => (
                   <Card
-                    variant="soft"
                     key={level._id}
                     sx={{
-                      cursor: "pointer",
+                      mr: "2px",
                       "&:hover": {
                         opacity: 0.8,
                       },
@@ -63,7 +67,7 @@ export const EditLevelHome: FC<ScreenProps> = ({ changeScreen }) => {
                       <Typography level="h4">{level.name}</Typography>
                       <div style={{ flexGrow: 1 }}></div>
                       <Stack direction="row" gap="1rem">
-                        <DeleteLevel name={level.name} id={level._id} />
+                        <Edit />
                       </Stack>
                     </Stack>
                   </Card>

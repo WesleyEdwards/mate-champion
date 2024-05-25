@@ -6,6 +6,12 @@ import {
   IconButton,
   Input,
   Typography,
+  AccordionGroup,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Button,
+  Card,
 } from "@mui/joy";
 import { contentCreatorModifyObject } from "../devSettings";
 import { ItemType } from "./CreatingThing";
@@ -28,7 +34,53 @@ export const CourseBuilderSettings = () => {
 
   return (
     <Stack gap="1rem">
-      <Select
+      <AccordionGroup>
+        <Accordion>
+          <AccordionSummary>Modifying</AccordionSummary>
+          <AccordionDetails>
+            <Card
+              variant="plain"
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  opacity: 0.8,
+                },
+              }}
+              onClick={() => contentCreatorModifyObject("platform")}
+            >
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography>Platform</Typography>
+                <div
+                  style={{
+                    width: "20px",
+                    height: "10px",
+                    backgroundColor: "green",
+                    borderColor: "black",
+                    borderWidth: "1px",
+                  }}
+                ></div>
+              </Stack>
+            </Card>
+          </AccordionDetails>
+          {/* <AccordionDetails>
+            <Button onClick={}>Platform</Button>
+          </AccordionDetails>
+          <AccordionDetails>
+            <Button onClick={}>Floor</Button>
+          </AccordionDetails>
+          <AccordionDetails>
+            <Button onClick={}>Grog</Button>
+          </AccordionDetails>
+          <AccordionDetails>
+            <Button onClick={}>Package</Button>
+          </AccordionDetails> */}
+        </Accordion>
+      </AccordionGroup>
+      {/* <Select
         sx={{ minWidth: "10rem" }}
         value={setEditingItemType}
         onChange={(_, value) => {
@@ -39,7 +91,7 @@ export const CourseBuilderSettings = () => {
         <Option value="floor">Floor</Option>
         <Option value="grog">Grog</Option>
         <Option value="package">Package</Option>
-      </Select>
+      </Select> */}
       <Stack
         direction="row"
         alignItems="center"

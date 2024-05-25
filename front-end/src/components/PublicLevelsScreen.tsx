@@ -53,32 +53,77 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({
   }, []);
 
   return (
-    <Stack gap="1rem" maxHeight="calc(100vh - 8rem)" sx={{ overflowY: "auto" }}>
+    <Stack
+      maxHeight="calc(100vh - 8rem)"
+      sx={{
+        overflowY: "auto",
+        width: "calc(100vw - 8rem)",
+      }}
+    >
       {levels.length === 0 && (
         <CircularProgress sx={{ width: "100%", alignSelf: "center" }} />
       )}
-      {levels.map((level) => (
-        <Card key={level._id} sx={{ padding: "5px", width: "24rem" }}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Stack>
-              <Typography level="h4">{level.name}</Typography>
-              <Typography level="body-sm">{level.creatorName}</Typography>
-            </Stack>
-            <IconButton
-              onClick={() => {
-                handleEnterGamePlay(level._id);
-              }}
-              color="success"
-            >
-              <PlayArrow />
-            </IconButton>
-          </Stack>
-        </Card>
-      ))}
+      <Stack
+        direction="row"
+        gap="1rem"
+        sx={{
+          flexWrap: "wrap",
+          justifyContent: "center"
+        }}
+      >
+        {levels.map((level) => (
+          <LevelCard
+            level={level}
+            key={level._id}
+            subtitle={level.creatorName}
+            actionButton={
+              <IconButton
+                onClick={() => {
+                  handleEnterGamePlay(level._id);
+                }}
+                color="success"
+              >
+                <PlayArrow />
+              </IconButton>
+            }
+          />
+        ))}
+      </Stack>
     </Stack>
   );
 };
+
+export const LevelCard: FC<{
+  level: PartialLevelInfo;
+  subtitle?: string;
+  actionButton: React.ReactNode;
+}> = ({ level, actionButton, subtitle }) => {
+  return (
+    <Card key={level._id} sx={{ padding: "10px", width: "24rem" }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack>
+          <Typography level="h4">{level.name}</Typography>
+          {subtitle && <Typography level="body-sm">{subtitle}</Typography>}
+        </Stack>
+        {actionButton}
+      </Stack>
+    </Card>
+  );
+};
+
+// {ownedLevels.map((level) => (
+//   <LevelCard
+//     level={level}
+//     key={level._id}
+//     actionButton={
+//       <IconButton
+//         onClick={() => {
+//           setEditingLevel(level);
+//           changeScreen("editorDetail");
+//         }}
+//       >
+//         <Edit />
+//       </IconButton>
+//     }
+//   />
+// ))}

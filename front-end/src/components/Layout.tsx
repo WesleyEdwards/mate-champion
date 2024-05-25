@@ -50,11 +50,7 @@ export const Layout = () => {
         <Sheet variant="outlined" sx={{ p: 2, m: 2, borderRadius: 10 }}>
           <GameEntry screen={screen} changeScreen={setScreen} />
         </Sheet>
-        {gameMode === "edit" && (
-          <div style={{ flex: 1 }}>
-            <LevelCreator changeScreen={setScreen} />
-          </div>
-        )}
+        {gameMode === "edit" && <LevelCreator changeScreen={setScreen} />}
       </Stack>
     </PauseModalProvider>
   );

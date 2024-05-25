@@ -52,7 +52,7 @@ export const HomeScreen: FC<ScreenProps> = ({ changeScreen, modifyStats }) => {
               sx={{ width: "10rem" }}
               onClick={() => changeScreen("levelEditor")}
             >
-              LevelEditor
+              Level Editor
             </Button>
           ))}
       </Stack>

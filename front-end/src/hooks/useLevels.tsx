@@ -80,7 +80,9 @@ export const useLevels: (params: {
   };
 
   const fetchOwnLevels = () => {
-    if (!api) return Promise.reject();
+    if (!user || user?.userType === "User" || !api) {
+      return;
+    }
     setOwnedLevels(undefined);
     return api.level
       .queryPartial({ owner: user?._id ?? "" }, [
@@ -103,7 +105,7 @@ export const useLevels: (params: {
   };
 
   useEffect(() => {
-    if (user && user.userType !== "User") fetchOwnLevels();
+    fetchOwnLevels();
   }, [user]);
 
   const levelIsDirty = useMemo(() => {

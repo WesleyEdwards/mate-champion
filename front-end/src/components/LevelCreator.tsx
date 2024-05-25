@@ -1,4 +1,13 @@
-import { Button, Stack, Switch, Typography } from "@mui/joy";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionGroup,
+  AccordionSummary,
+  Button,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/joy";
 import { Settings, devSettings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
@@ -22,10 +31,14 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
   }
 
   return (
-    <Stack justifyContent="flex-end" m={2} gap={1}>
+    <Stack m={2} gap={4} justifyContent="flex-start" height="748px">
       {gameMode === "edit" && editingLevel && (
         <Button
           loading={saving}
+          sx={{
+            alignSelf: "flex-start",
+            width: "10rem",
+          }}
           onClick={() => {
             setSaving(true);
             modifyLevel({ saveToDb: true }).then(() => setSaving(false));
@@ -35,51 +48,41 @@ export const LevelCreator: FC<{ changeScreen: (screen: MCScreen) => void }> = ({
         </Button>
       )}
 
-      <Button
-        color="neutral"
-        onClick={() => {
-          if (gameMode === "edit") {
-            setModal("save");
-          } else {
-            window.stopLoop = true;
-            setEditingLevel(null);
-            setGameMode("idle");
-            changeScreen("home");
-          }
-        }}
-      >
-        Quit
-      </Button>
+      <AccordionGroup>
+        <Accordion>
+          <AccordionSummary>Dev Settings</AccordionSummary>
+          {Object.entries(state).map(([setting, enabled]) => (
+            <AccordionDetails key={setting}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography key={setting} component="label">
+                  {camelCaseToTitleCase(setting)}
+                </Typography>
 
-      {Object.entries(state).map(([setting, enabled]) => (
-        <Typography
-          key={setting}
-          component="label"
-          startDecorator={
-            <Switch
-              sx={{ ml: 1 }}
-              checked={enabled}
-              onChange={(e) => {
-                if (
-                  "pointerType" in e.nativeEvent &&
-                  e.nativeEvent["pointerType"] === "mouse"
-                ) {
-                  setState((prev) => ({
-                    ...prev,
-                    [setting]: e.target.checked,
-                  }));
-                  modifyDevSettings(
-                    setting as keyof Settings,
-                    e.target.checked
-                  );
-                }
-              }}
-            />
-          }
-        >
-          {camelCaseToTitleCase(setting)}
-        </Typography>
-      ))}
+                <Switch
+                  sx={{ ml: 1 }}
+                  checked={enabled}
+                  onChange={(e) => {
+                    if (
+                      "pointerType" in e.nativeEvent &&
+                      e.nativeEvent["pointerType"] === "mouse"
+                    ) {
+                      setState((prev) => ({
+                        ...prev,
+                        [setting]: e.target.checked,
+                      }));
+                      modifyDevSettings(
+                        setting as keyof Settings,
+                        e.target.checked
+                      );
+                    }
+                  }}
+                />
+              </Stack>
+            </AccordionDetails>
+          ))}
+        </Accordion>
+      </AccordionGroup>
+
       <CourseBuilderSettings />
       <Button
         color="neutral"
