@@ -1,9 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { MCScreen } from "../components/GameEntry";
 
 type NavigatorContextType = {
   navigateTo: (screen: MCScreen) => void;
   goBack: () => void;
+  resetStack: () => void;
   currentScreen: MCScreen;
 };
 
@@ -19,7 +20,7 @@ export const NavigatorProvider = (props: { children: React.ReactNode }) => {
   };
 
   const goBack = () => {
-    setScreenStack((prev) => prev.slice(0, prev.length - 1));
+    setScreenStack(screenStack.slice(0, -1));
   };
 
   return (
@@ -28,6 +29,7 @@ export const NavigatorProvider = (props: { children: React.ReactNode }) => {
         navigateTo,
         goBack,
         currentScreen: screenStack.at(-1) ?? "home",
+        resetStack: () => setScreenStack(["home"]),
       }}
     >
       {props.children}

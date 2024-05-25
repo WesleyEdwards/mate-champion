@@ -7,7 +7,7 @@ import { EditEmailOrName } from "./EditEmailOrName";
 import { useNavigator } from "../hooks/UseNavigator";
 
 export const Profile: FC<ScreenProps> = () => {
-  const { navigateTo } = useNavigator();
+  const { resetStack, navigateTo } = useNavigator();
   const { user, logout } = useAuthContext();
 
   return (
@@ -19,7 +19,7 @@ export const Profile: FC<ScreenProps> = () => {
           <Button
             onClick={() => {
               logout();
-              navigateTo("home");
+              resetStack();
             }}
             sx={{ alignSelf: "center", mt: "2rem" }}
             endDecorator={<Logout />}

@@ -18,11 +18,11 @@ import { useNavigator } from "../hooks/UseNavigator";
 export const ViewHeaderSubScreen: FC<{
   title: string;
 }> = ({ title }) => {
-  const { navigateTo } = useNavigator();
+  const { goBack } = useNavigator();
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={() => navigateTo("home")}>
+        <IconButton onClick={goBack}>
           <ArrowBack />
         </IconButton>
         <Typography level="h2">{title}</Typography>
@@ -34,18 +34,15 @@ export const ViewHeaderSubScreen: FC<{
 };
 
 export const LevelsHeader: FC = () => {
-  const { navigateTo } = useNavigator();
+  const { goBack } = useNavigator();
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={() => navigateTo("home")}>
+        <IconButton onClick={goBack}>
           <ArrowBack />
         </IconButton>
         <Typography level="h2">Levels</Typography>
-        <CreateNewLevel
-          text="Create"
-          onCreate={() => navigateTo("editorDetail")}
-        />
+        <CreateNewLevel text="Create" />
       </Stack>
       <Divider />
     </Stack>
@@ -61,7 +58,7 @@ export const ViewHeaderMainScreen: FC<{ title: string }> = ({ title }) => {
 };
 
 export const EditLevelDetailHeader: FC = () => {
-  const { navigateTo } = useNavigator();
+  const { goBack } = useNavigator();
   const [editingName, setEditingName] = useState<string>();
   const { modifyLevel, editingLevel, setEditingLevel } = useLevelContext();
 
@@ -81,7 +78,7 @@ export const EditLevelDetailHeader: FC = () => {
         >
           <IconButton
             onClick={() => {
-              navigateTo("levelEditor");
+              goBack();
               setEditingLevel(null);
             }}
           >
@@ -132,7 +129,7 @@ export const PlayingHeader: FC = () => {
   const { editingLevel, gameMode, setGameMode, levelIsDirty } =
     useLevelContext();
   const { setModal } = usePauseModalContext();
-  const { navigateTo } = useNavigator();
+  const { goBack } = useNavigator();
 
   if (gameMode === "play") return null;
 
@@ -149,7 +146,7 @@ export const PlayingHeader: FC = () => {
             setModal("save");
           } else {
             setGameMode("idle");
-            navigateTo("editorDetail");
+            goBack();
           }
         }}
       >

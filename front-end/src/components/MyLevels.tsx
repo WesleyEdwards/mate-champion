@@ -21,12 +21,12 @@ export const MyLevels: FC<ScreenProps> = () => {
                 cursor: "pointer",
               },
             }}
+            onClick={() => {
+              setEditingLevel(level);
+              navigateTo("editorDetail");
+            }}
           >
             <Stack
-              onClick={() => {
-                setEditingLevel(level);
-                navigateTo("editorDetail");
-              }}
               direction="row"
               justifyContent="space-between"
               alignItems="center"

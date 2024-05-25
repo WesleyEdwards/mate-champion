@@ -15,7 +15,7 @@ import { useNavigator } from "../hooks/UseNavigator";
 
 export const CreateAccount: FC<ScreenProps> = ({ score }) => {
   const { createAccount } = useAuthContext();
-  const { navigateTo } = useNavigator();
+  const { resetStack, goBack } = useNavigator();
 
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -48,7 +48,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
         createdAt: new Date().toISOString(),
       });
 
-      return navigateTo("home");
+      return resetStack();
     } catch (e) {
       setError("Error creating account");
       setSubmitting(false);
@@ -58,7 +58,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={() => navigateTo("home")}>
+        <IconButton onClick={goBack}>
           <ArrowBack />
         </IconButton>
         {score ? (

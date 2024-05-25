@@ -5,7 +5,7 @@ import { useNavigator } from "../hooks/UseNavigator";
 
 export const EditLevelTopBar = () => {
   const { editingLevel, setEditingLevel } = useLevelContext();
-  const { navigateTo } = useNavigator();
+  const { resetStack } = useNavigator();
 
   if (!editingLevel) return null;
 
@@ -29,7 +29,7 @@ export const EditLevelTopBar = () => {
           sx={{ borderRadius: "0.5rem" }}
           onClick={() => {
             setEditingLevel(null);
-            navigateTo("home");
+            resetStack();
           }}
         >
           <Close />

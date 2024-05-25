@@ -7,7 +7,7 @@ import { useNavigator } from "../hooks/UseNavigator";
 
 export const Login: FC<ScreenProps> = () => {
   const { login } = useAuthContext();
-  const { navigateTo } = useNavigator();
+  const { resetStack } = useNavigator();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +24,7 @@ export const Login: FC<ScreenProps> = () => {
     login({ email, password })
       .then(() => {
         setSubmitting(false);
-        navigateTo("home");
+        resetStack();
       })
       .catch((err) => {
         setSubmitting(false);

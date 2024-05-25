@@ -14,13 +14,12 @@ import {
 import { Add } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/AuthContext";
 import { useLevelContext } from "../hooks/useLevels";
+import { useNavigator } from "../hooks/UseNavigator";
 
-export const CreateNewLevel: FC<{
-  onCreate: () => void;
-  text: string;
-}> = ({ onCreate, text }) => {
+export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
   const { user, api } = useAuthContext();
   const { setEditingLevel, setOwnedLevels } = useLevelContext();
+  const { navigateTo } = useNavigator();
 
   const [creating, setCreating] = useState(false);
 
@@ -71,7 +70,7 @@ export const CreateNewLevel: FC<{
               setCreating(true);
               createLevel(makingNew ?? "").then(() => {
                 setCreating(false);
-                onCreate();
+                navigateTo("editorDetail");
               });
             }}
           >
