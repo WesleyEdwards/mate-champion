@@ -1,10 +1,10 @@
 import { Logout, Save, Undo } from "@mui/icons-material";
 import { Button, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { FC } from "react";
-import { useAuthContext } from "../hooks/AuthContext";
 import { ScreenProps } from "./GameEntry";
 import { EditEmailOrName } from "./EditEmailOrName";
 import { useNavigator } from "../hooks/UseNavigator";
+import { useAuthContext } from "../hooks/useAuth";
 
 export const Profile: FC<ScreenProps> = () => {
   const { resetStack, navigateTo } = useNavigator();

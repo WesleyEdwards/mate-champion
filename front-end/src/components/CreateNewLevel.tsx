@@ -12,7 +12,7 @@ import {
   DialogContent,
 } from "@mui/joy";
 import { Add } from "@mui/icons-material";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 

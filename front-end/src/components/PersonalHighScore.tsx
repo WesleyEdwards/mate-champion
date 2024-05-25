@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { CreateAccount } from "./CreateAccount";
 import { Button, Stack, Typography } from "@mui/joy";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { MCScreen, ScreenProps } from "./GameEntry";
 import { useNavigator } from "../hooks/UseNavigator";
 

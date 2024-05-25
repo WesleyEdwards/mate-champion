@@ -1,7 +1,7 @@
 import { Undo, Check, Edit } from "@mui/icons-material";
 import { Stack, Typography, Input, IconButton } from "@mui/joy";
 import { FC, useState } from "react";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { camelCaseToTitleCase } from "../helpers";
 
 export const EditEmailOrName: FC<{ type: "name" | "email" }> = ({ type }) => {

@@ -1,6 +1,6 @@
 import { Button, Typography } from "@mui/joy";
 import { FC } from "react";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { localStorageManager } from "../api/localStorageManager";
 import { useAuth } from "../hooks/useAuth";
 

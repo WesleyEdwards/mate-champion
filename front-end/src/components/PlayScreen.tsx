@@ -1,6 +1,6 @@
 import { Button } from "@mui/joy";
 import { FC } from "react";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { enterGameLoop } from "../Game/Main";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";

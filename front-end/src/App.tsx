@@ -6,8 +6,7 @@ import {
   extendTheme,
 } from "@mui/joy";
 import { mateTheme } from "./theme";
-import { useAuth } from "./hooks/useAuth";
-import { AuthContext } from "./hooks/AuthContext";
+import { AuthContext, useAuth } from "./hooks/useAuth";
 import { LevelsContext, useLevels } from "./hooks/useLevels";
 import { Layout } from "./components/Layout";
 import { ItemType } from "./Game/devTools/CreatingThing";

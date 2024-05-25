@@ -3,7 +3,7 @@ import { ScreenProps } from "./GameEntry";
 import { Button, Stack, Typography } from "@mui/joy";
 import Instructions from "./Instructions";
 import { PlayScreen } from "./PlayScreen";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { PersonalHigh } from "./PersonalHigh";
 import { useNavigator } from "../hooks/UseNavigator";
 

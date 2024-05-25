@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import { useAuthContext } from "../hooks/AuthContext";
 import { MCScreen, ScreenProps } from "./GameEntry";
 import { PartialLevelInfo } from "../Game/models";
 import {
@@ -17,6 +16,7 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { GridComponent } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
+import { useAuthContext } from "../hooks/useAuth";
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { api } = useAuthContext();

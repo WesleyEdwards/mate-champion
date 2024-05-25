@@ -9,7 +9,7 @@ import { NavigatorProvider, useNavigator } from "../hooks/UseNavigator";
 import { EditLevelTopBar } from "./EditLevelTopBar";
 
 export const Layout = () => {
-  const { editingLevel, setEditingLevel, gameMode } = useLevelContext();
+  const { gameMode } = useLevelContext();
 
   return (
     <NavigatorProvider>

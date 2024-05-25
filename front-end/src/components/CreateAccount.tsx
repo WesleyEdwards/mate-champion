@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/joy";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useAuthContext } from "../hooks/useAuth";
 import { ArrowBack } from "@mui/icons-material";
 import { ScreenProps } from "./GameEntry";
 import { useNavigator } from "../hooks/UseNavigator";
