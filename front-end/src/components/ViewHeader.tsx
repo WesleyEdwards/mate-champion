@@ -97,7 +97,7 @@ export const EditLevelDetailHeader: FC = () => {
           <Input
             value={editingName}
             onChange={(e) => setEditingName(e.target.value)}
-            sx={{ flex: 1 }}
+            sx={{ flexGrow: 1 }}
           />
           <Tooltip title="Undo">
             <IconButton
@@ -157,7 +157,7 @@ export const PlayingHeader: FC = () => {
         <Typography level="h1">Editing {editingLevel?.name}</Typography>
       )}
       {gameMode === "test" && (
-        <Typography level="h1">Testing {editingLevel?.name}</Typography>
+        <Typography level="h1">{editingLevel?.name}</Typography>
       )}
       <div style={{ width: "2rem" }}></div>
     </Stack>

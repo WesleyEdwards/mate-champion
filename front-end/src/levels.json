@@ -5,6 +5,7 @@
     "public": true,
     "name": "Level Intro",
     "creatorName": "Wesley",
+    "description": null,
     "endPosition": 4500,
     "packages": [],
     "opponents": {
@@ -152,6 +153,7 @@
     "public": false,
     "name": "Abandon all hope",
     "creatorName": "Wesley",
+    "description": null,
     "endPosition": 4500,
     "packages": [],
     "opponents": {

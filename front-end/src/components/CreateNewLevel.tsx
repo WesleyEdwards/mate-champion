@@ -31,6 +31,7 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
     const created = await api.level.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
+      description: null,
       creatorName: user?.name ?? "",
       endPosition: 4500,
       public: false,

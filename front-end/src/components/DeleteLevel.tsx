@@ -22,13 +22,16 @@ export const DeleteLevel: FC<{
   return (
     <>
       {showWordDelete ? (
-        <Button
-          color="danger"
-          onClick={() => setDeleting(true)}
-          endDecorator={<Delete />}
-        >
-          Delete
-        </Button>
+        <Stack direction="row" justifyContent="center">
+          <Button
+            color="danger"
+            variant="plain"
+            onClick={() => setDeleting(true)}
+            endDecorator={<Delete />}
+          >
+            Delete
+          </Button>
+        </Stack>
       ) : (
         <IconButton color="danger" onClick={() => setDeleting(true)}>
           <Delete />

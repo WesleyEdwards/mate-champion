@@ -1,9 +1,14 @@
 import {
   Button,
+  Checkbox,
+  Divider,
+  FormControl,
+  FormHelperText,
   IconButton,
   Input,
   Skeleton,
   Stack,
+  Textarea,
   Tooltip,
   Typography,
 } from "@mui/joy";
@@ -11,13 +16,21 @@ import { FC, useState } from "react";
 import { MCScreen, ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
-import { Check, Edit, Undo } from "@mui/icons-material";
+import {
+  Check,
+  Construction,
+  Edit,
+  PlayArrow,
+  Undo,
+} from "@mui/icons-material";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
+import editingImage from "../assets/editing.png";
 import { LevelInfo } from "../Game/models";
 import { isLevelDirty } from "../helpers";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
+import { VisibilityIcon } from "./MyLevels";
 
 export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
   const { modifyLevel, editingLevel, setGameMode } = useLevelContext();
@@ -77,43 +90,60 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
     );
   }
   return (
-    <Stack alignItems="center" gap="1rem">
-      <Stack direction="row" gap="1rem">
+    <Stack gap="2rem" width="100%" flexGrow={1}>
+      <Textarea
+        value={editingLevel.description ?? ""}
+        placeholder="Description"
+        minRows={2}
+        onChange={(e) => {
+          modifyLevel({
+            level: { description: e.target.value },
+            saveToDb: false,
+          });
+        }}
+        sx={{ flexGrow: 1 }}
+      />
+      <Stack gap="1rem" direction="row">
         <Button
-          sx={{ width: "11rem", my: "2rem" }}
+          size="lg"
+          fullWidth
+          variant="outlined"
+          endDecorator={<Construction />}
           onClick={() => handleEnterGamePlay("edit")}
         >
-          Edit Level
+          Edit
         </Button>
         <Button
-          sx={{ width: "11rem", my: "2rem" }}
+          size="lg"
+          variant="outlined"
+          endDecorator={<PlayArrow />}
+          fullWidth
           onClick={() => handleEnterGamePlay("test")}
         >
-          Test Level
+          Preview
         </Button>
       </Stack>
 
-      {editingLevel.public ? (
-        <Typography level="body-md">
-          This level is <b>public</b>. Anyone can play it.
-        </Typography>
-      ) : (
-        <Typography level="body-md">
-          This level is <b>private</b>. Only you can play it.
-        </Typography>
-      )}
-      <Button
-        sx={{ width: "11rem" }}
-        onClick={() => {
-          modifyLevel({
-            level: { public: !editingLevel.public },
-            saveToDb: true,
-          });
-        }}
-        variant="outlined"
-      >
-        Make {editingLevel.public ? "Private" : "Public"}
-      </Button>
+      <FormControl>
+        <Checkbox
+          label="Visibility"
+          checked={editingLevel.public}
+          onChange={(e) => {
+            modifyLevel({
+              level: { public: e.target.checked },
+              saveToDb: true,
+            });
+          }}
+        />
+        <FormHelperText>
+          <VisibilityIcon publicLevel={editingLevel.public} />
+          {editingLevel.public
+            ? "Anyone can see this level"
+            : "Only you can see this level"}
+        </FormHelperText>
+      </FormControl>
+
+      <Divider />
 
       <DeleteLevel
         name={editingLevel.name}

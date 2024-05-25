@@ -39,6 +39,7 @@ const levelSchema = z
     owner: z.string(),
     public: z.boolean().default(false),
     name: z.string(),
+    description: z.string().nullable().default(null),
     creatorName: z.string().default(""),
     packages: coordinates.array().default([]),
     endPosition: z.number().default(4500),

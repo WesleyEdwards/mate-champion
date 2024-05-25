@@ -56,9 +56,9 @@ const palette: Partial<Palette> = {
   //     outlinedHoverColor: "#757575",
   //     softHoverColor: "#757575",
   //   },
-  //   danger: {
-  //     // Define shades of red for the danger palette
-  //   },
+  // danger: {
+  // Define shades of red for the danger palette
+  // },
   //   success: {
   //     // Define shades of green for the success palette
   //   },

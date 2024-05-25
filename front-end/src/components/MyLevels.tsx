@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
-import { Stack, Typography, Card } from "@mui/joy";
+import { Stack, Typography, Card, Tooltip } from "@mui/joy";
 import { useLevelContext } from "../hooks/useLevels";
-import { Edit } from "@mui/icons-material";
+import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 import { GridComponent } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
 
@@ -31,15 +31,32 @@ export const MyLevels: FC<ScreenProps> = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography level="h4">{level.name}</Typography>
-              <div style={{ flexGrow: 1 }}></div>
-              <Stack direction="row" gap="1rem">
-                <Edit />
+              <Stack>
+                <Typography level="h4">{level.name}</Typography>
+                <Stack direction="row" gap="5px" alignItems={"center"}>
+                  <VisibilityIcon publicLevel={level.public} />
+                  <Typography level="body-sm">{level.description}</Typography>
+                </Stack>
               </Stack>
+              <Edit />
             </Stack>
           </Card>
         )) ?? "loading"
       }
     />
+  );
+};
+
+export const VisibilityIcon = ({ publicLevel }: { publicLevel: boolean }) => {
+  return (
+    <Tooltip title={publicLevel ? "Public" : "Only you can see this level"}>
+      <Stack style={{ minHeight: "1rem" }} justifyContent="center">
+        {publicLevel ? (
+          <Visibility sx={{ height: "15px" }} />
+        ) : (
+          <VisibilityOff sx={{ height: "15px" }} />
+        )}
+      </Stack>
+    </Tooltip>
   );
 };

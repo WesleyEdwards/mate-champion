@@ -22,7 +22,7 @@ usersController(app, client)
 levelsController(app, client)
 scoresController(app, client)
 
-app.post("/situate", async (_, res) => {
+app.get("/situate", async (_, res) => {
   try {
     await client.runMigrations()
     res.send("Migrations have ran successfully")

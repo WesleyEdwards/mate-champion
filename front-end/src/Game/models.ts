@@ -72,6 +72,7 @@ export type VagueFacing = "left" | "right" | "up" | "down";
 
 export type LevelInfo = {
   _id: string;
+  description: string | null | undefined;
   owner: string;
   public: boolean;
   creatorName: string;
@@ -85,5 +86,5 @@ export type LevelInfo = {
 
 export type PartialLevelInfo = Pick<
   LevelInfo,
-  "_id" | "owner" | "name" | "public" | "creatorName"
+  "_id" | "owner" | "name" | "public" | "creatorName" | "description"
 >;

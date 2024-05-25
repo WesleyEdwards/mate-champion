@@ -4,7 +4,7 @@ export async function runMigrations(db: Db): Promise<boolean> {
   const levelCollection: Collection<any> = db.collection("level")
   const migrationCollection: Collection<any> = db.collection("migrations")
 
-  const migrationName = "addEndPositionField"
+  const migrationName = "addDescriptionField"
 
   const hasRun = await migrationCollection.findOne({name: migrationName})
   if (hasRun) {
@@ -18,7 +18,7 @@ export async function runMigrations(db: Db): Promise<boolean> {
     await levelCollection.updateOne(
       {_id: level._id},
       {
-        $set: {endPosition: 4500}
+        $set: {description: null}
       }
     )
   }

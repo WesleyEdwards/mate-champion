@@ -8,6 +8,7 @@ export const sandboxLevel: LevelInfo = {
   creatorName: "OWNER",
   endPosition: 4500,
   name: "Sandbox",
+  description: "A level for testing",
   packages: [
     { x: 1187, y: 338 },
     { x: 1035, y: 341 },
