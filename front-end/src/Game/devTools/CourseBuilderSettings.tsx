@@ -12,6 +12,7 @@ import {
   AccordionDetails,
   Button,
   Card,
+  CircularProgress,
 } from "@mui/joy";
 import { contentCreatorModifyObject } from "../devSettings";
 import { ItemType } from "./CreatingThing";
@@ -21,16 +22,20 @@ import { useLevelContext } from "../../hooks/useLevels";
 
 export const CourseBuilderSettings = () => {
   const { editingLevel, modifyLevel } = useLevelContext();
-  const [setEditingItemType, editingItemType] = useState(window.selectedItem);
+  const [editingItemType, setEditingItemType] = useState(window.selectedItem);
   const [editingLength, setEditingLength] = useState<number>();
   const [editingOpponentSpeed, setEditingOpponentSpeed] = useState<number>();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      editingItemType(window.selectedItem);
+      setEditingItemType(window.selectedItem);
     }, 300);
     return () => clearInterval(interval);
   });
+
+  if (editingLevel === "loading" || editingLevel === undefined) {
+    return <CircularProgress />;
+  }
 
   return (
     <Stack gap="1rem">
@@ -144,7 +149,7 @@ export const CourseBuilderSettings = () => {
                 <IconButton
                   onClick={() => {
                     modifyLevel({
-                      level: { endPosition: editingLength },
+                      mod: { endPosition: editingLength },
                       saveToDb: true,
                     });
                     setEditingLength(undefined);
@@ -226,7 +231,7 @@ export const CourseBuilderSettings = () => {
                 }
                 onClick={() => {
                   modifyLevel({
-                    level: {
+                    mod: {
                       opponents: {
                         grog:
                           editingLevel?.opponents.grog.map((g) => ({

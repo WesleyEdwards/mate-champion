@@ -2,10 +2,8 @@ import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import {
   Button,
-  Divider,
   Input,
   Stack,
-  Card,
   Modal,
   ModalDialog,
   DialogTitle,
@@ -40,6 +38,7 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
       packages: [],
       floors: [{ x: -500, width: 7000, color: "green" }],
       platforms: [],
+      updatedAt: new Date().toISOString(),
     });
     setEditingLevel(created);
     setOwnedLevels((prev) => (prev ? [...prev, created] : prev));

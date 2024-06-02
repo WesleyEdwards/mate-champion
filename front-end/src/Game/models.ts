@@ -82,6 +82,7 @@ export type LevelInfo = {
   opponents: { grog: GrogProps[] };
   platforms: FloatingType[];
   floors: FloorType[];
+  updatedAt: string;
 };
 
 export type PartialLevelInfo = Pick<

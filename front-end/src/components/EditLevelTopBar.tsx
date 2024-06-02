@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Alert, IconButton, Stack, Typography } from "@mui/joy";
+import { Alert, IconButton, Skeleton, Stack, Typography } from "@mui/joy";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 
@@ -22,9 +22,11 @@ export const EditLevelTopBar = () => {
         alignItems="center"
         justifyContent={"space-between"}
       >
-        <Typography>
-          Editing <b>{editingLevel.name}</b>
-        </Typography>
+        {editingLevel === "loading" ? (
+          <Skeleton width="200px" height="20px" />
+        ) : (
+          <Typography>Editing {editingLevel.name}</Typography>
+        )}
         <IconButton
           sx={{ borderRadius: "0.5rem" }}
           onClick={() => {

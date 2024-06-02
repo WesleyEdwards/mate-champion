@@ -86,10 +86,24 @@ export const LevelCard: FC<{
   actionButton: React.ReactNode;
 }> = ({ level, actionButton, subtitle }) => {
   return (
-    <Card key={level._id} sx={{ width: "100%" }}>
+    <Card
+      key={level._id}
+      sx={{
+        width: "100%",
+      }}
+    >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Stack>
-          <Typography level="h4">{level.name}</Typography>
+        <Stack sx={{ overflow: "hidden" }}>
+          <Typography
+            level="h4"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {level.name}
+          </Typography>
           {subtitle && <Typography level="body-sm">{subtitle}</Typography>}
         </Stack>
         {actionButton}

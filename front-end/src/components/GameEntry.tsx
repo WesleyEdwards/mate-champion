@@ -65,7 +65,6 @@ export const GameEntry: FC = () => {
       {ScreenViewHeader}
       <Stack
         mb={2}
-        // maxHeight={"calc(100vh - 100px)"}
         sx={{ width: "100%" }}
       >
         <RenderScreen score={stats.score} modifyStats={modifyStats} />

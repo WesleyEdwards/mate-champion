@@ -9,8 +9,10 @@ export const useLevels: (params: {
   api: Api | undefined;
   user: User | undefined;
 }) => LevelsContextType = ({ api, user }) => {
-  const [originalLevel, setOriginalLevel] = useState<LevelInfo | null>(null);
-  const [editingLevel, setEditingLevel] = useState<LevelInfo | null>(null);
+  const [level, setLevel] = useState<
+    { original: LevelInfo; dirty: LevelInfo } | null | undefined
+  >(null);
+
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
   const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
 
@@ -26,56 +28,64 @@ export const useLevels: (params: {
   };
 
   const saveLevelToDb = (newLevel: LevelInfo): Promise<LevelInfo> => {
-    if (!originalLevel || !api) {
+    if (!level || !api) {
       return Promise.reject("Not working on a level");
     }
 
-    if (!isLevelDirty(originalLevel, newLevel)) {
+    if (!isLevelDirty(level.original, newLevel)) {
       return Promise.resolve(newLevel);
     }
 
-    setEditingLevel({ ...newLevel });
+    const originalLevel = { ...level.original };
+    setLevel({ original: newLevel, dirty: newLevel });
     return api.level
       .modify(newLevel._id, getLevelDiff(originalLevel, newLevel))
       .then((res) => {
         updateLevelInOwned(res);
-        setOriginalLevel({ ...res });
         return res;
       });
   };
 
   const modifyLevel: LevelsContextType["modifyLevel"] = ({
-    level = {},
+    mod = {},
     saveToDb = false,
     discardChanges = false,
   }) => {
+    if (!level) return Promise.reject("Not working on a level");
+
     if (saveToDb) {
-      return saveLevelToDb({ ...editingLevel!, ...level });
+      return saveLevelToDb({ ...level.dirty, ...mod });
     }
-    if (discardChanges && originalLevel) {
-      setEditingLevel({ ...originalLevel });
+    if (discardChanges) {
+      const originalLevel = { ...level.original };
+      setLevel({ original: originalLevel, dirty: originalLevel });
       return Promise.resolve();
     }
-    setEditingLevel((prev) => (prev ? { ...prev, ...level } : null));
+    setLevel((prev) => (prev ? { ...prev, ...level } : null));
     return Promise.resolve();
   };
 
   const handleSetEditing: LevelsContextType["setEditingLevel"] = (level) => {
     if (!api) return Promise.reject();
 
-    setOriginalLevel(null);
-    setEditingLevel(null);
+    const levelSetter = (level: LevelInfo) => {
+      setLevel({
+        original: level,
+        dirty: level,
+      });
+    };
+    setLevel(undefined);
+
     if (level === null) {
+      setLevel(null);
       return Promise.resolve();
     }
-    if ("platforms" in level) {
-      setOriginalLevel(level);
-      setEditingLevel(level);
+    if (typeof level !== "string") {
+      setLevel({ original: level, dirty: level });
       return Promise.resolve();
     }
-    return api.level.detail(level._id).then((res) => {
-      setOriginalLevel(res);
-      setEditingLevel(res);
+    return api.level.detail(level).then((res) => {
+      levelSetter(res);
     });
   };
 
@@ -99,8 +109,7 @@ export const useLevels: (params: {
     if (!api) return Promise.reject();
     return api.level.delete(level).then(() => {
       setOwnedLevels((prev) => prev?.filter((l) => l._id !== level));
-      setEditingLevel(null);
-      setOriginalLevel(null);
+      setLevel(null);
     });
   };
 
@@ -109,9 +118,10 @@ export const useLevels: (params: {
   }, [user]);
 
   const levelIsDirty = useMemo(() => {
-    if (!originalLevel || !editingLevel) return false;
-    return Object.keys(getLevelDiff(originalLevel, editingLevel)).length > 0;
-  }, [editingLevel]);
+    if (!level) return false;
+
+    return Object.keys(getLevelDiff(level.original, level.dirty)).length > 0;
+  }, [level?.dirty]);
 
   const setGameMode = (mode: GameMode) => {
     if (mode === "idle") {
@@ -123,7 +133,7 @@ export const useLevels: (params: {
   return {
     modifyLevel,
     setEditingLevel: handleSetEditing,
-    editingLevel,
+    editingLevel: level === undefined ? "loading" : level?.dirty ?? null,
     gameMode: currGameMode,
     setGameMode,
     ownedLevels,
@@ -135,12 +145,12 @@ export const useLevels: (params: {
 
 export type LevelsContextType = {
   modifyLevel: (params: {
-    level?: Partial<LevelInfo>;
+    mod?: Partial<LevelInfo>;
     saveToDb?: boolean;
     discardChanges?: boolean;
   }) => Promise<unknown>;
-  setEditingLevel: (editing: PartialLevelInfo | LevelInfo | null) => void;
-  editingLevel: LevelInfo | null;
+  setEditingLevel: (editing: LevelInfo | string | null) => void;
+  editingLevel: LevelInfo | "loading" | null;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
   ownedLevels: PartialLevelInfo[] | undefined;

@@ -23,6 +23,11 @@ declare global {
     };
     selectedItem: ItemType;
   }
+
+  interface ObjectConstructor {
+    entries<T extends object, K extends keyof T>(o: T): [K, T[K]][];
+    keys<T extends object>(o: T): (keyof T)[];
+  }
 }
 
 initializeDevSettings();

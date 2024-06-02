@@ -62,7 +62,7 @@ export const EditLevelDetailHeader: FC = () => {
   const [editingName, setEditingName] = useState<string>();
   const { modifyLevel, editingLevel, setEditingLevel } = useLevelContext();
 
-  if (!editingLevel) {
+  if (editingLevel === "loading" || editingLevel === null) {
     return <Skeleton height="40px" variant="rectangular" />;
   }
 
@@ -85,7 +85,15 @@ export const EditLevelDetailHeader: FC = () => {
             <ArrowBack />
           </IconButton>
 
-          <Typography level="h1">{editingLevel.name}</Typography>
+          <Typography
+            level="h1"
+            maxWidth={"700px"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            noWrap={true}
+          >
+            {editingLevel.name}
+          </Typography>
           <Tooltip title="Edit Name">
             <IconButton onClick={() => setEditingName(editingLevel.name)}>
               <Edit />
@@ -110,7 +118,7 @@ export const EditLevelDetailHeader: FC = () => {
           <Tooltip title="Save">
             <IconButton
               onClick={() => {
-                modifyLevel({ level: { name: editingName }, saveToDb: true });
+                modifyLevel({ mod: { name: editingName }, saveToDb: true });
                 setEditingName(undefined);
               }}
             >
@@ -132,6 +140,10 @@ export const PlayingHeader: FC = () => {
   const { goBack } = useNavigator();
 
   if (gameMode === "play") return null;
+
+  if (editingLevel === "loading") {
+    return <Skeleton height="40px" variant="rectangular" />;
+  }
 
   return (
     <Stack

@@ -4,41 +4,30 @@ import {
   Divider,
   FormControl,
   FormHelperText,
-  IconButton,
-  Input,
   Skeleton,
   Stack,
   Textarea,
-  Tooltip,
-  Typography,
 } from "@mui/joy";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { MCScreen, ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
-import {
-  Check,
-  Construction,
-  Edit,
-  PlayArrow,
-  Undo,
-} from "@mui/icons-material";
+import { Construction, PlayArrow } from "@mui/icons-material";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
-import editingImage from "../assets/editing.png";
 import { LevelInfo } from "../Game/models";
-import { isLevelDirty } from "../helpers";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { VisibilityIcon } from "./MyLevels";
 
 export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
-  const { modifyLevel, editingLevel, setGameMode } = useLevelContext();
+  const { modifyLevel, editingLevel, setGameMode, levelIsDirty } =
+    useLevelContext();
   const { navigateTo } = useNavigator();
-
   const { setModal } = usePauseModalContext();
 
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
+    if (editingLevel === "loading") return;
     modifyStats({ ...emptyStats });
     navigateTo("game");
     window.stopLoop = false;
@@ -56,7 +45,7 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
         },
         gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],
-        setLevel: (level: Partial<LevelInfo>) => modifyLevel({ level }),
+        setLevel: (level: Partial<LevelInfo>) => modifyLevel({ mod: level }),
       },
       test: {
         setUI: {
@@ -75,7 +64,11 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
     enterGameLoop(params);
   };
 
-  if (!editingLevel) {
+  const saveForm = () => {
+    modifyLevel({ mod: {}, saveToDb: true });
+  };
+
+  if (editingLevel === "loading") {
     return (
       <Stack
         gap="1rem"
@@ -89,6 +82,12 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
       </Stack>
     );
   }
+
+  if (!editingLevel) {
+    navigateTo("home");
+    return null;
+  }
+
   return (
     <Stack gap="2rem" width="100%" flexGrow={1}>
       <Textarea
@@ -97,8 +96,7 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
         minRows={2}
         onChange={(e) => {
           modifyLevel({
-            level: { description: e.target.value },
-            saveToDb: false,
+            mod: { description: e.target.value },
           });
         }}
         sx={{ flexGrow: 1 }}
@@ -126,12 +124,11 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
 
       <FormControl>
         <Checkbox
-          label="Visibility"
+          label="Public"
           checked={editingLevel.public}
           onChange={(e) => {
             modifyLevel({
-              level: { public: e.target.checked },
-              saveToDb: true,
+              mod: { public: e.target.checked },
             });
           }}
         />
@@ -142,6 +139,14 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
             : "Only you can see this level"}
         </FormHelperText>
       </FormControl>
+
+      <Button
+        sx={{ alignSelf: "flex-end" }}
+        onClick={saveForm}
+        disabled={!levelIsDirty}
+      >
+        Save
+      </Button>
 
       <Divider />
 

@@ -22,7 +22,7 @@ export const MyLevels: FC<ScreenProps> = () => {
               },
             }}
             onClick={() => {
-              setEditingLevel(level);
+              setEditingLevel(level._id);
               navigateTo("editorDetail");
             }}
           >
@@ -31,8 +31,17 @@ export const MyLevels: FC<ScreenProps> = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Stack>
-                <Typography level="h4">{level.name}</Typography>
+              <Stack sx={{ overflow: "hidden" }}>
+                <Typography
+                  level="h4"
+                  sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {level.name}
+                </Typography>
                 <Stack direction="row" gap="5px" alignItems={"center"}>
                   <VisibilityIcon publicLevel={level.public} />
                   <Typography level="body-sm">{level.description}</Typography>

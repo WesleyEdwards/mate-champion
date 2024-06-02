@@ -49,4 +49,5 @@ export const sandboxLevel: LevelInfo = {
     { x: 2100, width: 2200, color: "green" },
     { x: 4500, width: 1000, color: "green" },
   ],
+  updatedAt: new Date().toISOString(),
 };
