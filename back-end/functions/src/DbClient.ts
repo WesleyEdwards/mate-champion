@@ -1,17 +1,13 @@
-import {LevelInfo, Score, User} from "./types"
+import {LevelInfo, LevelMap, Score, User} from "./types"
 
 export type HasId = {
   _id: string
 }
 
 export type Condition<T extends HasId> =
-  | {
-      [P in keyof T]?: T[P][] | T[P]
-    }
-  | {
-      or?: Condition<T>[]
-    }
-
+  | {[P in keyof T]?: T[P][] | T[P]}
+  | {or?: Condition<T>[]}
+  
 export function queryContainsKey(query: any, key: string): boolean {
   return Object.entries(query).some(([k, v]) => {
     if (k === key) return true
@@ -46,5 +42,6 @@ export type DbClient = {
   user: BasicEndpoints<User>
   level: BasicEndpoints<LevelInfo>
   score: BasicEndpoints<Score>
+  levelMap: BasicEndpoints<LevelMap>
   runMigrations: () => Promise<boolean>
 }

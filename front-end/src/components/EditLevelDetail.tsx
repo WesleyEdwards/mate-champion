@@ -8,8 +8,8 @@ import {
   Stack,
   Textarea,
 } from "@mui/joy";
-import { FC, useEffect, useState } from "react";
-import { MCScreen, ScreenProps } from "./GameEntry";
+import { FC } from "react";
+import { ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
 import { Construction, PlayArrow } from "@mui/icons-material";

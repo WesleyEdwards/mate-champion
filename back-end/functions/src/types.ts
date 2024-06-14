@@ -40,7 +40,13 @@ const levelSchema = z
     public: z.boolean().default(false),
     name: z.string(),
     description: z.string().nullable().default(null),
-    creatorName: z.string().default(""),
+    creatorName: z.string().default("")
+  })
+  .merge(baseObjectSchema)
+
+// this will have the same _id as the associated level
+const levelMapSchema = z
+  .object({
     packages: coordinates.array().default([]),
     endPosition: z.number().default(4500),
     opponents: z
@@ -79,15 +85,21 @@ export type UserType = z.infer<typeof userTypeSchema>
 export type User = z.infer<typeof userSchema>
 export type Score = z.infer<typeof scoreSchema>
 export type LevelInfo = z.infer<typeof levelSchema>
+export type LevelMap = z.infer<typeof levelMapSchema>
 
-type Schemas = typeof userSchema | typeof scoreSchema | typeof levelSchema
+type Schemas =
+  | typeof userSchema
+  | typeof scoreSchema
+  | typeof levelSchema
+  | typeof levelMapSchema
 
-export type SchemaType = "score" | "user" | "level"
+export type SchemaType = "score" | "user" | "level" | "levelMap"
 
 export const schemaMap: Record<SchemaType, Schemas> = {
   user: userSchema,
   score: scoreSchema,
-  level: levelSchema
+  level: levelSchema,
+  levelMap: levelMapSchema
 }
 
 export type DbObject<T extends SchemaType> = T extends "score"
@@ -96,4 +108,6 @@ export type DbObject<T extends SchemaType> = T extends "score"
   ? User
   : T extends "level"
   ? LevelInfo
+  : T extends "levelMap"
+  ? LevelMap
   : never

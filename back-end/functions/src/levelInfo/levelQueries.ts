@@ -1,3 +1,4 @@
+import {v4 as uuidv4} from "uuid"
 import {Condition} from "../DbClient"
 import {ReqBuilder} from "../auth/authTypes"
 import {
@@ -40,11 +41,25 @@ export const createLevel: ReqBuilder =
     }
     const user = await client.user.findOne({_id: levelBody.owner})
     if (!user) return res.status(500).json("500")
+    const levelId: string = uuidv4()
     const level = await client.level.insertOne({
       ...levelBody,
+      _id: levelId,
       creatorName: user.name
     })
-    if (!level) return res.status(500).json({error: "Error creating user"})
+    const levelmap = await client.levelMap.insertOne({
+      _id: levelId,
+      endPosition: 4500,
+      packages: [],
+      opponents: {grog: []},
+      floors: [],
+      platforms: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    })
+    if (!level || !levelmap)
+      return res.status(500).json({error: "Error creating user"})
+
     return res.json(level)
   }
 
@@ -112,7 +127,7 @@ export const modifyLevel: ReqBuilder =
 
 export const deleteLevel: ReqBuilder =
   (client) =>
-  async ({params, body, jwtBody}, res) => {
+  async ({params, jwtBody}, res) => {
     if (!params.id) return res.status(400).json("Error")
     const condition =
       jwtBody?.userType === "Admin"
@@ -123,5 +138,9 @@ export const deleteLevel: ReqBuilder =
       return res.json(404).json({"level not found": level})
     }
     const deleted = await client.level.deleteOne(params.id)
+    const deletedMap = await client.levelMap.deleteOne(params.id)
+    if (!deleted || !deletedMap) {
+      return res.status(500).json("Error deleting level")
+    }
     return res.json(deleted)
   }
