@@ -1,4 +1,4 @@
-import { Keys, LevelInfo, SetUI } from "../models";
+import { Keys, FullLevelInfo, SetUI } from "../models";
 import { ObjectManager } from "./ObjectManager";
 import { GameStatsManager } from "./GameStatsManager";
 import { GameDrawer } from "./GameDrawer";
@@ -27,9 +27,9 @@ export class GameState {
     setUI: SetUI,
     canvas: HTMLCanvasElement,
     cxt: CanvasRenderingContext2D,
-    levels: LevelInfo[],
+    levels: FullLevelInfo[],
     gameMode: GameMode,
-    setLevel?: (level: Partial<LevelInfo>) => void
+    setLevel?: (level: Partial<FullLevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
       console.log("togglePause");

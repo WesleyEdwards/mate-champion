@@ -8,7 +8,7 @@ import {
   Stack,
 } from "@mui/joy";
 import { FC, useState } from "react";
-import { PartialLevelInfo } from "../Game/models";
+import { LevelInfo } from "../Game/models";
 import { Delete } from "@mui/icons-material";
 import { useLevelContext } from "../hooks/useLevels";
 

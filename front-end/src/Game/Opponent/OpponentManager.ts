@@ -2,7 +2,7 @@ import { areTouching } from "../GameState/GameStateFunctions";
 import { playerConst } from "../constants";
 import { getLevelItem } from "../constructors";
 import { DrawObjProps } from "../helpers/types";
-import { Coordinates, LevelInfo } from "../models";
+import { Coordinates, FullLevelInfo } from "../models";
 import { Grog } from "./Grog";
 
 export type Opponents = { grog: Grog[] };
@@ -37,7 +37,7 @@ export class OpponentManager {
     });
   }
 
-  reset(info: LevelInfo) {
+  reset(info: FullLevelInfo) {
     this.opponents = getLevelItem("opponents", info);
   }
 }

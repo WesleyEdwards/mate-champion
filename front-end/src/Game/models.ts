@@ -70,22 +70,26 @@ export type OppDirections = "left" | "right";
 
 export type VagueFacing = "left" | "right" | "up" | "down";
 
+export type LevelMap = {
+  _id: string;
+  endPosition: number;
+  packages: PackageProps[];
+  opponents: { grog: GrogProps[] };
+  platforms: FloatingType[];
+  floors: FloorType[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type LevelInfo = {
   _id: string;
   description: string | null | undefined;
   owner: string;
   public: boolean;
   creatorName: string;
-  endPosition: number;
   name: string;
-  packages: PackageProps[];
-  opponents: { grog: GrogProps[] };
-  platforms: FloatingType[];
-  floors: FloorType[];
+  createdAt: string;
   updatedAt: string;
 };
 
-export type PartialLevelInfo = Pick<
-  LevelInfo,
-  "_id" | "owner" | "name" | "public" | "creatorName" | "description"
->;
+export type FullLevelInfo = LevelMap & LevelInfo;

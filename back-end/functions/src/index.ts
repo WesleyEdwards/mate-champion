@@ -8,6 +8,7 @@ import {usersController} from "./user/user_controller"
 import {scoresController} from "./score/scoresController"
 import {mongoClient} from "./mongo/mongoClient"
 import {levelsController} from "./levelInfo/level_controller"
+import { levelMapController } from "./levelMap/level_map_controller"
 
 dotenv.config()
 
@@ -20,6 +21,7 @@ app.use(cors())
 
 usersController(app, client)
 levelsController(app, client)
+levelMapController(app, client)
 scoresController(app, client)
 
 app.get("/situate", async (_, res) => {

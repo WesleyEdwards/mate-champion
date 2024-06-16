@@ -66,7 +66,7 @@ export const mongoClient = (): DbClient => {
     user: functionsForModel<User>(db, "user"),
     score: functionsForModel<Score>(db, "score"),
     level: functionsForModel<LevelInfo>(db, "level"),
-    levelMap: functionsForModel<LevelMap>(db, "level-map"),
+    levelMap: functionsForModel<LevelMap>(db, "levelMap"),
     runMigrations: () => runMigrations(db)
   }
 }

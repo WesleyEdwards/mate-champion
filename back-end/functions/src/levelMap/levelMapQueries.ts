@@ -16,7 +16,9 @@ export const getLevelMap: ReqBuilder =
     ) {
       return res.status(404).json("Cant access")
     }
+    console.log("params.id", params.id)
     const levelMap = await client.levelMap.findOne({_id: params.id})
+    console.log(levelMap)
     return res.json(levelMap)
   }
 

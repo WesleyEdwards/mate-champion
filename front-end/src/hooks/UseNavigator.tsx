@@ -20,8 +20,13 @@ export const NavigatorProvider = (props: { children: React.ReactNode }) => {
   };
 
   const goBack = () => {
+    console.log("goBack");
     setScreenStack(screenStack.slice(0, -1));
   };
+
+  useEffect(() => {
+    console.log(screenStack);
+  }, [screenStack]);
 
   return (
     <NavigatorContext.Provider

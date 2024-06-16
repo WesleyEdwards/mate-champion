@@ -1,5 +1,5 @@
 import { ObjectManager } from "../GameState/ObjectManager";
-import { Coordinates, LevelInfo, StaticObject } from "../models";
+import { Coordinates, FullLevelInfo, StaticObject } from "../models";
 import { PlatformCreator } from "./PlatformCreator";
 import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 import { addDevEventListeners } from "./eventListeners";
@@ -15,7 +15,7 @@ import {
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
   objectManager: ObjectManager;
-  setLevel?: (level: Partial<LevelInfo>) => void;
+  setLevel?: (level: Partial<FullLevelInfo>) => void;
 };
 
 /**
@@ -40,7 +40,7 @@ export class DevContentCreate {
   cameraOffset: Coordinates = { x: 0, y: 0 };
   prevColor: string = "";
   prevCurrCreating: ItemType = "platform";
-  setLevel?: (level: Partial<LevelInfo>) => void;
+  setLevel?: (level: Partial<FullLevelInfo>) => void;
   lastUpdate: number = 0;
 
   creatingOptions: Record<ItemType, CreatingThing>;

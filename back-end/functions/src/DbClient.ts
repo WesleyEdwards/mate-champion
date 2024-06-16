@@ -43,5 +43,5 @@ export type DbClient = {
   level: BasicEndpoints<LevelInfo>
   score: BasicEndpoints<Score>
   levelMap: BasicEndpoints<LevelMap>
-  runMigrations: () => Promise<boolean>
+  runMigrations: () => Promise<unknown>
 }

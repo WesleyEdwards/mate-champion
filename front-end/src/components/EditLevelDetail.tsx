@@ -15,7 +15,7 @@ import { enterGameLoop } from "../Game/Main";
 import { Construction, PlayArrow } from "@mui/icons-material";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
-import { LevelInfo } from "../Game/models";
+import { FullLevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { VisibilityIcon } from "./MyLevels";
@@ -45,7 +45,7 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
         },
         gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],
-        setLevel: (level: Partial<LevelInfo>) => modifyLevel({ mod: level }),
+        setLevel: (level: Partial<FullLevelInfo>) => modifyLevel({ mod: level }),
       },
       test: {
         setUI: {

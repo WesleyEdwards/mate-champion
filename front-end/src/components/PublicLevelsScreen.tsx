@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { MCScreen, ScreenProps } from "./GameEntry";
-import { PartialLevelInfo } from "../Game/models";
+import { LevelInfo } from "../Game/models";
 import {
   Card,
   CircularProgress,
@@ -23,11 +23,11 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { setGameMode } = useLevelContext();
   const { setModal } = usePauseModalContext();
   const { navigateTo } = useNavigator();
-
-  const [levels, setLevels] = useState<PartialLevelInfo[]>();
+  const [levels, setLevels] = useState<LevelInfo[]>();
 
   const handleEnterGamePlay = async (levelId: string) => {
-    const level = await api.level.detail(levelId);
+    const details = await api.level.detail(levelId);
+    const map = await api.level.levelMapDetail(levelId);
     navigateTo("game");
     modifyStats({ ...emptyStats });
 
@@ -42,16 +42,14 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
         },
       },
       gameMode: "test",
-      levels: [level],
+      levels: [{ ...details, ...map }],
       setLevel: () => {},
     });
   };
 
   useEffect(() => {
     setLevels(undefined);
-    api.level
-      .queryPartial({ public: true }, ["_id", "name", "owner", "creatorName"])
-      .then((res) => setLevels(res as PartialLevelInfo[]));
+    api.level.query({ public: true }).then(setLevels);
   }, []);
 
   return (
@@ -81,7 +79,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
 };
 
 export const LevelCard: FC<{
-  level: PartialLevelInfo;
+  level: LevelInfo;
   subtitle?: string;
   actionButton: React.ReactNode;
 }> = ({ level, actionButton, subtitle }) => {

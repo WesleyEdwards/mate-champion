@@ -4,7 +4,7 @@ import {
   getLevelMap,
 } from "./levelMapQueries"
 
-export const levelsController = controller("level-map", [
+export const levelMapController = controller("level-map", [
   {path: "/:id", method: "get", endpointBuilder: getLevelMap},
   {path: "/:id", method: "put", endpointBuilder: modifyLevelMap},
 ])

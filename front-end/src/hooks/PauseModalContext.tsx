@@ -22,7 +22,7 @@ const PauseModalContext = createContext({} as PauseModalContextType);
 
 export const PauseModalProvider = (props: { children: React.ReactNode }) => {
   const { setGameMode, modifyLevel } = useLevelContext();
-  const { navigateTo } = useNavigator();
+  const { navigateTo, goBack } = useNavigator();
   const [open, setOpen] = useState<ModalOption | null>(null);
 
   const handleSetModal = (modal: ModalOption | null) => {
@@ -31,7 +31,7 @@ export const PauseModalProvider = (props: { children: React.ReactNode }) => {
 
   const exit = () => {
     setGameMode("idle");
-    navigateTo("editorDetail");
+    goBack();
     setOpen(null);
   };
 

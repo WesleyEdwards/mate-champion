@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { LevelInfo, PartialLevelInfo } from "../Game/models";
+import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
 import { User } from "../types";
@@ -10,13 +10,13 @@ export const useLevels: (params: {
   user: User | undefined;
 }) => LevelsContextType = ({ api, user }) => {
   const [level, setLevel] = useState<
-    { original: LevelInfo; dirty: LevelInfo } | null | undefined
+    { original: FullLevelInfo; dirty: FullLevelInfo } | null | undefined
   >(null);
 
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
-  const [ownedLevels, setOwnedLevels] = useState<PartialLevelInfo[]>();
+  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
 
-  const updateLevelInOwned = (level: LevelInfo) => {
+  const updateLevelInOwned = (level: FullLevelInfo) => {
     setOwnedLevels((prev) => {
       if (!prev) return prev;
       const index = prev.findIndex((l) => l._id === level._id);
@@ -27,7 +27,9 @@ export const useLevels: (params: {
     });
   };
 
-  const saveLevelToDb = (newLevel: LevelInfo): Promise<LevelInfo> => {
+  const saveLevelToDb = async (
+    newLevel: FullLevelInfo
+  ): Promise<FullLevelInfo> => {
     if (!level || !api) {
       return Promise.reject("Not working on a level");
     }
@@ -38,12 +40,16 @@ export const useLevels: (params: {
 
     const originalLevel = { ...level.original };
     setLevel({ original: newLevel, dirty: newLevel });
-    return api.level
-      .modify(newLevel._id, getLevelDiff(originalLevel, newLevel))
-      .then((res) => {
-        updateLevelInOwned(res);
-        return res;
-      });
+    const diff = getLevelDiff(originalLevel, newLevel);
+
+    if (Object.keys(diff.details).length > 0) {
+      await api.level.modify(newLevel._id, diff.details);
+    }
+    if (Object.keys(diff.map).length > 0) {
+      await api.level.modifyMap(newLevel._id, diff.map);
+    }
+    updateLevelInOwned(newLevel);
+    return newLevel;
   };
 
   const modifyLevel: LevelsContextType["modifyLevel"] = ({
@@ -65,10 +71,12 @@ export const useLevels: (params: {
     return Promise.resolve();
   };
 
-  const handleSetEditing: LevelsContextType["setEditingLevel"] = (level) => {
+  const handleSetEditing: LevelsContextType["setEditingLevel"] = async (
+    level
+  ) => {
     if (!api) return Promise.reject();
 
-    const levelSetter = (level: LevelInfo) => {
+    const levelSetter = (level: FullLevelInfo) => {
       setLevel({
         original: level,
         dirty: level,
@@ -84,9 +92,9 @@ export const useLevels: (params: {
       setLevel({ original: level, dirty: level });
       return Promise.resolve();
     }
-    return api.level.detail(level).then((res) => {
-      levelSetter(res);
-    });
+    const details = await api.level.detail(level);
+    const map = await api.level.levelMapDetail(level);
+    levelSetter({ ...details, ...map });
   };
 
   const fetchOwnLevels = () => {
@@ -94,15 +102,7 @@ export const useLevels: (params: {
       return;
     }
     setOwnedLevels(undefined);
-    return api.level
-      .queryPartial({ owner: user?._id ?? "" }, [
-        "_id",
-        "name",
-        "owner",
-        "public",
-        "creatorName",
-      ])
-      .then((res) => setOwnedLevels(res as PartialLevelInfo[]));
+    return api.level.query({ owner: user?._id ?? "" }).then(setOwnedLevels);
   };
 
   const deleteLevel = (level: string) => {
@@ -145,18 +145,16 @@ export const useLevels: (params: {
 
 export type LevelsContextType = {
   modifyLevel: (params: {
-    mod?: Partial<LevelInfo>;
+    mod?: Partial<FullLevelInfo>;
     saveToDb?: boolean;
     discardChanges?: boolean;
   }) => Promise<unknown>;
-  setEditingLevel: (editing: LevelInfo | string | null) => void;
-  editingLevel: LevelInfo | "loading" | null;
+  setEditingLevel: (editing: FullLevelInfo | string | null) => void;
+  editingLevel: FullLevelInfo | "loading" | null;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
-  ownedLevels: PartialLevelInfo[] | undefined;
-  setOwnedLevels: React.Dispatch<
-    React.SetStateAction<PartialLevelInfo[] | undefined>
-  >;
+  ownedLevels: LevelInfo[] | undefined;
+  setOwnedLevels: React.Dispatch<React.SetStateAction<LevelInfo[] | undefined>>;
   deleteLevel: (level: string) => Promise<unknown>;
   levelIsDirty: boolean;
 };

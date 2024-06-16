@@ -1,4 +1,4 @@
-import { LevelInfo, StaticObject } from "./models";
+import { FullLevelInfo, StaticObject } from "./models";
 import { Platform } from "./Platform/Platform";
 import { Package } from "./Bullet/Package";
 import { Grog } from "./Opponent/Grog";
@@ -11,12 +11,12 @@ type ReturnItem<T extends "blocks" | "opponents" | "package"> =
     ? Opponents
     : Package[];
 
-export const getLevelInfo = (level: number, info: LevelInfo[]): LevelInfo =>
+export const getLevelInfo = (level: number, info: FullLevelInfo[]): FullLevelInfo =>
   info[(level - 1) % info.length];
 
 export function getLevelItem<T extends "blocks" | "opponents" | "package">(
   item: T,
-  info: LevelInfo
+  info: FullLevelInfo
 ): ReturnItem<T> {
   return {
     blocks: () => {

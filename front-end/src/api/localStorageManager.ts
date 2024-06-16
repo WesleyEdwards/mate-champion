@@ -1,4 +1,4 @@
-import { LevelInfo } from "../Game/models";
+import { FullLevelInfo } from "../Game/models";
 
 type KeyName = "token" | "high-score" | "dev-settings";
 

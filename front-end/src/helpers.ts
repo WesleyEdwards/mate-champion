@@ -1,4 +1,4 @@
-import { LevelInfo } from "./Game/models";
+import { FullLevelInfo, LevelInfo, LevelMap } from "./Game/models";
 
 export function camelCaseToTitleCase(str: string) {
   return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
@@ -6,22 +6,38 @@ export function camelCaseToTitleCase(str: string) {
   });
 }
 
+function isKeyofLevelInfo(key: string): key is keyof LevelInfo {
+  return key in ["description", "owner", "public", "creatorName", "name"];
+}
+
+const doNotUpdateKeys = ["_id", "createdAt", "updatedAt"];
+
 export const getLevelDiff = (
-  original: LevelInfo,
-  override: LevelInfo
-): Partial<LevelInfo> => {
-  return Object.entries(override).reduce((acc, [k, v]) => {
-    if (k === "updatedAt") {
+  original: FullLevelInfo,
+  override: FullLevelInfo
+): { details: Partial<LevelInfo>; map: Partial<LevelMap> } => {
+  return Object.entries(override).reduce(
+    (acc, [k, v]) => {
+      if (doNotUpdateKeys.includes(k)) {
+        return acc;
+      }
+      // @ts-ignore
+      if (JSON.stringify(original[k as any]) !== JSON.stringify(v)) {
+        if (isKeyofLevelInfo(k)) {
+          (acc.details as any)[k] = v;
+        } else {
+          (acc.map as any)[k] = v;
+        }
+      }
       return acc;
-    }
-    // @ts-ignore
-    if (JSON.stringify(original[k as any]) !== JSON.stringify(v)) {
-      (acc as any)[k] = v;
-    }
-    return acc;
-  }, {} as Partial<LevelInfo>);
+    },
+    { details: {} as Partial<LevelInfo>, map: {} as Partial<LevelMap> }
+  );
 };
 
-export const isLevelDirty = (original: LevelInfo, override: LevelInfo) => {
+export const isLevelDirty = (
+  original: FullLevelInfo,
+  override: FullLevelInfo
+) => {
   return Object.keys(getLevelDiff(original, override)).length > 0;
 };

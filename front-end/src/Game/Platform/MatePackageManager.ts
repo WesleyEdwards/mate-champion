@@ -6,7 +6,7 @@ import Player from "../Player/Player";
 import { DrawObjProps } from "../helpers/types";
 import { packageConst } from "../constants";
 import { getLevelItem } from "../constructors";
-import { LevelInfo } from "../models";
+import { FullLevelInfo } from "../models";
 import { GameMode } from "../../hooks/useAuth";
 
 export class MatePackageManager {
@@ -42,7 +42,7 @@ export class MatePackageManager {
     });
   }
 
-  reset(info: LevelInfo) {
+  reset(info: FullLevelInfo) {
     this.packages = getLevelItem("package", info);
   }
 

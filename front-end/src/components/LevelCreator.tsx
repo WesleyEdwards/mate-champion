@@ -8,11 +8,10 @@ import {
   Switch,
   Typography,
 } from "@mui/joy";
-import { Settings, devSettings, modifyDevSettings } from "../Game/devSettings";
+import { Settings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
 import { FC, useState } from "react";
-import { MCScreen } from "./GameEntry";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 

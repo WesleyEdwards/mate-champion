@@ -1,6 +1,6 @@
 import { getLevelItem } from "../constructors";
 import { DrawObjProps } from "../helpers/types";
-import { LevelInfo, StaticObject } from "../models";
+import { FullLevelInfo, StaticObject } from "../models";
 
 export class PlatformManager {
   platforms: StaticObject[] = [];
@@ -9,7 +9,7 @@ export class PlatformManager {
     this.platforms.forEach((p) => p.draw(drawProps));
   }
 
-  reset(info: LevelInfo) {
+  reset(info: FullLevelInfo) {
     this.platforms = getLevelItem("blocks", info);
   }
 }

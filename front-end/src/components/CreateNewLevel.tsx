@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import { ScreenProps } from "./GameEntry";
 import {
   Button,
   Input,
@@ -26,23 +25,20 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
   if (!user) throw new Error("User must be authenticated");
 
   const createLevel = async (name: string) => {
-    const created = await api.level.create({
+    const createdLevel = await api.level.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
       description: null,
       creatorName: user?.name ?? "",
-      endPosition: 4500,
       public: false,
       name: name,
-      opponents: { grog: [] },
-      packages: [],
-      floors: [{ x: -500, width: 7000, color: "green" }],
-      platforms: [],
+      createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
+    const createdMap = await api.level.levelMapDetail(createdLevel._id);
+    const created = { ...createdLevel, ...createdMap };
     setEditingLevel(created);
     setOwnedLevels((prev) => (prev ? [...prev, created] : prev));
-    return created;
   };
 
   return (

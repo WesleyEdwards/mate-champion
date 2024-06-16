@@ -52,7 +52,7 @@ export const createLevel: ReqBuilder =
       endPosition: 4500,
       packages: [],
       opponents: {grog: []},
-      floors: [],
+      floors: [{ x: -500, width: 7000, color: "green" }],
       platforms: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()

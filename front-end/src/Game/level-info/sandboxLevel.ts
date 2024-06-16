@@ -1,7 +1,7 @@
-import { LevelInfo } from "../models";
+import { FullLevelInfo } from "../models";
 import { sandboxOpps } from "./sandboxOpps";
 
-export const sandboxLevel: LevelInfo = {
+export const sandboxLevel: FullLevelInfo = {
   _id: "0ea89995-0720-4ef2-a865-f2d37bbf4698",
   owner: "",
   public: true,
@@ -50,4 +50,5 @@ export const sandboxLevel: LevelInfo = {
     { x: 4500, width: 1000, color: "green" },
   ],
   updatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
 };

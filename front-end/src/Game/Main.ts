@@ -2,12 +2,12 @@ import { GameMode } from "../hooks/useAuth";
 import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
 import { debounceLog } from "./helpers/utils";
-import { LevelInfo, SetUI } from "./models";
+import { FullLevelInfo, SetUI } from "./models";
 
 export function enterGameLoop(params: {
   setUI: SetUI;
-  levels: LevelInfo[];
-  setLevel?: (level: Partial<LevelInfo>) => void;
+  levels: FullLevelInfo[];
+  setLevel?: (level: Partial<FullLevelInfo>) => void;
   gameMode: GameMode;
 }) {
   const { setUI, levels, setLevel, gameMode } = params;

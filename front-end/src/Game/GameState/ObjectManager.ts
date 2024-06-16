@@ -3,7 +3,7 @@ import {
   calcPlatPlayerCollision,
   updateLiveStatus,
 } from "./GameStateFunctions";
-import { Coordinates, Keys, LevelInfo } from "../models";
+import { Coordinates, Keys, FullLevelInfo } from "../models";
 import Player from "../Player/Player";
 import { Pot } from "../Pot";
 import { BulletManager } from "../Bullet/BulletManager";
@@ -22,10 +22,10 @@ export class ObjectManager {
   matePackManager: MatePackageManager = new MatePackageManager();
   platformManager: PlatformManager = new PlatformManager();
   pot: Pot = new Pot();
-  levels: LevelInfo[];
+  levels: FullLevelInfo[];
   gameMode: GameMode;
 
-  constructor(levels: LevelInfo[], gameMode: GameMode) {
+  constructor(levels: FullLevelInfo[], gameMode: GameMode) {
     this.levels = levels;
     this.gameMode = gameMode;
   }

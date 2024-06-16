@@ -1,6 +1,6 @@
 import { localStorageManager } from "../api/localStorageManager";
 import { ItemType } from "./devTools/CreatingThing";
-import { Coordinates, LevelInfo } from "./models";
+import { Coordinates, FullLevelInfo } from "./models";
 
 const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,

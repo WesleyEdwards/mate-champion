@@ -1,4 +1,4 @@
-import { LevelInfo } from "../Game/models";
+import { LevelInfo, LevelMap } from "../Game/models";
 import { User, LoginBody, Condition, Score, TopScore } from "../types";
 import { localStorageManager } from "./localStorageManager";
 
@@ -123,6 +123,12 @@ export class Api {
     },
     generate: (ids: string[]): Promise<LevelInfo[]> => {
       return this.post(`level/generate`, ids);
+    },
+    levelMapDetail: (id: string): Promise<LevelMap> => {
+      return this.get(`level-map/${id}`);
+    },
+    modifyMap: (id: string, mod: Partial<LevelMap>): Promise<LevelMap> => {
+      return this.put(`level-map/${id}`, mod);
     },
   };
 

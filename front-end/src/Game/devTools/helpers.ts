@@ -1,9 +1,9 @@
 import { ObjectManager } from "../GameState/ObjectManager";
-import { Coordinates, HasPosition, LevelInfo } from "../models";
+import { Coordinates, HasPosition, FullLevelInfo } from "../models";
 
 const { round } = Math;
 
-export function exportLevelInfo(objManager: ObjectManager): Partial<LevelInfo> {
+export function exportLevelInfo(objManager: ObjectManager): Partial<FullLevelInfo> {
   return {
     packages: objManager.matePackManager.packages
       .map((p) => ({
