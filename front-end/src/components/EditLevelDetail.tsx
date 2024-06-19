@@ -8,23 +8,25 @@ import {
   Stack,
   Textarea,
 } from "@mui/joy";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
 import { Construction, PlayArrow } from "@mui/icons-material";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
-import { FullLevelInfo } from "../Game/models";
+import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { VisibilityIcon } from "./MyLevels";
 
 export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
-  const { modifyLevel, editingLevel, setGameMode, levelIsDirty } =
+  const { levelCache, editingLevel, setGameMode, levelIsDirty } =
     useLevelContext();
   const { navigateTo } = useNavigator();
   const { setModal } = usePauseModalContext();
+
+  const [dirtyLevel, setDirtyLevel] = useState<Partial<LevelInfo>>({});
 
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
     if (editingLevel === "loading") return;
@@ -40,12 +42,13 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
           modifyStats,
           handleLose: () => {},
           handlePause: (pause: boolean) => {
-            return setModal(pause ? "save" : null);
+            // return setModal(null);
           },
         },
         gameMode: gamePlay,
         levels: editingLevel ? [editingLevel] : [],
-        setLevel: (level: Partial<FullLevelInfo>) => modifyLevel({ mod: level }),
+        setLevel: (level: Partial<FullLevelInfo>) =>
+          levelCache.update.modify(editingLevel!._id, level),
       },
       test: {
         setUI: {
@@ -64,8 +67,21 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
     enterGameLoop(params);
   };
 
+  const modifyLevel = ({ mod }: { mod: Partial<LevelInfo> }) => {
+    if (editingLevel === "loading" || !editingLevel) return;
+    setDirtyLevel((prev) => ({
+      ...prev,
+      ...Object.entries(mod).filter(([k, v]) => {
+        if (v === editingLevel[k]) {
+          return false;
+        }
+        return true;
+      }),
+    }));
+  };
   const saveForm = () => {
-    modifyLevel({ mod: {}, saveToDb: true });
+    if (editingLevel === "loading" || !editingLevel) return;
+    levelCache.update.modify(editingLevel._id, dirtyLevel);
   };
 
   if (editingLevel === "loading") {

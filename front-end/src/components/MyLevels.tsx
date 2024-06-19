@@ -5,10 +5,17 @@ import { useLevelContext } from "../hooks/useLevels";
 import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 import { GridComponent } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
+import { LevelInfo } from "../Game/models";
 
 export const MyLevels: FC<ScreenProps> = () => {
-  const { setEditingLevel, ownedLevels } = useLevelContext();
+  const { setEditingLevel, levelCache } = useLevelContext();
   const { navigateTo } = useNavigator();
+
+  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>();
+
+  useEffect(() => {
+    levelCache.read.owned().then(setOwnedLevels);
+  }, []);
 
   return (
     <GridComponent

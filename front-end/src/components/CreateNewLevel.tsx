@@ -14,8 +14,8 @@ import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 
 export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
-  const { user, api } = useAuthContext();
-  const { setEditingLevel, setOwnedLevels } = useLevelContext();
+  const { user } = useAuthContext();
+  const { setEditingLevel, levelCache } = useLevelContext();
   const { navigateTo } = useNavigator();
 
   const [creating, setCreating] = useState(false);
@@ -25,7 +25,7 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
   if (!user) throw new Error("User must be authenticated");
 
   const createLevel = async (name: string) => {
-    const createdLevel = await api.level.create({
+    const createdLevel = await levelCache.update.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
       description: null,
@@ -35,10 +35,7 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
-    const createdMap = await api.level.levelMapDetail(createdLevel._id);
-    const created = { ...createdLevel, ...createdMap };
-    setEditingLevel(created);
-    setOwnedLevels((prev) => (prev ? [...prev, created] : prev));
+    setEditingLevel(createdLevel._id);
   };
 
   return (

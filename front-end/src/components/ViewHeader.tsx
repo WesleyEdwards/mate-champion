@@ -60,7 +60,7 @@ export const ViewHeaderMainScreen: FC<{ title: string }> = ({ title }) => {
 export const EditLevelDetailHeader: FC = () => {
   const { goBack } = useNavigator();
   const [editingName, setEditingName] = useState<string>();
-  const { modifyLevel, editingLevel, setEditingLevel } = useLevelContext();
+  const { levelCache, editingLevel, setEditingLevel } = useLevelContext();
 
   if (editingLevel === "loading" || editingLevel === null) {
     return <Skeleton height="40px" variant="rectangular" />;
@@ -118,7 +118,9 @@ export const EditLevelDetailHeader: FC = () => {
           <Tooltip title="Save">
             <IconButton
               onClick={() => {
-                modifyLevel({ mod: { name: editingName }, saveToDb: true });
+                levelCache.update.modify(editingLevel._id, {
+                  name: editingName,
+                });
                 setEditingName(undefined);
               }}
             >
@@ -154,12 +156,12 @@ export const PlayingHeader: FC = () => {
     >
       <IconButton
         onClick={() => {
-          if (levelIsDirty) {
-            setModal("save");
-          } else {
-            setGameMode("idle");
-            goBack();
-          }
+          // if (levelIsDirty) {
+          //   setModal("save");
+          // } else {
+          setGameMode("idle");
+          goBack();
+          // }
         }}
       >
         <ArrowBack />

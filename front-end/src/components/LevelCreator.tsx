@@ -16,7 +16,7 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 
 export const LevelCreator: FC = () => {
-  const { gameMode, editingLevel, modifyLevel } = useLevelContext();
+  const { gameMode, editingLevel, levelCache } = useLevelContext();
 
   const { setModal } = usePauseModalContext();
   const [state, setState] = useState({ ...window.window.mateSettings });
@@ -28,7 +28,7 @@ export const LevelCreator: FC = () => {
 
   return (
     <Stack m={2} gap={4} justifyContent="flex-start" height="748px">
-      {gameMode === "edit" && editingLevel && (
+      {/* {gameMode === "edit" && editingLevel && (
         <Button
           loading={saving}
           sx={{
@@ -37,12 +37,12 @@ export const LevelCreator: FC = () => {
           }}
           onClick={() => {
             setSaving(true);
-            modifyLevel({ saveToDb: true }).then(() => setSaving(false));
+            levelCache({ saveToDb: true }).then(() => setSaving(false));
           }}
         >
           Save
         </Button>
-      )}
+      )} */}
 
       <AccordionGroup>
         <Accordion>

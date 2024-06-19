@@ -4,6 +4,7 @@ import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
 import { User } from "../types";
 import { getLevelDiff, isLevelDirty } from "../helpers";
+import { LevelCache, useLevelCache } from "./levelCache";
 
 export const useLevels: (params: {
   api: Api | undefined;
@@ -14,108 +15,20 @@ export const useLevels: (params: {
   >(null);
 
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
-  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[]>();
+  const levelCache = useLevelCache(api!, user!);
 
-  const updateLevelInOwned = (level: FullLevelInfo) => {
-    setOwnedLevels((prev) => {
-      if (!prev) return prev;
-      const index = prev.findIndex((l) => l._id === level._id);
-      if (index === -1) return prev;
-      const copy = [...prev];
-      copy[index] = level;
-      return copy;
-    });
-  };
-
-  const saveLevelToDb = async (
-    newLevel: FullLevelInfo
-  ): Promise<FullLevelInfo> => {
-    if (!level || !api) {
-      return Promise.reject("Not working on a level");
-    }
-
-    if (!isLevelDirty(level.original, newLevel)) {
-      return Promise.resolve(newLevel);
-    }
-
-    const originalLevel = { ...level.original };
-    setLevel({ original: newLevel, dirty: newLevel });
-    const diff = getLevelDiff(originalLevel, newLevel);
-
-    if (Object.keys(diff.details).length > 0) {
-      await api.level.modify(newLevel._id, diff.details);
-    }
-    if (Object.keys(diff.map).length > 0) {
-      await api.level.modifyMap(newLevel._id, diff.map);
-    }
-    updateLevelInOwned(newLevel);
-    return newLevel;
-  };
-
-  const modifyLevel: LevelsContextType["modifyLevel"] = ({
-    mod = {},
-    saveToDb = false,
-    discardChanges = false,
-  }) => {
-    if (!level) return Promise.reject("Not working on a level");
-
-    if (saveToDb) {
-      return saveLevelToDb({ ...level.dirty, ...mod });
-    }
-    if (discardChanges) {
-      const originalLevel = { ...level.original };
-      setLevel({ original: originalLevel, dirty: originalLevel });
-      return Promise.resolve();
-    }
-    setLevel((prev) => (prev ? { ...prev, ...level } : null));
-    return Promise.resolve();
-  };
-
-  const handleSetEditing: LevelsContextType["setEditingLevel"] = async (
-    level
-  ) => {
-    if (!api) return Promise.reject();
-
-    const levelSetter = (level: FullLevelInfo) => {
-      setLevel({
-        original: level,
-        dirty: level,
-      });
-    };
-    setLevel(undefined);
-
+  const handleSetEditing: LevelsContextType["setEditingLevel"] = (level) => {
     if (level === null) {
       setLevel(null);
       return Promise.resolve();
     }
-    if (typeof level !== "string") {
-      setLevel({ original: level, dirty: level });
-      return Promise.resolve();
-    }
-    const details = await api.level.detail(level);
-    const map = await api.level.levelMapDetail(level);
-    levelSetter({ ...details, ...map });
-  };
 
-  const fetchOwnLevels = () => {
-    if (!user || user?.userType === "User" || !api) {
-      return;
-    }
-    setOwnedLevels(undefined);
-    return api.level.query({ owner: user?._id ?? "" }).then(setOwnedLevels);
-  };
-
-  const deleteLevel = (level: string) => {
-    if (!api) return Promise.reject();
-    return api.level.delete(level).then(() => {
-      setOwnedLevels((prev) => prev?.filter((l) => l._id !== level));
-      setLevel(null);
+    setLevel(undefined);
+    console.log("levelhandleSetEdinting", level);
+    return levelCache.read.getFull(level).then((levelFull) => {
+      setLevel({ original: levelFull, dirty: levelFull });
     });
   };
-
-  useEffect(() => {
-    fetchOwnLevels();
-  }, [user]);
 
   const levelIsDirty = useMemo(() => {
     if (!level) return false;
@@ -131,31 +44,21 @@ export const useLevels: (params: {
   };
 
   return {
-    modifyLevel,
-    setEditingLevel: handleSetEditing,
     editingLevel: level === undefined ? "loading" : level?.dirty ?? null,
     gameMode: currGameMode,
     setGameMode,
-    ownedLevels,
-    setOwnedLevels,
-    deleteLevel,
+    setEditingLevel: handleSetEditing,
+    levelCache,
     levelIsDirty,
-  };
+  } satisfies LevelsContextType;
 };
 
 export type LevelsContextType = {
-  modifyLevel: (params: {
-    mod?: Partial<FullLevelInfo>;
-    saveToDb?: boolean;
-    discardChanges?: boolean;
-  }) => Promise<unknown>;
-  setEditingLevel: (editing: FullLevelInfo | string | null) => void;
+  setEditingLevel: (editing: string | null) => void;
   editingLevel: FullLevelInfo | "loading" | null;
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
-  ownedLevels: LevelInfo[] | undefined;
-  setOwnedLevels: React.Dispatch<React.SetStateAction<LevelInfo[] | undefined>>;
-  deleteLevel: (level: string) => Promise<unknown>;
+  levelCache: LevelCache;
   levelIsDirty: boolean;
 };
 

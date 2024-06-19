@@ -21,7 +21,7 @@ type PauseModalContextType = {
 const PauseModalContext = createContext({} as PauseModalContextType);
 
 export const PauseModalProvider = (props: { children: React.ReactNode }) => {
-  const { setGameMode, modifyLevel } = useLevelContext();
+  const { setGameMode } = useLevelContext();
   const { navigateTo, goBack } = useNavigator();
   const [open, setOpen] = useState<ModalOption | null>(null);
 
@@ -29,11 +29,11 @@ export const PauseModalProvider = (props: { children: React.ReactNode }) => {
     setOpen(modal);
   };
 
-  const exit = () => {
-    setGameMode("idle");
-    goBack();
-    setOpen(null);
-  };
+  // const exit = () => {
+  //   setGameMode("idle");
+  //   goBack();
+  //   setOpen(null);
+  // };
 
   return (
     <PauseModalContext.Provider value={{ setModal: handleSetModal }}>
@@ -55,7 +55,7 @@ export const PauseModalProvider = (props: { children: React.ReactNode }) => {
         </ModalDialog>
       </Modal>
 
-      <Modal open={open === "save"} onClose={() => {}}>
+      {/* <Modal open={open === "save"} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Save</DialogTitle>
           <DialogContent>
@@ -81,7 +81,7 @@ export const PauseModalProvider = (props: { children: React.ReactNode }) => {
             </Button>
           </Stack>
         </ModalDialog>
-      </Modal>
+      </Modal> */}
 
       <Modal
         open={open === "help"}

@@ -10,18 +10,16 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Button,
   Card,
   CircularProgress,
 } from "@mui/joy";
 import { contentCreatorModifyObject } from "../devSettings";
-import { ItemType } from "./CreatingThing";
 import { useEffect, useState } from "react";
 import { Check, Edit, Undo } from "@mui/icons-material";
 import { useLevelContext } from "../../hooks/useLevels";
 
 export const CourseBuilderSettings = () => {
-  const { editingLevel, modifyLevel } = useLevelContext();
+  const { editingLevel, levelCache } = useLevelContext();
   const [editingItemType, setEditingItemType] = useState(window.selectedItem);
   const [editingLength, setEditingLength] = useState<number>();
   const [editingOpponentSpeed, setEditingOpponentSpeed] = useState<number>();
@@ -148,9 +146,8 @@ export const CourseBuilderSettings = () => {
               <Tooltip title="Save">
                 <IconButton
                   onClick={() => {
-                    modifyLevel({
-                      mod: { endPosition: editingLength },
-                      saveToDb: true,
+                    levelCache.update.modify(editingLevel!._id, {
+                      endPosition: editingLength,
                     });
                     setEditingLength(undefined);
                   }}
@@ -230,15 +227,13 @@ export const CourseBuilderSettings = () => {
                   editingOpponentSpeed > 100 || editingOpponentSpeed < 0
                 }
                 onClick={() => {
-                  modifyLevel({
-                    mod: {
-                      opponents: {
-                        grog:
-                          editingLevel?.opponents.grog.map((g) => ({
-                            ...g,
-                            moveSpeed: editingOpponentSpeed / 100,
-                          })) ?? [],
-                      },
+                  levelCache.update.modify(editingLevel!._id, {
+                    opponents: {
+                      grog:
+                        editingLevel?.opponents.grog.map((g) => ({
+                          ...g,
+                          moveSpeed: editingOpponentSpeed / 100,
+                        })) ?? [],
                     },
                   });
                   setEditingOpponentSpeed(undefined);

@@ -18,7 +18,7 @@ export const DeleteLevel: FC<{
   showWordDelete?: boolean;
 }> = ({ name, id, showWordDelete }) => {
   const [deleting, setDeleting] = useState(false);
-  const { deleteLevel } = useLevelContext();
+  const { levelCache, setEditingLevel } = useLevelContext();
   return (
     <>
       {showWordDelete ? (
@@ -52,11 +52,12 @@ export const DeleteLevel: FC<{
               endDecorator={<Delete />}
               color="danger"
               sx={{ alignSelf: "flex-end" }}
-              onClick={() =>
-                deleteLevel(id ?? "").then(() => {
+              onClick={() => {
+                levelCache.update.delete(id ?? "").then(() => {
                   setDeleting(false);
-                })
-              }
+                });
+                setEditingLevel(null);
+              }}
             >
               Delete
             </Button>

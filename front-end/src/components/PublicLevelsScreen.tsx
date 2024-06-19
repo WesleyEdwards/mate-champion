@@ -19,15 +19,15 @@ import { useNavigator } from "../hooks/UseNavigator";
 import { useAuthContext } from "../hooks/useAuth";
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
-  const { api } = useAuthContext();
-  const { setGameMode } = useLevelContext();
+  const { setGameMode, levelCache } = useLevelContext();
   const { setModal } = usePauseModalContext();
   const { navigateTo } = useNavigator();
   const [levels, setLevels] = useState<LevelInfo[]>();
 
   const handleEnterGamePlay = async (levelId: string) => {
-    const details = await api.level.detail(levelId);
-    const map = await api.level.levelMapDetail(levelId);
+    console.log("levelId", levelId)
+    const fullLevel = await levelCache.read.getFull(levelId);
+
     navigateTo("game");
     modifyStats({ ...emptyStats });
 
@@ -42,14 +42,14 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
         },
       },
       gameMode: "test",
-      levels: [{ ...details, ...map }],
+      levels: [fullLevel],
       setLevel: () => {},
     });
   };
 
   useEffect(() => {
     setLevels(undefined);
-    api.level.query({ public: true }).then(setLevels);
+    levelCache.read.public().then(setLevels);
   }, []);
 
   return (

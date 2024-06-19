@@ -39,5 +39,24 @@ export const isLevelDirty = (
   original: FullLevelInfo,
   override: FullLevelInfo
 ) => {
-  return Object.keys(getLevelDiff(original, override)).length > 0;
+  const diff = getLevelDiff(original, override);
+  return (
+    Object.keys(diff.details).length > 0 || Object.keys(diff.map).length > 0
+  );
+};
+
+export const getDetailsAndMap = (
+  level: FullLevelInfo
+): { details: LevelInfo; map: LevelMap } => {
+  return Object.entries(level).reduce(
+    (acc, [k, v]) => {
+      if (isKeyofLevelInfo(k)) {
+        (acc.details as any)[k] = v;
+      } else {
+        (acc.map as any)[k] = v;
+      }
+      return acc;
+    },
+    { details: {} as LevelInfo, map: {} as LevelMap }
+  );
 };
