@@ -36,9 +36,13 @@ export const modifyLevelMap: ReqBuilder =
       level: params.id,
       updatedAt: new Date().toISOString()
     })
-    if (isParseError(levelMapPartial)) return res.status(400).json(levelMapPartial)
+    if (isParseError(levelMapPartial))
+      return res.status(400).json(levelMapPartial)
 
-    const updatedLevel = await client.level.updateOne(params.id, levelMapPartial)
+    const updatedLevel = await client.levelMap.updateOne(
+      params.id,
+      levelMapPartial
+    )
 
     return res.json(updatedLevel)
   }

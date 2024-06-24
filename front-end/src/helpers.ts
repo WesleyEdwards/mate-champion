@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { FullLevelInfo, LevelInfo, LevelMap } from "./Game/models";
 
 export function camelCaseToTitleCase(str: string) {
@@ -38,12 +39,7 @@ export const getLevelDiff = (
 export const isLevelDirty = (
   original: FullLevelInfo,
   override: FullLevelInfo
-) => {
-  const diff = getLevelDiff(original, override);
-  return (
-    Object.keys(diff.details).length > 0 || Object.keys(diff.map).length > 0
-  );
-};
+) => !_.isEqual(original, override);
 
 export const getDetailsAndMap = (
   level: FullLevelInfo

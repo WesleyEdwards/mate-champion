@@ -4,7 +4,7 @@ type MigrationFun = (db: Db) => Promise<unknown>
 
 export async function runMigrations(db: Db): Promise<unknown> {
   await migrationFun("addLevelMap", db, migrationAddLevelMap)
-  await migrationFun("levelInfoFields", db, migrationLevelInfoFields)
+  await migrationFun("levelInfoFields2", db, migrationLevelInfoFields)
   return true
 }
 

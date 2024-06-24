@@ -22,10 +22,6 @@ export type Settings = {
 };
 
 export const devSettings = (() => {
-  console.log({
-    modifyingItem: window.selectedItem,
-    mateSettings: window.mateSettings,
-  });
   return {
     modifyingItem: window.selectedItem,
     mateSettings: window.mateSettings,

@@ -13,20 +13,25 @@ import {
   Card,
   CircularProgress,
 } from "@mui/joy";
-import { contentCreatorModifyObject } from "../devSettings";
+import { contentCreatorModifyObject, devSettings } from "../devSettings";
 import { useEffect, useState } from "react";
 import { Check, Edit, Undo } from "@mui/icons-material";
 import { useLevelContext } from "../../hooks/useLevels";
+import { ItemType } from "./CreatingThing";
+import grogImg from "../../assets/grog/enemy_walking_single.png";
+import packageImg from "../../assets/mate-package.png";
 
 export const CourseBuilderSettings = () => {
   const { editingLevel, levelCache } = useLevelContext();
-  const [editingItemType, setEditingItemType] = useState(window.selectedItem);
+  const [editingItemType, setEditingItemType] = useState<ItemType>(
+    devSettings.modifyingItem
+  );
   const [editingLength, setEditingLength] = useState<number>();
   const [editingOpponentSpeed, setEditingOpponentSpeed] = useState<number>();
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setEditingItemType(window.selectedItem);
+      setEditingItemType(devSettings.modifyingItem);
     }, 300);
     return () => clearInterval(interval);
   });
@@ -35,66 +40,98 @@ export const CourseBuilderSettings = () => {
     return <CircularProgress />;
   }
 
+  const imgHeight = "30px";
+
   return (
     <Stack gap="1rem">
       <AccordionGroup>
         <Accordion>
           <AccordionSummary>Modifying</AccordionSummary>
-          <AccordionDetails>
-            <Card
-              variant="plain"
-              sx={{
-                cursor: "pointer",
-                "&:hover": {
-                  opacity: 0.8,
-                },
-              }}
-              onClick={() => contentCreatorModifyObject("platform")}
-            >
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography>Platform</Typography>
-                <div
-                  style={{
-                    width: "20px",
-                    height: "10px",
-                    backgroundColor: "green",
-                    borderColor: "black",
-                    borderWidth: "1px",
+          {(
+            [
+              {
+                name: "Platform",
+                obj: "platform",
+                disp: () => (
+                  <div
+                    style={{
+                      width: "20px",
+                      height: "10px",
+                      backgroundColor: "springgreen",
+                      borderColor: "black",
+                      borderWidth: "1px",
+                    }}
+                  ></div>
+                ),
+              },
+              {
+                name: "Floor",
+                obj: "floor",
+                disp: () => (
+                  <div
+                    style={{
+                      width: "20px",
+                      height: "10px",
+                      backgroundColor: "green",
+                      borderColor: "black",
+                      borderWidth: "1px",
+                    }}
+                  ></div>
+                ),
+              },
+              {
+                name: "Grog",
+                obj: "grog",
+                disp: () => (
+                  <img
+                    style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
+                    src={grogImg}
+                  />
+                ),
+              },
+              {
+                name: "Package",
+                obj: "package",
+                disp: () => (
+                  <img
+                    style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
+                    src={packageImg}
+                  />
+                ),
+              },
+            ] satisfies {
+              name: string;
+              obj: ItemType;
+              disp: () => JSX.Element;
+            }[]
+          ).map(({ name, obj, disp }) => {
+            return (
+              <AccordionDetails key={name}>
+                <Card
+                  variant="plain"
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": {
+                      opacity: 0.8,
+                    },
                   }}
-                ></div>
-              </Stack>
-            </Card>
-          </AccordionDetails>
-          {/* <AccordionDetails>
-            <Button onClick={}>Platform</Button>
-          </AccordionDetails>
-          <AccordionDetails>
-            <Button onClick={}>Floor</Button>
-          </AccordionDetails>
-          <AccordionDetails>
-            <Button onClick={}>Grog</Button>
-          </AccordionDetails>
-          <AccordionDetails>
-            <Button onClick={}>Package</Button>
-          </AccordionDetails> */}
+                  onClick={() => contentCreatorModifyObject(obj)}
+                >
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    height="30px"
+                  >
+                    <Typography>{name}</Typography>
+                    {disp()}
+                  </Stack>
+                </Card>
+              </AccordionDetails>
+            );
+          })}
         </Accordion>
       </AccordionGroup>
-      {/* <Select
-        sx={{ minWidth: "10rem" }}
-        value={setEditingItemType}
-        onChange={(_, value) => {
-          contentCreatorModifyObject(value as ItemType);
-        }}
-      >
-        <Option value="platform">Platform</Option>
-        <Option value="floor">Floor</Option>
-        <Option value="grog">Grog</Option>
-        <Option value="package">Package</Option>
-      </Select> */}
       <Stack
         direction="row"
         alignItems="center"
