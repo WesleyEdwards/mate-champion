@@ -136,7 +136,7 @@ export const EditLevelDetailHeader: FC = () => {
 };
 
 export const PlayingHeader: FC = () => {
-  const { editingLevel, gameMode, setGameMode, levelIsDirty } =
+  const { editingLevel, gameMode, setGameMode } =
     useLevelContext();
   const { setModal } = usePauseModalContext();
   const { goBack } = useNavigator();

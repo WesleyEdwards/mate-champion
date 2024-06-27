@@ -1,8 +1,6 @@
 import { GameMode } from "../../hooks/useAuth";
 import { PlayerVectorManager } from "../Player/PlayerVectorManager";
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH, cameraConst } from "../constants";
-import { devSettings } from "../devSettings";
-import { debounceLog } from "../helpers/utils";
 import { Coordinates } from "../models";
 
 export class CameraDisplay {

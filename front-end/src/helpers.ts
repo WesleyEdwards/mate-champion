@@ -8,7 +8,9 @@ export function camelCaseToTitleCase(str: string) {
 }
 
 function isKeyofLevelInfo(key: string): key is keyof LevelInfo {
-  return key in ["description", "owner", "public", "creatorName", "name"];
+  return ["description", "owner", "public", "creatorName", "name"].includes(
+    key
+  );
 }
 
 const doNotUpdateKeys = ["_id", "createdAt", "updatedAt"];
@@ -23,7 +25,7 @@ export const getLevelDiff = (
         return acc;
       }
       // @ts-ignore
-      if (JSON.stringify(original[k as any]) !== JSON.stringify(v)) {
+      if (objectsAreDifferent(original[k], v)) {
         if (isKeyofLevelInfo(k)) {
           (acc.details as any)[k] = v;
         } else {
@@ -36,10 +38,9 @@ export const getLevelDiff = (
   );
 };
 
-export const isLevelDirty = (
-  original: FullLevelInfo,
-  override: FullLevelInfo
-) => !_.isEqual(original, override);
+export const objectsAreDifferent = <T>(a: T, b: T) => {
+  return !_.isEqual(a, b);
+};
 
 export const getDetailsAndMap = (
   level: FullLevelInfo

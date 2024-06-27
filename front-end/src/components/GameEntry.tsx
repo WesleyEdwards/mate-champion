@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/joy";
+import { Stack } from "@mui/joy";
 import { FC, useMemo, useState } from "react";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
@@ -10,9 +10,7 @@ import { Profile } from "./Profile";
 import { Login } from "./Login";
 import { CreateAccount } from "./CreateAccount";
 import { PersonalHighScore } from "./PersonalHighScore";
-import { MyLevels } from "./MyLevels";
 import { EditLevelDetail } from "./EditLevelDetail";
-import { PublicLevelsScreen } from "./PublicLevelsScreen";
 import { HomeScreen } from "./HomeScreen";
 import {
   EditLevelDetailHeader,
@@ -63,10 +61,7 @@ export const GameEntry: FC = () => {
   return (
     <>
       {ScreenViewHeader}
-      <Stack
-        mb={2}
-        sx={{ width: "100%" }}
-      >
+      <Stack mb={2} sx={{ width: "100%" }}>
         <RenderScreen score={stats.score} modifyStats={modifyStats} />
       </Stack>
 

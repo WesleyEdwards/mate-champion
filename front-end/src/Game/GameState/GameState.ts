@@ -4,11 +4,9 @@ import { GameStatsManager } from "./GameStatsManager";
 import { GameDrawer } from "./GameDrawer";
 import { Canvas, WinState } from "../helpers/types";
 import { addEventListeners } from "../helpers/eventListeners";
-import { devSettings } from "../devSettings";
 import { DevContentCreate } from "../devTools/DevContentCreate";
 import { CameraDisplay } from "./CameraDisplay";
 import { GameMode } from "../../hooks/useAuth";
-import { debounceLog } from "../helpers/utils";
 
 export class GameState {
   currStateOfGame: WinState = "initial";
@@ -32,7 +30,6 @@ export class GameState {
     setLevel?: (level: Partial<FullLevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
-      console.log("togglePause");
       const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
       this.setUI.handlePause(newState === "pause");
       this.currStateOfGame = newState;

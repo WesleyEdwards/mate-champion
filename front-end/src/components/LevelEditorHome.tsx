@@ -70,11 +70,11 @@ export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
     }}
   >
     {(items === "loading"
-      ? new Array(12).fill(
+      ? new Array(15).fill(
           <Skeleton
             sx={{ minWidth: "10rem", width: "100%" }}
             variant="rectangular"
-            height="50px"
+            height="80px"
           />
         )
       : items

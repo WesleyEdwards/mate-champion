@@ -1,5 +1,3 @@
-import { devSettings } from "./devSettings";
-
 export const MAX_CANVAS_HEIGHT = 576;
 export const MAX_CANVAS_WIDTH = MAX_CANVAS_HEIGHT * 1.78;
 

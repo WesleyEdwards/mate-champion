@@ -1,7 +1,6 @@
 import { Bullet } from "./Bullet";
 import { bulletConst } from "../constants";
 import { DrawObjProps } from "../helpers/types";
-import { devSettings } from "../devSettings";
 
 import bulletSprite from "../../assets/mate_bullet.png";
 

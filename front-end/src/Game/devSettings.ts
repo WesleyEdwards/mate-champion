@@ -21,12 +21,12 @@ export type Settings = {
   invincibility: boolean;
 };
 
-export const devSettings = (() => {
+export const devSettings = () => {
   return {
     modifyingItem: window.selectedItem,
     mateSettings: window.mateSettings,
   };
-})();
+};
 
 export const modifyDevSettings = (setting: keyof Settings, value: boolean) => {
   window.mateSettings[setting] = value;

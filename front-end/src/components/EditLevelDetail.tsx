@@ -8,7 +8,7 @@ import {
   Stack,
   Textarea,
 } from "@mui/joy";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
@@ -19,14 +19,17 @@ import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { VisibilityIcon } from "./MyLevels";
+import { objectsAreDifferent } from "../helpers";
 
 export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
-  const { levelCache, editingLevel, setGameMode, levelIsDirty } =
-    useLevelContext();
+  const { levelCache, editingLevel, setGameMode } = useLevelContext();
   const { navigateTo } = useNavigator();
   const { setModal } = usePauseModalContext();
 
-  const [dirtyLevel, setDirtyLevel] = useState<Partial<LevelInfo>>({});
+  const [levelForm, setLevelForm] = useState<{
+    public: boolean;
+    description: string;
+  }>({ public: true, description: "" });
 
   const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
     if (editingLevel === "loading") return;
@@ -42,7 +45,7 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
           modifyStats,
           handleLose: () => {},
           handlePause: (pause: boolean) => {
-            // return setModal(null);
+            return setModal(pause ? "pause" : null);
           },
         },
         gameMode: gamePlay,
@@ -67,22 +70,14 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
     enterGameLoop(params);
   };
 
-  const modifyLevel = ({ mod }: { mod: Partial<LevelInfo> }) => {
-    if (editingLevel === "loading" || !editingLevel) return;
-    setDirtyLevel((prev) => ({
-      ...prev,
-      ...Object.entries(mod).filter(([k, v]) => {
-        if (v === editingLevel[k]) {
-          return false;
-        }
-        return true;
-      }),
-    }));
-  };
-  const saveForm = () => {
-    if (editingLevel === "loading" || !editingLevel) return;
-    levelCache.update.modify(editingLevel._id, dirtyLevel);
-  };
+  useEffect(() => {
+    if (editingLevel && editingLevel !== "loading") {
+      setLevelForm({
+        public: editingLevel.public,
+        description: editingLevel.description ?? "",
+      });
+    }
+  }, [editingLevel]);
 
   if (editingLevel === "loading") {
     return (
@@ -107,13 +102,11 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
   return (
     <Stack gap="2rem" width="100%" flexGrow={1}>
       <Textarea
-        value={editingLevel.description ?? ""}
+        value={levelForm.description ?? ""}
         placeholder="Description"
         minRows={2}
         onChange={(e) => {
-          modifyLevel({
-            mod: { description: e.target.value },
-          });
+          setLevelForm((prev) => ({ ...prev, description: e.target.value }));
         }}
         sx={{ flexGrow: 1 }}
       />
@@ -141,16 +134,14 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
       <FormControl>
         <Checkbox
           label="Public"
-          checked={editingLevel.public}
+          checked={levelForm.public}
           onChange={(e) => {
-            modifyLevel({
-              mod: { public: e.target.checked },
-            });
+            setLevelForm((prev) => ({ ...prev, public: e.target.checked }));
           }}
         />
         <FormHelperText>
-          <VisibilityIcon publicLevel={editingLevel.public} />
-          {editingLevel.public
+          <VisibilityIcon publicLevel={levelForm.public} />
+          {levelForm.public
             ? "Anyone can see this level"
             : "Only you can see this level"}
         </FormHelperText>
@@ -158,8 +149,13 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
 
       <Button
         sx={{ alignSelf: "flex-end" }}
-        onClick={saveForm}
-        disabled={!levelIsDirty}
+        onClick={() => {
+          levelCache.update.modify(editingLevel._id, levelForm);
+        }}
+        disabled={
+          levelForm.description === (editingLevel.description ?? "") &&
+          levelForm.public === editingLevel.public
+        }
       >
         Save
       </Button>

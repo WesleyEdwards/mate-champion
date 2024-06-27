@@ -1,6 +1,4 @@
 import {
-  Select,
-  Option,
   Stack,
   Tooltip,
   IconButton,
@@ -20,21 +18,31 @@ import { useLevelContext } from "../../hooks/useLevels";
 import { ItemType } from "./CreatingThing";
 import grogImg from "../../assets/grog/enemy_walking_single.png";
 import packageImg from "../../assets/mate-package.png";
+import { camelCaseToTitleCase } from "../../helpers";
 
 export const CourseBuilderSettings = () => {
   const { editingLevel, levelCache } = useLevelContext();
-  const [editingItemType, setEditingItemType] = useState<ItemType>(
-    devSettings.modifyingItem
-  );
+  const [editingItemType, setEditingItemType] = useState<ItemType>();
   const [editingLength, setEditingLength] = useState<number>();
   const [editingOpponentSpeed, setEditingOpponentSpeed] = useState<number>();
 
+  const updateEditing = () => {
+    if (editingItemType !== devSettings().modifyingItem) {
+      setEditingItemType(devSettings().modifyingItem);
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setEditingItemType(devSettings.modifyingItem);
+      updateEditing();
     }, 300);
     return () => clearInterval(interval);
   });
+
+  const handleSetEditingItem = (item: ItemType) => {
+    contentCreatorModifyObject(item);
+    setEditingItemType(item);
+  };
 
   if (editingLevel === "loading" || editingLevel === undefined) {
     return <CircularProgress />;
@@ -50,9 +58,8 @@ export const CourseBuilderSettings = () => {
           {(
             [
               {
-                name: "Platform",
                 obj: "platform",
-                disp: () => (
+                display: (
                   <div
                     style={{
                       width: "20px",
@@ -65,9 +72,8 @@ export const CourseBuilderSettings = () => {
                 ),
               },
               {
-                name: "Floor",
                 obj: "floor",
-                disp: () => (
+                display: (
                   <div
                     style={{
                       width: "20px",
@@ -80,9 +86,8 @@ export const CourseBuilderSettings = () => {
                 ),
               },
               {
-                name: "Grog",
                 obj: "grog",
-                disp: () => (
+                display: (
                   <img
                     style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
                     src={grogImg}
@@ -90,9 +95,8 @@ export const CourseBuilderSettings = () => {
                 ),
               },
               {
-                name: "Package",
                 obj: "package",
-                disp: () => (
+                display: (
                   <img
                     style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
                     src={packageImg}
@@ -100,36 +104,33 @@ export const CourseBuilderSettings = () => {
                 ),
               },
             ] satisfies {
-              name: string;
               obj: ItemType;
-              disp: () => JSX.Element;
+              display: JSX.Element;
             }[]
-          ).map(({ name, obj, disp }) => {
-            return (
-              <AccordionDetails key={name}>
-                <Card
-                  variant="plain"
-                  sx={{
-                    cursor: "pointer",
-                    "&:hover": {
-                      opacity: 0.8,
-                    },
-                  }}
-                  onClick={() => contentCreatorModifyObject(obj)}
+          ).map(({ obj, display }) => (
+            <AccordionDetails key={obj}>
+              <Card
+                variant={editingItemType === obj ? "solid" : "plain"}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    opacity: 0.8,
+                  },
+                }}
+                onClick={() => handleSetEditingItem(obj)}
+              >
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  height="30px"
                 >
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    height="30px"
-                  >
-                    <Typography>{name}</Typography>
-                    {disp()}
-                  </Stack>
-                </Card>
-              </AccordionDetails>
-            );
-          })}
+                  <Typography>{camelCaseToTitleCase(obj)}</Typography>
+                  {display}
+                </Stack>
+              </Card>
+            </AccordionDetails>
+          ))}
         </Accordion>
       </AccordionGroup>
       <Stack

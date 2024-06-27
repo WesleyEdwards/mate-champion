@@ -1,7 +1,6 @@
 import { GameMode } from "../hooks/useAuth";
 import { displayCanvas, getCanvasContext } from "./Drawing/uiHelpers";
 import { GameState } from "./GameState/GameState";
-import { debounceLog } from "./helpers/utils";
 import { FullLevelInfo, SetUI } from "./models";
 
 export function enterGameLoop(params: {

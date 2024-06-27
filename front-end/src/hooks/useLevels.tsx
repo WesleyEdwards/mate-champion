@@ -3,38 +3,27 @@ import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
 import { User } from "../types";
-import { getLevelDiff, isLevelDirty } from "../helpers";
+import { getLevelDiff, objectsAreDifferent } from "../helpers";
 import { LevelCache, useLevelCache } from "./levelCache";
 
 export const useLevels: (params: {
   api: Api | undefined;
   user: User | undefined;
 }) => LevelsContextType = ({ api, user }) => {
-  const [level, setLevel] = useState<
-    { original: FullLevelInfo; dirty: FullLevelInfo } | null | undefined
-  >(null);
+  const [level, setLevel] = useState<FullLevelInfo | null | "loading">(null);
 
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
   const levelCache = useLevelCache(api!, user!);
 
-  const handleSetEditing: LevelsContextType["setEditingLevel"] = (level) => {
-    if (level === null) {
+  const handleSetEditing: LevelsContextType["setEditingLevel"] = (newLevel) => {
+    if (newLevel === null) {
       setLevel(null);
       return Promise.resolve();
     }
 
-    setLevel(undefined);
-    console.log("levelhandleSetEdinting", level);
-    return levelCache.read.getFull(level).then((levelFull) => {
-      setLevel({ original: levelFull, dirty: levelFull });
-    });
+    setLevel("loading");
+    levelCache.read.getFull(newLevel).then(setLevel);
   };
-
-  const levelIsDirty = useMemo(() => {
-    if (!level) return false;
-
-    return Object.keys(getLevelDiff(level.original, level.dirty)).length > 0;
-  }, [level?.dirty]);
 
   const setGameMode = (mode: GameMode) => {
     if (mode === "idle") {
@@ -43,13 +32,27 @@ export const useLevels: (params: {
     setCurrGameMode(mode);
   };
 
+  const updateLevel = async () => {
+    if (!level || level === "loading") return;
+    const curr = await levelCache.read.getFull(level._id);
+    if (currGameMode === "idle" && objectsAreDifferent(curr, level)) {
+      setLevel(curr);
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateLevel();
+    }, 300);
+    return () => clearInterval(interval);
+  });
+
   return {
-    editingLevel: level === undefined ? "loading" : level?.dirty ?? null,
+    editingLevel: level,
     gameMode: currGameMode,
     setGameMode,
     setEditingLevel: handleSetEditing,
     levelCache,
-    levelIsDirty,
   } satisfies LevelsContextType;
 };
 
@@ -59,7 +62,6 @@ export type LevelsContextType = {
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
   levelCache: LevelCache;
-  levelIsDirty: boolean;
 };
 
 export const LevelsContext = createContext({} as LevelsContextType);

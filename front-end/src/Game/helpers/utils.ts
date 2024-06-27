@@ -1,6 +1,3 @@
-import { devSettings } from "../devSettings";
-import { VagueFacing } from "../models";
-
 export function generateRandomInt(min: number, max: number): number {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
@@ -20,5 +17,5 @@ export const emptyStats = {
   lives: 3,
   level: 1,
   ammo: 20,
-  levelCreator: ""
+  levelCreator: "",
 };

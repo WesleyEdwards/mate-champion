@@ -1,5 +1,4 @@
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../constants";
-import { devSettings } from "../devSettings";
 import { WinState } from "../helpers/types";
 
 export function getCanvasContext(): {

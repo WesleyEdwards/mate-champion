@@ -1,4 +1,3 @@
-import { devSettings } from "../devSettings";
 import { DrawObjProps } from "../helpers/types";
 import { Coordinates } from "../models";
 import { DrawInfo } from "../Drawing/drawingUtils";

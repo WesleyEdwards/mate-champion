@@ -1,5 +1,4 @@
 import { BaseVectorMan } from "../VectorManager/BaseVectorMan";
-import { GRAVITY } from "../constants";
 import { MCImage } from "../Drawing/drawingUtils";
 import { packageImage } from "../Drawing/ImageRepos";
 import { HasPosition } from "../models";

@@ -2,54 +2,35 @@ import { useEffect, useState } from "react";
 import { FullLevelInfo, LevelInfo, LevelMap } from "../Game/models";
 import { Api } from "../api/Api";
 import { User } from "../types";
-import { getDetailsAndMap, getLevelDiff, isLevelDirty } from "../helpers";
+import {
+  getDetailsAndMap,
+  getLevelDiff,
+  objectsAreDifferent,
+} from "../helpers";
 import _ from "lodash";
+import { levelCache, setLevelCache } from "../levelCache/cacheLocalStorage";
 
-type CacheObj = {
+export type CacheObj = {
   public: string[] | undefined;
   owned: string[] | undefined;
   levelInfo: Record<string, LevelInfo>;
   levelMaps: Record<string, LevelMap>;
 };
 
-const emptyLevelCache: CacheObj = {
-  public: undefined,
-  owned: undefined,
-  levelInfo: {},
-  levelMaps: {},
-};
-
-const levelCache = (): CacheObj => {
-  const curr = localStorage.getItem("level-cache");
-  if (!curr) {
-    return { ...emptyLevelCache };
-  }
-  return JSON.parse(curr) as CacheObj;
-};
-
-const setCache = (cache: CacheObj) => {
-  localStorage.setItem("level-cache", JSON.stringify(cache));
-};
-
-const setLevelCache = (fun: (prev: CacheObj) => CacheObj) => {
-  const curr = levelCache();
-  setCache(fun(curr));
-};
-
-function updateInRecord<
-  R extends "levelInfo" | "levelMaps",
-  V extends R extends "levelInfo" ? LevelInfo : LevelMap
->(record: R, value: V) {
-  setLevelCache((prev) => ({
-    ...prev,
-    [record]: {
-      ...prev[record],
-      [value._id]: value,
-    },
-  }));
-}
-
 export const useLevelCache = (api: Api, user: User): LevelCache => {
+  function updateInRecord<
+    R extends "levelInfo" | "levelMaps",
+    V extends R extends "levelInfo" ? LevelInfo : LevelMap
+  >(record: R, value: V) {
+    setLevelCache((prev) => ({
+      ...prev,
+      [record]: {
+        ...prev[record],
+        [value._id]: value,
+      },
+    }));
+  }
+
   const saveLevelToDb = async (
     newLevel: FullLevelInfo,
     original: FullLevelInfo
@@ -82,13 +63,9 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
 
     updateInRecord("levelInfo", details);
     updateInRecord("levelMaps", map);
-    if (isLevelDirty({ ...level }, { ...updated })) {
+    if (objectsAreDifferent({ ...level }, { ...updated })) {
       return saveLevelToDb(updated, level);
     }
-  };
-
-  const getLevelInfoByIds = (ids: string[]) => {
-    return Promise.resolve(ids.map((id) => levelCache().levelInfo[id]));
   };
 
   const initialFetch = async () => {
@@ -97,7 +74,7 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
     }
     const owned = await fetchOwnLevels();
     const publicLevels = await fetchPublicLevels();
-    setCache({
+    setLevelCache(() => ({
       owned: owned.map((l) => l._id),
       public: publicLevels.map((l) => l._id),
       levelInfo: {
@@ -105,7 +82,7 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
         ...publicLevels.reduce((acc, l) => ({ ...acc, [l._id]: l }), {}),
       },
       levelMaps: {},
-    });
+    }));
   };
 
   const deleteLevel: LevelCache["update"]["delete"] = async (level: string) => {
@@ -154,6 +131,9 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
     return { ...levelInfo, ...map };
   };
 
+  const getLevelInfoByIds = (ids: string[]) =>
+    Promise.resolve(ids.map((id) => levelCache().levelInfo[id]));
+
   useEffect(() => {
     initialFetch();
   }, [user]);
@@ -161,13 +141,15 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
   return {
     read: {
       owned: () => {
-        if (levelCache().owned)
+        if (levelCache().owned) {
           return getLevelInfoByIds(levelCache().owned ?? []);
+        }
         return fetchOwnLevels();
       },
       public: () => {
-        if (levelCache().public)
+        if (levelCache().public) {
           return getLevelInfoByIds(levelCache().public ?? []);
+        }
         return fetchPublicLevels();
       },
       getFull,

@@ -1,14 +1,7 @@
 import { FC, useEffect, useState } from "react";
-import { MCScreen, ScreenProps } from "./GameEntry";
+import { ScreenProps } from "./GameEntry";
 import { LevelInfo } from "../Game/models";
-import {
-  Card,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/joy";
+import { Card, IconButton, Stack, Typography } from "@mui/joy";
 import { PlayArrow } from "@mui/icons-material";
 import { emptyStats } from "../Game/helpers/utils";
 import { enterGameLoop } from "../Game/Main";
@@ -16,7 +9,6 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { GridComponent } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
-import { useAuthContext } from "../hooks/useAuth";
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { setGameMode, levelCache } = useLevelContext();
@@ -25,7 +17,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const [levels, setLevels] = useState<LevelInfo[]>();
 
   const handleEnterGamePlay = async (levelId: string) => {
-    console.log("levelId", levelId)
+    console.log("levelId", levelId);
     const fullLevel = await levelCache.read.getFull(levelId);
 
     navigateTo("game");
@@ -47,10 +39,9 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
     });
   };
 
-  useEffect(() => {
-    setLevels(undefined);
-    levelCache.read.public().then(setLevels);
-  }, []);
+  // useEffect(() => {
+  //   levelCache.read.public().then(setLevels);
+  // }, []);
 
   return (
     <>
