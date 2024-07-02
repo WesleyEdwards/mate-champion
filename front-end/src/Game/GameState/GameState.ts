@@ -30,9 +30,7 @@ export class GameState {
     setLevel?: (level: Partial<FullLevelInfo>) => void
   ) {
     this.keys = addEventListeners(() => {
-      const newState = this.currStateOfGame === "pause" ? "playing" : "pause";
-      this.setUI.handlePause(newState === "pause");
-      this.currStateOfGame = newState;
+      this.setUI.handlePause(true);
     });
     this.objectManager = new ObjectManager(levels, gameMode);
     this.objectManager.reset(1);
@@ -54,9 +52,9 @@ export class GameState {
     this.drawStats();
   }
 
-  update(timeStamp: number) {
+  update(timeStamp: number, paused: boolean) {
     this.stats.updateTime(timeStamp);
-    if (this.currStateOfGame !== "playing") {
+    if (this.currStateOfGame !== "playing" || paused) {
       return;
     }
     this.cameraDisplay.update(

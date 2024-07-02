@@ -22,18 +22,16 @@ const PauseModalContext = createContext({} as PauseModalContextType);
 
 export const PauseModalProvider = (props: { children: React.ReactNode }) => {
   const { setGameMode } = useLevelContext();
-  const { navigateTo, goBack } = useNavigator();
+  const { navigateTo } = useNavigator();
   const [open, setOpen] = useState<ModalOption | null>(null);
 
   const handleSetModal = (modal: ModalOption | null) => {
     setOpen(modal);
   };
 
-  // const exit = () => {
-  //   setGameMode("idle");
-  //   goBack();
-  //   setOpen(null);
-  // };
+  useEffect(() => {
+    window.pause = !!open;
+  }, [open]);
 
   return (
     <PauseModalContext.Provider value={{ setModal: handleSetModal }}>
@@ -42,46 +40,28 @@ export const PauseModalProvider = (props: { children: React.ReactNode }) => {
       <Modal open={open === "pause"} onClose={() => {}}>
         <ModalDialog>
           <DialogTitle>Pause</DialogTitle>
-          <DialogContent>{"'ESC' to unpause"}</DialogContent>
-          <Button
-            onClick={() => {
-              setGameMode("idle");
-              navigateTo("home");
-              setOpen(null);
-            }}
-          >
-            Quit
-          </Button>
+          <DialogContent>
+            <Stack gap="1rem" my="1rem">
+              <Button
+                onClick={() => {
+                  setOpen(null);
+                }}
+              >
+                Continue
+              </Button>
+              <Button
+                onClick={() => {
+                  setGameMode("idle");
+                  navigateTo("home");
+                  setOpen(null);
+                }}
+              >
+                Quit
+              </Button>
+            </Stack>
+          </DialogContent>
         </ModalDialog>
       </Modal>
-
-      {/* <Modal open={open === "save"} onClose={() => {}}>
-        <ModalDialog>
-          <DialogTitle>Save</DialogTitle>
-          <DialogContent>
-            Would you like to save your changes before exiting?
-          </DialogContent>
-          <Stack direction="row" gap="1rem" justifyContent="flex-end">
-            <Button
-              variant="plain"
-              onClick={() => {
-                modifyLevel({ discardChanges: true });
-                exit();
-              }}
-            >
-              Exit without saving
-            </Button>
-            <Button
-              onClick={() => {
-                modifyLevel({ saveToDb: true });
-                exit();
-              }}
-            >
-              Save
-            </Button>
-          </Stack>
-        </ModalDialog>
-      </Modal> */}
 
       <Modal
         open={open === "help"}

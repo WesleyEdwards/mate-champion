@@ -5,7 +5,6 @@ export type WinState =
   | "playing"
   | "initial"
   | "nextLevel"
-  | "pause"
   | "loseLife";
 
 export type StatsManagerInfo = {

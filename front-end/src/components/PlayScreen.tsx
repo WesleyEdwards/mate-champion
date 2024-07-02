@@ -47,7 +47,7 @@ export const PlayScreen: FC<{
 
   return (
     <Button
-      sx={{ width: "11rem", my: "2rem" }}
+      sx={{ width: "11rem", mb: "2rem" }}
       onClick={() => {
         modifyStats({ ...emptyStats, levelCreator: levelsInfo[0].creatorName });
         setScreen("game");

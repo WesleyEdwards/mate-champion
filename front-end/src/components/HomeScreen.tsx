@@ -6,6 +6,7 @@ import { PlayScreen } from "./PlayScreen";
 import { useAuthContext } from "../hooks/useAuth";
 import { PersonalHigh } from "./PersonalHigh";
 import { useNavigator } from "../hooks/UseNavigator";
+import mateSingle from "../assets/champ/mate-single.png";
 
 export const HomeScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { user } = useAuthContext();
@@ -14,6 +15,12 @@ export const HomeScreen: FC<ScreenProps> = ({ modifyStats }) => {
     <Stack width="100%" alignItems={"center"}>
       <Typography level="h1">Mate Champion</Typography>
       <Instructions />
+      <img
+        style={{
+          margin: "4px auto 24px",
+        }}
+        src={mateSingle}
+      />
       <PlayScreen
         modifyStats={modifyStats}
         screen={"home"}

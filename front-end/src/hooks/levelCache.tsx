@@ -24,10 +24,7 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
   >(record: R, value: V) {
     setLevelCache((prev) => ({
       ...prev,
-      [record]: {
-        ...prev[record],
-        [value._id]: value,
-      },
+      [record]: { ...prev[record], [value._id]: value },
     }));
   }
 
@@ -49,11 +46,24 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
     return newLevel;
   };
 
-  const fetchOwnLevels = () => {
-    return api.level.query({ owner: user?._id ?? "" });
-  };
-  const fetchPublicLevels = () => {
-    return api.level.query({ public: true });
+  const refreshCache = async (): Promise<CacheObj> => {
+    if (!user || user?.userType === "User" || !api) {
+      throw new Error("User must be authenticated.");
+    }
+    const owned = await api.level.query({ owner: user?._id ?? "" });
+    const publicLevels = await api.level.query({ public: true });
+    setLevelCache((prev) => {
+      return {
+        owned: owned.map((l) => l._id),
+        public: publicLevels.map((l) => l._id),
+        levelInfo: {
+          ...owned.reduce((acc, l) => ({ ...acc, [l._id]: l }), {}),
+          ...publicLevels.reduce((acc, l) => ({ ...acc, [l._id]: l }), {}),
+        },
+        levelMaps: prev.levelMaps,
+      };
+    });
+    return levelCache();
   };
 
   const modifyLevel: LevelCache["update"]["modify"] = async (id, mod) => {
@@ -64,25 +74,12 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
     updateInRecord("levelInfo", details);
     updateInRecord("levelMaps", map);
     if (objectsAreDifferent({ ...level }, { ...updated })) {
-      return saveLevelToDb(updated, level);
+      await saveLevelToDb(updated, level);
     }
-  };
 
-  const initialFetch = async () => {
-    if (!user || user?.userType === "User" || !api) {
-      return;
+    if (mod.public !== undefined) {
+      refreshCache();
     }
-    const owned = await fetchOwnLevels();
-    const publicLevels = await fetchPublicLevels();
-    setLevelCache(() => ({
-      owned: owned.map((l) => l._id),
-      public: publicLevels.map((l) => l._id),
-      levelInfo: {
-        ...owned.reduce((acc, l) => ({ ...acc, [l._id]: l }), {}),
-        ...publicLevels.reduce((acc, l) => ({ ...acc, [l._id]: l }), {}),
-      },
-      levelMaps: {},
-    }));
   };
 
   const deleteLevel: LevelCache["update"]["delete"] = async (level: string) => {
@@ -135,22 +132,30 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
     Promise.resolve(ids.map((id) => levelCache().levelInfo[id]));
 
   useEffect(() => {
-    initialFetch();
+    refreshCache();
   }, [user]);
 
   return {
     read: {
-      owned: () => {
+      owned: async () => {
+        if (!levelCache().owned) {
+          await refreshCache();
+        }
         if (levelCache().owned) {
           return getLevelInfoByIds(levelCache().owned ?? []);
+        } else {
+          throw new Error("No owned levels in level cache");
         }
-        return fetchOwnLevels();
       },
-      public: () => {
+      public: async () => {
+        if (!levelCache().public) {
+          await refreshCache();
+        }
         if (levelCache().public) {
           return getLevelInfoByIds(levelCache().public ?? []);
+        } else {
+          throw new Error("No public levels in level cache");
         }
-        return fetchPublicLevels();
       },
       getFull,
     },

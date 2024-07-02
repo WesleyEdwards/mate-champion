@@ -15,6 +15,7 @@ import { initializeDevSettings } from "./Game/devSettings";
 declare global {
   interface Window {
     stopLoop: boolean;
+    pause: boolean
     mateSettings: {
       showDevStats: boolean;
       collisionBoxesVisible: boolean;

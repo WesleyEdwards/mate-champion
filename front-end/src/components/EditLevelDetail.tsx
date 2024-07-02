@@ -10,65 +10,22 @@ import {
 } from "@mui/joy";
 import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
-import { emptyStats } from "../Game/helpers/utils";
-import { enterGameLoop } from "../Game/Main";
-import { Construction, PlayArrow } from "@mui/icons-material";
-import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
-import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { VisibilityIcon } from "./MyLevels";
-import { objectsAreDifferent } from "../helpers";
+import { PreviewOrEdit } from "./PreviewOrEdit";
 
-export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
-  const { levelCache, editingLevel, setGameMode } = useLevelContext();
+export const EditLevelDetail: FC<ScreenProps> = (props) => {
+  const { levelCache, editingLevel } = useLevelContext();
   const { navigateTo } = useNavigator();
-  const { setModal } = usePauseModalContext();
+
+  const [saving, setSaving] = useState(false);
 
   const [levelForm, setLevelForm] = useState<{
     public: boolean;
     description: string;
   }>({ public: true, description: "" });
-
-  const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
-    if (editingLevel === "loading") return;
-    modifyStats({ ...emptyStats });
-    navigateTo("game");
-    window.stopLoop = false;
-
-    setGameMode(gamePlay);
-
-    const params = {
-      edit: {
-        setUI: {
-          modifyStats,
-          handleLose: () => {},
-          handlePause: (pause: boolean) => {
-            return setModal(pause ? "pause" : null);
-          },
-        },
-        gameMode: gamePlay,
-        levels: editingLevel ? [editingLevel] : [],
-        setLevel: (level: Partial<FullLevelInfo>) =>
-          levelCache.update.modify(editingLevel!._id, level),
-      },
-      test: {
-        setUI: {
-          modifyStats,
-          handleLose: () => {},
-          handlePause: (pause: boolean) => {
-            return setModal(pause ? "pause" : null);
-          },
-        },
-        gameMode: gamePlay,
-        levels: editingLevel ? [editingLevel] : [],
-        setLevel: undefined,
-      },
-    }[gamePlay];
-
-    enterGameLoop(params);
-  };
 
   useEffect(() => {
     if (editingLevel && editingLevel !== "loading") {
@@ -108,28 +65,10 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
         onChange={(e) => {
           setLevelForm((prev) => ({ ...prev, description: e.target.value }));
         }}
-        sx={{ flexGrow: 1 }}
+        sx={{ flexGrow: 1, width: "400px" }}
       />
-      <Stack gap="1rem" direction="row">
-        <Button
-          size="lg"
-          fullWidth
-          variant="outlined"
-          endDecorator={<Construction />}
-          onClick={() => handleEnterGamePlay("edit")}
-        >
-          Edit
-        </Button>
-        <Button
-          size="lg"
-          variant="outlined"
-          endDecorator={<PlayArrow />}
-          fullWidth
-          onClick={() => handleEnterGamePlay("test")}
-        >
-          Preview
-        </Button>
-      </Stack>
+
+      <PreviewOrEdit {...props} />
 
       <FormControl>
         <Checkbox
@@ -150,12 +89,16 @@ export const EditLevelDetail: FC<ScreenProps> = ({ modifyStats }) => {
       <Button
         sx={{ alignSelf: "flex-end" }}
         onClick={() => {
-          levelCache.update.modify(editingLevel._id, levelForm);
+          setSaving(true);
+          levelCache.update
+            .modify(editingLevel._id, levelForm)
+            .then(() => setSaving(false));
         }}
         disabled={
           levelForm.description === (editingLevel.description ?? "") &&
           levelForm.public === editingLevel.public
         }
+        loading={saving}
       >
         Save
       </Button>

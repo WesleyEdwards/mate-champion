@@ -17,7 +17,6 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const [levels, setLevels] = useState<LevelInfo[]>();
 
   const handleEnterGamePlay = async (levelId: string) => {
-    console.log("levelId", levelId);
     const fullLevel = await levelCache.read.getFull(levelId);
 
     navigateTo("game");
@@ -39,9 +38,10 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
     });
   };
 
-  // useEffect(() => {
-  //   levelCache.read.public().then(setLevels);
-  // }, []);
+  useEffect(() => {
+    setLevels(undefined);
+    levelCache.read.public().then(setLevels);
+  }, []);
 
   return (
     <>

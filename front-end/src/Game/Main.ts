@@ -29,7 +29,8 @@ export function enterGameLoop(params: {
     if (gameState.currStateOfGame === "lose") {
       return handleLose(gameState.score);
     }
-    gameState.update(timeStamp);
+
+    gameState.update(timeStamp, window.pause);
     gameState.render();
 
     requestAnimationFrame(gameLoop);

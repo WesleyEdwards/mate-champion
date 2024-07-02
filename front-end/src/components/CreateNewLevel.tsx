@@ -12,6 +12,7 @@ import { Add } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
+import { MCModal } from "./MCModal";
 
 export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
   const { user } = useAuthContext();
@@ -50,40 +51,26 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
         {text}
       </Button>
 
-      <Modal
+      <MCModal
+        title={"New Level"}
         open={makingNew !== undefined}
         onClose={() => setMakingNew(undefined)}
+        onConfirm={() => {
+          setCreating(true);
+          createLevel(makingNew ?? "").then(() => {
+            setCreating(false);
+            navigateTo("editorDetail");
+          });
+        }}
+        disableConfirm={!makingNew}
+        confirmLabel="Create"
       >
-        <ModalDialog>
-          <DialogTitle>New Level</DialogTitle>
-          <DialogContent>Choose a name for your new level</DialogContent>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setCreating(true);
-              createLevel(makingNew ?? "").then(() => {
-                setCreating(false);
-                navigateTo("editorDetail");
-              });
-            }}
-          >
-            <Stack gap="1rem">
-              <Input
-                value={makingNew}
-                onChange={(e) => setMakingNew(e.target.value)}
-                placeholder="My level"
-              />
-              <Button
-                disabled={!makingNew}
-                sx={{ alignSelf: "flex-end" }}
-                type="submit"
-              >
-                Create
-              </Button>
-            </Stack>
-          </form>
-        </ModalDialog>
-      </Modal>
+        <Input
+          value={makingNew}
+          onChange={(e) => setMakingNew(e.target.value)}
+          placeholder="My level"
+        />
+      </MCModal>
     </>
   );
 };
