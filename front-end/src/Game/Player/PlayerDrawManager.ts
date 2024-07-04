@@ -8,9 +8,7 @@ import {
   PlayerVectorManager,
 } from "./PlayerVectorManager";
 import {
-  PlayerImageSource,
   PlayerDescription,
-  playerSpriteImages,
   playerSpriteJumping,
   playerSpritesInfo,
   ImageInfo,
@@ -24,7 +22,6 @@ export class PlayerDrawManager {
   imageWidth = 28;
   spriteTimer: number = 0;
   prevAction: PlayerDescription = "none-none-none";
-  images: Record<PlayerImageSource, HTMLImageElement> = playerSpriteImages;
 
   update(elapsedTime: number) {
     this.spriteTimer += elapsedTime;
@@ -75,7 +72,7 @@ export class PlayerDrawManager {
 
     this.prevAction = sprite;
 
-    const spriteInfo: ImageInfo<PlayerImageSource> | undefined = (() => {
+    const spriteInfo: ImageInfo | undefined = (() => {
       if (inAir && !sprite.includes("melee")) {
         return playerSpriteJumping[inAir];
       }
@@ -95,13 +92,13 @@ export class PlayerDrawManager {
     cxt.imageSmoothingEnabled = false;
     cxt.imageSmoothingQuality = "high";
 
-    cxt.translate(point.x - camOffset.x, point.y + camOffset.y);
+    // cxt.translate(point.x - camOffset.x, point.y + camOffset.y);
 
     if (directionX === "left") {
       cxt.scale(-1, 1);
     }
 
-    const image = this.images[spriteInfo.image];
+    const image = spriteInfo.image();
 
     cxt.drawImage(
       image,

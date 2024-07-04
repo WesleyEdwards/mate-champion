@@ -11,51 +11,51 @@ export class CameraDisplay {
   idleTime: number = 0;
 
   constructor(gameMode: GameMode) {
-    if (gameMode === "edit") {
-      this.addScrollEventListeners();
-    }
+    // if (gameMode === "edit") {
+      // this.addScrollEventListeners();
+    // }
   }
 
   update(elapsedTime: number, playerVector: PlayerVectorManager) {
-    this.idleTime += elapsedTime;
-    if (playerVector.velocity.x !== 0 || playerVector.velocity.y !== 0) {
-      this.idleTime = 0;
-    }
-    if (this.idleTime > 3000) return;
+    // this.idleTime += elapsedTime;
+    // if (playerVector.velocity.x !== 0 || playerVector.velocity.y !== 0) {
+    //   this.idleTime = 0;
+    // }
+    // if (this.idleTime > 3000) return;
 
     // y increases as the player goes up
 
-    this.cameraOffset.x += this.cameraVelocity.x * elapsedTime;
-    this.cameraOffset.y += this.cameraVelocity.y * elapsedTime;
+    // this.cameraOffset.x += this.cameraVelocity.x * elapsedTime;
+    // this.cameraOffset.y += this.cameraVelocity.y * elapsedTime;
 
     this.calcCameraX(playerVector.position.x);
     this.calcCameraY(playerVector.position.y);
   }
 
   calcCameraX(playerPos: number) {
-    const playerDistFromWall = playerPos - this.cameraOffset.x;
-    const diffX = playerDistFromWall - cameraConst.idealDistFromLeftWall;
-    const newVelocity = diffX * 0.02;
-    this.cameraVelocity.x = newVelocity;
+    // const playerDistFromWall = playerPos - this.cameraOffset.x;
+    // const diffX = playerDistFromWall - cameraConst.idealDistFromLeftWall;
+    // const newVelocity = diffX * 0.02;
+    // this.cameraVelocity.x = newVelocity;
   }
 
   calcCameraY(playerPos: number) {
-    const distFromCeiling = playerPos + this.cameraOffset.y;
-    const diffY = distFromCeiling - cameraConst.idealMinDistFromCeiling;
+    // const distFromCeiling = playerPos + this.cameraOffset.y;
+    // const diffY = distFromCeiling - cameraConst.idealMinDistFromCeiling;
 
-    const isBelow = this.cameraOffset.y <= 0 && diffY > 0;
+    // const isBelow = this.cameraOffset.y <= 0 && diffY > 0;
 
-    if (isBelow) {
-      this.cameraOffset.y = 0;
-      this.cameraVelocity.y = 0;
-      return;
-    }
+    // if (isBelow) {
+    //   this.cameraOffset.y = 0;
+    //   this.cameraVelocity.y = 0;
+    //   return;
+    // }
 
-    const fallingFactor = diffY > 30 ? diffY * 0.1 : 1;
+    // const fallingFactor = diffY > 30 ? diffY * 0.1 : 1;
 
-    const newVelocity = -diffY * fallingFactor * 0.001;
+    // const newVelocity = -diffY * fallingFactor * 0.001;
 
-    this.cameraVelocity.y = newVelocity;
+    // this.cameraVelocity.y = newVelocity;
   }
 
   draw(cxt: CanvasRenderingContext2D) {
@@ -76,11 +76,11 @@ export class CameraDisplay {
     this.cameraVelocity = { x: 0, y: 0 };
   }
 
-  addScrollEventListeners() {
-    window.addEventListener("wheel", (e) => {
-      if (e.shiftKey) {
-        this.cameraOffset.x += e.deltaY;
-      }
-    });
-  }
+  // addScrollEventListeners() {
+  //   window.addEventListener("wheel", (e) => {
+  //     if (e.shiftKey) {
+  //       this.cameraOffset.x += e.deltaY;
+  //     }
+  //   });
+  // }
 }

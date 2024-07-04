@@ -1,11 +1,13 @@
 import { addEventListeners } from "../Game/helpers/eventListeners";
 import { WinState } from "../Game/helpers/types";
 import { Coordinates, FullLevelInfo, Keys } from "../Game/models";
-import { PlayerState } from "./champ";
+import { Camera } from "./camera";
+import { Champ } from "./champ";
+import { emptyCoors } from "./state/helpers";
 
 export type GameState1 = {
   currStateOfGame: WinState;
-  cameraOffset: Coordinates;
+  camera: Camera;
   time: {
     deltaT: number;
     prevStamp: number;
@@ -13,7 +15,7 @@ export type GameState1 = {
   stats: {
     score: number;
   };
-  player: PlayerState;
+  player: Champ;
   keys: Keys;
 };
 
@@ -24,10 +26,16 @@ export const initGameState = ({
 }): GameState1 => {
   return {
     currStateOfGame: "initial",
-    cameraOffset: emptyCoors(),
+    camera: {
+      position: emptyCoors(),
+      velocity: emptyCoors(),
+      time: {
+        idleTime: 0,
+      },
+    },
     time: {
       deltaT: 0,
-      prevStamp: 0,
+      prevStamp: performance.now(),
     },
     stats: {
       score: 0,
@@ -39,7 +47,7 @@ export const initGameState = ({
         y: "none",
       },
       gravityFactor: null,
-      jumps: 0,
+      jump: { jumps: 0, isJumping: false },
       position: {
         curr: { x: 400, y: 400 },
         prev: emptyCoors(),
@@ -59,8 +67,4 @@ export const initGameState = ({
     },
     keys: addEventListeners(() => {}),
   };
-};
-
-const emptyCoors = (): Coordinates => {
-  return { x: 0, y: 0 };
 };

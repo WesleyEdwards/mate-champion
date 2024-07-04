@@ -15,6 +15,7 @@ const initialKeyStatus: Keys = {
 };
 
 export function addEventListeners(togglePause: () => void): Keys {
+  console.log("Setting event listeners");
   const keys = { ...initialKeyStatus };
   window.addEventListener("keydown", (e) => {
     switch (e.code) {

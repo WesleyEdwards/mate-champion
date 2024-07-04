@@ -1,34 +1,73 @@
-import { playerConst } from "../../Game/constants";
-import { debounceLog } from "../../Game/helpers/utils";
-import { PlayerState } from "../champ";
-import { updateCurr } from "./helpers";
+import { CharAction } from "../../Game/models";
+import { Champ, champConst } from "../champ";
+import { updatePosAndVel, updateTimers } from "./helpers";
 
-export const updatePlayer = (p: PlayerState, deltaT: number) => {
-  updateCurr(p.position);
-  updateCurr(p.velocity);
+export const updatePlayer = (p: Champ, deltaT: number) => {
+  updatePosAndVel(p.position, p.velocity, deltaT);
+  updateTimers(p.timer, deltaT);
 
-  p.position.curr.x += p.velocity.curr.x * deltaT;
-  p.position.curr.y += p.velocity.curr.y * deltaT;
-  p.timer.coyoteTime += deltaT;
-  p.timer.spriteTimer += deltaT;
-
-  //   debounceLog(p.position.prev.x);
-
-  if (p.queueActions.includes("MoveRight")) {
-    p.velocity.curr.x = playerConst.moveSpeed;
-  } else if (p.queueActions.includes("MoveLeft")) {
-    p.velocity.curr.x = -playerConst.moveSpeed;
-  } else {
-    p.velocity.curr.x = 0;
+  for (const a of p.queueActions) {
+    processQueuedAction(p, a);
   }
 
-  if (p.queueActions.includes("StopY")) {
-    p.velocity.curr.y = 0;
+  const isMovingX =
+    p.queueActions.includes("MoveLeft") || p.queueActions.includes("MoveRight");
+
+  if (!isMovingX) {
+    processActionRaw(p, "StopX");
   }
-  if (p.queueActions.includes("StopX")) {
-    p.velocity.curr.x = 0;
-  }
+
   p.queueActions = [];
 
+  // update with gravity
+  if (p.gravityFactor) {
+    p.gravityFactor *= champConst.jumpGravityFrameDecrease;
+  }
+  if (p.velocity.curr.y > 0 || !p.jump.isJumping) {
+    p.gravityFactor = null;
+  }
+  if (p.timer.coyoteTime > champConst.maxCoyoteTime || p.velocity.curr.y < 0) {
+    const jumpFactor = p.gravityFactor
+      ? (1 - p.gravityFactor) * champConst.gravity
+      : champConst.gravity;
+
+    p.velocity.curr.y = p.velocity.curr.y + jumpFactor * deltaT;
+  }
+
   return;
+};
+
+const processQueuedAction = (p: Champ, action: CharAction) => {
+  if (action === "Jump") {
+    if (p.velocity.curr.y !== 0 || p.jump.jumps > 0) {
+      return;
+    }
+  }
+  processActionRaw(p, action);
+};
+
+const processActionRaw = (champ: Champ, action: CharAction) => {
+  const acts: Record<CharAction, (p: Champ) => void> = {
+    MoveRight: (p) => {
+      p.velocity.curr.x = -champConst.moveSpeed;
+    },
+    MoveLeft: (p) => {
+      p.velocity.curr.x = -champConst.moveSpeed;
+    },
+    Jump: (p) => {
+      p.velocity.curr.y = champConst.jumpSpeed;
+      p.position.curr.y -= 1;
+      p.gravityFactor = champConst.jumpGravityFactor;
+      p.jump.jumps += 1;
+    },
+    Duck: (p) => {},
+    StopX: (p) => {
+      p.velocity.curr.x = 0;
+    },
+    StopY: (p) => {
+      p.velocity.curr.y = 0;
+    },
+  };
+
+  acts[action](champ);
 };

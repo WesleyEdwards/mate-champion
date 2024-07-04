@@ -11,6 +11,7 @@ export function enterGameLoop1(params: {
   setLevel?: (level: Partial<FullLevelInfo>) => void;
   gameMode: GameMode;
 }) {
+  console.log("Starting game loop");
   const { setUI, levels, setLevel, gameMode } = params;
   const { canvas, context } = getCanvasContext();
   // const gameState: GameState = new GameState(

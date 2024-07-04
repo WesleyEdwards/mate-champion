@@ -11,11 +11,12 @@ import { LevelsContext, useLevels } from "./hooks/useLevels";
 import { Layout } from "./components/Layout";
 import { ItemType } from "./Game/devTools/CreatingThing";
 import { initializeDevSettings } from "./Game/devSettings";
+import { initializeTextures } from "./gameAssets/textures";
 
 declare global {
   interface Window {
     stopLoop: boolean;
-    pause: boolean
+    pause: boolean;
     mateSettings: {
       showDevStats: boolean;
       collisionBoxesVisible: boolean;
@@ -23,6 +24,7 @@ declare global {
       invincibility: boolean;
     };
     selectedItem: ItemType;
+    debounceLog: (...args: any[]) => void;
   }
 
   interface ObjectConstructor {
@@ -32,6 +34,15 @@ declare global {
 }
 
 initializeDevSettings();
+initializeTextures();
+
+function debounceLog(...args: any[]) {
+  const rand = Math.floor(0 + Math.random() * (10 + 1));
+  if (rand === 1) {
+    console.log(...args);
+  }
+}
+window.debounceLog = debounceLog;
 
 const theme: Theme = extendTheme(mateTheme);
 

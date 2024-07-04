@@ -2,28 +2,16 @@ import { DrawObjProps } from "../helpers/types";
 import { Coordinates } from "../models";
 import { DrawInfo } from "../Drawing/drawingUtils";
 import { grogConst } from "../constants";
-import enemyDeath from "../../assets/grog/enemy_death.png";
-import enemyJump from "../../assets/grog/enemy_jump_and_fall.png";
-import enemyWalking from "../../assets/grog/enemy_walking.png";
-import { SpriteInfo, getSpriteImages } from "../Player/PlayerSpriteInfo";
+import { SpriteInfo } from "../Player/PlayerSpriteInfo";
 import { OpponentVectorManager } from "./OpponentVectorManager";
-
-type GrogImageSource = "enemyDeath" | "enemyJump" | "enemyWalking";
+import { Textures } from "../../gameAssets/textures";
 
 const drawImageWidth = 200; // this allows room for the attacks to be drawn
 const drawImageHeight = drawImageWidth * (105 / 200);
 
-const imageSources: Record<GrogImageSource, string> = {
-  enemyDeath,
-  enemyJump,
-  enemyWalking,
-};
-
 type GrogDescription = "walk" | "die";
 
 export class GrogDrawManager {
-  images: Record<GrogImageSource, HTMLImageElement> =
-    getSpriteImages(imageSources);
   spriteTimer: number = 0;
 
   update(elapsedTime: number) {
@@ -74,7 +62,7 @@ export class GrogDrawManager {
       cxt.scale(-1, 1);
     }
 
-    const image = this.images[spriteInfo.image];
+    const image = spriteInfo.image();
 
     cxt.drawImage(
       image,
@@ -119,33 +107,30 @@ export class GrogDrawManager {
   }
 }
 
-const grogSpritesInfo: SpriteInfo<GrogDescription, GrogImageSource> = {
+const grogSpritesInfo: SpriteInfo<GrogDescription> = {
   walk: {
-    image: "enemyWalking",
+    image: () => Textures().grog.walking,
     imgCount: 6,
     startX: 0,
     cycleTime: 120,
   },
   die: {
-    image: "enemyDeath",
+    image: () => Textures().grog.death,
     imgCount: 5,
     startX: 0,
     cycleTime: 105,
   },
 };
 
-export const grogSpriteJumping: SpriteInfo<
-  "rising" | "falling",
-  GrogImageSource
-> = {
+export const grogSpriteJumping: SpriteInfo<"rising" | "falling"> = {
   rising: {
-    image: "enemyJump",
+    image: () => Textures().grog.jumpAndFall,
     imgCount: 1,
     startX: 0,
     cycleTime: 100,
   },
   falling: {
-    image: "enemyJump",
+    image: () => Textures().grog.jumpAndFall,
     imgCount: 1,
     startX: 1,
     cycleTime: 100,
