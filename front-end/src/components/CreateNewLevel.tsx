@@ -23,7 +23,7 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
 
   const [makingNew, setMakingNew] = useState<string>();
 
-  if (!user) throw new Error("User must be authenticated");
+  // if (!user) throw new Error("User must be authenticated");
 
   const createLevel = async (name: string) => {
     const createdLevel = await levelCache.update.create({

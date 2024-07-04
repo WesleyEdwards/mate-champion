@@ -17,19 +17,6 @@ import {
 } from "./PlayerSpriteInfo";
 import { CurrentChampAction } from "./Player";
 
-// if (this.weaponPosCurr) {
-//   drawProps.cxt.save();
-//   drawProps.cxt.fillStyle = "blue";
-//   drawProps.cxt.translate(
-//     this.weaponPosCurr.x - drawProps.camOffset.x,
-//     this.weaponPosCurr.y + drawProps.camOffset.y
-//   );
-//   drawProps.cxt.beginPath();
-//   drawProps.cxt.arc(0, 0, 1, 0, 2 * Math.PI);
-//   drawProps.cxt.stroke();
-//   drawProps.cxt.restore();
-// }
-
 const drawImageWidth = 300; // this allows room for the attacks to be drawn
 const drawImageHeight = drawImageWidth * (105 / 200);
 
@@ -128,29 +115,29 @@ export class PlayerDrawManager {
       drawImageHeight
     );
 
-    if (window.window.mateSettings.collisionBoxesVisible) {
-      cxt.strokeStyle = "red";
-      cxt.beginPath();
-      cxt.arc(0, 0, 1, 0, 2 * Math.PI);
-      cxt.stroke();
-      cxt.lineWidth = 2;
-      const isHittingY = sprite.includes("melee") && sprite.includes("up");
-      const isHittingX = sprite.includes("melee") && !isHittingY;
-      const width = isHittingX
-        ? playerConst.radius * 2 + playerConst.meleeReach
-        : playerConst.radius * 2;
+    // if (window.window.mateSettings.collisionBoxesVisible) {
+    //   cxt.strokeStyle = "red";
+    //   cxt.beginPath();
+    //   cxt.arc(0, 0, 1, 0, 2 * Math.PI);
+    //   cxt.stroke();
+    //   cxt.lineWidth = 2;
+    //   const isHittingY = sprite.includes("melee") && sprite.includes("up");
+    //   const isHittingX = sprite.includes("melee") && !isHittingY;
+    //   const width = isHittingX
+    //     ? playerConst.radius * 2 + playerConst.meleeReach
+    //     : playerConst.radius * 2;
 
-      const height = isHittingY
-        ? playerConst.radius * 2 + playerConst.meleeReach
-        : playerConst.radius * 2;
+    //   const height = isHittingY
+    //     ? playerConst.radius * 2 + playerConst.meleeReach
+    //     : playerConst.radius * 2;
 
-      cxt.strokeRect(
-        -playerConst.radius,
-        -(playerConst.radius + (isHittingY ? playerConst.meleeReach : 0)),
-        width,
-        height
-      );
-    }
+    //   cxt.strokeRect(
+    //     -playerConst.radius,
+    //     -(playerConst.radius + (isHittingY ? playerConst.meleeReach : 0)),
+    //     width,
+    //     height
+    //   );
+    // }
     cxt.restore();
   }
 

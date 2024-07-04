@@ -2,6 +2,8 @@ import { levelConst, playerConst } from "../constants";
 import { Coordinates, Keys, CharAction, Character } from "../models";
 import {
   PlayerAction,
+  PlayerDirectionX,
+  PlayerDirectionY,
   PlayerMove,
   PlayerVectorManager,
 } from "./PlayerVectorManager";
@@ -20,7 +22,6 @@ export class Player implements Character {
   currAction: CurrentChampAction | null = null;
   vector: PlayerVectorManager = new PlayerVectorManager();
   drawManager: PlayerDrawManager = new PlayerDrawManager();
-  onPlatform: boolean = false;
 
   reset() {
     this.vector = new PlayerVectorManager();

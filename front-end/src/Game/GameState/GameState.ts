@@ -96,6 +96,7 @@ export class GameState {
         this.stats.fps
       );
     }
+    // this.objectManager?.render(this.cxt)
     this.cameraDisplay.draw(this.cxt);
   }
 

@@ -11,6 +11,7 @@ import {
   findExistingItem,
   findExistingItems,
 } from "./helpers";
+import { Platform } from "../Platform/Platform";
 
 type DevContentCreateProps = {
   canvas: HTMLCanvasElement;
@@ -35,98 +36,106 @@ type DevContentCreateProps = {
  */
 
 export class DevContentCreate {
-  objectManager: ObjectManager;
-  platforms: StaticObject[];
+  // objectManager: ObjectManager;
+  // platforms: StaticObject[];
   cameraOffset: Coordinates = { x: 0, y: 0 };
   prevColor: string = "";
   prevCurrCreating: ItemType = "platform";
   setLevel?: (level: Partial<FullLevelInfo>) => void;
   lastUpdate: number = 0;
 
-  creatingOptions: Record<ItemType, CreatingThing>;
+  // creatingOptions: Record<ItemType, CreatingThing>;
 
   prevDrag: Coordinates | null = null;
   dragSelect: Coordinates | null = null;
+  // creator: EditingObjects;
 
   constructor({ canvas, objectManager, setLevel }: DevContentCreateProps) {
     addDevEventListeners(this, canvas);
-    this.objectManager = objectManager;
-    this.platforms = objectManager.platformManager.platforms;
-    this.creatingOptions = {
-      platform: new PlatformCreator(objectManager),
-      floor: new FloorCreator(objectManager),
-      grog: new GrogCreator(objectManager),
-      package: new PackageCreator(objectManager),
-    };
+    // this.creator = Creator(objectManager);
+    // this.objectManager = objectManager;
+    // this.platforms = objectManager.platformManager.platforms;
+    // this.creatingOptions = {
+    //   platform: new PlatformCreator(objectManager),
+    //   floor: new FloorCreator(objectManager),
+    //   grog: new GrogCreator(objectManager),
+    //   package: new PackageCreator(objectManager),
+    // };
     this.setLevel = setLevel;
   }
 
   update(offset: Coordinates, timestamp: number) {
     if (timestamp - this.lastUpdate > 3000) {
       this.lastUpdate = timestamp;
-      this.setLevel?.(exportLevelInfo(this.objectManager));
+      // this.setLevel?.(exportLevelInfo(this.objectManager));
     }
     this.cameraOffset = { x: offset.x, y: offset.y };
 
     if (window.selectedItem !== this.prevCurrCreating) {
-      this.currentlyCreating.selectItem(null);
+      // this.currentlyCreating.selectItem(null);
     }
     this.prevCurrCreating = window.selectedItem;
   }
 
-  selectOneItem(xNoOffset: number, y: number, shiftKey: boolean) {
-    const existingItem = findExistingItem(
-      xNoOffset + this.cameraOffset.x,
-      y - this.cameraOffset.y,
-      this.currentlyCreating.items
-    );
-
-    if (!existingItem) {
-      Object.values(this.creatingOptions).forEach((c) => {
-        const existsInOther = findExistingItem(
-          xNoOffset + this.cameraOffset.x,
-          y - this.cameraOffset.y,
-          c.items
-        );
-        if (existsInOther) {
-          c.selectItem(existsInOther);
-          window.selectedItem = c.itemType;
-        }
-      });
-    }
-
-    if (shiftKey && existingItem === null) return;
-
-    this.currentlyCreating.selectItem(existingItem || null, shiftKey);
+  render(cxt: CanvasRenderingContext2D) {
+    // this.creator.objects.forEach((o) => {
+    //   if (this.creator.selected.includes(o.id)) {
+    //     o.drawSelected(o.center, this.cameraOffset, cxt);
+    //   }
+    // });
   }
 
-  selectMultipleItems(xNoOffset: number, y: number) {
-    if (!this.dragSelect) {
-      this.dragSelect = { x: xNoOffset, y };
-      return;
-    }
+  // selectOneItem(xNoOffset: number, y: number, shiftKey: boolean) {
+  // const existingItem = findExistingItem(
+  //   xNoOffset + this.cameraOffset.x,
+  //   y - this.cameraOffset.y,
+  //   this.currentlyCreating.items
+  // );
+  // if (!existingItem) {
+  //   Object.values(this.creatingOptions).forEach((c) => {
+  //     const existsInOther = findExistingItem(
+  //       xNoOffset + this.cameraOffset.x,
+  //       y - this.cameraOffset.y,
+  //       c.items
+  //     );
+  //     if (existsInOther) {
+  //       c.selectItem(existsInOther);
+  //       window.selectedItem = c.itemType;
+  //     }
+  //   });
+  // }
+  // if (shiftKey && existingItem === null) return;
+  // this.currentlyCreating.selectItem(existingItem || null, shiftKey);
+  // }
 
-    const coor1 = {
-      x: Math.min(this.dragSelect.x, xNoOffset) + this.cameraOffset.x,
-      y: Math.min(this.dragSelect.y, y) + this.cameraOffset.y,
-    };
-    const coor2 = {
-      x: Math.max(this.dragSelect.x, xNoOffset) + this.cameraOffset.x,
-      y: Math.max(this.dragSelect.y, y) + this.cameraOffset.y,
-    };
+  // selectMultipleItems(xNoOffset: number, y: number) {
+  //   if (!this.dragSelect) {
+  //     this.dragSelect = { x: xNoOffset, y };
+  //     return;
+  //   }
 
-    const existingItems = findExistingItems(
-      coor1,
-      coor2,
-      this.currentlyCreating.items
-    );
+  //   const coor1 = {
+  //     x: Math.min(this.dragSelect.x, xNoOffset) + this.cameraOffset.x,
+  //     y: Math.min(this.dragSelect.y, y) + this.cameraOffset.y,
+  //   };
+  //   const coor2 = {
+  //     x: Math.max(this.dragSelect.x, xNoOffset) + this.cameraOffset.x,
+  //     y: Math.max(this.dragSelect.y, y) + this.cameraOffset.y,
+  //   };
 
-    this.currentlyCreating.selectItems(existingItems);
-  }
+  //   const existingItems = findExistingItems(
+  //     coor1,
+  //     coor2,
+  //     this.currentlyCreating.items
+  //   );
+
+  //   this.currentlyCreating.selectItems(existingItems);
+  // }
 
   mouseDown(xNoOffset: number, y: number, shiftKey: boolean) {
     this.prevDrag = { x: xNoOffset, y };
-    this.selectOneItem(xNoOffset, y, shiftKey);
+    // this.selectOneItem(xNoOffset, y, shiftKey);
+    // this.creator.select();
 
     if (shiftKey) {
       this.dragSelect = { x: xNoOffset, y };
@@ -134,41 +143,114 @@ export class DevContentCreate {
   }
 
   mouseUp({ x: xNoOffset, y }: Coordinates, shiftKey: boolean) {
-    if (Math.abs(xNoOffset - (this.dragSelect?.x ?? 0)) > 5 && shiftKey) {
-      this.selectMultipleItems(xNoOffset, y);
-    }
-    this.prevDrag = null;
-    this.selectOneItem(xNoOffset, y, shiftKey);
+  //   if (Math.abs(xNoOffset - (this.dragSelect?.x ?? 0)) > 5 && shiftKey) {
+  //     this.selectMultipleItems(xNoOffset, y);
+  //   }
+  //   this.prevDrag = null;
+  //   this.selectOneItem(xNoOffset, y, shiftKey);
   }
 
   handleKeyEvent(action: ContentEvent, shiftKey?: boolean, coor?: Coordinates) {
     if (["plus", "minus", "delete", "duplicate"].includes(action)) {
-      this.currentlyCreating.handleEvent(action);
+      // this.currentlyCreating.handleEvent(action);
     }
 
     if (!coor) return;
     if (action === "create") {
-      this.currentlyCreating.handleEvent("create", {
+      const createCoor = {
         x: coor.x + this.cameraOffset.x,
         y: coor.y - this.cameraOffset.y,
-      });
+      };
     }
 
     if (action === "drag" && this.prevDrag) {
-      this.currentlyCreating.handleEvent(
-        "drag",
-        {
-          x: coor.x - this.prevDrag.x,
-          y: coor.y - this.prevDrag.y,
-        },
-        shiftKey
-      );
+      const dragOffset = {
+        x: coor.x - this.prevDrag.x,
+        y: coor.y - this.prevDrag.y,
+      };
+
+      // this.currentlyCreating.handleEvent("drag", dragOffset, shiftKey);
 
       this.prevDrag = { ...coor };
     }
   }
 
-  get currentlyCreating() {
-    return this.creatingOptions[window.selectedItem];
-  }
+  //   get currentlyCreating() {
+  //     return this.creatingOptions[window.selectedItem];
+  //   }
 }
+
+type Id = string;
+
+type EditingObjects = {
+  // objects: EditObj<any>[];
+  add: (obj: EditObj<any>) => void;
+  delete: (id: Id[]) => void;
+  move: (delta: Coordinates) => void;
+  select: (coor: Coordinates, objs: EditObj<any>[]) => Id[];
+  selected: Id[];
+};
+
+type EditObj<T> = {
+  id: Id;
+  classId: string;
+  center: Coordinates;
+  drawSelected: (
+    coor: T,
+    camOffset: Coordinates,
+    cxt: CanvasRenderingContext2D
+  ) => void;
+  select: (coor: Coordinates) => boolean;
+};
+
+const initPlatforms = (plats: StaticObject[]): EditObj<StaticObject>[] => {
+  return plats.map((p, i) => ({
+    id: `platform-${i}`,
+    center: { ...p.vector.position },
+    classId: "platform",
+    drawSelected: (obj, camOffset, cxt) => {
+      cxt.fillStyle = obj.color;
+      cxt.strokeStyle = "yellow";
+      cxt.lineWidth = 8;
+      cxt.strokeRect(
+        obj.vector.position.x - camOffset.x,
+        obj.vector.position.y + 4 + camOffset.y,
+        obj.vector.width,
+        obj.vector.height
+      );
+    },
+    select: (coors) => {
+      return false;
+    },
+  }));
+};
+
+class Creator implements EditingObjects {
+  selected = [];
+  // objects: EditObj<any>
+
+  constructor(man: ObjectManager) {
+    // this.objects = initPlatforms(man.platformManager.platforms);
+  }
+
+  add(obj: EditObj<any>) {}
+  delete(id: Id[]) {}
+  move(delta: Coordinates) {}
+  select(coor: Coordinates, objs: EditObj<any>[]) {
+    return [];
+  }
+  // selected = [],
+}
+
+// const initCreator = (man: ObjectManager): EditingObjects => {
+//   return {
+//     objects: initPlatforms(man.platformManager.platforms),
+//     add: (obj: EditObj<any>) => {},
+//     delete: (id: Id[]) => {},
+//     move: (delta: Coordinates) => {},
+//     select: (coor, objs) => {
+//       return [];
+//     },
+//     selected: [],
+//   };
+// };

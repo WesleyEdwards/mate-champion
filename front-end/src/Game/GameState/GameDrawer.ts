@@ -78,6 +78,6 @@ export class GameDrawer {
     cxt.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
     cxt.font = "60px Courier";
     cxt.fillStyle = "green";
-    cxt.fillText(message, (MAX_CANVAS_WIDTH / 3 + 40), MAX_CANVAS_HEIGHT / 2);
+    cxt.fillText(message, MAX_CANVAS_WIDTH / 3 + 40, MAX_CANVAS_HEIGHT / 2);
   }
 }

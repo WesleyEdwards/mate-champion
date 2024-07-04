@@ -22,11 +22,11 @@ export class PlayerVectorManager implements VectorMan {
   position: Coordinates = { ...playerConst.initPos };
 
   update(elapsedTime: number) {
-    this.prevPosX = this.position.x;
-    this.prevPosY = this.position.y;
-    this.position.x += this.velocity.x * elapsedTime;
-    this.position.y += this.velocity.y * elapsedTime;
-    this.coyoteTime += elapsedTime;
+    // this.prevPosX = this.position.x;
+    // this.prevPosY = this.position.y;
+    // this.position.x += this.velocity.x * elapsedTime;
+    // this.position.y += this.velocity.y * elapsedTime;
+    // this.coyoteTime += elapsedTime;
   }
 
   updateGravity(elapsedTime: number, isJumping: boolean) {

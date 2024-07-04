@@ -58,18 +58,9 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
-        <IconButton onClick={goBack}>
-          <ArrowBack />
-        </IconButton>
-        {score ? (
-          <Typography level="h2">Score: {score}</Typography>
-        ) : (
-          <Typography level="h2">Create Account</Typography>
-        )}
-        <div style={{ width: "2rem" }}></div>
+        {score > 0 && <Typography level="h2">Score: {score}</Typography>}
       </Stack>
-      <Divider sx={{ my: "1rem" }} />
-      <Stack style={{ gap: "1rem" }}>
+      <Stack sx={{ gap: "1rem", my: "1rem" }}>
         {score !== undefined && score !== 0 && (
           <Stack>
             <Typography>That&apos;s a new record for you!</Typography>
@@ -92,6 +83,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        <div></div>
         <Typography variant="soft" level="body-xs">
           Your email will be used in case you forget your password
         </Typography>

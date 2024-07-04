@@ -132,7 +132,7 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
     Promise.resolve(ids.map((id) => levelCache().levelInfo[id]));
 
   useEffect(() => {
-    refreshCache();
+    if (user) refreshCache();
   }, [user]);
 
   return {
