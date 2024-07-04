@@ -8,11 +8,10 @@ import {
   PlayerDirectionX,
   PlayerDirectionY,
 } from "../Game/Player/PlayerVectorManager";
-import { CharAction } from "../Game/models";
 import { CurrAndPrev } from "./state/helpers";
 
 export type Champ = {
-  queueActions: CharAction[];
+  queueActions: ChampAction[];
   // stoppedY: boolean;
   facing: {
     x: PlayerDirectionX;
@@ -26,14 +25,20 @@ export type Champ = {
   position: CurrAndPrev;
   action: {
     curr: CurrentChampAction | null;
-    prev: PlayerDescription;
+    // prev: PlayerDescription;
   };
   timer: {
     coyoteTime: number;
     spriteTimer: number;
   };
+  render: {
+    prev: ChampAssetDes;
+    curr: ChampAssetDes;
+  };
   gravityFactor: number | null;
 };
+
+export type ChampAssetDes = PlayerDescription | "rising" | "falling";
 
 export const champConst = {
   width: 64,
@@ -54,3 +59,11 @@ export const champConst = {
   },
   gravity: 0.004,
 } as const;
+
+export type ChampAction =
+  | "MoveRight"
+  | "MoveLeft"
+  | "Jump"
+  | "Duck"
+  | "StopX"
+  | { setY: number };

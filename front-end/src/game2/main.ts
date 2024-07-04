@@ -22,8 +22,11 @@ export function enterGameLoop1(params: {
   //   gameMode,
   //   setLevel
   // );
+  if (levels.length === 0) {
+    return;
+  }
 
-  const gameState: GameState1 = initGameState({ levels });
+  const gameState: GameState1 = initGameState({ firstLevel: levels[0] });
 
   function gameLoop(timeStamp: number) {
     if (window.stopLoop === true) {
@@ -36,8 +39,8 @@ export function enterGameLoop1(params: {
       return handleLose(gameState.stats.score);
     }
 
-    updateGs(gameState, timeStamp, window.pause);
-    renderGs(gameState, context);
+    updateGs(gameState, timeStamp, window.pause, levels);
+    renderGs(gameState, context, window.pause);
 
     requestAnimationFrame(gameLoop);
   }

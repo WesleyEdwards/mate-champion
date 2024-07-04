@@ -1,16 +1,26 @@
 import { GameState1 } from "../State1";
 import { Camera } from "../camera";
+import { renderFloor } from "../floor";
 import { HasPos } from "../state/helpers";
 import { renderBg } from "./background";
 import { renderCamera } from "./camera";
 import { renderPlayer } from "./champ";
 import { RenderFunH } from "./helpers";
 
-export const renderGs = (gs: GameState1, cxt: CanvasRenderingContext2D) => {
+export const renderGs = (
+  gs: GameState1,
+  cxt: CanvasRenderingContext2D,
+  pause: boolean
+) => {
+  if (pause) return;
   renderBg(cxt, gs.camera);
 
   renderItemWithPosition(gs.camera, renderCamera, cxt, gs.camera);
   renderItemWithPosition(gs.player, renderPlayer, cxt, gs.camera);
+
+  for (const f of gs.floors) {
+    renderItemWithPosition(f, renderFloor, cxt, gs.camera);
+  }
 };
 
 /**

@@ -1,15 +1,23 @@
+import { LevelInfo } from "../../Game/models";
 import { GameState1 } from "../State1";
+import { updateFloors } from "../floor";
 import { updateCamera } from "./camera";
 import { updatePlayer } from "./champ";
 import { updateKeys } from "./keys";
 
-export const updateGs = (gs: GameState1, timeStamp: number, pause: boolean) => {
+export const updateGs = (
+  gs: GameState1,
+  timeStamp: number,
+  pause: boolean,
+  levels: LevelInfo[]
+) => {
   if (pause) return;
   updateTime(gs.time, timeStamp);
   updateKeys(gs.keys, gs.player);
 
   updateCamera(gs.camera, gs.time.deltaT, gs.player);
 
+  updateFloors(gs.floors, gs.player);
   updatePlayer(gs.player, gs.time.deltaT);
 };
 

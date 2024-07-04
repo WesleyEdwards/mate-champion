@@ -1,31 +1,37 @@
 import { PlayerDescription } from "../../Game/Player/PlayerSpriteInfo";
+import {
+  PlayerAction,
+  PlayerMove,
+} from "../../Game/Player/PlayerVectorManager";
 import { Textures } from "../../gameAssets/textures";
-import { Champ, champConst } from "../champ";
+import { Champ, ChampAssetDes, champConst } from "../champ";
 import { AssetInfo, RenderFunH, SpriteAssetInfo } from "./helpers";
 
 export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
-  const assetToDraw = champSpritesInfo["none-none-none"];
-  if (!assetToDraw) return;
+  const asset = champAssets[p.render.curr];
+
+  if (!asset) return;
 
   const w = champConst.render.imageWidth;
 
   const whichSprite =
-    Math.round(p.timer.spriteTimer / assetToDraw.cycleTime) %
-    assetToDraw.imgCount;
+    Math.round(p.timer.spriteTimer / asset.cycleTime) % asset.imgCount;
 
-  const sx =
-    champConst.render.imageWidth * whichSprite + assetToDraw.startX * w;
+  if (p.facing.x === "left") {
+    cxt.scale(-1, 1);
+  }
+
+  const sx = champConst.render.imageWidth * whichSprite + asset.startX * w;
 
   const drawImageWidth = 300; // this allows room for the attacks to be drawn
   const drawImageHeight = drawImageWidth * (105 / 200);
-  const sWidth = drawImageWidth;
 
   cxt.drawImage(
-    assetToDraw.image(),
+    asset.image(),
     sx,
     0,
     w,
-    assetToDraw.image().height,
+    asset.image().height,
     -drawImageWidth / 2,
     -(drawImageHeight - champConst.height / 2),
     drawImageWidth,
@@ -34,7 +40,7 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
   cxt.fillRect(-3, -3, 3, 3);
 };
 
-export const champSpritesInfo: SpriteAssetInfo<PlayerDescription> = {
+const champAssets: SpriteAssetInfo<ChampAssetDes> = {
   "none-none-none": {
     image: () => Textures().champ.idle,
     imgCount: 4,
@@ -108,9 +114,6 @@ export const champSpritesInfo: SpriteAssetInfo<PlayerDescription> = {
     startX: 10,
     cycleTime: champConst.shankTime / 5,
   },
-};
-
-export const champSpriteJumping: SpriteAssetInfo<"rising" | "falling"> = {
   rising: {
     image: () => Textures().champ.jump,
     imgCount: 1,
@@ -123,4 +126,29 @@ export const champSpriteJumping: SpriteAssetInfo<"rising" | "falling"> = {
     startX: 1,
     cycleTime: 100,
   },
+};
+
+export const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
+  const directionY = p.facing.y === "down" ? "none" : p.facing.y;
+  const action: PlayerAction = (() => {
+    const currAction = p.action.curr;
+    if (!currAction) return "none";
+    if (currAction.cooling && currAction.action !== "shoot") {
+      return "none";
+    }
+    return currAction.action;
+  })();
+
+  const move: PlayerMove = p.velocity.curr.x === 0 ? "none" : "walk";
+
+  const inAir =
+    p.velocity.curr.y > 0 ? "falling" : p.velocity.curr.y < 0 ? "rising" : null;
+
+  const sprite: PlayerDescription = `${directionY}-${action}-${move}`;
+
+  if (inAir && !sprite.includes("melee")) {
+    return inAir;
+  }
+
+  return sprite;
 };
