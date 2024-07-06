@@ -4,7 +4,7 @@ import { Coordinates, FullLevelInfo, Keys } from "../Game/models";
 import { Camera } from "./camera";
 import { Champ } from "./champ";
 import { FloorState, floorConst } from "./floor";
-import { emptyCoors } from "./state/helpers";
+import { emptyCoors, emptyTime } from "./state/helpers";
 
 export type GameState1 = {
   currStateOfGame: WinState;
@@ -31,7 +31,7 @@ export const initGameState = ({
     position: emptyCoors(),
     velocity: emptyCoors(),
     time: {
-      idleTime: 0,
+      idleTime: emptyTime(true),
     },
   },
   time: {
@@ -59,10 +59,10 @@ export const initGameState = ({
     },
     action: null,
     timer: {
-      sprite: { countUp: true, val: 0 },
-      coyote: { countUp: true, val: 0 },
-      actionTimeRemain: { countUp: false, val: 0 },
-      actionCoolDownRemain: { countUp: false, val: 0 },
+      sprite: emptyTime(true),
+      coyote: emptyTime(true),
+      actionTimeRemain: emptyTime(false),
+      actionCoolDownRemain: emptyTime(false),
     },
     render: {
       prev: "falling",

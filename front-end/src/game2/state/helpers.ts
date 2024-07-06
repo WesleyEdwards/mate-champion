@@ -10,6 +10,10 @@ export const emptyCoors = (): Coordinates => {
   return { x: 0, y: 0 };
 };
 
+export const emptyTime = (countUp: boolean): Timer => {
+  return { countUp, val: 0 };
+};
+
 const updateCurr = (currAndPrev: CurrAndPrev) => {
   currAndPrev.prev.x = currAndPrev.curr.x;
   currAndPrev.prev.y = currAndPrev.curr.y;

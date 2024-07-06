@@ -3,16 +3,12 @@ import { Camera } from "../camera";
 import { Champ } from "../champ";
 import { updateTimers, updateWithTime } from "./helpers";
 
-export const updateCamera = (
-  cam: Camera,
-  deltaT: number,
-  champ: Champ
-) => {
+export const updateCamera = (cam: Camera, deltaT: number, champ: Champ) => {
   if (champ.velocity.curr.x !== 0 || champ.velocity.curr.y !== 0) {
-    cam.time.idleTime = 0;
+    cam.time.idleTime.val = 0;
   }
 
-  if (cam.time.idleTime > 3000) {
+  if (cam.time.idleTime.val > 3000) {
     return;
   }
 

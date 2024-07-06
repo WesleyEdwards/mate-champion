@@ -2,7 +2,7 @@ import { LevelInfo } from "../../Game/models";
 import { GameState1 } from "../State1";
 import { updateFloors } from "../floor";
 import { updateCamera } from "./camera";
-import { updatePlayer } from "./champ";
+import { updatePlayer } from "./champ/champ";
 import { updateKeys } from "./keys";
 
 export const updateGs = (

@@ -1,43 +1,6 @@
-import { Champ, ChampAction, champConst } from "../champ";
-import { getChampSpritesInfo } from "../render/champ";
-import { updatePosAndVel, updateTimers } from "./helpers";
+import { Champ, ChampAction, champConst } from "../../champ";
 
-export const updatePlayer = (p: Champ, deltaT: number) => {
-  updatePosAndVel(p.position, p.velocity, deltaT);
-  updateTimers(p.timer, deltaT);
-
-  // update with gravity
-  if (p.gravityFactor) {
-    p.gravityFactor *= champConst.jumpGravityFrameDecrease;
-  }
-  if (p.velocity.curr.y > 0 || !p.jump.isJumping) {
-    p.gravityFactor = null;
-  }
-  if (p.timer.coyote.val > champConst.maxCoyoteTime || p.velocity.curr.y < 0) {
-    const jumpFactor = p.gravityFactor
-      ? (1 - p.gravityFactor) * champConst.gravity
-      : champConst.gravity;
-
-    p.velocity.curr.y = p.velocity.curr.y + jumpFactor * deltaT;
-  }
-
-  handleActions(p);
-  updateRenderInfo(p);
-  return;
-};
-
-const updateRenderInfo = (p: Champ) => {
-  const currRender = getChampSpritesInfo(p);
-
-  if (currRender !== p.render.prev) {
-    p.timer.sprite.val = 0;
-  }
-
-  p.render.prev = p.render.curr;
-  p.render.curr = currRender;
-};
-
-const handleActions = (p: Champ) => {
+export const handleChampActions = (p: Champ) => {
   cleanActions(p);
   for (const a of p.queueActions) {
     processActionRaw(p, a);

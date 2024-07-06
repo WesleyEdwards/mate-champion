@@ -127,29 +127,3 @@ const champAssets: SpriteAssetInfo<ChampAssetDes> = {
     cycleTime: 100,
   },
 };
-
-export const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
-  const directionY = p.facing.y === "down" ? "none" : p.facing.y;
-  const action = (): PlayerAction => {
-    if (!p.action) return "none";
-    if (p.timer.actionTimeRemain.val <= 0) {
-      return "none";
-    } else {
-    }
-    return p.action;
-  };
-
-  const move: PlayerMove = p.velocity.curr.x === 0 ? "none" : "walk";
-
-  const inAir =
-    p.velocity.curr.y > 0 ? "falling" : p.velocity.curr.y < 0 ? "rising" : null;
-
-  const sprite: PlayerDescription = `${directionY}-${action()}-${move}`;
-  // console.log(sprite);
-
-  if (inAir && !sprite.includes("melee")) {
-    return inAir;
-  }
-
-  return sprite;
-};
