@@ -1,4 +1,5 @@
 import { Coordinates } from "../../Game/models";
+import { Timer } from "../champ";
 
 export type CurrAndPrev = {
   prev: Coordinates;
@@ -50,11 +51,14 @@ export type HasPos = {
   position: Coordinates | CurrAndPrev;
 };
 
-export const updateTimers = (
-  timers: Record<string, number>,
-  deltaT: number
-) => {
+export const updateTimers = (timers: Record<string, Timer>, deltaT: number) => {
   for (const obj in timers) {
-    timers[obj] += deltaT;
+    const curr = timers[obj];
+
+    if (curr.countUp) {
+      curr.val += deltaT;
+    } else if (curr.val > 0) {
+      curr.val -= deltaT;
+    }
   }
 };

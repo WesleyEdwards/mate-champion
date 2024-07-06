@@ -57,12 +57,12 @@ export const initGameState = ({
       curr: emptyCoors(),
       prev: emptyCoors(),
     },
-    action: {
-      curr: null,
-    },
+    action: null,
     timer: {
-      spriteTimer: 0,
-      coyoteTime: 0,
+      sprite: { countUp: true, val: 0 },
+      coyote: { countUp: true, val: 0 },
+      actionTimeRemain: { countUp: false, val: 0 },
+      actionCoolDownRemain: { countUp: false, val: 0 },
     },
     render: {
       prev: "falling",

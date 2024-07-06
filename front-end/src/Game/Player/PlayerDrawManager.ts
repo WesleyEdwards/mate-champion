@@ -34,9 +34,9 @@ export class PlayerDrawManager {
     const directionY = vector.facingY === "down" ? "none" : vector.facingY;
     const action: PlayerAction = (() => {
       if (!currAction) return "none";
-      if (currAction.cooling && currAction.action !== "shoot") {
-        return "none";
-      }
+      // if (currAction.cooling && currAction.action !== "shoot") {
+      //   return "none";
+      // }
       return currAction.action;
     })();
     const move: PlayerMove = vector.velocity.x === 0 ? "none" : "walk";

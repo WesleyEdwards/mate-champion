@@ -1,9 +1,9 @@
 import { PlayerDescription } from "../../Game/Player/PlayerSpriteInfo";
+import { Textures } from "../../gameAssets/textures";
 import {
   PlayerAction,
   PlayerMove,
 } from "../../Game/Player/PlayerVectorManager";
-import { Textures } from "../../gameAssets/textures";
 import { Champ, ChampAssetDes, champConst } from "../champ";
 import { AssetInfo, RenderFunH, SpriteAssetInfo } from "./helpers";
 
@@ -15,7 +15,7 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
   const w = champConst.render.imageWidth;
 
   const whichSprite =
-    Math.round(p.timer.spriteTimer / asset.cycleTime) % asset.imgCount;
+    Math.round(p.timer.sprite.val / asset.cycleTime) % asset.imgCount;
 
   if (p.facing.x === "left") {
     cxt.scale(-1, 1);
@@ -69,13 +69,13 @@ const champAssets: SpriteAssetInfo<ChampAssetDes> = {
     image: () => Textures().champ.meleeAttack,
     imgCount: 5,
     startX: 0,
-    cycleTime: champConst.shankTime / 5,
+    cycleTime: champConst.melee.time / 5,
   },
   "none-melee-walk": {
     image: () => Textures().champ.meleeAttack,
     imgCount: 5,
     startX: 0,
-    cycleTime: champConst.shankTime / 5,
+    cycleTime: champConst.melee.time / 5,
   },
 
   "up-none-none": {
@@ -106,13 +106,13 @@ const champAssets: SpriteAssetInfo<ChampAssetDes> = {
     image: () => Textures().champ.meleeAttack,
     imgCount: 5,
     startX: 10,
-    cycleTime: champConst.shankTime / 5,
+    cycleTime: champConst.melee.time / 5,
   },
   "up-melee-walk": {
     image: () => Textures().champ.meleeAttack,
     imgCount: 5,
     startX: 10,
-    cycleTime: champConst.shankTime / 5,
+    cycleTime: champConst.melee.time / 5,
   },
   rising: {
     image: () => Textures().champ.jump,
@@ -130,21 +130,22 @@ const champAssets: SpriteAssetInfo<ChampAssetDes> = {
 
 export const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
   const directionY = p.facing.y === "down" ? "none" : p.facing.y;
-  const action: PlayerAction = (() => {
-    const currAction = p.action.curr;
-    if (!currAction) return "none";
-    if (currAction.cooling && currAction.action !== "shoot") {
+  const action = (): PlayerAction => {
+    if (!p.action) return "none";
+    if (p.timer.actionTimeRemain.val <= 0) {
       return "none";
+    } else {
     }
-    return currAction.action;
-  })();
+    return p.action;
+  };
 
   const move: PlayerMove = p.velocity.curr.x === 0 ? "none" : "walk";
 
   const inAir =
     p.velocity.curr.y > 0 ? "falling" : p.velocity.curr.y < 0 ? "rising" : null;
 
-  const sprite: PlayerDescription = `${directionY}-${action}-${move}`;
+  const sprite: PlayerDescription = `${directionY}-${action()}-${move}`;
+  // console.log(sprite);
 
   if (inAir && !sprite.includes("melee")) {
     return inAir;

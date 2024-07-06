@@ -5,6 +5,7 @@
 import { CurrentChampAction } from "../Game/Player/Player";
 import { PlayerDescription } from "../Game/Player/PlayerSpriteInfo";
 import {
+  PlayerAction,
   PlayerDirectionX,
   PlayerDirectionY,
 } from "../Game/Player/PlayerVectorManager";
@@ -23,13 +24,12 @@ export type Champ = {
   };
   velocity: CurrAndPrev;
   position: CurrAndPrev;
-  action: {
-    curr: CurrentChampAction | null;
-    // prev: PlayerDescription;
-  };
+  action: "shoot" | "melee" | null;
   timer: {
-    coyoteTime: number;
-    spriteTimer: number;
+    sprite: Timer;
+    coyote: Timer;
+    actionTimeRemain: Timer; // Time left and cool down are both decreased always
+    actionCoolDownRemain: Timer; // When < 0, the player can take another action
   };
   render: {
     prev: ChampAssetDes;
@@ -38,6 +38,8 @@ export type Champ = {
   gravityFactor: number | null;
 };
 
+export type Timer = { countUp: boolean; val: number };
+
 export type ChampAssetDes = PlayerDescription | "rising" | "falling";
 
 export const champConst = {
@@ -45,9 +47,11 @@ export const champConst = {
   height: 64,
   moveSpeed: 0.5,
   jumpSpeed: -0.85,
-  shankTime: 250,
-  meleeCoolDown: 275,
-  meleeReach: 120,
+  melee: {
+    time: 250,
+    coolDown: 275,
+    reach: 120,
+  },
   shootCoolDown: 200,
   initPos: { x: 400, y: 400 },
   maxCoyoteTime: 80,
@@ -66,4 +70,5 @@ export type ChampAction =
   | "Jump"
   | "Duck"
   | "StopX"
+  | "Melee"
   | { setY: number };

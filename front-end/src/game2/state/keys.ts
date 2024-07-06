@@ -19,5 +19,7 @@ export const updateKeys = (keys: Keys, player: Champ) => {
   if (keys.left) {
     player.queueActions.push("MoveLeft");
   }
-  // if (keys.right) this.move("MoveRight");
+  if (keys.shank) {
+    player.queueActions.push("Melee");
+  }
 };

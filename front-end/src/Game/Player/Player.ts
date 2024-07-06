@@ -15,8 +15,6 @@ type NotNone<T> = Exclude<T, "none">;
 
 export type CurrentChampAction = {
   action: NotNone<PlayerAction>;
-  timer: 0;
-  cooling: boolean;
 };
 export class Player implements Character {
   currAction: CurrentChampAction | null = null;
@@ -52,7 +50,7 @@ export class Player implements Character {
       this.vector.facingY = "none";
     }
 
-    if (this.currAction) this.currAction.timer += elapsedTime;
+    // if (this.currAction) this.currAction.timer += elapsedTime;
 
     this.checkActions(keys);
 
@@ -71,23 +69,23 @@ export class Player implements Character {
       return;
     }
 
-    if (this.currAction.cooling) {
+    // if (this.currAction.cooling) {
       const coolDownTime =
         this.currAction.action === "melee"
           ? playerConst.meleeCoolDown
           : playerConst.shootCoolDown;
-      if (this.currAction.timer > coolDownTime) {
+      // if (this.currAction.timer > coolDownTime) {
         this.currAction = null;
-      }
-      return;
-    }
+      // }
+      // return;
+    // }
 
-    if (this.currAction.action === "melee") {
-      if (this.currAction.timer > playerConst.shankTime) {
-        this.setCooling();
-      }
-      return;
-    }
+    // if (this.currAction.action === "melee") {
+    //   if (this.currAction.timer > playerConst.shankTime) {
+    //     this.setCooling();
+    //   }
+    //   return;
+    // }
   }
 
   move(action: CharAction) {
@@ -104,13 +102,13 @@ export class Player implements Character {
 
   get weaponPosCurr(): Coordinates | undefined {
     if (!this.currAction) return undefined;
-    if (this.currAction.cooling) return undefined;
+    // if (this.currAction.cooling) return undefined;
     if (this.currAction.action !== "melee") return undefined;
     return this.vector.weaponPosCurr;
   }
 
   takeAction(action: NotNone<PlayerAction>, keys: Keys) {
-    this.currAction = { action, timer: 0, cooling: false };
+    // this.currAction = { action, timer: 0, cooling: false };
     keys.shank = false;
     keys.toShank = 0;
     keys.shoot = false;
@@ -118,18 +116,18 @@ export class Player implements Character {
   }
 
   get shooting() {
-    if (this.currAction?.action === "shoot" && !this.currAction.cooling) {
-      this.setCooling();
-      return true;
-    }
+    // if (this.currAction?.action === "shoot" && !this.currAction.cooling) {
+    //   this.setCooling();
+    //   return true;
+    // }
     return false;
   }
 
   setCooling() {
-    if (this.currAction) {
-      this.currAction.cooling = true;
-      this.currAction.timer = 0;
-    }
+    // if (this.currAction) {
+    //   this.currAction.cooling = true;
+    //   this.currAction.timer = 0;
+    // }
   }
 
   get position() {
