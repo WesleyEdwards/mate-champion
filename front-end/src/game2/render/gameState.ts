@@ -14,9 +14,8 @@ export const renderGs = (
   pause: boolean
 ) => {
   if (pause) return;
-  renderBg(cxt, gs.camera);
 
-  renderItemWithPosition(gs.camera, renderCamera, cxt, gs.camera);
+  renderBg(cxt, gs.camera);
   renderItemWithPosition(gs.player, renderPlayer, cxt, gs.camera);
 
   for (const f of gs.floors) {
