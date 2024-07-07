@@ -1,5 +1,6 @@
 import { Coordinates } from "../Game/models";
 import { Champ, champConst } from "./champ";
+import { PlatformState } from "./platform";
 import { RenderFunH } from "./render/helpers";
 
 export type FloorState = {
@@ -28,10 +29,10 @@ export const updateFloors = (floors: FloorState[], champ: Champ) => {
   }
 };
 
-function calcPlatPlayerCollision(floor: FloorState, champ: Champ) {
-  // if (!platform.isFloor && champ.vector.facingY === "down") {
-  //   return;
-  // }
+export function calcPlatPlayerCollision(
+  floor: FloorState | PlatformState,
+  champ: Champ
+) {
   const betweenCenterAndEdgeX = champConst.width / 2;
   const cx = champ.position.curr.x;
   if (
@@ -46,8 +47,8 @@ function calcPlatPlayerCollision(floor: FloorState, champ: Champ) {
   const previous = champ.position.prev.y + betweenCenterAndBottom;
   const recent = champ.position.curr.y + betweenCenterAndBottom;
 
-  if (recent >= floorConst.floorY && previous <= floor.position.y) {
+  if (recent >= floor.position.y && previous <= floor.position.y) {
     const setY = floor.position.y - betweenCenterAndBottom;
-    champ.queueActions.push({ setY });
+    champ.queueActions.push({ name: "setY", y: setY });
   }
 }

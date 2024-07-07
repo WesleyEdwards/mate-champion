@@ -1,6 +1,7 @@
 import { LevelInfo } from "../../Game/models";
 import { GameState1 } from "../State1";
 import { updateFloors } from "../floor";
+import { updatePlatforms } from "../platform";
 import { updateCamera } from "./camera";
 import { updatePlayer } from "./champ/champ";
 import { updateKeys } from "./keys";
@@ -18,6 +19,8 @@ export const updateGs = (
   updateCamera(gs.camera, gs.time.deltaT, gs.player);
 
   updateFloors(gs.floors, gs.player);
+  updatePlatforms(gs.platforms, gs.player);
+
   updatePlayer(gs.player, gs.time.deltaT);
 };
 

@@ -1,6 +1,7 @@
 import { GameState1 } from "../State1";
 import { Camera } from "../camera";
 import { renderFloor } from "../floor";
+import { renderPlatform } from "../platform";
 import { HasPos } from "../state/helpers";
 import { renderBg } from "./background";
 import { renderCamera } from "./camera";
@@ -20,6 +21,10 @@ export const renderGs = (
 
   for (const f of gs.floors) {
     renderItemWithPosition(f, renderFloor, cxt, gs.camera);
+  }
+
+  for (const p of gs.platforms) {
+    renderItemWithPosition(p, renderPlatform, cxt, gs.camera);
   }
 };
 

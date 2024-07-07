@@ -41,37 +41,37 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
 };
 
 const champAssets: SpriteAssetInfo<ChampAssetDes> = {
-  "none-none-none": {
+  "hor-none-none": {
     image: () => Textures().champ.idle,
     imgCount: 4,
     startX: 0,
     cycleTime: 1000,
   },
-  "none-none-walk": {
+  "hor-none-walk": {
     image: () => Textures().champ.walk,
     imgCount: 8,
     startX: 0,
     cycleTime: champConst.render.walkCycleTime,
   },
-  "none-shoot-none": {
+  "hor-shoot-none": {
     image: () => Textures().champ.rangedAttack,
     imgCount: 6,
     startX: 0,
     cycleTime: champConst.shootCoolDown / 6,
   },
-  "none-shoot-walk": {
+  "hor-shoot-walk": {
     image: () => Textures().champ.rangedAttack,
     imgCount: 6,
     startX: 0,
     cycleTime: champConst.shootCoolDown / 6,
   },
-  "none-melee-none": {
+  "hor-melee-none": {
     image: () => Textures().champ.meleeAttack,
     imgCount: 5,
     startX: 0,
     cycleTime: champConst.melee.time / 5,
   },
-  "none-melee-walk": {
+  "hor-melee-walk": {
     image: () => Textures().champ.meleeAttack,
     imgCount: 5,
     startX: 0,

@@ -3,7 +3,7 @@ import {
   PlayerAction,
   PlayerMove,
 } from "../../../Game/Player/PlayerVectorManager";
-import { Champ, ChampAssetDes } from "../../champ";
+import { Champ, ChampAssetDes, ChampDescription } from "../../champ";
 
 export const updateChampSpriteInfo = (p: Champ) => {
   const currRender = getChampSpritesInfo(p);
@@ -16,7 +16,7 @@ export const updateChampSpriteInfo = (p: Champ) => {
 };
 
 const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
-  const directionY = p.facing.y === "down" ? "none" : p.facing.y;
+  const directionY = p.facing.y === "down" ? "hor" : p.facing.y;
   const action = (): PlayerAction => {
     if (!p.action) return "none";
     if (p.timer.actionTimeRemain.val <= 0) {
@@ -31,7 +31,7 @@ const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
   const inAir =
     p.velocity.curr.y > 0 ? "falling" : p.velocity.curr.y < 0 ? "rising" : null;
 
-  const sprite: PlayerDescription = `${directionY}-${action()}-${move}`;
+  const sprite: ChampDescription = `${directionY}-${action()}-${move}`;
 
   if (inAir && !sprite.includes("melee")) {
     return inAir;

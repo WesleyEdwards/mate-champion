@@ -8,6 +8,7 @@ import {
   PlayerAction,
   PlayerDirectionX,
   PlayerDirectionY,
+  PlayerMove,
 } from "../Game/Player/PlayerVectorManager";
 import { CurrAndPrev } from "./state/helpers";
 
@@ -15,8 +16,8 @@ export type Champ = {
   queueActions: ChampAction[];
   // stoppedY: boolean;
   facing: {
-    x: PlayerDirectionX;
-    y: PlayerDirectionY;
+    x: ChampDirectionX;
+    y: ChampDirectionY;
   };
   jump: {
     jumps: number;
@@ -40,7 +41,11 @@ export type Champ = {
 
 export type Timer = { countUp: boolean; val: number };
 
-export type ChampAssetDes = PlayerDescription | "rising" | "falling";
+export type ChampAssetDes = ChampDescription | "rising" | "falling";
+
+type DirY = "hor" | "up";
+
+export type ChampDescription = `${DirY}-${PlayerAction}-${"walk" | "none"}`;
 
 export const champConst = {
   width: 64,
@@ -64,11 +69,46 @@ export const champConst = {
   gravity: 0.004,
 } as const;
 
+// export type ChampAction =
+//   | "MoveRight"
+//   | "MoveLeft"
+//   | "Jump"
+//   | "Duck"
+//   | "StopX"
+//   | "Melee"
+//   | { setFacing: "up" | "down" | "hor" }
+//   | { setY: number };
+
+export type ChampDirectionY = "up" | "down" | "hor";
+export type ChampDirectionX = "left" | "right" | "none";
+
+export type PossibleAction =
+  | "moveX"
+  | "stopX"
+  | "jump"
+  | "melee"
+  | "setFacingY"
+  | "setY";
+
 export type ChampAction =
-  | "MoveRight"
-  | "MoveLeft"
-  | "Jump"
-  | "Duck"
-  | "StopX"
-  | "Melee"
-  | { setY: number };
+  | { name: "moveX"; dir: "left" | "right" }
+  | { name: "stopX" }
+  | { name: "jump" }
+  | { name: "melee" }
+  | { name: "jump" }
+  | { name: "setFacingY"; dir: ChampDirectionY }
+  | { name: "setY"; y: number };
+
+export type PossibleActionToChamp<T extends PossibleAction> = T extends "moveX"
+  ? { name: "moveX"; dir: "left" | "right" }
+  : T extends "jump"
+  ? { name: "jump" }
+  : T extends "stopX"
+  ? { name: "stopX" }
+  : T extends "melee"
+  ? { name: "melee" }
+  : T extends "setFacingY"
+  ? { name: "setFacingY"; dir: ChampDirectionY }
+  : T extends "setY"
+  ? { name: "setY"; y: number }
+  : never;

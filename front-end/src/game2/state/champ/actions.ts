@@ -1,16 +1,25 @@
-import { Champ, ChampAction, champConst } from "../../champ";
+import _ from "lodash";
+import {
+  Champ,
+  ChampAction,
+  PossibleAction,
+  PossibleActionToChamp,
+  champConst,
+} from "../../champ";
 
 export const handleChampActions = (p: Champ) => {
   cleanActions(p);
-  for (const a of p.queueActions) {
-    processActionRaw(p, a);
+
+  if (!queuedContains(p, "moveX")) {
+    processActionRaw(p, { name: "stopX" });
   }
 
-  const isMovingX =
-    p.queueActions.includes("MoveLeft") || p.queueActions.includes("MoveRight");
+  if (!queuedContains(p, "setFacingY")) {
+    processActionRaw(p, { name: "setFacingY", dir: "hor" });
+  }
 
-  if (!isMovingX) {
-    processActionRaw(p, "StopX");
+  for (const a of p.queueActions) {
+    processActionRaw(p, a);
   }
 
   p.queueActions = [];
@@ -19,68 +28,69 @@ export const handleChampActions = (p: Champ) => {
 const cleanActions = (p: Champ) => {
   // A list of filters to find actions that are NOT allowed
   const notAllowedFilter = p.queueActions.reduce<
-    ((act: ChampAction) => boolean)[]
+    ((act: PossibleAction) => boolean)[]
   >((acc, curr) => {
-    if (curr === "Jump") {
+    if (curr.name === "jump") {
       const allowedToJump = p.velocity.curr.y === 0 || p.jump.jumps === 0;
       if (allowedToJump) {
-        acc.push((a) => isSetYAct(a));
+        acc.push((a) => a === "setY");
       } else {
-        acc.push((a) => a === "Jump");
+        acc.push((a) => a === "jump");
       }
     }
-    if (curr === "Melee") {
+    if (curr.name === "melee") {
       if (p.timer.actionCoolDownRemain.val > 0) {
-        acc.push((a) => a === "Melee");
+        acc.push((a) => a === "melee");
       }
     }
     return acc;
   }, []);
 
   for (const n of notAllowedFilter) {
-    p.queueActions = p.queueActions.filter((a) => !n(a));
+    p.queueActions = p.queueActions.filter((a) => !n(a.name));
   }
 };
 
 const processActionRaw = (champ: Champ, action: ChampAction) => {
-  const acts: Record<StringAction, (p: Champ) => void> = {
-    MoveRight: (p) => {
-      p.velocity.curr.x = champConst.moveSpeed;
-      p.facing.x = "right";
-    },
-    MoveLeft: (p) => {
-      p.velocity.curr.x = -champConst.moveSpeed;
-      p.facing.x = "left";
-    },
-    Jump: (p) => {
-      p.velocity.curr.y = champConst.jumpSpeed;
-      p.position.curr.y -= 1;
-      p.gravityFactor = champConst.jumpGravityFactor;
-      p.jump.jumps += 1;
-    },
-    Duck: (p) => {},
-    StopX: (p) => {
-      p.velocity.curr.x = 0;
-    },
-    Melee: (p) => {
-      p.action = "melee";
-      p.timer.actionTimeRemain.val = champConst.melee.time;
-      p.timer.actionCoolDownRemain.val =
-        champConst.melee.coolDown + champConst.melee.time;
-    },
-  };
-
-  if (isSetYAct(action)) {
-    champ.position.curr.y = action.setY;
-    champ.velocity.curr.y = 0;
-    champ.timer.coyote.val = 0;
-  } else {
-    acts[action](champ);
-  }
+  processActionMap[action.name](champ, action as never);
 };
 
-type StringAction = Exclude<ChampAction, { setY: number }>;
+const processActionMap: {
+  [K in PossibleAction]: (p: Champ, act: PossibleActionToChamp<K>) => void;
+} = {
+  moveX: (p, act) => {
+    if (act.dir === "left") {
+      p.velocity.curr.x = -champConst.moveSpeed;
+    } else {
+      p.velocity.curr.x = champConst.moveSpeed;
+    }
+    p.facing.x = act.dir;
+  },
+  stopX: (p, _) => {
+    p.velocity.curr.x = 0;
+  },
+  jump: (p, _) => {
+    p.velocity.curr.y = champConst.jumpSpeed;
+    p.position.curr.y -= 1;
+    p.gravityFactor = champConst.jumpGravityFactor;
+    p.jump.jumps += 1;
+  },
+  melee: (p, _) => {
+    p.action = "melee";
+    p.timer.actionTimeRemain.val = champConst.melee.time;
+    p.timer.actionCoolDownRemain.val =
+      champConst.melee.coolDown + champConst.melee.time;
+  },
+  setFacingY: (p, act) => {
+    p.facing.y = act.dir;
+  },
+  setY: (p, act) => {
+    p.position.curr.y = act.y;
+    p.velocity.curr.y = 0;
+    p.timer.coyote.val = 0;
+  },
+};
 
-export const isSetYAct = (a: ChampAction): a is { setY: number } => {
-  return typeof a !== "string";
+const queuedContains = (p: Champ, act: PossibleAction): boolean => {
+  return p.queueActions.some((a) => a.name === act);
 };

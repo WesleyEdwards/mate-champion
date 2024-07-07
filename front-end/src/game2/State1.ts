@@ -4,6 +4,7 @@ import { Coordinates, FullLevelInfo, Keys } from "../Game/models";
 import { Camera } from "./camera";
 import { Champ } from "./champ";
 import { FloorState, floorConst } from "./floor";
+import { PlatformState } from "./platform";
 import { emptyCoors, emptyTime } from "./state/helpers";
 
 export type GameState1 = {
@@ -18,6 +19,7 @@ export type GameState1 = {
   };
   player: Champ;
   floors: FloorState[];
+  platforms: PlatformState[];
   keys: Keys;
 };
 
@@ -45,7 +47,7 @@ export const initGameState = ({
     queueActions: [],
     facing: {
       x: "right",
-      y: "none",
+      y: "hor",
     },
     gravityFactor: null,
     jump: { jumps: 0, isJumping: false },
@@ -74,6 +76,12 @@ export const initGameState = ({
     position: { x: f.x, y: floorConst.floorY },
     widthHeight: { x: f.width, y: floorConst.floorHeight },
   })),
+  platforms: firstLevel.platforms.map((p) => ({
+    color: p.color,
+    position: { x: p.x, y: p.y },
+    widthHeight: { x: p.width, y: p.height },
+  })),
+
   keys: addEventListeners(() => {
     window.pause = true;
     console.log("Paused");

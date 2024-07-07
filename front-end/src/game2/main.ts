@@ -27,12 +27,6 @@ export function enterGameLoop1(params: {
 
   const gameState: GameState1 = initGameState({ firstLevel: levels[0] });
 
-  // let fps = 20;
-  // let fpsInterval = 1000 / fps;
-  // let then = Date.now();
-  // let startTime = then;
-  // let frameCount = 0;
-
   function gameLoop(timeStamp: number) {
     if (window.stopLoop === true) {
       // gameState.removeSetUi();
@@ -44,13 +38,6 @@ export function enterGameLoop1(params: {
       return handleLose(gameState.stats.score);
     }
 
-    // let now = Date.now();
-    // let elapsed = now - then;
-    // if (elapsed > fpsInterval) {
-    // then = now - (elapsed % fpsInterval);
-    // let sinceStart = now - startTime;
-    // let currentFps =
-    // Math.round((1000 / (sinceStart / ++frameCount)) * 100) / 100;
     updateGs(gameState, timeStamp, window.pause, levels);
     renderGs(gameState, context, window.pause);
 
@@ -70,3 +57,17 @@ export function enterGameLoop1(params: {
 
   startGame();
 }
+
+// let fps = 20;
+// let fpsInterval = 1000 / fps;
+// let then = Date.now();
+// let startTime = then;
+// let frameCount = 0;
+
+// let now = Date.now();
+// let elapsed = now - then;
+// if (elapsed > fpsInterval) {
+// then = now - (elapsed % fpsInterval);
+// let sinceStart = now - startTime;
+// let currentFps =
+// Math.round((1000 / (sinceStart / ++frameCount)) * 100) / 100;
