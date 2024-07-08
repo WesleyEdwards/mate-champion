@@ -4,7 +4,7 @@ import { Champ } from "../champ";
 import { updateTimers, updateWithTime } from "./helpers";
 
 export const updateCamera = (cam: Camera, deltaT: number, champ: Champ) => {
-  if (champ.velocity.curr.x !== 0 || champ.velocity.curr.y !== 0) {
+  if (champ.velocity.x !== 0 || champ.velocity.y !== 0) {
     cam.time.idleTime.val = 0;
   }
 

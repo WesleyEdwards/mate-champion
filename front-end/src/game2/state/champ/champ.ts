@@ -11,15 +11,15 @@ export const updatePlayer = (p: Champ, deltaT: number) => {
   if (p.gravityFactor) {
     p.gravityFactor *= champConst.jumpGravityFrameDecrease;
   }
-  if (p.velocity.curr.y > 0 || !p.jump.isJumping) {
+  if (p.velocity.y > 0 || !p.jump.isJumping) {
     p.gravityFactor = null;
   }
-  if (p.timer.coyote.val > champConst.maxCoyoteTime || p.velocity.curr.y < 0) {
+  if (p.timer.coyote.val > champConst.maxCoyoteTime || p.velocity.y < 0) {
     const jumpFactor = p.gravityFactor
       ? (1 - p.gravityFactor) * champConst.gravity
       : champConst.gravity;
 
-    p.velocity.curr.y = p.velocity.curr.y + jumpFactor * deltaT;
+    p.velocity.y = p.velocity.y + jumpFactor * deltaT;
   }
 
   handleChampActions(p);

@@ -31,7 +31,7 @@ const cleanActions = (p: Champ) => {
     ((act: PossibleAction) => boolean)[]
   >((acc, curr) => {
     if (curr.name === "jump") {
-      const allowedToJump = p.velocity.curr.y === 0 || p.jump.jumps === 0;
+      const allowedToJump = p.velocity.y === 0 || p.jump.jumps === 0;
       if (allowedToJump) {
         acc.push((a) => a === "setY");
       } else {
@@ -60,17 +60,17 @@ const processActionMap: {
 } = {
   moveX: (p, act) => {
     if (act.dir === "left") {
-      p.velocity.curr.x = -champConst.moveSpeed;
+      p.velocity.x = -champConst.moveSpeed;
     } else {
-      p.velocity.curr.x = champConst.moveSpeed;
+      p.velocity.x = champConst.moveSpeed;
     }
     p.facing.x = act.dir;
   },
   stopX: (p, _) => {
-    p.velocity.curr.x = 0;
+    p.velocity.x = 0;
   },
   jump: (p, _) => {
-    p.velocity.curr.y = champConst.jumpSpeed;
+    p.velocity.y = champConst.jumpSpeed;
     p.position.curr.y -= 1;
     p.gravityFactor = champConst.jumpGravityFactor;
     p.jump.jumps += 1;
@@ -86,7 +86,7 @@ const processActionMap: {
   },
   setY: (p, act) => {
     p.position.curr.y = act.y;
-    p.velocity.curr.y = 0;
+    p.velocity.y = 0;
     p.timer.coyote.val = 0;
   },
 };

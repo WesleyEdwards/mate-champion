@@ -4,9 +4,9 @@ import { renderFloor } from "../floor";
 import { renderPlatform } from "../platform";
 import { HasPos } from "../state/helpers";
 import { renderBg } from "./background";
-import { renderCamera } from "./camera";
 import { renderPlayer } from "./champ";
-import { RenderFunH } from "./helpers";
+import { renderGroog } from "./groog";
+import { RenderFunH, renderItemWithPosition } from "./helpers";
 
 export const renderGs = (
   gs: GameState1,
@@ -15,41 +15,25 @@ export const renderGs = (
 ) => {
   if (pause) return;
 
-  renderBg(cxt, gs.camera);
-  renderItemWithPosition(gs.player, renderPlayer, cxt, gs.camera);
+  // Account for cam offset
+  cxt.save();
+  cxt.translate(-gs.camera.position.x, gs.camera.position.y);
+
+  renderItemWithPosition(gs.camera, renderBg, cxt);
+  renderItemWithPosition(gs.player, renderPlayer, cxt);
+
+  for (const groog of gs.grogs) {
+    renderItemWithPosition(groog, renderGroog, cxt);
+  }
 
   for (const f of gs.floors) {
-    renderItemWithPosition(f, renderFloor, cxt, gs.camera);
+    renderItemWithPosition(f, renderFloor, cxt);
   }
 
   for (const p of gs.platforms) {
-    renderItemWithPosition(p, renderPlatform, cxt, gs.camera);
-  }
-};
-
-/**
- * - Renders an object, accounting for both camera offset and position of the object
- * - At some point we should probably only account for camera offset once per render
- */
-const renderItemWithPosition = <T extends HasPos>(
-  obj: T,
-  renderFun: RenderFunH<T>,
-  cxt: CanvasRenderingContext2D,
-  camOffset: Camera
-) => {
-  cxt.save();
-
-  cxt.translate(-camOffset.position.x, camOffset.position.y);
-
-  if ("x" in obj.position) {
-    cxt.translate(obj.position.x, obj.position.y);
-  } else {
-    cxt.translate(obj.position.curr.x, obj.position.curr.y);
+    renderItemWithPosition(p, renderPlatform, cxt);
   }
 
-  renderFun(obj)(cxt);
-
+  // restore from cam offset
   cxt.restore();
-
-  return;
 };

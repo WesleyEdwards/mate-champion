@@ -26,10 +26,10 @@ const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
     return p.action;
   };
 
-  const move: PlayerMove = p.velocity.curr.x === 0 ? "none" : "walk";
+  const move: PlayerMove = p.velocity.x === 0 ? "none" : "walk";
 
   const inAir =
-    p.velocity.curr.y > 0 ? "falling" : p.velocity.curr.y < 0 ? "rising" : null;
+    p.velocity.y > 0 ? "falling" : p.velocity.y < 0 ? "rising" : null;
 
   const sprite: ChampDescription = `${directionY}-${action()}-${move}`;
 

@@ -10,11 +10,10 @@ import {
   PlayerDirectionY,
   PlayerMove,
 } from "../Game/Player/PlayerVectorManager";
+import { Coordinates } from "../Game/models";
 import { CurrAndPrev } from "./state/helpers";
 
 export type Champ = {
-  queueActions: ChampAction[];
-  // stoppedY: boolean;
   facing: {
     x: ChampDirectionX;
     y: ChampDirectionY;
@@ -23,7 +22,7 @@ export type Champ = {
     jumps: number;
     isJumping: boolean;
   };
-  velocity: CurrAndPrev;
+  velocity: Coordinates;
   position: CurrAndPrev;
   action: "shoot" | "melee" | null;
   timer: {
@@ -37,6 +36,7 @@ export type Champ = {
     curr: ChampAssetDes;
   };
   gravityFactor: number | null;
+  queueActions: ChampAction[];
 };
 
 export type Timer = { countUp: boolean; val: number };
@@ -68,16 +68,6 @@ export const champConst = {
   },
   gravity: 0.004,
 } as const;
-
-// export type ChampAction =
-//   | "MoveRight"
-//   | "MoveLeft"
-//   | "Jump"
-//   | "Duck"
-//   | "StopX"
-//   | "Melee"
-//   | { setFacing: "up" | "down" | "hor" }
-//   | { setY: number };
 
 export type ChampDirectionY = "up" | "down" | "hor";
 export type ChampDirectionX = "left" | "right" | "none";

@@ -1,9 +1,10 @@
 import { addEventListeners } from "../Game/helpers/eventListeners";
 import { WinState } from "../Game/helpers/types";
-import { Coordinates, FullLevelInfo, Keys } from "../Game/models";
+import { FullLevelInfo, Keys } from "../Game/models";
 import { Camera } from "./camera";
 import { Champ } from "./champ";
 import { FloorState, floorConst } from "./floor";
+import { Groog, groogConst } from "./groog";
 import { PlatformState } from "./platform";
 import { emptyCoors, emptyTime } from "./state/helpers";
 
@@ -20,6 +21,7 @@ export type GameState1 = {
   player: Champ;
   floors: FloorState[];
   platforms: PlatformState[];
+  grogs: Groog[];
   keys: Keys;
 };
 
@@ -55,10 +57,7 @@ export const initGameState = ({
       curr: { x: 400, y: 400 },
       prev: emptyCoors(),
     },
-    velocity: {
-      curr: emptyCoors(),
-      prev: emptyCoors(),
-    },
+    velocity: emptyCoors(),
     action: null,
     timer: {
       sprite: emptyTime(true),
@@ -81,9 +80,25 @@ export const initGameState = ({
     position: { x: p.x, y: p.y },
     widthHeight: { x: p.width, y: p.height },
   })),
+  grogs: firstLevel.opponents.grog.map((g) => ({
+    velocity: { x: g.moveSpeed, y: 0 },
+    position: {
+      curr: { ...g.initPos },
+      prev: emptyCoors(),
+    },
+    facing: "right",
+    render: {
+      curr: "walk",
+    },
+    timer: {
+      sprite: emptyTime(true),
+      actionTimeRemain: emptyTime(false),
+    },
+    queueActions: [],
+  })),
 
   keys: addEventListeners(() => {
-    window.pause = true;
-    console.log("Paused");
+    window.pause = !window.pause;
+    console.log("Paused", window.pause);
   }),
 });

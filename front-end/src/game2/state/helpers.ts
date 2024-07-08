@@ -42,13 +42,11 @@ export const updateWithTime = (
  */
 export const updatePosAndVel = (
   pos: CurrAndPrev,
-  vel: CurrAndPrev,
+  vel: Coordinates,
   deltaT: number
 ) => {
   updateCurr(pos);
-  updateCurr(vel);
-
-  updateWithTime(pos.curr, vel.curr, deltaT);
+  updateWithTime(pos.curr, vel, deltaT);
 };
 
 export type HasPos = {

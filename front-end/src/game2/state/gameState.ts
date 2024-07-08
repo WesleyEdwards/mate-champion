@@ -4,6 +4,7 @@ import { updateFloors } from "../floor";
 import { updatePlatforms } from "../platform";
 import { updateCamera } from "./camera";
 import { updatePlayer } from "./champ/champ";
+import { updateGroog } from "./groog";
 import { updateKeys } from "./keys";
 
 export const updateGs = (
@@ -21,6 +22,9 @@ export const updateGs = (
   updateFloors(gs.floors, gs.player);
   updatePlatforms(gs.platforms, gs.player);
 
+  for (const groog of gs.grogs) {
+    updateGroog(groog, gs.time.deltaT);
+  }
   updatePlayer(gs.player, gs.time.deltaT);
 };
 
