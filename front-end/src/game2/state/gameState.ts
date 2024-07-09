@@ -19,12 +19,13 @@ export const updateGs = (
 
   updateCamera(gs.camera, gs.time.deltaT, gs.player);
 
-  updateFloors(gs.floors, gs.player);
-  updatePlatforms(gs.platforms, gs.player);
+  updateFloors(gs.floors, gs.player, gs.grogs);
+  updatePlatforms(gs.platforms, gs.player, gs.grogs);
 
   for (const groog of gs.grogs) {
     updateGroog(groog, gs.time.deltaT);
   }
+
   updatePlayer(gs.player, gs.time.deltaT);
 };
 

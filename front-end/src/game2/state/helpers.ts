@@ -49,9 +49,6 @@ export const updatePosAndVel = (
   updateWithTime(pos.curr, vel, deltaT);
 };
 
-export type HasPos = {
-  position: Coordinates | CurrAndPrev;
-};
 
 export const updateTimers = (timers: Record<string, Timer>, deltaT: number) => {
   for (const obj in timers) {

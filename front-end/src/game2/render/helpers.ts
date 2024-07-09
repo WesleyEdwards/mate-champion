@@ -1,4 +1,5 @@
-import { HasPos } from "../state/helpers";
+import { Coordinates } from "../../Game/models";
+import { CurrAndPrev } from "../state/helpers";
 
 export type RenderFunH<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
 
@@ -17,7 +18,9 @@ export type AssetInfo = {
 /**
  * - Renders an object, accounting for the position of the object
  */
-export const renderItemWithPosition = <T extends HasPos>(
+export const renderItemWithPosition = <
+  T extends { position: Coordinates | CurrAndPrev }
+>(
   obj: T,
   renderFun: RenderFunH<T>,
   cxt: CanvasRenderingContext2D

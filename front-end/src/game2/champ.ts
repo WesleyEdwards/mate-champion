@@ -72,7 +72,7 @@ export const champConst = {
 export type ChampDirectionY = "up" | "down" | "hor";
 export type ChampDirectionX = "left" | "right" | "none";
 
-export type PossibleAction =
+export type ChampActionStr =
   | "moveX"
   | "stopX"
   | "jump"
@@ -89,7 +89,7 @@ export type ChampAction =
   | { name: "setFacingY"; dir: ChampDirectionY }
   | { name: "setY"; y: number };
 
-export type PossibleActionToChamp<T extends PossibleAction> = T extends "moveX"
+export type PossibleActionToChamp<T extends ChampActionStr> = T extends "moveX"
   ? { name: "moveX"; dir: "left" | "right" }
   : T extends "jump"
   ? { name: "jump" }

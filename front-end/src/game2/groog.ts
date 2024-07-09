@@ -8,8 +8,7 @@ export type Groog = {
   facing: "left" | "right";
   timer: {
     sprite: Timer;
-    // right now, just dying
-    actionTimeRemain: Timer;
+    actionTimeRemain: Timer; // right now, just dying
   };
   render: {
     curr: GroogAssetDes;
@@ -24,8 +23,27 @@ export const groogConst = {
   },
   distFromChampMelee: 10,
   jumpSpeed: -1,
+  dieTimer: 1000,
 } as const;
 
-type GroogAction = "die" | "jump" | { setXDir: "left" | "right" };
-
 export type GroogAssetDes = "walk" | "die" | "rising" | "falling";
+
+type GroogDirX = "left" | "right";
+
+export type GroogActionStr = "die" | "jump" | "setX" | "setY";
+
+export type GroogAction =
+  | { name: "die" }
+  | { name: "jump" }
+  | { name: "setX"; dir: GroogDirX }
+  | { name: "setY"; y: number };
+
+export type PossibleActionToGroog<T extends GroogActionStr> = T extends "die"
+  ? { name: "die" }
+  : T extends "jump"
+  ? { name: "jump" }
+  : T extends "setX"
+  ? { name: "setX"; dir: GroogDirX }
+  : T extends "setY"
+  ? { name: "setY"; y: number }
+  : never;

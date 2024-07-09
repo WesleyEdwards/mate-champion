@@ -2,7 +2,7 @@ import _ from "lodash";
 import {
   Champ,
   ChampAction,
-  PossibleAction,
+  ChampActionStr,
   PossibleActionToChamp,
   champConst,
 } from "../../champ";
@@ -28,7 +28,7 @@ export const handleChampActions = (p: Champ) => {
 const cleanActions = (p: Champ) => {
   // A list of filters to find actions that are NOT allowed
   const notAllowedFilter = p.queueActions.reduce<
-    ((act: PossibleAction) => boolean)[]
+    ((act: ChampActionStr) => boolean)[]
   >((acc, curr) => {
     if (curr.name === "jump") {
       const allowedToJump = p.velocity.y === 0 || p.jump.jumps === 0;
@@ -56,7 +56,7 @@ const processActionRaw = (champ: Champ, action: ChampAction) => {
 };
 
 const processActionMap: {
-  [K in PossibleAction]: (p: Champ, act: PossibleActionToChamp<K>) => void;
+  [K in ChampActionStr]: (p: Champ, act: PossibleActionToChamp<K>) => void;
 } = {
   moveX: (p, act) => {
     if (act.dir === "left") {
@@ -91,6 +91,6 @@ const processActionMap: {
   },
 };
 
-const queuedContains = (p: Champ, act: PossibleAction): boolean => {
+const queuedContains = (p: Champ, act: ChampActionStr): boolean => {
   return p.queueActions.some((a) => a.name === act);
 };

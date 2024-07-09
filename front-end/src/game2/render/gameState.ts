@@ -1,12 +1,10 @@
 import { GameState1 } from "../State1";
-import { Camera } from "../camera";
 import { renderFloor } from "../floor";
 import { renderPlatform } from "../platform";
-import { HasPos } from "../state/helpers";
 import { renderBg } from "./background";
 import { renderPlayer } from "./champ";
 import { renderGroog } from "./groog";
-import { RenderFunH, renderItemWithPosition } from "./helpers";
+import { renderItemWithPosition } from "./helpers";
 
 export const renderGs = (
   gs: GameState1,

@@ -1,11 +1,6 @@
-import { PlayerDescription } from "../../Game/Player/PlayerSpriteInfo";
 import { Textures } from "../../gameAssets/textures";
-import {
-  PlayerAction,
-  PlayerMove,
-} from "../../Game/Player/PlayerVectorManager";
 import { Champ, ChampAssetDes, champConst } from "../champ";
-import { AssetInfo, RenderFunH, SpriteAssetInfo } from "./helpers";
+import { RenderFunH, SpriteAssetInfo } from "./helpers";
 
 export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
   const asset = champAssets[p.render.curr];

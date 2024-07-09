@@ -36,29 +36,27 @@ export function calcPlatOppCollision(platform: StaticObject, opp: Grog) {
 }
 
 export function calcPlatPlayerCollision(platform: StaticObject, champ: Player) {
-  if (!platform.isFloor && champ.vector.facingY === "down") {
-    return;
-  }
-  const betweenCenterAndEdgeX = champ.vector.width / 2;
-  if (
-    champ.vector.position.x + betweenCenterAndEdgeX <
-      platform.vector.position.x ||
-    champ.vector.position.x - betweenCenterAndEdgeX >
-      platform.vector.position.x + platform.vector.width
-  ) {
-    return;
-  }
-
-  const betweenCenterAndBottom = champ.vector.height / 2;
-
-  const previous = champ.vector.prevPosY + betweenCenterAndBottom;
-  const recent = champ.vector.position.y + betweenCenterAndBottom;
-  if (
-    recent >= platform.vector.position.y &&
-    previous <= platform.vector.position.y
-  ) {
-    champ.setOnPlatform(platform.vector.position.y - betweenCenterAndBottom);
-  }
+  // if (!platform.isFloor && champ.vector.facingY === "down") {
+  //   return;
+  // }
+  // const betweenCenterAndEdgeX = champ.vector.width / 2;
+  // if (
+  //   champ.vector.position.x + betweenCenterAndEdgeX <
+  //     platform.vector.position.x ||
+  //   champ.vector.position.x - betweenCenterAndEdgeX >
+  //     platform.vector.position.x + platform.vector.width
+  // ) {
+  //   return;
+  // }
+  // const betweenCenterAndBottom = champ.vector.height / 2;
+  // const previous = champ.vector.prevPosY + betweenCenterAndBottom;
+  // const recent = champ.vector.position.y + betweenCenterAndBottom;
+  // if (
+  //   recent >= platform.vector.position.y &&
+  //   previous <= platform.vector.position.y
+  // ) {
+  //   champ.setOnPlatform(platform.vector.position.y - betweenCenterAndBottom);
+  // }
 }
 
 export function areTouching(
@@ -108,7 +106,8 @@ export function updateLiveStatus(
           opp.vector.position,
           bullet.position,
           bulletConst.distFromOppHit
-        ) && opp.dyingState === "alive"
+        ) &&
+        opp.dyingState === "alive"
       ) {
         shankedGrogs.push(grogI);
         spentBulletsIndex.push(i);
