@@ -16,7 +16,7 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
     cxt.scale(-1, 1);
   }
 
-  const sx = champConst.render.imageWidth * whichSprite + asset.startX * w;
+  const sx = (asset.startX + whichSprite) * w;
 
   const drawImageWidth = 300; // this allows room for the attacks to be drawn
   const drawImageHeight = drawImageWidth * (105 / 200);
@@ -28,7 +28,7 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
     w,
     asset.image().height,
     -drawImageWidth / 2,
-    -(drawImageHeight - champConst.height / 2),
+    -(drawImageHeight - champConst.widthHeight.y / 2),
     drawImageWidth,
     drawImageHeight
   );

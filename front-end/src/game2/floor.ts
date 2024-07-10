@@ -1,6 +1,6 @@
 import { Coordinates } from "../Game/models";
 import { Champ, champConst } from "./champ";
-import { Groog } from "./groog";
+import { Groog, groogConst } from "./groog";
 import { PlatformState } from "./platform";
 import { RenderFunH } from "./render/helpers";
 import { CurrAndPrev } from "./state/helpers";
@@ -25,29 +25,53 @@ export const renderFloor: RenderFunH<FloorState> = (f) => (cxt) => {
   cxt.fillRect(0, 0, f.widthHeight.x, f.widthHeight.y);
 };
 
-export const updateFloors = (
+export const updateFloorsAndPlatforms = (
   floors: FloorState[],
+  platforms: PlatformState[],
   champ: Champ,
   grogs: Groog[]
 ) => {
-  for (const floor of floors) {
-    calcPlatPlayerCollision(floor, champ.position, (x) =>
-      champ.queueActions.push(x)
-    );
-    for (const grog of grogs) {
-      calcPlatPlayerCollision(floor, grog.position, (x) =>
-        grog.queueActions.push(x)
-      );
+  for (const grog of grogs) {
+    for (const floor of floors) {
+      collWithGroog(grog, floor);
+    }
+
+    for (const plat of platforms) {
+      collWithGroog(grog, plat);
     }
   }
+
+  // Champ
+  for (const floor of floors) {
+    collWithChamp(champ, floor);
+  }
+
+  for (const floor of platforms) {
+    if (champ.facing.y !== "down") {
+      collWithChamp(champ, floor);
+    }
+  }
+};
+
+const collWithChamp = (c: Champ, f: FloorState | PlatformState) => {
+  calcPlatPlayerCollision(f, c.position, champConst.widthHeight, (x) =>
+    c.queueActions.push(x)
+  );
+};
+
+const collWithGroog = (g: Groog, f: FloorState | PlatformState) => {
+  calcPlatPlayerCollision(f, g.position, groogConst.widthHeight, (x) =>
+    g.queueActions.push(x)
+  );
 };
 
 export function calcPlatPlayerCollision(
   floor: FloorState | PlatformState,
   personPos: CurrAndPrev,
+  personWidthHeight: Coordinates,
   setYPos: (params: { name: "setY"; y: number }) => void
 ) {
-  const betweenCenterAndEdgeX = champConst.width / 2;
+  const betweenCenterAndEdgeX = personWidthHeight.x / 2;
   const cx = personPos.curr.x;
   if (
     cx + betweenCenterAndEdgeX < floor.position.x ||
@@ -56,7 +80,7 @@ export function calcPlatPlayerCollision(
     return;
   }
 
-  const betweenCenterAndBottom = champConst.height / 2;
+  const betweenCenterAndBottom = personWidthHeight.y / 2;
 
   const previous = personPos.prev.y + betweenCenterAndBottom;
   const recent = personPos.curr.y + betweenCenterAndBottom;

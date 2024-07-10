@@ -1,7 +1,6 @@
 import { LevelInfo } from "../../Game/models";
 import { GameState1 } from "../State1";
-import { updateFloors } from "../floor";
-import { updatePlatforms } from "../platform";
+import { updateFloorsAndPlatforms } from "../floor";
 import { updateCamera } from "./camera";
 import { updatePlayer } from "./champ/champ";
 import { updateGroog } from "./groog";
@@ -19,8 +18,7 @@ export const updateGs = (
 
   updateCamera(gs.camera, gs.time.deltaT, gs.player);
 
-  updateFloors(gs.floors, gs.player, gs.grogs);
-  updatePlatforms(gs.platforms, gs.player, gs.grogs);
+  updateFloorsAndPlatforms(gs.floors, gs.platforms, gs.player, gs.grogs);
 
   for (const groog of gs.grogs) {
     updateGroog(groog, gs.time.deltaT);

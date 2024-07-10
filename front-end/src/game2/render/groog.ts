@@ -7,7 +7,7 @@ export const renderGroog: RenderFunH<Groog> = (g) => (cxt) => {
 
   if (!asset) return;
 
-  const w = groogConst.render.width;
+  const w = groogConst.render.imageWidth;
 
   const whichSprite =
     Math.round(g.timer.sprite.val / asset.cycleTime) % asset.imgCount;
@@ -16,9 +16,9 @@ export const renderGroog: RenderFunH<Groog> = (g) => (cxt) => {
     cxt.scale(-1, 1);
   }
 
-  const sx = groogConst.render.width * whichSprite + asset.startX * w;
+  const sx = groogConst.render.imageWidth * whichSprite + asset.startX * w;
 
-  const drawImageWidth = 300; // this allows room for the attacks to be drawn
+  const drawImageWidth = 200; // this allows room for the attacks to be drawn
   const drawImageHeight = drawImageWidth * (105 / 200);
 
   cxt.drawImage(
@@ -28,11 +28,19 @@ export const renderGroog: RenderFunH<Groog> = (g) => (cxt) => {
     w,
     asset.image().height,
     -drawImageWidth / 2,
-    -(drawImageHeight - groogConst.render.height / 2),
+    -(drawImageHeight - groogConst.widthHeight.y / 2),
     drawImageWidth,
     drawImageHeight
   );
   cxt.fillRect(-3, -3, 3, 3);
+  cxt.strokeStyle = "red";
+
+  cxt.strokeRect(
+    -groogConst.widthHeight.x / 2,
+    -groogConst.widthHeight.y / 2,
+    groogConst.widthHeight.x,
+    groogConst.widthHeight.y
+  );
 };
 
 const grogSpritesInfo: SpriteAssetInfo<GroogAssetDes> = {

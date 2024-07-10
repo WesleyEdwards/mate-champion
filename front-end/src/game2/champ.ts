@@ -1,15 +1,4 @@
-/**
- * player
- */
-
-import { CurrentChampAction } from "../Game/Player/Player";
-import { PlayerDescription } from "../Game/Player/PlayerSpriteInfo";
-import {
-  PlayerAction,
-  PlayerDirectionX,
-  PlayerDirectionY,
-  PlayerMove,
-} from "../Game/Player/PlayerVectorManager";
+import { PlayerAction } from "../Game/Player/PlayerVectorManager";
 import { Coordinates } from "../Game/models";
 import { CurrAndPrev } from "./state/helpers";
 
@@ -48,8 +37,10 @@ type DirY = "hor" | "up";
 export type ChampDescription = `${DirY}-${PlayerAction}-${"walk" | "none"}`;
 
 export const champConst = {
-  width: 64,
-  height: 64,
+  widthHeight: {
+    x: 64,
+    y: 64,
+  },
   moveSpeed: 0.5,
   jumpSpeed: -0.85,
   melee: {

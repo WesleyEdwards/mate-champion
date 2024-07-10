@@ -17,9 +17,12 @@ export type Groog = {
 };
 
 export const groogConst = {
+  widthHeight: {
+    x: 80,
+    y: 80,
+  },
   render: {
-    width: 90,
-    height: 90,
+    imageWidth: 75,
   },
   distFromChampMelee: 10,
   jumpSpeed: -1,

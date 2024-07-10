@@ -1,10 +1,4 @@
 import { playerConst } from "../constants";
-import champIdle from "../../assets/champ/idle.png";
-import champJump from "../../assets/champ/jumping.png";
-import champMelee from "../../assets/champ/melee_attacks.png";
-import champWalk from "../../assets/champ/walking.png";
-import champRange from "../../assets/champ/ranged_attacks.png";
-import champUpLookWalk from "../../assets/champ/uplook_walking.png";
 import {
   PlayerDirectionY,
   PlayerAction,
