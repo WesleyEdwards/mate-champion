@@ -46,16 +46,16 @@ export const updateFloorsAndPlatforms = (
     collWithChamp(champ, floor);
   }
 
-  for (const floor of platforms) {
+  for (const p of platforms) {
     if (champ.facing.y !== "down") {
-      collWithChamp(champ, floor);
+      collWithChamp(champ, p);
     }
   }
 };
 
 const collWithChamp = (c: Champ, f: FloorState | PlatformState) => {
   calcPlatPlayerCollision(f, c.position, champConst.widthHeight, (x) =>
-    c.queueActions.push(x)
+    c.acceptQueue.push(x)
   );
 };
 

@@ -1,5 +1,5 @@
 import { Champ, ChampAction, champConst } from "../../champ";
-import { updatePosAndVel, updateTimers } from "../helpers";
+import { updatePosAndVel, updateTimers } from "../timeHelpers";
 import { handleChampActions } from "./actions";
 import { updateChampSpriteInfo } from "./spriteInfo";
 

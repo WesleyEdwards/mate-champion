@@ -1,6 +1,7 @@
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
 import { Coordinates } from "../Game/models";
 import { CurrAndPrev } from "./state/helpers";
+import { Timer } from "./state/timeHelpers";
 
 export type Champ = {
   facing: {
@@ -15,20 +16,25 @@ export type Champ = {
   position: CurrAndPrev;
   action: "shoot" | "melee" | null;
   timer: {
-    sprite: Timer;
-    coyote: Timer;
-    actionTimeRemain: Timer; // Time left and cool down are both decreased always
-    actionCoolDownRemain: Timer; // When < 0, the player can take another action
+    sprite: Timer<"up">;
+    coyote: Timer<"up">;
+    actionTimeRemain: Timer<"down">; // Time left and cool down are both decreased always
+    actionCoolDownRemain: Timer<"down">; // When < 0, the player can take another action
   };
   render: {
     prev: ChampAssetDes;
     curr: ChampAssetDes;
   };
   gravityFactor: number | null;
-  queueActions: ChampAction[];
+  acceptQueue: ChampAction[];
+  publishQueue: ChampPublish[];
 };
 
-export type Timer = { countUp: boolean; val: number };
+type ChampPublish = {
+  name: "shoot";
+  initPos: Coordinates;
+  velocity: Coordinates;
+};
 
 export type ChampAssetDes = ChampDescription | "rising" | "falling";
 
@@ -68,6 +74,7 @@ export type ChampActionStr =
   | "stopX"
   | "jump"
   | "melee"
+  | "shoot"
   | "setFacingY"
   | "setY";
 
@@ -76,6 +83,7 @@ export type ChampAction =
   | { name: "stopX" }
   | { name: "jump" }
   | { name: "melee" }
+  | { name: "shoot" }
   | { name: "jump" }
   | { name: "setFacingY"; dir: ChampDirectionY }
   | { name: "setY"; y: number };
@@ -88,6 +96,8 @@ export type PossibleActionToChamp<T extends ChampActionStr> = T extends "moveX"
   ? { name: "stopX" }
   : T extends "melee"
   ? { name: "melee" }
+  : T extends "shoot"
+  ? { name: "shoot" }
   : T extends "setFacingY"
   ? { name: "setFacingY"; dir: ChampDirectionY }
   : T extends "setY"

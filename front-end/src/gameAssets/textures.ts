@@ -16,6 +16,7 @@ export type TextureMap = {
     clouds: HTMLImageElement;
     cloudsTop: HTMLImageElement;
   };
+  bullet: HTMLImageElement;
 };
 
 const loadTexture = (path: string): Promise<HTMLImageElement> => {
@@ -48,6 +49,9 @@ export const initializeTextures = async () => {
     grogWalking,
     grogJumpAndFall,
     grogDeath,
+
+    //bullet
+    bullet,
   ] = await Promise.all(
     [
       "clouds-bg.jpg",
@@ -63,6 +67,8 @@ export const initializeTextures = async () => {
       "grog/enemy_walking.png",
       "grog/enemy_jump_and_fall.png",
       "grog/enemy_death.png",
+
+      "mate_bullet.png",
     ].map(loadTexture)
   ).catch((error) => {
     console.error(error);
@@ -86,6 +92,7 @@ export const initializeTextures = async () => {
       clouds,
       cloudsTop,
     },
+    bullet,
   };
   textures = map;
 };

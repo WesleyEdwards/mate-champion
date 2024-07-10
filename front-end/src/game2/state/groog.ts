@@ -5,7 +5,7 @@ import {
   groogConst,
   PossibleActionToGroog,
 } from "../groog";
-import { updatePosAndVel, updateTimers } from "./helpers";
+import { updatePosAndVel, updateTimers } from "./timeHelpers";
 
 export const updateGroog = (groog: Groog, deltaT: number) => {
   updatePosAndVel(groog.position, groog.velocity, deltaT);
@@ -20,7 +20,7 @@ const processActionMap: {
   [K in GroogActionStr]: (g: Groog, act: PossibleActionToGroog<K>) => void;
 } = {
   die: (g, _) => {
-    g.timer.actionTimeRemain = { countUp: false, val: groogConst.dieTimer };
+    g.timer.actionTimeRemain = { count: "down", val: groogConst.dieTimer };
   },
   jump: (g, _) => {
     g.velocity.y = groogConst.jumpSpeed;

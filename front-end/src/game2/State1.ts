@@ -1,12 +1,14 @@
 import { addEventListeners } from "../Game/helpers/eventListeners";
 import { WinState } from "../Game/helpers/types";
 import { FullLevelInfo, Keys } from "../Game/models";
+import { MBullet } from "./bullet";
 import { Camera } from "./camera";
 import { Champ } from "./champ";
 import { FloorState, floorConst } from "./floor";
 import { Groog, groogConst } from "./groog";
 import { PlatformState } from "./platform";
-import { emptyCoors, emptyTime } from "./state/helpers";
+import { emptyCoors } from "./state/helpers";
+import { emptyTime } from "./state/timeHelpers";
 
 export type GameState1 = {
   currStateOfGame: WinState;
@@ -22,6 +24,7 @@ export type GameState1 = {
   floors: FloorState[];
   platforms: PlatformState[];
   grogs: Groog[];
+  bullets: MBullet[];
   keys: Keys;
 };
 
@@ -35,7 +38,7 @@ export const initGameState = ({
     position: emptyCoors(),
     velocity: emptyCoors(),
     time: {
-      idleTime: emptyTime(true),
+      idleTime: emptyTime("up"),
     },
   },
   time: {
@@ -46,7 +49,6 @@ export const initGameState = ({
     score: 0,
   },
   player: {
-    queueActions: [],
     facing: {
       x: "right",
       y: "hor",
@@ -60,15 +62,17 @@ export const initGameState = ({
     velocity: emptyCoors(),
     action: null,
     timer: {
-      sprite: emptyTime(true),
-      coyote: emptyTime(true),
-      actionTimeRemain: emptyTime(false),
-      actionCoolDownRemain: emptyTime(false),
+      sprite: emptyTime("up"),
+      coyote: emptyTime("up"),
+      actionTimeRemain: emptyTime("down"),
+      actionCoolDownRemain: emptyTime("down"),
     },
     render: {
       prev: "falling",
       curr: "falling",
     },
+    acceptQueue: [],
+    publishQueue: [],
   },
   floors: firstLevel.floors.map((f) => ({
     color: f.color,
@@ -91,11 +95,12 @@ export const initGameState = ({
       curr: "walk",
     },
     timer: {
-      sprite: emptyTime(true),
-      actionTimeRemain: emptyTime(false),
+      sprite: emptyTime("up"),
+      actionTimeRemain: emptyTime("down"),
     },
     queueActions: [],
   })),
+  bullets: [],
 
   keys: addEventListeners(() => {
     window.pause = !window.pause;

@@ -1,15 +1,15 @@
 import { Coordinates } from "../Game/models";
-import { Timer } from "./champ";
 import { CurrAndPrev } from "./state/helpers";
+import { Timer } from "./state/timeHelpers";
 
 export type Groog = {
   position: CurrAndPrev;
   velocity: Coordinates;
-  facing: "left" | "right";
   timer: {
-    sprite: Timer;
-    actionTimeRemain: Timer; // right now, just dying
+    sprite: Timer<"up">;
+    actionTimeRemain: Timer<"down">; // right now, just dying
   };
+  facing: "left" | "right";
   render: {
     curr: GroogAssetDes;
   };

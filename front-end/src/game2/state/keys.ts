@@ -3,7 +3,7 @@ import { Champ } from "../champ";
 
 export const updateKeys = (keys: Keys, player: Champ) => {
   if (keys.jump || keys.toJump > 0) {
-    player.queueActions.push({ name: "jump" });
+    player.acceptQueue.push({ name: "jump" });
     player.jump.isJumping = true;
     keys.toJump = 0;
   } else {
@@ -11,18 +11,22 @@ export const updateKeys = (keys: Keys, player: Champ) => {
   }
 
   if (keys.right) {
-    player.queueActions.push({ name: "moveX", dir: "right" });
+    player.acceptQueue.push({ name: "moveX", dir: "right" });
   }
   if (keys.left) {
-    player.queueActions.push({ name: "moveX", dir: "left" });
+    player.acceptQueue.push({ name: "moveX", dir: "left" });
   }
   if (keys.shank) {
-    player.queueActions.push({ name: "melee" });
+    player.acceptQueue.push({ name: "melee" });
   }
   if (keys.up) {
-    player.queueActions.push({ name: "setFacingY", dir: "up" });
+    player.acceptQueue.push({ name: "setFacingY", dir: "up" });
   }
   if (keys.down) {
-    player.queueActions.push({ name: "setFacingY", dir: "down" });
+    player.acceptQueue.push({ name: "setFacingY", dir: "down" });
+  }
+  if (keys.shoot || keys.toShoot > 0) {
+    player.acceptQueue.push({ name: "shoot" });
+    keys.toShoot = 0;
   }
 };

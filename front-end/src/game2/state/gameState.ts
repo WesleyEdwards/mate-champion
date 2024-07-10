@@ -1,6 +1,7 @@
 import { LevelInfo } from "../../Game/models";
 import { GameState1 } from "../State1";
 import { updateFloorsAndPlatforms } from "../floor";
+import { processBullets, updateBullet } from "./bullet";
 import { updateCamera } from "./camera";
 import { updatePlayer } from "./champ/champ";
 import { updateGroog } from "./groog";
@@ -25,6 +26,12 @@ export const updateGs = (
   }
 
   updatePlayer(gs.player, gs.time.deltaT);
+
+  for (const b of gs.bullets) {
+    updateBullet(b, gs.time.deltaT);
+  }
+
+  processBullets(gs.bullets, gs.grogs);
 };
 
 const updateTime = (time: GameState1["time"], timeStamp: number) => {

@@ -2,6 +2,7 @@ import { GameState1 } from "../State1";
 import { renderFloor } from "../floor";
 import { renderPlatform } from "../platform";
 import { renderBg } from "./background";
+import { renderBullet } from "./bullet";
 import { renderPlayer } from "./champ";
 import { renderGroog } from "./groog";
 import { renderItemWithPosition } from "./helpers";
@@ -30,6 +31,10 @@ export const renderGs = (
 
   for (const p of gs.platforms) {
     renderItemWithPosition(p, renderPlatform, cxt);
+  }
+
+  for (const b of gs.bullets) {
+    renderItemWithPosition(b, renderBullet, cxt);
   }
 
   // restore from cam offset

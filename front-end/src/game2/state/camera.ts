@@ -1,7 +1,7 @@
 import { cameraConst } from "../../Game/constants";
 import { Camera } from "../camera";
 import { Champ } from "../champ";
-import { updateTimers, updateWithTime } from "./helpers";
+import { updateTimers, updateWithTime } from "./timeHelpers";
 
 export const updateCamera = (cam: Camera, deltaT: number, champ: Champ) => {
   if (champ.velocity.x !== 0 || champ.velocity.y !== 0) {
