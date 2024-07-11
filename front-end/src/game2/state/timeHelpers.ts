@@ -1,11 +1,23 @@
 import { Coordinates } from "../../Game/models";
 import { CurrAndPrev } from "./helpers";
 
-export type Timer<T extends "up" | "down"> = { count: T; val: number };
+export type TimerUp = { count: "up"; val: number };
+export type TimerDown = { count: "down"; val: number };
 
-export const emptyTime = <T extends "up" | "down">(count: T): Timer<T> => {
-  return { count, val: 0 };
-};
+type Timer = TimerUp | TimerDown;
+
+export function emptyTime(count: "up"): TimerUp;
+export function emptyTime(count: "down"): TimerDown;
+
+export function emptyTime(count: "up" | "down"): Timer {
+  return { count: count, val: 0 };
+}
+
+// export const emptyTime = <T extends "up" | "down">(
+//   count: T
+// ): T extends "up" ? TimerUp : TimerDown => {
+//   return { count: count, val: 0 };
+// };
 
 const updateCurr = (currAndPrev: CurrAndPrev) => {
   currAndPrev.prev.x = currAndPrev.curr.x;
@@ -42,10 +54,7 @@ export const updatePosAndVel = (
   updateWithTime(pos.curr, vel, deltaT);
 };
 
-export const updateTimers = (
-  timers: Record<string, Timer<"up" | "down">>,
-  deltaT: number
-) => {
+export const updateTimers = (timers: Record<string, Timer>, deltaT: number) => {
   for (const obj in timers) {
     const curr = timers[obj];
 

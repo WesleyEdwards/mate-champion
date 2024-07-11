@@ -1,13 +1,13 @@
 import { Coordinates } from "../Game/models";
 import { CurrAndPrev } from "./state/helpers";
-import { Timer } from "./state/timeHelpers";
+import { TimerDown, TimerUp } from "./state/timeHelpers";
 
 export type Groog = {
   position: CurrAndPrev;
   velocity: Coordinates;
   timer: {
-    sprite: Timer<"up">;
-    actionTimeRemain: Timer<"down">; // right now, just dying
+    sprite: TimerUp;
+    actionTimeRemain: TimerDown; // right now, just dying
   };
   facing: "left" | "right";
   render: {

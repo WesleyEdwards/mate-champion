@@ -1,7 +1,7 @@
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
 import { Coordinates } from "../Game/models";
 import { CurrAndPrev } from "./state/helpers";
-import { Timer } from "./state/timeHelpers";
+import { TimerDown, TimerUp } from "./state/timeHelpers";
 
 export type Champ = {
   facing: {
@@ -16,10 +16,10 @@ export type Champ = {
   position: CurrAndPrev;
   action: "shoot" | "melee" | null;
   timer: {
-    sprite: Timer<"up">;
-    coyote: Timer<"up">;
-    actionTimeRemain: Timer<"down">; // Time left and cool down are both decreased always
-    actionCoolDownRemain: Timer<"down">; // When < 0, the player can take another action
+    sprite: TimerUp;
+    coyote: TimerUp;
+    actionTimeRemain: TimerDown; // Time left and cool down are both decreased always
+    actionCoolDownRemain: TimerDown; // When < 0, the player can take another action
   };
   render: {
     prev: ChampAssetDes;

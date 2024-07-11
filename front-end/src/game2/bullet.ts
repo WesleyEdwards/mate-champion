@@ -2,14 +2,14 @@ import { Coordinates } from "../Game/models";
 import { Textures } from "../gameAssets/textures";
 import { RenderFunH } from "./render/helpers";
 import { CurrAndPrev, distBetween } from "./state/helpers";
-import { Timer, updatePosAndVel, updateTimers } from "./state/timeHelpers";
+import { TimerUp, updatePosAndVel, updateTimers } from "./state/timeHelpers";
 
 export type MBullet = {
   position: CurrAndPrev;
   velocity: Coordinates;
   initPos: Coordinates;
   timer: {
-    timeAlive: Timer<"up">;
+    timeAlive: TimerUp;
   };
   publishQueue: "die"[];
 };
