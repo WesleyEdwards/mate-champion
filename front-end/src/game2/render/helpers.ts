@@ -1,5 +1,8 @@
 import { Coordinates } from "../../Game/models";
+import { Champ } from "../champ";
+import { Groog } from "../groog";
 import { CurrAndPrev } from "../state/helpers";
+import { GameState1 } from "../State1";
 
 export type RenderFunH<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
 
@@ -18,7 +21,7 @@ export type AssetInfo = {
 /**
  * - Renders an object, accounting for the position of the object
  */
-export const renderItemWithPosition = <
+const renderItemWithPosition = <
   T extends { position: Coordinates | CurrAndPrev }
 >(
   obj: T,
@@ -42,3 +45,41 @@ export const renderItemWithPosition = <
 
   return;
 };
+
+export const renderItemsOnCanvas = (
+  itemsToRender: RenderItem<any>[],
+  cxt: CanvasRenderingContext2D,
+  gs: GameState1
+) => {
+  const camPos = gs.camera.position;
+  // Account for cam offset
+  cxt.save();
+  cxt.translate(-camPos.x, camPos.y);
+
+  for (const builder of itemsToRender) {
+    for (const item of builder.getter(gs)) {
+      renderItemWithPosition(item, builder.fun, cxt);
+    }
+  }
+  // restore from cam offset
+  cxt.restore();
+};
+
+type RenderItem<T> = {
+  fun: RenderFunH<T>;
+  getter: (gs: GameState1) => T[];
+};
+
+export type RenderableItems = RenderItem<any>[];
+
+export const renderBuilder = <T>(props: RenderItem<T>) => props;
+
+// possible alternative to renderItemBuilder
+// type Renderable = { player: Champ; groog: Groog };
+// type RenderableItems = {
+//   [K in Extract<keyof Renderable, string>]-?: {
+//     key: K;
+//     fun: RenderFunH<Renderable[K]>;
+//     getter: (value: GameState1) => Renderable[K][];
+//   };
+// }[Extract<keyof Renderable, string>];

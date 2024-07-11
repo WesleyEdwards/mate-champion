@@ -1,11 +1,14 @@
+import { Coordinates } from "../../Game/models";
 import { GameState1 } from "../State1";
+import { Champ } from "../champ";
 import { renderFloor } from "../floor";
+import { Groog } from "../groog";
 import { renderPlatform } from "../platform";
 import { renderBg } from "./background";
 import { renderBullet } from "./bullet";
 import { renderPlayer } from "./champ";
 import { renderGroog } from "./groog";
-import { renderItemWithPosition } from "./helpers";
+import { RenderableItems, renderBuilder, renderItemsOnCanvas } from "./helpers";
 
 export const renderGs = (
   gs: GameState1,
@@ -14,29 +17,14 @@ export const renderGs = (
 ) => {
   if (pause) return;
 
-  // Account for cam offset
-  cxt.save();
-  cxt.translate(-gs.camera.position.x, gs.camera.position.y);
+  const builders: RenderableItems = [
+    renderBuilder({ fun: renderBg, getter: (gs) => [gs.camera] }),
+    renderBuilder({ fun: renderPlayer, getter: (gs) => [gs.player] }),
+    renderBuilder({ fun: renderBullet, getter: (gs) => gs.bullets }),
+    renderBuilder({ fun: renderGroog, getter: (gs) => gs.grogs }),
+    renderBuilder({ fun: renderFloor, getter: (gs) => gs.floors }),
+    renderBuilder({ fun: renderPlatform, getter: (gs) => gs.platforms }),
+  ];
 
-  renderItemWithPosition(gs.camera, renderBg, cxt);
-  renderItemWithPosition(gs.player, renderPlayer, cxt);
-
-  for (const groog of gs.grogs) {
-    renderItemWithPosition(groog, renderGroog, cxt);
-  }
-
-  for (const f of gs.floors) {
-    renderItemWithPosition(f, renderFloor, cxt);
-  }
-
-  for (const p of gs.platforms) {
-    renderItemWithPosition(p, renderPlatform, cxt);
-  }
-
-  for (const b of gs.bullets) {
-    renderItemWithPosition(b, renderBullet, cxt);
-  }
-
-  // restore from cam offset
-  cxt.restore();
+  renderItemsOnCanvas(builders, cxt, gs);
 };

@@ -16,25 +16,18 @@ export const renderBullet: RenderFunH<MBullet> = (b) => (cxt) => {
 
   const imgWidth = 28;
 
-  const w = mBulletConst.widthHeight.y;
-  const h = mBulletConst.widthHeight.x;
+  const w = mBulletConst.widthHeight.x;
+  const h = mBulletConst.widthHeight.y;
 
   cxt.drawImage(
     Textures().bullet,
     imgWidth * whichSprite,
     0,
     imgWidth,
-    h,
-    -0.5 * w,
-    -0.5 * h,
+    Textures().bullet.height,
+    -w / 2,
+    -h / 2,
     w,
     h
   );
-
-  cxt.strokeStyle = "red";
-  cxt.lineWidth = 2;
-  cxt.strokeRect(-0.5 * w, -0.5 * h, w, h);
-  cxt.beginPath();
-  cxt.arc(0, 0, 1, 0, 2 * Math.PI);
-  cxt.stroke();
 };

@@ -31,7 +31,7 @@ export const updateGs = (
     updateBullet(b, gs.time.deltaT);
   }
 
-  processBullets(gs.bullets, gs.grogs);
+  processBullets(gs);
 };
 
 const updateTime = (time: GameState1["time"], timeStamp: number) => {
