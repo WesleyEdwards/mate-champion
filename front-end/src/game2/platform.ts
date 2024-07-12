@@ -2,7 +2,7 @@ import { Coordinates } from "../Game/models";
 import { Champ, champConst } from "./champ";
 import { calcPlatPlayerCollision } from "./floor";
 import { Groog } from "./groog";
-import { RenderFunH } from "./render/helpers";
+import { RenderFun } from "./render/helpers";
 
 export type PlatformState = {
   color: string;
@@ -10,7 +10,7 @@ export type PlatformState = {
   widthHeight: Coordinates;
 };
 
-export const renderPlatform: RenderFunH<PlatformState> = (f) => (cxt) => {
+export const renderPlatform: RenderFun<PlatformState> = (f) => (cxt) => {
   cxt.fillStyle = f.color;
   cxt.strokeStyle = "black";
   cxt.lineWidth = 8;

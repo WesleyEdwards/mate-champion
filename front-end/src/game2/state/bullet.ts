@@ -1,35 +1,51 @@
+import { remove } from "lodash";
 import { MBullet, mBulletConst } from "../bullet";
 import { GameState1 } from "../State1";
-import { distBetween } from "./helpers";
-import { emptyTime, updatePosAndVel, updateTimers } from "./timeHelpers";
+import { distBetween, innitEntity, UpdateFun } from "./helpers";
+import { emptyTime } from "./timeHelpers";
 
-export const updateBullet = (b: MBullet, deltaT: number) => {
+export const updateBullet: UpdateFun<MBullet> = (b) => {
   if (distBetween(b.initPos, b.position.curr) > mBulletConst.distUntilDud) {
     b.publishQueue.push("die");
   }
 };
 
 export const processBullets = (gs: GameState1) => {
-  const { player: c, bullets } = gs;
-  const shoot = c.publishQueue.filter((x) => x.name === "shoot");
+  const { player, bullets } = gs;
+
+  // shoot bullets
+  const shoot = player.publishQueue.filter((x) => x.name === "shoot");
   for (const shot of shoot) {
     bullets.push({
       initPos: shot.initPos,
-      velocity: { ...shot.velocity },
-      position: { prev: { ...shot.initPos }, curr: { ...shot.initPos } },
       publishQueue: [],
-      timers: {
-        timeAlive: emptyTime("up"),
-      },
+      ...innitEntity({
+        timers: {
+          timeAlive: emptyTime("up"),
+        },
+        velocity: shot.velocity,
+        position: shot.initPos,
+      }),
     });
   }
-  c.publishQueue = c.publishQueue.filter((p) => p.name !== "shoot");
+  player.publishQueue = player.publishQueue.filter((p) => p.name !== "shoot");
 
-  if (gs.bullets.some((b) => b.publishQueue.includes("die"))) {
-    const init = gs.bullets.length;
-    gs.bullets = gs.bullets.filter((b) => !b.publishQueue.includes("die"));
-    if (init !== gs.bullets.length) {
-      console.log("dead");
+  // collide with groogs
+  for (const bullet of gs.bullets) {
+    for (const groog of gs.grogs) {
+      if (
+        distBetween(bullet.position.curr, groog.position.curr) <
+        mBulletConst.distFromOppHit
+      ) {
+        gs.toRemove.push({ type: "bullet", entity: bullet });
+        groog.queueActions.push({ name: "die" });
+      }
     }
+  }
+
+  // Filter out dead ones
+  const toDelete = gs.bullets.filter((b) => b.publishQueue.includes("die"));
+  for (const b of toDelete) {
+    gs.toRemove.push({ type: "bullet", entity: b });
   }
 };

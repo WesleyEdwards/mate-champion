@@ -4,7 +4,7 @@ import { Groog } from "../groog";
 import { CurrAndPrev } from "../state/helpers";
 import { GameState1 } from "../State1";
 
-export type RenderFunH<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
+export type RenderFun<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
 
 export type SpriteAssetInfo<DESCRIPTION extends string> = Record<
   DESCRIPTION,
@@ -25,7 +25,7 @@ const renderItemWithPosition = <
   T extends { position: Coordinates | CurrAndPrev }
 >(
   obj: T,
-  renderFun: RenderFunH<T>,
+  renderFun: RenderFun<T>,
   cxt: CanvasRenderingContext2D
 ) => {
   cxt.save();
@@ -66,20 +66,10 @@ export const renderItemsOnCanvas = (
 };
 
 type RenderItem<T> = {
-  fun: RenderFunH<T>;
+  fun: RenderFun<T>;
   getter: (gs: GameState1) => T[];
 };
 
 export type RenderableItems = RenderItem<any>[];
 
 export const renderBuilder = <T>(e: RenderItem<T>) => e;
-
-// possible alternative to renderItemBuilder
-// type Renderable = { player: Champ; groog: Groog };
-// type RenderableItems = {
-//   [K in Extract<keyof Renderable, string>]-?: {
-//     key: K;
-//     fun: RenderFunH<Renderable[K]>;
-//     getter: (value: GameState1) => Renderable[K][];
-//   };
-// }[Extract<keyof Renderable, string>];

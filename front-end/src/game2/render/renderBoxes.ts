@@ -1,21 +1,9 @@
 import { MBullet, mBulletConst } from "../bullet";
-import { GameState1 } from "../State1";
-import {
-  RenderableItems,
-  RenderFunH,
-  renderBuilder,
-  renderItemsOnCanvas,
-} from "./helpers";
+import { Champ, champConst } from "../champ";
+import { Groog, groogConst } from "../groog";
+import { RenderFun } from "./helpers";
 
-export const renderBoxes = (gs: GameState1, cxt: CanvasRenderingContext2D) => {
-  const builders: RenderableItems = [
-    renderBuilder({ fun: renderBulletBox, getter: (gs) => gs.bullets }),
-  ];
-
-  renderItemsOnCanvas(builders, cxt, gs);
-};
-
-const renderBulletBox: RenderFunH<MBullet> = (b) => (cxt) => {
+export const boxBulletRender: RenderFun<MBullet> = (b) => (cxt) => {
   cxt.rotate(
     (() => {
       if (b.velocity.x > 0) return 0;
@@ -33,4 +21,28 @@ const renderBulletBox: RenderFunH<MBullet> = (b) => (cxt) => {
   cxt.beginPath();
   cxt.arc(0, 0, 1, 0, 2 * Math.PI);
   cxt.stroke();
+};
+
+export const boxGroogRender: RenderFun<Groog> = (g) => (cxt) => {
+  cxt.fillRect(-3, -3, 3, 3);
+  cxt.strokeStyle = "red";
+
+  cxt.strokeRect(
+    -groogConst.widthHeight.x / 2,
+    -groogConst.widthHeight.y / 2,
+    groogConst.widthHeight.x,
+    groogConst.widthHeight.y
+  );
+};
+
+export const boxChampRender: RenderFun<Champ> = (g) => (cxt) => {
+  cxt.fillRect(-3, -3, 3, 3);
+  cxt.strokeStyle = "red";
+
+  cxt.strokeRect(
+    -champConst.widthHeight.x / 2,
+    -champConst.widthHeight.y / 2,
+    champConst.widthHeight.x,
+    champConst.widthHeight.y
+  );
 };

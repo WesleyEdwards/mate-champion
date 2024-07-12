@@ -1,9 +1,9 @@
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../../Game/constants";
 import { Camera } from "../camera";
 import { Textures } from "../../gameAssets/textures";
-import { RenderFunH } from "./helpers";
+import { RenderFun } from "./helpers";
 
-export const renderBg: RenderFunH<Camera> = (cam) => (cxt) => {
+export const renderBg: RenderFun<Camera> = (cam) => (cxt) => {
   const spacesToRight = Math.floor(cam.position.x / MAX_CANVAS_WIDTH);
   const spacesUp = Math.floor(cam.position.y / MAX_CANVAS_HEIGHT);
 

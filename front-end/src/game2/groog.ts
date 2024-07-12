@@ -30,20 +30,15 @@ export type GroogAssetDes = "walk" | "die" | "rising" | "falling";
 
 type GroogDirX = "left" | "right";
 
-export type GroogActionStr = "die" | "jump" | "setX" | "setY";
-
 export type GroogAction =
   | { name: "die" }
   | { name: "jump" }
   | { name: "setX"; dir: GroogDirX }
   | { name: "setY"; y: number };
 
-export type PossibleActionToGroog<T extends GroogActionStr> = T extends "die"
-  ? { name: "die" }
-  : T extends "jump"
-  ? { name: "jump" }
-  : T extends "setX"
-  ? { name: "setX"; dir: GroogDirX }
-  : T extends "setY"
-  ? { name: "setY"; y: number }
-  : never;
+export type ActionMap = {
+  die: { name: "die" };
+  jump: { name: "jump" };
+  setX: { name: "setX"; dir: GroogDirX };
+  setY: { name: "setY"; y: number };
+};

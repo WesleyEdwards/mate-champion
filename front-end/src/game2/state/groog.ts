@@ -1,13 +1,11 @@
 import { GRAVITY } from "../../Game/constants";
-import {
-  Groog,
-  GroogActionStr,
-  groogConst,
-  PossibleActionToGroog,
-} from "../groog";
-import { updatePosAndVel, updateTimers } from "./timeHelpers";
+import { ActionMap, Groog, GroogAction, groogConst } from "../groog";
+import { UpdateFun } from "./helpers";
 
-export const updateGroog = (groog: Groog, deltaT: number) => {
+export const updateGroog: UpdateFun<Groog> = (groog, deltaT, remove) => {
+  if (groog.render.curr === "die" && groog.timers.actionTimeRemain.val <= 0) {
+    remove({ type: "groog", entity: groog });
+  }
 
   groog.velocity.y += GRAVITY * deltaT;
 
@@ -15,9 +13,10 @@ export const updateGroog = (groog: Groog, deltaT: number) => {
 };
 
 const processActionMap: {
-  [K in GroogActionStr]: (g: Groog, act: PossibleActionToGroog<K>) => void;
+  [K in GroogAction["name"]]: (g: Groog, act: ActionMap[K]) => void;
 } = {
   die: (g, _) => {
+    g.render.curr = "die";
     g.timers.actionTimeRemain = { count: "down", val: groogConst.dieTimer };
   },
   jump: (g, _) => {
@@ -31,6 +30,7 @@ const processActionMap: {
     g.velocity.y = 0;
   },
 };
+
 const processGroogActions = (groog: Groog) => {
   for (const act of groog.queueActions) {
     processActionMap[act.name](groog, act as never);

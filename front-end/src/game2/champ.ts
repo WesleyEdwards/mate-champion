@@ -1,6 +1,6 @@
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
 import { Coordinates } from "../Game/models";
-import { CurrAndPrev, Entity } from "./state/helpers";
+import { Entity } from "./state/helpers";
 import { TimerDown, TimerUp } from "./state/timeHelpers";
 
 export type Champ = {
@@ -64,16 +64,7 @@ export const champConst = {
 } as const;
 
 export type ChampDirectionY = "up" | "down" | "hor";
-export type ChampDirectionX = "left" | "right" | "none";
-
-export type ChampActionStr =
-  | "moveX"
-  | "stopX"
-  | "jump"
-  | "melee"
-  | "shoot"
-  | "setFacingY"
-  | "setY";
+export type ChampDirectionX = "left" | "right";
 
 export type ChampAction =
   | { name: "moveX"; dir: "left" | "right" }
@@ -81,22 +72,17 @@ export type ChampAction =
   | { name: "jump" }
   | { name: "melee" }
   | { name: "shoot" }
-  | { name: "jump" }
   | { name: "setFacingY"; dir: ChampDirectionY }
   | { name: "setY"; y: number };
 
-export type PossibleActionToChamp<T extends ChampActionStr> = T extends "moveX"
-  ? { name: "moveX"; dir: "left" | "right" }
-  : T extends "jump"
-  ? { name: "jump" }
-  : T extends "stopX"
-  ? { name: "stopX" }
-  : T extends "melee"
-  ? { name: "melee" }
-  : T extends "shoot"
-  ? { name: "shoot" }
-  : T extends "setFacingY"
-  ? { name: "setFacingY"; dir: ChampDirectionY }
-  : T extends "setY"
-  ? { name: "setY"; y: number }
-  : never;
+export type ChampActionMap = {
+  moveX: { name: "moveX"; dir: "left" | "right" };
+  stopX: { name: "stopX" };
+  jump: { name: "jump" };
+  melee: { name: "melee" };
+  shoot: { name: "shoot" };
+  setFacingY: { name: "setFacingY"; dir: ChampDirectionY };
+  setY: { name: "setY"; y: number };
+};
+
+export type ChampActionStr = ChampAction["name"];

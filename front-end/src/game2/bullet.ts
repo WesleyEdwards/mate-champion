@@ -1,6 +1,6 @@
 import { Coordinates } from "../Game/models";
 import { Textures } from "../gameAssets/textures";
-import { RenderFunH } from "./render/helpers";
+import { RenderFun } from "./render/helpers";
 import { CurrAndPrev, distBetween, Entity } from "./state/helpers";
 import { TimerUp, updatePosAndVel, updateTimers } from "./state/timeHelpers";
 

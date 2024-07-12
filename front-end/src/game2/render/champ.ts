@@ -1,8 +1,8 @@
 import { Textures } from "../../gameAssets/textures";
 import { Champ, ChampAssetDes, champConst } from "../champ";
-import { RenderFunH, SpriteAssetInfo } from "./helpers";
+import { RenderFun, SpriteAssetInfo } from "./helpers";
 
-export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
+export const renderPlayer: RenderFun<Champ> = (p) => (cxt) => {
   const asset = champAssets[p.render.curr];
 
   if (!asset) return;
@@ -32,7 +32,6 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
     drawImageWidth,
     drawImageHeight
   );
-  cxt.fillRect(-3, -3, 3, 3);
 };
 
 const champAssets: SpriteAssetInfo<ChampAssetDes> = {

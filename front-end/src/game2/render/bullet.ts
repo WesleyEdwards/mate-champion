@@ -1,8 +1,8 @@
 import { Textures } from "../../gameAssets/textures";
 import { MBullet, mBulletConst } from "../bullet";
-import { RenderFunH } from "./helpers";
+import { RenderFun } from "./helpers";
 
-export const renderBullet: RenderFunH<MBullet> = (b) => (cxt) => {
+export const renderBullet: RenderFun<MBullet> = (b) => (cxt) => {
   cxt.rotate(
     (() => {
       if (b.velocity.x > 0) return 0;

@@ -2,8 +2,8 @@ import _ from "lodash";
 import {
   Champ,
   ChampAction,
+  ChampActionMap,
   ChampActionStr,
-  PossibleActionToChamp,
   champConst,
 } from "../../champ";
 import { mBulletConst } from "../../bullet";
@@ -58,7 +58,7 @@ const processActionRaw = (champ: Champ, action: ChampAction) => {
 };
 
 const processActionMap: {
-  [K in ChampActionStr]: (p: Champ, act: PossibleActionToChamp<K>) => void;
+  [K in ChampActionStr]: (p: Champ, act: ChampActionMap[K]) => void;
 } = {
   moveX: (p, act) => {
     if (act.dir === "left") {

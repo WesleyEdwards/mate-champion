@@ -2,7 +2,7 @@ import { Coordinates } from "../Game/models";
 import { Champ, champConst } from "./champ";
 import { Groog, groogConst } from "./groog";
 import { PlatformState } from "./platform";
-import { RenderFunH } from "./render/helpers";
+import { RenderFun } from "./render/helpers";
 import { CurrAndPrev } from "./state/helpers";
 
 export type FloorState = {
@@ -16,7 +16,7 @@ export const floorConst = {
   floorHeight: 60,
 } as const;
 
-export const renderFloor: RenderFunH<FloorState> = (f) => (cxt) => {
+export const renderFloor: RenderFun<FloorState> = (f) => (cxt) => {
   cxt.fillStyle = f.color;
   cxt.strokeStyle = "black";
   cxt.lineWidth = 8;

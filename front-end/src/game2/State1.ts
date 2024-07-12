@@ -7,7 +7,7 @@ import { Champ } from "./champ";
 import { FloorState, floorConst } from "./floor";
 import { Groog, groogConst } from "./groog";
 import { PlatformState } from "./platform";
-import { emptyCoors } from "./state/helpers";
+import { emptyCoors, innitEntity, ToRemove } from "./state/helpers";
 import { emptyTime } from "./state/timeHelpers";
 
 export type GameState1 = {
@@ -26,6 +26,7 @@ export type GameState1 = {
   grogs: Groog[];
   bullets: MBullet[];
   keys: Keys;
+  toRemove: ToRemove[];
 };
 
 export const initGameState = ({
@@ -55,24 +56,22 @@ export const initGameState = ({
     },
     gravityFactor: null,
     jump: { jumps: 0, isJumping: false },
-    position: {
-      curr: { x: 400, y: 400 },
-      prev: emptyCoors(),
-    },
-    velocity: emptyCoors(),
     action: null,
-    timers: {
-      sprite: emptyTime("up"),
-      coyote: emptyTime("up"),
-      actionTimeRemain: emptyTime("down"),
-      actionCoolDownRemain: emptyTime("down"),
-    },
     render: {
       prev: "falling",
       curr: "falling",
     },
     acceptQueue: [],
     publishQueue: [],
+    ...innitEntity({
+      timers: {
+        sprite: emptyTime("up"),
+        coyote: emptyTime("up"),
+        actionTimeRemain: emptyTime("down"),
+        actionCoolDownRemain: emptyTime("down"),
+      },
+      position: { x: 400, y: 400 },
+    }),
   },
   floors: firstLevel.floors.map((f) => ({
     color: f.color,
@@ -85,20 +84,20 @@ export const initGameState = ({
     widthHeight: { x: p.width, y: p.height },
   })),
   grogs: firstLevel.opponents.grog.map((g) => ({
-    velocity: { x: g.moveSpeed, y: 0 },
-    position: {
-      curr: { ...g.initPos },
-      prev: emptyCoors(),
-    },
     facing: "right",
     render: {
       curr: "walk",
     },
-    timers: {
-      sprite: emptyTime("up"),
-      actionTimeRemain: emptyTime("down"),
-    },
     queueActions: [],
+
+    ...innitEntity({
+      timers: {
+        sprite: emptyTime("up"),
+        actionTimeRemain: emptyTime("down"),
+      },
+      velocity: { x: g.moveSpeed, y: 0 },
+      position: g.initPos,
+    }),
   })),
   bullets: [],
 
@@ -106,4 +105,5 @@ export const initGameState = ({
     window.pause = !window.pause;
     console.log("Paused", window.pause);
   }),
+  toRemove: [],
 });

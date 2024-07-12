@@ -1,8 +1,8 @@
 import { Textures } from "../../gameAssets/textures";
 import { Groog, GroogAssetDes, groogConst } from "../groog";
-import { RenderFunH, SpriteAssetInfo } from "./helpers";
+import { RenderFun, SpriteAssetInfo } from "./helpers";
 
-export const renderGroog: RenderFunH<Groog> = (g) => (cxt) => {
+export const renderGroog: RenderFun<Groog> = (g) => (cxt) => {
   const asset = grogSpritesInfo[g.render.curr];
 
   if (!asset) return;
@@ -31,15 +31,6 @@ export const renderGroog: RenderFunH<Groog> = (g) => (cxt) => {
     -(drawImageHeight - groogConst.widthHeight.y / 2),
     drawImageWidth,
     drawImageHeight
-  );
-  cxt.fillRect(-3, -3, 3, 3);
-  cxt.strokeStyle = "red";
-
-  cxt.strokeRect(
-    -groogConst.widthHeight.x / 2,
-    -groogConst.widthHeight.y / 2,
-    groogConst.widthHeight.x,
-    groogConst.widthHeight.y
   );
 };
 

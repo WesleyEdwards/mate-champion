@@ -1,10 +1,9 @@
-import { Champ, ChampAction, champConst } from "../../champ";
-import { updatePosAndVel, updateTimers } from "../timeHelpers";
+import { Champ, champConst } from "../../champ";
+import { UpdateFun } from "../helpers";
 import { handleChampActions } from "./actions";
 import { updateChampSpriteInfo } from "./spriteInfo";
 
-export const updatePlayer = (p: Champ, deltaT: number) => {
-
+export const updatePlayer: UpdateFun<Champ> = (p, deltaT) => {
   // update with gravity
   if (p.gravityFactor) {
     p.gravityFactor *= champConst.jumpGravityFrameDecrease;

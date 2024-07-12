@@ -3,7 +3,6 @@ import { FullLevelInfo, SetUI } from "../Game/models";
 import { GameMode } from "../hooks/useAuth";
 import { GameState1, initGameState } from "./State1";
 import { renderGs } from "./render/gameState";
-import { renderBoxes } from "./render/renderBoxes";
 import { updateGs } from "./state/gameState";
 
 export function enterGameLoop1(params: {
@@ -29,6 +28,8 @@ export function enterGameLoop1(params: {
   const gameState: GameState1 = initGameState({ firstLevel: levels[0] });
 
   function gameLoop(timeStamp: number) {
+    // TODO
+    window.mateSettings.collisionBoxesVisible = true;
     if (window.stopLoop === true) {
       // gameState.removeSetUi();
 
@@ -41,8 +42,6 @@ export function enterGameLoop1(params: {
 
     updateGs(gameState, timeStamp, window.pause, levels);
     renderGs(gameState, context, window.pause);
-
-    renderBoxes(gameState, context);
 
     requestAnimationFrame(gameLoop);
   }
