@@ -100,6 +100,11 @@ const removeMap: Record<
   },
 };
 
+export type ActionMap<M extends { name: string }, E> = {
+  [K in M["name"]]: (entity: E, action: Extract<M, { name: K }>) => void;
+};
+
+
 // export const removeEntity = <T extends GameEntityStr>(
 //   type: T,
 //   entity: GameEntity<T>,

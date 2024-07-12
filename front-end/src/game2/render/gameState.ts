@@ -21,11 +21,11 @@ export const renderGs = (
   renderItemsOnCanvas(
     [
       renderBuilder({ fun: renderBg, getter: (gs) => [gs.camera] }),
-      renderBuilder({ fun: renderPlayer, getter: (gs) => [gs.player] }),
-      renderBuilder({ fun: renderBullet, getter: (gs) => gs.bullets }),
-      renderBuilder({ fun: renderGroog, getter: (gs) => gs.grogs }),
       renderBuilder({ fun: renderFloor, getter: (gs) => gs.floors }),
       renderBuilder({ fun: renderPlatform, getter: (gs) => gs.platforms }),
+      renderBuilder({ fun: renderBullet, getter: (gs) => gs.bullets }),
+      renderBuilder({ fun: renderGroog, getter: (gs) => gs.grogs }),
+      renderBuilder({ fun: renderPlayer, getter: (gs) => [gs.player] }),
     ],
     cxt,
     gs

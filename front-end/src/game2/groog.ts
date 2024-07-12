@@ -23,7 +23,7 @@ export const groogConst = {
   },
   distFromChampMelee: 10,
   jumpSpeed: -1,
-  dieTimer: 1000,
+  dieTimer: 500,
 } as const;
 
 export type GroogAssetDes = "walk" | "die" | "rising" | "falling";
@@ -35,10 +35,3 @@ export type GroogAction =
   | { name: "jump" }
   | { name: "setX"; dir: GroogDirX }
   | { name: "setY"; y: number };
-
-export type ActionMap = {
-  die: { name: "die" };
-  jump: { name: "jump" };
-  setX: { name: "setX"; dir: GroogDirX };
-  setY: { name: "setY"; y: number };
-};

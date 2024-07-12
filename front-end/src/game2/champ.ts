@@ -75,14 +75,3 @@ export type ChampAction =
   | { name: "setFacingY"; dir: ChampDirectionY }
   | { name: "setY"; y: number };
 
-export type ChampActionMap = {
-  moveX: { name: "moveX"; dir: "left" | "right" };
-  stopX: { name: "stopX" };
-  jump: { name: "jump" };
-  melee: { name: "melee" };
-  shoot: { name: "shoot" };
-  setFacingY: { name: "setFacingY"; dir: ChampDirectionY };
-  setY: { name: "setY"; y: number };
-};
-
-export type ChampActionStr = ChampAction["name"];

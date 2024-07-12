@@ -1,8 +1,6 @@
 import { Coordinates } from "../Game/models";
-import { Textures } from "../gameAssets/textures";
-import { RenderFun } from "./render/helpers";
-import { CurrAndPrev, distBetween, Entity } from "./state/helpers";
-import { TimerUp, updatePosAndVel, updateTimers } from "./state/timeHelpers";
+import { Entity } from "./state/helpers";
+import { TimerUp } from "./state/timeHelpers";
 
 export type MBullet = {
   initPos: Coordinates;

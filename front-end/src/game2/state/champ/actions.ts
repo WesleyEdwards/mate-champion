@@ -1,12 +1,7 @@
 import _ from "lodash";
-import {
-  Champ,
-  ChampAction,
-  ChampActionMap,
-  ChampActionStr,
-  champConst,
-} from "../../champ";
+import { Champ, ChampAction, champConst } from "../../champ";
 import { mBulletConst } from "../../bullet";
+import { ActionMap } from "../helpers";
 
 export const handleChampActions = (p: Champ) => {
   cleanActions(p);
@@ -57,9 +52,7 @@ const processActionRaw = (champ: Champ, action: ChampAction) => {
   processActionMap[action.name](champ, action as never);
 };
 
-const processActionMap: {
-  [K in ChampActionStr]: (p: Champ, act: ChampActionMap[K]) => void;
-} = {
+const processActionMap: ActionMap<ChampAction, Champ> = {
   moveX: (p, act) => {
     if (act.dir === "left") {
       p.velocity.x = -champConst.moveSpeed;
@@ -130,6 +123,8 @@ const processActionMap: {
     p.timers.coyote.val = 0;
   },
 };
+
+type ChampActionStr = ChampAction["name"];
 
 const queuedContains = (p: Champ, act: ChampActionStr): boolean => {
   return p.acceptQueue.some((a) => a.name === act);

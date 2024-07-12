@@ -10,7 +10,7 @@ export const renderGroog: RenderFun<Groog> = (g) => (cxt) => {
   const w = groogConst.render.imageWidth;
 
   const whichSprite =
-    Math.round(g.timers.sprite.val / asset.cycleTime) % asset.imgCount;
+    Math.floor(g.timers.sprite.val / asset.cycleTime) % asset.imgCount;
 
   if (g.facing === "left") {
     cxt.scale(-1, 1);
@@ -45,7 +45,7 @@ const grogSpritesInfo: SpriteAssetInfo<GroogAssetDes> = {
     image: () => Textures().grog.death,
     imgCount: 5,
     startX: 0,
-    cycleTime: 105,
+    cycleTime: groogConst.dieTimer / 5,
   },
   rising: {
     image: () => Textures().grog.jumpAndFall,
