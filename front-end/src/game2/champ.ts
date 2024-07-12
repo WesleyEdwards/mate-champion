@@ -1,6 +1,6 @@
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
 import { Coordinates } from "../Game/models";
-import { CurrAndPrev } from "./state/helpers";
+import { CurrAndPrev, Entity } from "./state/helpers";
 import { TimerDown, TimerUp } from "./state/timeHelpers";
 
 export type Champ = {
@@ -12,15 +12,7 @@ export type Champ = {
     jumps: number;
     isJumping: boolean;
   };
-  velocity: Coordinates;
-  position: CurrAndPrev;
   action: "shoot" | "melee" | null;
-  timer: {
-    sprite: TimerUp;
-    coyote: TimerUp;
-    actionTimeRemain: TimerDown; // Time left and cool down are both decreased always
-    actionCoolDownRemain: TimerDown; // When < 0, the player can take another action
-  };
   render: {
     prev: ChampAssetDes;
     curr: ChampAssetDes;
@@ -28,7 +20,12 @@ export type Champ = {
   gravityFactor: number | null;
   acceptQueue: ChampAction[];
   publishQueue: ChampPublish[];
-};
+} & Entity<{
+  sprite: TimerUp;
+  coyote: TimerUp;
+  actionTimeRemain: TimerDown; // Time left and cool down are both decreased always
+  actionCoolDownRemain: TimerDown; // When < 0, the player can take another action
+}>;
 
 type ChampPublish = {
   name: "shoot";

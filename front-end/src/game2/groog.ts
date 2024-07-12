@@ -1,20 +1,17 @@
 import { Coordinates } from "../Game/models";
-import { CurrAndPrev } from "./state/helpers";
+import { CurrAndPrev, Entity } from "./state/helpers";
 import { TimerDown, TimerUp } from "./state/timeHelpers";
 
 export type Groog = {
-  position: CurrAndPrev;
-  velocity: Coordinates;
-  timer: {
-    sprite: TimerUp;
-    actionTimeRemain: TimerDown; // right now, just dying
-  };
   facing: "left" | "right";
   render: {
     curr: GroogAssetDes;
   };
   queueActions: GroogAction[];
-};
+} & Entity<{
+  sprite: TimerUp;
+  actionTimeRemain: TimerDown; // right now, just dying
+}>;
 
 export const groogConst = {
   widthHeight: {

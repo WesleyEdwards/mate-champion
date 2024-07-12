@@ -10,7 +10,7 @@ export const renderPlayer: RenderFunH<Champ> = (p) => (cxt) => {
   const w = champConst.render.imageWidth;
 
   const whichSprite =
-    Math.round(p.timer.sprite.val / asset.cycleTime) % asset.imgCount;
+    Math.round(p.timers.sprite.val / asset.cycleTime) % asset.imgCount;
 
   if (p.facing.x === "left") {
     cxt.scale(-1, 1);

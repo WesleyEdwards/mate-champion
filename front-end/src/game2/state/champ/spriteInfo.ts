@@ -9,7 +9,7 @@ export const updateChampSpriteInfo = (p: Champ) => {
   const currRender = getChampSpritesInfo(p);
 
   if (currRender !== p.render.prev) {
-    p.timer.sprite.val = 0;
+    p.timers.sprite.val = 0;
   }
   p.render.prev = p.render.curr;
   p.render.curr = currRender;
@@ -19,7 +19,7 @@ const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
   const directionY = p.facing.y === "down" ? "hor" : p.facing.y;
   const action = (): PlayerAction => {
     if (!p.action) return "none";
-    if (p.timer.actionTimeRemain.val <= 0) {
+    if (p.timers.actionTimeRemain.val <= 0) {
       return "none";
     } else {
     }

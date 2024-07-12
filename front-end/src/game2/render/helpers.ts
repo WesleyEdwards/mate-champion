@@ -72,7 +72,7 @@ type RenderItem<T> = {
 
 export type RenderableItems = RenderItem<any>[];
 
-export const renderBuilder = <T>(props: RenderItem<T>) => props;
+export const renderBuilder = <T>(e: RenderItem<T>) => e;
 
 // possible alternative to renderItemBuilder
 // type Renderable = { player: Champ; groog: Groog };

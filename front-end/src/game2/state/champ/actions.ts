@@ -40,7 +40,7 @@ const cleanActions = (p: Champ) => {
       }
     }
     if (curr.name === "melee" || curr.name === "shoot") {
-      if (p.timer.actionCoolDownRemain.val > 0) {
+      if (p.timers.actionCoolDownRemain.val > 0) {
         acc.push((a) => a === "melee" || a === "shoot");
       }
     }
@@ -81,13 +81,13 @@ const processActionMap: {
   melee: (p, _) => {
     console.log("Melee");
     p.action = "melee";
-    p.timer.actionTimeRemain.val = champConst.melee.time;
-    p.timer.actionCoolDownRemain.val = champConst.melee.coolDown * 2;
+    p.timers.actionTimeRemain.val = champConst.melee.time;
+    p.timers.actionCoolDownRemain.val = champConst.melee.coolDown * 2;
   },
   shoot: (p, _) => {
     console.log("Shooting");
-    p.timer.actionTimeRemain.val = champConst.shootCoolDown;
-    p.timer.actionCoolDownRemain.val = champConst.shootCoolDown * 2;
+    p.timers.actionTimeRemain.val = champConst.shootCoolDown;
+    p.timers.actionCoolDownRemain.val = champConst.shootCoolDown * 2;
     const x = (() => {
       if (p.facing.y === "up") {
         return p.position.curr.x;
@@ -127,7 +127,7 @@ const processActionMap: {
   setY: (p, act) => {
     p.position.curr.y = act.y;
     p.velocity.y = 0;
-    p.timer.coyote.val = 0;
+    p.timers.coyote.val = 0;
   },
 };
 

@@ -1,21 +1,16 @@
 import { MBullet, mBulletConst } from "../bullet";
-import { Champ } from "../champ";
-import { Groog } from "../groog";
 import { GameState1 } from "../State1";
 import { distBetween } from "./helpers";
 import { emptyTime, updatePosAndVel, updateTimers } from "./timeHelpers";
 
 export const updateBullet = (b: MBullet, deltaT: number) => {
-  updatePosAndVel(b.position, b.velocity, deltaT);
-  updateTimers(b.timer, deltaT);
-
   if (distBetween(b.initPos, b.position.curr) > mBulletConst.distUntilDud) {
     b.publishQueue.push("die");
   }
 };
 
 export const processBullets = (gs: GameState1) => {
-  const {player: c, bullets} = gs
+  const { player: c, bullets } = gs;
   const shoot = c.publishQueue.filter((x) => x.name === "shoot");
   for (const shot of shoot) {
     bullets.push({
@@ -23,7 +18,7 @@ export const processBullets = (gs: GameState1) => {
       velocity: { ...shot.velocity },
       position: { prev: { ...shot.initPos }, curr: { ...shot.initPos } },
       publishQueue: [],
-      timer: {
+      timers: {
         timeAlive: emptyTime("up"),
       },
     });

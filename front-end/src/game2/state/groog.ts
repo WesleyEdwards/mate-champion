@@ -8,8 +8,6 @@ import {
 import { updatePosAndVel, updateTimers } from "./timeHelpers";
 
 export const updateGroog = (groog: Groog, deltaT: number) => {
-  updatePosAndVel(groog.position, groog.velocity, deltaT);
-  updateTimers(groog.timer, deltaT);
 
   groog.velocity.y += GRAVITY * deltaT;
 
@@ -20,7 +18,7 @@ const processActionMap: {
   [K in GroogActionStr]: (g: Groog, act: PossibleActionToGroog<K>) => void;
 } = {
   die: (g, _) => {
-    g.timer.actionTimeRemain = { count: "down", val: groogConst.dieTimer };
+    g.timers.actionTimeRemain = { count: "down", val: groogConst.dieTimer };
   },
   jump: (g, _) => {
     g.velocity.y = groogConst.jumpSpeed;

@@ -10,7 +10,7 @@ export const renderGroog: RenderFunH<Groog> = (g) => (cxt) => {
   const w = groogConst.render.imageWidth;
 
   const whichSprite =
-    Math.round(g.timer.sprite.val / asset.cycleTime) % asset.imgCount;
+    Math.round(g.timers.sprite.val / asset.cycleTime) % asset.imgCount;
 
   if (g.facing === "left") {
     cxt.scale(-1, 1);

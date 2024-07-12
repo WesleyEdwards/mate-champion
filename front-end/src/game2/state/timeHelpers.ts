@@ -4,7 +4,7 @@ import { CurrAndPrev } from "./helpers";
 export type TimerUp = { count: "up"; val: number };
 export type TimerDown = { count: "down"; val: number };
 
-type Timer = TimerUp | TimerDown;
+export type Timer = TimerUp | TimerDown;
 
 export function emptyTime(count: "up"): TimerUp;
 export function emptyTime(count: "down"): TimerDown;

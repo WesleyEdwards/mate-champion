@@ -61,7 +61,7 @@ export const initGameState = ({
     },
     velocity: emptyCoors(),
     action: null,
-    timer: {
+    timers: {
       sprite: emptyTime("up"),
       coyote: emptyTime("up"),
       actionTimeRemain: emptyTime("down"),
@@ -94,7 +94,7 @@ export const initGameState = ({
     render: {
       curr: "walk",
     },
-    timer: {
+    timers: {
       sprite: emptyTime("up"),
       actionTimeRemain: emptyTime("down"),
     },

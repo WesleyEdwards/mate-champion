@@ -12,7 +12,7 @@ export const renderBullet: RenderFunH<MBullet> = (b) => (cxt) => {
   );
 
   const spritesInRow = 4;
-  const whichSprite = Math.round(b.timer.timeAlive.val / 10) % spritesInRow;
+  const whichSprite = Math.round(b.timers.timeAlive.val / 10) % spritesInRow;
 
   const imgWidth = 28;
 
