@@ -1,10 +1,14 @@
 import { cameraConst } from "../../Game/constants";
 import { Camera } from "../camera";
-import { Champ } from "../champ";
+import { ChampState } from "../champ";
 import { updateTimers, updateWithTime } from "./timeHelpers";
 
-export const updateCamera = (cam: Camera, deltaT: number, champ: Champ) => {
-  if (champ.velocity.x !== 0 || champ.velocity.y !== 0) {
+export const updateCamera = (
+  cam: Camera,
+  deltaT: number,
+  champ: ChampState
+) => {
+  if (champ.velocity[0] !== 0 || champ.velocity[1] !== 0) {
     cam.time.idleTime.val = 0;
   }
 
@@ -17,19 +21,20 @@ export const updateCamera = (cam: Camera, deltaT: number, champ: Champ) => {
   updateWithTime(cam.position, cam.velocity, deltaT);
 
   // Update X
-  const playerDistFromWall = champ.position.curr.x - cam.position.x;
+  const playerDistFromWall = champ.position.curr[0] - cam.position[0];
   const diffX = playerDistFromWall - cameraConst.idealDistFromLeftWall;
-  cam.velocity.x = diffX * 0.02;
+  cam.velocity[0] = diffX * 0.02;
 
   // Update Y
-  const distFromCeiling = champ.position.curr.y + cam.position.y;
+  const distFromCeiling = champ.position.curr[1] + cam.position[1];
   const diffY = distFromCeiling - cameraConst.idealMinDistFromCeiling;
 
-  const isBelow = cam.position.y <= 0 && diffY > 0;
-
+  const isBelow = cam.position[1] <= 0 && diffY > 0;
+  
+  // window.debounceLog(cam.position);
   if (isBelow) {
-    cam.position.y = 0;
-    cam.velocity.y = 0;
+    cam.position[1] = 0;
+    cam.velocity[1] = 0;
     return;
   }
 
@@ -37,7 +42,8 @@ export const updateCamera = (cam: Camera, deltaT: number, champ: Champ) => {
 
   const newVelocity = -diffY * fallingFactor * 0.001;
 
-  cam.velocity.y = newVelocity;
+  cam.velocity[1] = newVelocity;
+
 
   return;
 };

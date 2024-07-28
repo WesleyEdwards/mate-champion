@@ -1,13 +1,13 @@
-import { MBullet, mBulletConst } from "../bullet";
-import { Champ, champConst } from "../champ";
-import { Groog, groogConst } from "../groog";
+import { MBulletState, mBulletConst } from "../bullet";
+import { ChampState, champConst } from "../champ";
+import { GroogState, groogConst } from "../groog";
 import { RenderFun } from "./helpers";
 
-export const boxBulletRender: RenderFun<MBullet> = (b) => (cxt) => {
+export const boxBulletRender: RenderFun<MBulletState> = (b) => (cxt) => {
   cxt.rotate(
     (() => {
-      if (b.velocity.x > 0) return 0;
-      if (b.velocity.x < 0) return Math.PI;
+      if (b.velocity.curr[0] > 0) return 0;
+      if (b.velocity.curr[0] < 0) return Math.PI;
       return (Math.PI / 2) * 3;
     })()
   );
@@ -23,19 +23,19 @@ export const boxBulletRender: RenderFun<MBullet> = (b) => (cxt) => {
   cxt.stroke();
 };
 
-export const boxGroogRender: RenderFun<Groog> = (g) => (cxt) => {
+export const boxGroogRender: RenderFun<GroogState> = (g) => (cxt) => {
   cxt.fillRect(-3, -3, 3, 3);
   cxt.strokeStyle = "red";
 
   cxt.strokeRect(
-    -groogConst.widthHeight.x / 2,
-    -groogConst.widthHeight.y / 2,
-    groogConst.widthHeight.x,
-    groogConst.widthHeight.y
+    -groogConst.dimensions[0] / 2,
+    -groogConst.dimensions[1] / 2,
+    groogConst.dimensions[0],
+    groogConst.dimensions[1]
   );
 };
 
-export const boxChampRender: RenderFun<Champ> = (g) => (cxt) => {
+export const boxChampRender: RenderFun<ChampState> = (g) => (cxt) => {
   cxt.fillRect(-3, -3, 3, 3);
   cxt.strokeStyle = "red";
 

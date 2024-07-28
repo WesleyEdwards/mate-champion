@@ -1,51 +1,54 @@
 import { remove } from "lodash";
-import { MBullet, mBulletConst } from "../bullet";
-import { GameState1 } from "../State1";
-import { distBetween, innitEntity, UpdateFun } from "./helpers";
+import { Bullet1, MBulletState, mBulletConst } from "../bullet";
+import { Entity, GameStateProps } from "../State1";
+import { distBetween, emptyCoors, Id, UpdateFun } from "./helpers";
 import { emptyTime } from "./timeHelpers";
+import { Champ1 } from "../champ";
+import { Bullet } from "../../Game/Bullet/Bullet";
+import { generateRandomInt, randomOutOf } from "../../Game/helpers/utils";
+import { bulletConst } from "../../Game/constants";
 
-export const updateBullet: UpdateFun<MBullet> = (b) => {
-  if (distBetween(b.initPos, b.position.curr) > mBulletConst.distUntilDud) {
-    b.publishQueue.push("die");
-  }
+export const updateBullet: UpdateFun<MBulletState> = (b) => {
+  // if (distBetween(b.initPos, b.position.curr) > mBulletConst.distUntilDud) {
+  //   b.publishQueue.push("die");
+  // }
 };
 
-export const processBullets = (gs: GameState1) => {
-  const { player, bullets } = gs;
-
+export const reconcileActions = (player: Champ1, entities: Entity[]) => {
+  // const { player, bullets } = gs;
   // shoot bullets
-  const shoot = player.publishQueue.filter((x) => x.name === "shoot");
+  const shoot = player.state.publishQueue.filter((x) => x.name === "shoot");
   for (const shot of shoot) {
-    bullets.push({
-      initPos: shot.initPos,
-      publishQueue: [],
-      ...innitEntity({
+    entities.push(
+      new Bullet1({
         timers: {
-          timeAlive: emptyTime("up"),
+          timeAlive: {
+            count: "up",
+            val: 0,
+          },
         },
-        velocity: shot.velocity,
-        position: shot.initPos,
-      }),
-    });
+        position: { curr: { ...shot.initPos }, prev: { ...shot.initPos } },
+        velocity: { curr: shot.velocity, prev: shot.velocity },
+        dead: false,
+        initPos: { ...shot.initPos },
+        dimensions: [bulletConst.width, bulletConst.height],
+      })
+    );
   }
-  player.publishQueue = player.publishQueue.filter((p) => p.name !== "shoot");
-
+  player.state.publishQueue = player.state.publishQueue.filter(
+    (p) => p.name !== "shoot"
+  );
   // collide with groogs
-  for (const bullet of gs.bullets) {
-    for (const groog of gs.grogs) {
-      if (
-        distBetween(bullet.position.curr, groog.position.curr) <
-        mBulletConst.distFromOppHit
-      ) {
-        gs.toRemove.push({ type: "bullet", entity: bullet });
-        groog.queueActions.push({ name: "die" });
-      }
-    }
-  }
-
+  // for (const bullet of bullets) {
+  //   for (const groog of grogs) {
+  //     if (
+  //       distBetween(bullet.state.position.curr, groog.position.curr) <
+  //       mBulletConst.distFromOppHit
+  //     ) {
+  //       gs.toRemove.push({ type: "bullet", entity: bullet });
+  //       groog.queueActions.push({ name: "die" });
+  //     }
+  //   }
+  // }
   // Filter out dead ones
-  const toDelete = gs.bullets.filter((b) => b.publishQueue.includes("die"));
-  for (const b of toDelete) {
-    gs.toRemove.push({ type: "bullet", entity: b });
-  }
 };

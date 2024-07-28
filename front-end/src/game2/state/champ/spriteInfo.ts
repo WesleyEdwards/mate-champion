@@ -3,9 +3,9 @@ import {
   PlayerAction,
   PlayerMove,
 } from "../../../Game/Player/PlayerVectorManager";
-import { Champ, ChampAssetDes, ChampDescription } from "../../champ";
+import { ChampState, ChampAssetDes, ChampDescription } from "../../champ";
 
-export const updateChampSpriteInfo = (p: Champ) => {
+export const updateChampSpriteInfo = (p: ChampState) => {
   const currRender = getChampSpritesInfo(p);
 
   if (currRender !== p.render.prev) {
@@ -15,7 +15,7 @@ export const updateChampSpriteInfo = (p: Champ) => {
   p.render.curr = currRender;
 };
 
-const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
+const getChampSpritesInfo = (p: ChampState): ChampAssetDes => {
   const directionY = p.facing.y === "down" ? "hor" : p.facing.y;
   const action = (): PlayerAction => {
     if (!p.action) return "none";
@@ -26,10 +26,10 @@ const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
     return p.action;
   };
 
-  const move: PlayerMove = p.velocity.x === 0 ? "none" : "walk";
+  const move: PlayerMove = p.velocity[0] === 0 ? "none" : "walk";
 
   const inAir =
-    p.velocity.y > 0 ? "falling" : p.velocity.y < 0 ? "rising" : null;
+    p.velocity[1] > 0 ? "falling" : p.velocity[1] < 0 ? "rising" : null;
 
   const sprite: ChampDescription = `${directionY}-${action()}-${move}`;
 

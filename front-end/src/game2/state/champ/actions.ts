@@ -1,33 +1,33 @@
 import _ from "lodash";
-import { Champ, ChampAction, champConst } from "../../champ";
+import { ChampState, ChampAction, champConst } from "../../champ";
 import { mBulletConst } from "../../bullet";
-import { ActionMap } from "../helpers";
+import { ActionMap, Coors } from "../helpers";
 
-export const handleChampActions = (p: Champ) => {
+export const handleChampActions = (p: ChampState) => {
   cleanActions(p);
 
   if (!queuedContains(p, "moveX")) {
-    processActionRaw(p, { name: "stopX" });
+    processChampActionRaw(p, { name: "stopX" });
   }
 
   if (!queuedContains(p, "setFacingY")) {
-    processActionRaw(p, { name: "setFacingY", dir: "hor" });
+    processChampActionRaw(p, { name: "setFacingY", dir: "hor" });
   }
 
   for (const a of p.acceptQueue) {
-    processActionRaw(p, a);
+    processChampActionRaw(p, a);
   }
 
   p.acceptQueue = [];
 };
 
-const cleanActions = (p: Champ) => {
+const cleanActions = (p: ChampState) => {
   // A list of filters to find actions that are NOT allowed
   const notAllowedFilter = p.acceptQueue.reduce<
     ((act: ChampActionStr) => boolean)[]
   >((acc, curr) => {
     if (curr.name === "jump") {
-      const allowedToJump = p.velocity.y === 0 || p.jump.jumps === 0;
+      const allowedToJump = p.velocity[1] === 0 || p.jump.jumps === 0;
       if (allowedToJump) {
         acc.push((a) => a === "setY");
       } else {
@@ -48,69 +48,71 @@ const cleanActions = (p: Champ) => {
   }
 };
 
-const processActionRaw = (champ: Champ, action: ChampAction) => {
+export const processChampActionRaw = (
+  champ: ChampState,
+  action: ChampAction
+) => {
   processActionMap[action.name](champ, action as never);
 };
 
-const processActionMap: ActionMap<ChampAction, Champ> = {
+const processActionMap: ActionMap<ChampAction, ChampState> = {
   moveX: (p, act) => {
     if (act.dir === "left") {
-      p.velocity.x = -champConst.moveSpeed;
+      p.velocity[0] = -champConst.moveSpeed;
     } else {
-      p.velocity.x = champConst.moveSpeed;
+      p.velocity[0] = champConst.moveSpeed;
     }
     p.facing.x = act.dir;
   },
   stopX: (p, _) => {
-    p.velocity.x = 0;
+    p.velocity[0] = 0;
   },
   jump: (p, _) => {
-    p.velocity.y = champConst.jumpSpeed;
-    p.position.curr.y -= 1;
+    p.velocity[1] = champConst.jumpSpeed;
+    p.position.curr[1] -= 1;
     p.gravityFactor = champConst.jumpGravityFactor;
     p.jump.isJumping = true;
     p.jump.jumps += 1;
   },
   melee: (p, _) => {
-    console.log("Melee");
     p.action = "melee";
     p.timers.actionTimeRemain.val = champConst.melee.time;
     p.timers.actionCoolDownRemain.val = champConst.melee.coolDown * 2;
   },
   shoot: (p, _) => {
-    console.log("Shooting");
+    p.action = "shoot";
     p.timers.actionTimeRemain.val = champConst.shootCoolDown;
     p.timers.actionCoolDownRemain.val = champConst.shootCoolDown * 2;
     const x = (() => {
       if (p.facing.y === "up") {
-        return p.position.curr.x;
+        return p.position.curr[0];
       }
       if (p.facing.x === "right") {
-        return p.position.curr.x + champConst.widthHeight.x / 2;
+        return p.position.curr[0] + champConst.widthHeight.x / 2;
       }
-      return p.position.curr.x - champConst.widthHeight.x / 2;
+      return p.position.curr[0] - champConst.widthHeight.x / 2;
     })();
 
     const y = (() => {
       if (p.facing.y === "up") {
-        return p.position.curr.y - champConst.widthHeight.y / 2;
+        return p.position.curr[1] - champConst.widthHeight.y / 2;
       }
-      return p.position.curr.y;
+      return p.position.curr[1];
     })();
 
-    const velocity = (() => {
+    const velocity = ((): Coors => {
       if (p.facing.y === "up") {
-        return { x: 0, y: -mBulletConst.speed };
+        return [0, -mBulletConst.speed];
       }
       if (p.facing.x === "right") {
-        return { x: mBulletConst.speed, y: 0 };
+        return [mBulletConst.speed, 0];
       }
-      return { x: -mBulletConst.speed, y: 0 };
+      return [-mBulletConst.speed, 0];
     })();
 
     p.publishQueue.push({
       name: "shoot" as const,
-      initPos: { x, y },
+      initPos: [x, y],
       velocity,
     });
   },
@@ -118,14 +120,14 @@ const processActionMap: ActionMap<ChampAction, Champ> = {
     p.facing.y = act.dir;
   },
   setY: (p, act) => {
-    p.position.curr.y = act.y;
-    p.velocity.y = 0;
+    p.position.curr[1] = act.y;
+    p.velocity[1] = 0;
     p.timers.coyote.val = 0;
   },
 };
 
 type ChampActionStr = ChampAction["name"];
 
-const queuedContains = (p: Champ, act: ChampActionStr): boolean => {
+const queuedContains = (p: ChampState, act: ChampActionStr): boolean => {
   return p.acceptQueue.some((a) => a.name === act);
 };

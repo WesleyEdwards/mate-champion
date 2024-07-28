@@ -1,5 +1,5 @@
 import { Coordinates } from "../../Game/models";
-import { CurrAndPrev } from "./helpers";
+import { Coors, CurrAndPrev } from "./helpers";
 
 export type TimerUp = { count: "up"; val: number };
 export type TimerDown = { count: "down"; val: number };
@@ -20,8 +20,8 @@ export function emptyTime(count: "up" | "down"): Timer {
 // };
 
 const updateCurr = (currAndPrev: CurrAndPrev) => {
-  currAndPrev.prev.x = currAndPrev.curr.x;
-  currAndPrev.prev.y = currAndPrev.curr.y;
+  currAndPrev.prev[0] = currAndPrev.curr[0];
+  currAndPrev.prev[1] = currAndPrev.curr[1];
 };
 
 /**
@@ -30,13 +30,18 @@ const updateCurr = (currAndPrev: CurrAndPrev) => {
  * @param vel
  * @param deltaT
  */
-export const updateWithTime = (
-  pos: Coordinates,
-  vel: Coordinates,
+export const updateWithTime = <T extends Coordinates | Coors>(
+  pos: T,
+  vel: T,
   deltaT: number
 ) => {
-  pos.x += vel.x * deltaT;
-  pos.y += vel.y * deltaT;
+  if ("x" in pos && "x" in vel) {
+    pos.x += vel.x * deltaT;
+    pos.y += vel.y * deltaT;
+  } else {
+    (pos as Coors)[0] += (vel as Coors)[0] * deltaT;
+    (pos as Coors)[1] += (vel as Coors)[1] * deltaT;
+  }
 };
 
 /**
@@ -47,7 +52,7 @@ export const updateWithTime = (
  */
 export const updatePosAndVel = (
   pos: CurrAndPrev,
-  vel: Coordinates,
+  vel: Coordinates | Coors,
   deltaT: number
 ) => {
   updateCurr(pos);

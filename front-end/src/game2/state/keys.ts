@@ -1,7 +1,7 @@
 import { Keys } from "../../Game/models";
-import { Champ } from "../champ";
+import { ChampState } from "../champ";
 
-export const updateKeys = (keys: Keys, player: Champ) => {
+export const updateKeys = (keys: Keys, player: ChampState) => {
   if (keys.jump || keys.toJump > 0) {
     player.acceptQueue.push({ name: "jump" });
     player.jump.isJumping = true;

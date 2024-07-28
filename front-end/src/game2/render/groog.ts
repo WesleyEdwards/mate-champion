@@ -1,8 +1,8 @@
 import { Textures } from "../../gameAssets/textures";
-import { Groog, GroogAssetDes, groogConst } from "../groog";
+import { GroogState, GroogAssetDes, groogConst } from "../groog";
 import { RenderFun, SpriteAssetInfo } from "./helpers";
 
-export const renderGroog: RenderFun<Groog> = (g) => (cxt) => {
+export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {
   const asset = grogSpritesInfo[g.render.curr];
 
   if (!asset) return;
@@ -10,7 +10,7 @@ export const renderGroog: RenderFun<Groog> = (g) => (cxt) => {
   const w = groogConst.render.imageWidth;
 
   const whichSprite =
-    Math.floor(g.timers.sprite.val / asset.cycleTime) % asset.imgCount;
+    Math.floor(g.timers.sprite.val / asset.cycleTime()) % asset.imgCount;
 
   if (g.facing === "left") {
     cxt.scale(-1, 1);
@@ -28,7 +28,7 @@ export const renderGroog: RenderFun<Groog> = (g) => (cxt) => {
     w,
     asset.image().height,
     -drawImageWidth / 2,
-    -(drawImageHeight - groogConst.widthHeight.y / 2),
+    -(drawImageHeight - groogConst.dimensions[1] / 2),
     drawImageWidth,
     drawImageHeight
   );
@@ -39,24 +39,24 @@ const grogSpritesInfo: SpriteAssetInfo<GroogAssetDes> = {
     image: () => Textures().grog.walking,
     imgCount: 6,
     startX: 0,
-    cycleTime: 120,
+    cycleTime: () => 120,
   },
   die: {
     image: () => Textures().grog.death,
     imgCount: 5,
     startX: 0,
-    cycleTime: groogConst.dieTimer / 5,
+    cycleTime: () => groogConst.dieTimer / 5,
   },
   rising: {
     image: () => Textures().grog.jumpAndFall,
     imgCount: 1,
     startX: 0,
-    cycleTime: 100,
+    cycleTime: () => 100,
   },
   falling: {
     image: () => Textures().grog.jumpAndFall,
     imgCount: 1,
     startX: 1,
-    cycleTime: 100,
+    cycleTime: () => 100,
   },
 };

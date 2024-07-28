@@ -1,18 +1,18 @@
 import { GRAVITY } from "../../Game/constants";
-import { Groog, GroogAction, groogConst } from "../groog";
+import { GroogState, GroogAction, groogConst } from "../groog";
 import { ActionMap, UpdateFun } from "./helpers";
 
-export const updateGroog: UpdateFun<Groog> = (groog, deltaT, remove) => {
+export const updateGroog: UpdateFun<GroogState> = (groog, deltaT) => {
   if (groog.render.curr === "die" && groog.timers.actionTimeRemain.val <= 0) {
-    remove({ type: "groog", entity: groog });
+    groog.dead = true;
   }
 
-  groog.velocity.y += GRAVITY * deltaT;
+  groog.velocity[1] += GRAVITY * deltaT;
 
   processGroogActions(groog);
 };
 
-const processActionMap: ActionMap<GroogAction, Groog> = {
+const processActionMap: ActionMap<GroogAction, GroogState> = {
   die: (g, _) => {
     if (g.render.curr === "die") return;
     g.render.curr = "die";
@@ -20,18 +20,18 @@ const processActionMap: ActionMap<GroogAction, Groog> = {
     g.timers.sprite.val = 0;
   },
   jump: (g, _) => {
-    g.velocity.y = groogConst.jumpSpeed;
+    g.velocity[1] = groogConst.jumpSpeed;
   },
   setX: (g, act) => {
     g.facing = act.dir;
   },
   setY: (g, act) => {
-    g.position.curr.y = act.y;
-    g.velocity.y = 0;
+    g.position.curr[1] = act.y;
+    g.velocity[1] = 0;
   },
 };
 
-const processGroogActions = (groog: Groog) => {
+const processGroogActions = (groog: GroogState) => {
   for (const act of groog.queueActions) {
     processActionMap[act.name](groog, act as never);
   }

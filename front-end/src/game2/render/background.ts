@@ -3,39 +3,34 @@ import { Camera } from "../camera";
 import { Textures } from "../../gameAssets/textures";
 import { RenderFun } from "./helpers";
 
-export const renderBg: RenderFun<Camera> = (cam) => (cxt) => {
-  const spacesToRight = Math.floor(cam.position.x / MAX_CANVAS_WIDTH);
-  const spacesUp = Math.floor(cam.position.y / MAX_CANVAS_HEIGHT);
+export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
+  const spacesToRight = Math.floor(cam.position[0] / MAX_CANVAS_WIDTH);
+  const spacesUp = Math.floor(cam.position[1] / MAX_CANVAS_HEIGHT);
 
-  const widthHeight = { x: MAX_CANVAS_WIDTH, y: MAX_CANVAS_HEIGHT };
+  const widthHeight = [MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT];
 
   cxt.save();
 
-  cxt.translate(-cam.position.x, -cam.position.y);
-
-  const pos = {
-    x: widthHeight.x * spacesToRight,
-    y: widthHeight.y * spacesUp,
-  };
+  const pos = [widthHeight[0] * spacesToRight, widthHeight[1] * spacesUp];
 
   for (let i = 0; i < 2; i++) {
     cxt.drawImage(
       Textures().background.clouds,
-      pos.x,
-      pos.y,
-      widthHeight.x,
-      widthHeight.y
+      pos[0],
+      pos[1],
+      widthHeight[0],
+      widthHeight[1]
     );
 
     cxt.drawImage(
       Textures().background.cloudsTop,
-      pos.x,
-      pos.y - widthHeight.y,
-      widthHeight.x,
-      widthHeight.y
+      pos[0],
+      pos[1] - widthHeight[1],
+      widthHeight[0],
+      widthHeight[1]
     );
 
-    cxt.translate(widthHeight.x, 0);
+    cxt.translate(widthHeight[0], 0);
   }
 
   cxt.restore();

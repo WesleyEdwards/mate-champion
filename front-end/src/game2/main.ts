@@ -1,9 +1,10 @@
 import { displayCanvas, getCanvasContext } from "../Game/Drawing/uiHelpers";
 import { FullLevelInfo, SetUI } from "../Game/models";
 import { GameMode } from "../hooks/useAuth";
-import { GameState1, initGameState } from "./State1";
-import { renderGs } from "./render/gameState";
-import { updateGs } from "./state/gameState";
+import { initGameState } from "./helpers";
+import { Game } from "./State1";
+// import { renderGs } from "./render/gameState";
+// import { updateGs } from "./state/gameState";
 
 export function enterGameLoop1(params: {
   setUI: SetUI;
@@ -25,7 +26,7 @@ export function enterGameLoop1(params: {
     return;
   }
 
-  const gameState: GameState1 = initGameState({ firstLevel: levels[0] });
+  let game = new Game(initGameState({ firstLevel: levels[0] }));
 
   function gameLoop(timeStamp: number) {
     // TODO
@@ -36,12 +37,12 @@ export function enterGameLoop1(params: {
       window.stopLoop = false;
       return;
     }
-    if (gameState.currStateOfGame === "lose") {
-      return handleLose(gameState.stats.score);
+    if (game.state.currStateOfGame === "lose") {
+      // return handleLose(gameState.stats.score);
     }
 
-    updateGs(gameState, timeStamp, window.pause, levels);
-    renderGs(gameState, context, window.pause);
+    game.step(timeStamp);
+    game.render(context);
 
     requestAnimationFrame(gameLoop);
   }
