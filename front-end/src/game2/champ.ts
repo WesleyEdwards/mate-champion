@@ -140,7 +140,6 @@ export class Champ1 implements Entity {
   };
 
   render: Entity["render"] = (cxt) => {
-    accountForPosition(this.state.position, cxt);
     renderPlayer(this.state, cxt);
   };
 
@@ -151,8 +150,7 @@ export class Champ1 implements Entity {
         if (y !== null) processChampActionRaw(this.state, { name: "setY", y });
       }
       if (entity instanceof Groog1) {
-        
-  
+        // if ()
       }
     }
   };

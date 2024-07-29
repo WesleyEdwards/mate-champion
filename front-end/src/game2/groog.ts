@@ -88,7 +88,6 @@ export class Groog1 implements Entity {
   };
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {
-    window.debounceLog(entities);
     for (const entity of entities) {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
         const y = calcPlatEntityCollision(this, entity);

@@ -41,6 +41,7 @@ export const initGameState = ({
   firstLevel.opponents.grog.forEach((g) => {
     entities.push(new Groog1([g.initPos.x, g.initPos.y], [g.moveSpeed, 0]));
   });
+  entities.push(new Champ1({ curr: [400, 400], prev: [400, 400] }));
 
   return {
     currStateOfGame: "initial",
@@ -51,7 +52,6 @@ export const initGameState = ({
     },
     time: { deltaT: 0, prevStamp: performance.now() },
     stats: { score: 0 },
-    player: new Champ1({ curr: [400, 400], prev: [400, 400] }),
     entities: entities,
 
     keys: addEventListeners(() => {

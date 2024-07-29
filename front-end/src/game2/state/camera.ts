@@ -1,13 +1,15 @@
 import { cameraConst } from "../../Game/constants";
 import { Camera } from "../camera";
 import { ChampState } from "../champ";
+import { Coors } from "./helpers";
 import { updateTimers, updateWithTime } from "./timeHelpers";
 
-export const updateCamera = (
-  cam: Camera,
-  deltaT: number,
-  champ: ChampState
-) => {
+export const updateCamera = (cam: Camera, deltaT: number) => {
+  updateTimers(cam.time, deltaT);
+  updateWithTime(cam.position, cam.velocity, deltaT);
+};
+
+export const updateCameraWithPlayer = (cam: Camera, champ: ChampState) => {
   if (champ.velocity[0] !== 0 || champ.velocity[1] !== 0) {
     cam.time.idleTime.val = 0;
   }
@@ -15,10 +17,6 @@ export const updateCamera = (
   if (cam.time.idleTime.val > 3000) {
     return;
   }
-
-  updateTimers(cam.time, deltaT);
-
-  updateWithTime(cam.position, cam.velocity, deltaT);
 
   // Update X
   const playerDistFromWall = champ.position.curr[0] - cam.position[0];
@@ -30,7 +28,7 @@ export const updateCamera = (
   const diffY = distFromCeiling - cameraConst.idealMinDistFromCeiling;
 
   const isBelow = cam.position[1] <= 0 && diffY > 0;
-  
+
   // window.debounceLog(cam.position);
   if (isBelow) {
     cam.position[1] = 0;
@@ -43,7 +41,6 @@ export const updateCamera = (
   const newVelocity = -diffY * fallingFactor * 0.001;
 
   cam.velocity[1] = newVelocity;
-
 
   return;
 };

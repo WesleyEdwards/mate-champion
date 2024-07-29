@@ -26,7 +26,6 @@ export type GameStateProps = {
   stats: {
     score: number;
   };
-  player: Champ1;
   entities: Entity[];
   keys: Keys;
   toRemove: Id[];
@@ -54,7 +53,6 @@ export class Game {
     for (const entity of state.entities) {
       this.gridHash.newClient(entity);
     }
-    this.gridHash.newClient(this.state.player);
   }
 
   remove: Id[] = [];
@@ -62,12 +60,7 @@ export class Game {
   /** Step */
   step(timeStamp: number) {
     updateTime(this.state.time, timeStamp);
-    updateKeys(this.state.keys, this.state.player.state);
-    updateCamera(
-      this.state.camera,
-      this.state.time.deltaT,
-      this.state.player.state
-    );
+    updateCamera(this.state.camera, this.state.time.deltaT);
 
     for (const entity of this.state.entities) {
       this.gridHash.updateClient(entity);
@@ -75,12 +68,7 @@ export class Game {
       entity.step(this.state.time.deltaT);
     }
 
-    // Update player.
-    this.state.player.handleInteraction?.(this.nearEntities(this.state.player));
-    this.state.player.step(this.state.time.deltaT);
-    this.gridHash.updateClient(this.state.player);
-
-    reconcileActions(this.state.player, this.state.entities);
+    reconcileActions(this.state);
 
     if (this.state.entities.some((e) => e.state.dead)) {
       this.state.entities = this.state.entities.filter((e) => !e.state.dead);
@@ -89,16 +77,7 @@ export class Game {
 
   nearEntities(e: Entity): Entity[] {
     const near = this.gridHash.findNear(e);
-    const nearEntities = [];
-    if (near.includes(this.state.player.id)) {
-      nearEntities.push(this.state.player);
-    }
-    this.state.entities.forEach((e) => {
-      if (near.includes(e.id)) {
-        nearEntities.push(e);
-      }
-    });
-    return nearEntities;
+    return this.state.entities.filter((e) => near.includes(e.id));
   }
 
   /** Render */
@@ -118,7 +97,6 @@ export class Game {
       cxt.restore();
     }
 
-    this.state.player.render(cxt);
     cxt.restore();
   }
 }
