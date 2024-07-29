@@ -1,7 +1,9 @@
+import { areTouching } from "../Game/GameState/GameStateFunctions";
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
 import { generateRandomInt } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
-import { Entity } from "./State1";
+import { areTouching1, Entity } from "./State1";
+import { Groog1, groogConst } from "./groog";
 import { calcPlatEntityCollision } from "./interactions";
 import { renderPlayer } from "./render/champ";
 import { accountForPosition } from "./render/helpers";
@@ -95,10 +97,11 @@ export type ChampAction =
   | { name: "melee" }
   | { name: "shoot" }
   | { name: "setFacingY"; dir: ChampDirectionY }
-  | { name: "setY"; y: number };
+  | { name: "setY"; y: number }
+  | { name: "kill" };
 
 export class Champ1 implements Entity {
-  id = 42;
+  id = "player";
   typeId = "player" as const;
   state: ChampState;
   constructor(position: CurrAndPrev) {
@@ -142,13 +145,15 @@ export class Champ1 implements Entity {
   };
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {
-    // for (const entity of entities) {
-    //   if (entity.typeId === "floor" || entity.typeId === "platform") {
-    //     const y = calcPlatEntityCollision(this, entity);
-    //     if (y !== null) {
-    //       processChampActionRaw(this.state, { name: "setY", y });
-    //     }
-    //   }
-    // }
+    for (const entity of entities) {
+      if (entity.typeId === "floor" || entity.typeId === "platform") {
+        const y = calcPlatEntityCollision(this, entity);
+        if (y !== null) processChampActionRaw(this.state, { name: "setY", y });
+      }
+      if (entity instanceof Groog1) {
+        
+  
+      }
+    }
   };
 }

@@ -9,7 +9,7 @@ import { Floor1, Platform1, PlatformState } from "./platform";
 import { renderBg } from "./render/background";
 import { accountForPosition } from "./render/helpers";
 import { SpacialHashGrid } from "./spacialHashGrid";
-import { reconcileActions } from "./state/bullet";
+import { reconcileActions } from "./state/reconcileActions";
 import { updateCamera } from "./state/camera";
 import { processChampActionRaw } from "./state/champ/actions";
 import { Coors, CurrAndPrev, Id, ToRemove, updateTime } from "./state/helpers";
@@ -32,9 +32,11 @@ export type GameStateProps = {
   toRemove: Id[];
 };
 
+export type EntityType = "player" | "groog" | "floor" | "platform" | "bullet";
+
 export type Entity = {
   id: Id;
-  typeId: "player" | "groog" | "floor" | "platform" | "bullet";
+  typeId: EntityType;
   step: (deltaT: number) => void;
   render: (cxt: CanvasRenderingContext2D) => void;
   state: {
@@ -68,15 +70,15 @@ export class Game {
     );
 
     for (const entity of this.state.entities) {
-      entity.step(this.state.time.deltaT);
       this.gridHash.updateClient(entity);
       entity.handleInteraction?.(this.nearEntities(entity));
+      entity.step(this.state.time.deltaT);
     }
-    this.state.player.step(this.state.time.deltaT);
 
-    this.gridHash.updateClient(this.state.player);
-
+    // Update player.
     this.state.player.handleInteraction?.(this.nearEntities(this.state.player));
+    this.state.player.step(this.state.time.deltaT);
+    this.gridHash.updateClient(this.state.player);
 
     reconcileActions(this.state.player, this.state.entities);
 
@@ -86,8 +88,17 @@ export class Game {
   }
 
   nearEntities(e: Entity): Entity[] {
-    const near = this.gridHash.findNear(this.state.player);
-    return this.state.entities.filter((e) => near.includes(e.id));
+    const near = this.gridHash.findNear(e);
+    const nearEntities = [];
+    if (near.includes(this.state.player.id)) {
+      nearEntities.push(this.state.player);
+    }
+    this.state.entities.forEach((e) => {
+      if (near.includes(e.id)) {
+        nearEntities.push(e);
+      }
+    });
+    return nearEntities;
   }
 
   /** Render */
@@ -106,8 +117,21 @@ export class Game {
 
       cxt.restore();
     }
-    this.state.player.render(cxt);
 
+    this.state.player.render(cxt);
     cxt.restore();
   }
+}
+
+export function areTouching1(
+  objectAPos: Coors,
+  where: Coors,
+  dist: number
+): boolean {
+  // For some reason, 'where' was coming in as undefined here (from looping through opponents)
+  const distBetween = Math.sqrt(
+    Math.pow(objectAPos[0] - (where?.[0] ?? 0), 2) +
+      Math.pow(objectAPos[1] - (where?.[1] ?? 0), 2)
+  );
+  return distBetween < dist;
 }

@@ -1,8 +1,14 @@
+import { createId } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
+import { Champ1 } from "./champ";
 import { calcPlatEntityCollision } from "./interactions";
 import { renderGroog } from "./render/groog";
 import { accountForPosition } from "./render/helpers";
-import { updateGroog } from "./state/groog";
+import {
+  processGroogActionRaw,
+  processGroogActions,
+  updateGroog,
+} from "./state/groog";
 import { Coors, CurrAndPrev } from "./state/helpers";
 import {
   emptyTime,
@@ -11,7 +17,7 @@ import {
   updatePosAndVel,
   updateTimers,
 } from "./state/timeHelpers";
-import { Entity } from "./State1";
+import { areTouching1, Entity } from "./State1";
 
 export type GroogState = {
   facing: "left" | "right";
@@ -50,8 +56,8 @@ export type GroogAction =
   | { name: "setY"; y: number };
 
 export class Groog1 implements Entity {
-  id = 42;
-  typeId = "player" as const;
+  id = createId("groog");
+  typeId = "groog" as const;
   state: GroogState;
   constructor(position: Coors, velocity: Coors) {
     this.state = {
@@ -78,16 +84,27 @@ export class Groog1 implements Entity {
   };
 
   render: Entity["render"] = (cxt) => {
-    accountForPosition(this.state.position, cxt);
     renderGroog(this.state, cxt);
   };
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {
+    window.debounceLog(entities);
     for (const entity of entities) {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
         const y = calcPlatEntityCollision(this, entity);
         if (y !== null) {
-          this.state.queueActions.push({ name: "setY", y });
+          processGroogActionRaw(this.state, { name: "setY", y });
+          // this.state.queueActions.push({ name: "setY", y });
+        }
+      }
+      if (entity.typeId === "player") {
+        const touching = areTouching1(
+          this.state.position.curr,
+          entity.state.position.curr,
+          100
+        );
+        if (touching && entity instanceof Champ1) {
+          entity.state.acceptQueue.push({ name: "kill" });
         }
       }
     }

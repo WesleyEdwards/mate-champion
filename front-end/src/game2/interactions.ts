@@ -1,6 +1,3 @@
-import { Champ1, ChampState } from "./champ";
-import { processChampActionRaw } from "./state/champ/actions";
-import { Coors } from "./state/helpers";
 import { Entity } from "./State1";
 
 /**
@@ -32,7 +29,6 @@ export function calcPlatEntityCollision(
     previous <= floor.state.position.curr[1]
   ) {
     const setY = floor.state.position.curr[1] - betweenCenterAndBottom;
-    console.log(setY);
     entity.state.position.curr[1] = entity.state.position.curr[1];
     return setY;
   }

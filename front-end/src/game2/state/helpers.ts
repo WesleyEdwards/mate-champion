@@ -2,7 +2,7 @@ import { generateRandomInt, randomOutOf } from "../../Game/helpers/utils";
 import { Coordinates } from "../../Game/models";
 import { MBulletState } from "../bullet";
 import { GroogState } from "../groog";
-import { GameStateProps } from "../State1";
+import { EntityType, GameStateProps } from "../State1";
 import { Timer, updatePosAndVel, updateTimers } from "./timeHelpers";
 
 export type Coors = [number, number];
@@ -23,7 +23,7 @@ export const updateTime = (time: GameStateProps["time"], timeStamp: number) => {
   time.prevStamp = timeStamp;
 };
 
-export type Id = number;
+export type Id = string;
 
 // export type EntityOld<
 //   TIMERS extends Record<string, Timer> = Record<never, Timer>

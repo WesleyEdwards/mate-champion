@@ -1,8 +1,8 @@
-import { generateRandomInt } from "../Game/helpers/utils";
+import { createId, generateRandomInt } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
 import { GroogState } from "./groog";
 import { Coors, CurrAndPrev } from "./state/helpers";
-import { Entity } from "./State1";
+import { Entity, EntityType } from "./State1";
 
 export type PlatformState = {
   color: string;
@@ -12,7 +12,7 @@ export type PlatformState = {
 };
 
 export class Platform1 implements Entity {
-  id = generateRandomInt(0, 12345);
+  id = createId();
   typeId = "platform" as const;
   state: PlatformState;
 
@@ -33,7 +33,7 @@ export class Platform1 implements Entity {
 }
 
 export class Floor1 implements Entity {
-  id = generateRandomInt(0, 12345);
+  id = createId();
   typeId = "floor" as const;
   state: PlatformState;
 

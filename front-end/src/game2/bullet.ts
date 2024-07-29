@@ -1,7 +1,8 @@
 import { bulletConst } from "../Game/constants";
-import { generateRandomInt } from "../Game/helpers/utils";
+import { createId, generateRandomInt } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
 import { Textures } from "../gameAssets/textures";
+import { Groog1 } from "./groog";
 import { Coors, CurrAndPrev, distBetween } from "./state/helpers";
 import { TimerUp, updatePosAndVel } from "./state/timeHelpers";
 import { Entity } from "./State1";
@@ -26,7 +27,7 @@ export const mBulletConst = {
 } as const;
 
 export class Bullet1 implements Entity {
-  id = generateRandomInt(0, 12345);
+  id = createId();
   typeId = "bullet" as const;
   state: MBulletState;
 
@@ -73,5 +74,19 @@ export class Bullet1 implements Entity {
       w,
       h
     );
+  };
+
+  handleInteraction: Entity["handleInteraction"] = (entities) => {
+    for (const e of entities) {
+      if (e instanceof Groog1) {
+        if (
+          distBetween(e.state.position.curr, this.state.position.curr) <
+          mBulletConst.distFromOppHit
+        ) {
+          e.state.queueActions.push({ name: "die" });
+          this.state.dead = true;
+        }
+      }
+    }
   };
 }

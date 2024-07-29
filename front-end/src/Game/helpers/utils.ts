@@ -1,3 +1,6 @@
+import { Id } from "../../game2/state/helpers";
+import { EntityType } from "../../game2/State1";
+
 export function generateRandomInt(min: number, max: number): number {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
@@ -13,3 +16,7 @@ export const emptyStats = {
   ammo: 20,
   levelCreator: "",
 };
+
+export function createId(type?: string): Id {
+  return `${type}-${generateRandomInt(0, 10000)}`;
+}

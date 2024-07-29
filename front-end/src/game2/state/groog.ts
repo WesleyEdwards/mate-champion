@@ -31,9 +31,13 @@ const processActionMap: ActionMap<GroogAction, GroogState> = {
   },
 };
 
-const processGroogActions = (groog: GroogState) => {
+export const processGroogActionRaw = (g: GroogState, act: GroogAction) => {
+  processActionMap[act.name](g, act as never);
+};
+
+export const processGroogActions = (groog: GroogState) => {
   for (const act of groog.queueActions) {
-    processActionMap[act.name](groog, act as never);
+    processGroogActionRaw(groog, act);
   }
 
   groog.queueActions = [];
