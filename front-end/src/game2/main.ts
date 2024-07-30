@@ -26,10 +26,9 @@ export function enterGameLoop1(params: {
     return;
   }
 
-  let game = new Game(initGameState({ firstLevel: levels[0] }));
+  let game = new Game(levels, setUI);
 
   function gameLoop(timeStamp: number) {
-    // TODO
     window.mateSettings.collisionBoxesVisible = true;
     if (window.stopLoop === true) {
       // gameState.removeSetUi();
@@ -38,7 +37,7 @@ export function enterGameLoop1(params: {
       return;
     }
     if (game.state.currStateOfGame === "lose") {
-      // return handleLose(gameState.stats.score);
+      return handleLose(game.state.stats.score.curr);
     }
 
     game.step(timeStamp);

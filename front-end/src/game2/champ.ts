@@ -1,11 +1,11 @@
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
-import { areTouching1, Entity } from "./State1";
+import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { Groog1 } from "./groog";
+import { areTouching1 } from "./helpers";
 import { calcPlatEntityCollision } from "./interactions";
 import { renderPlayer } from "./render/champ";
 import { processChampActionRaw } from "./state/champ/actions";
 import { updatePlayer } from "./state/champ/champ";
-import { Coors, CurrAndPrev } from "./state/helpers";
 import {
   emptyTime,
   TimerDown,

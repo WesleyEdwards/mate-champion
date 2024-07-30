@@ -1,9 +1,9 @@
 import { Coordinates } from "../Game/models";
 import { ChampState, champConst } from "./champ";
+import { Coors } from "./entityTypes";
 import { GroogState, groogConst } from "./groog";
 import { PlatformState } from "./platform";
 import { RenderFun } from "./render/helpers";
-import { Coors, CurrAndPrev } from "./state/helpers";
 
 export type FloorState = {
   color: string;

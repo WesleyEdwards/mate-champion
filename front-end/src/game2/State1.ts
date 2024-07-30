@@ -1,65 +1,54 @@
-import { WinState } from "../Game/helpers/types";
-import { Keys } from "../Game/models";
-import { Camera } from "./camera";
 import { displayNextLevel, renderBg } from "./render/background";
 import { accountForPosition } from "./render/helpers";
 import { SpacialHashGrid } from "./spacialHashGrid";
 import { reconcileActions } from "./state/reconcileActions";
 import { updateCamera } from "./state/camera";
-import { Coors, CurrAndPrev, Id, ToRemove, updateTime } from "./state/helpers";
 import { TimerDown, updateTimers } from "./state/timeHelpers";
-
-export type GameStateProps = {
-  currStateOfGame: WinState;
-  camera: Camera;
-  time: {
-    deltaT: number;
-    prevStamp: number;
-  };
-  timers: {
-    nextLevelTimer: TimerDown;
-  };
-  stats: {
-    score: number;
-  };
-  entities: Entity[];
-  keys: Keys;
-};
-
-export type EntityType = "player" | "groog" | "floor" | "platform" | "bullet";
-
-export type Entity = {
-  id: Id;
-  typeId: EntityType;
-  step: (deltaT: number) => void;
-  render: (cxt: CanvasRenderingContext2D) => void;
-  state: {
-    position: CurrAndPrev;
-    dimensions: Coors;
-    dead: boolean;
-  };
-  handleInteraction?: (entities: Entity[]) => void;
-};
+import { Champ1 } from "./champ";
+import {
+  gameStateConst,
+  initGameState,
+  levelToEntities,
+  uiIsDirty,
+  updateStats,
+} from "./helpers";
+import { getLevelInfo } from "../Game/constructors";
+import { Entity, GameStateProps } from "./entityTypes";
+import { FullLevelInfo, SetUI } from "../Game/models";
+import { updateTime } from "./state/helpers";
 
 export class Game {
-  gridHash: SpacialHashGrid;
-  constructor(public state: GameStateProps) {
-    this.gridHash = new SpacialHashGrid([-100, 4000], [20, 20]);
-    for (const entity of state.entities) {
-      this.gridHash.newClient(entity);
-    }
-  }
+  gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20]);
+  state: GameStateProps = initGameState();
+
+  constructor(private levels: FullLevelInfo[], private setUi: SetUI) {}
 
   /** Step */
   step(timeStamp: number) {
     updateTime(this.state.time, timeStamp);
     updateTimers(this.state.timers, this.state.time.deltaT);
+    if (uiIsDirty(this.state.stats)) {
+      this.setUi.modifyStats({
+        level: this.state.stats.level.curr,
+        lives: this.state.stats.lives.curr,
+        score: this.state.stats.score.curr,
+        ammo: this.state.stats.ammo.curr,
+      });
+      updateStats(this.state.stats);
+    }
 
     if (this.state.currStateOfGame === "playing") {
       this.stepGamePlay();
     } else {
       if (this.state.timers.nextLevelTimer.val <= 0) {
-        this.state.currStateOfGame = "playing";
+        if (
+          this.state.currStateOfGame === "loseLife" &&
+          this.state.stats.lives.curr <= 0
+        ) {
+          this.state.currStateOfGame = "lose";
+        } else {
+          this.startLevel();
+        }
       }
     }
   }
@@ -68,33 +57,72 @@ export class Game {
     updateCamera(this.state.camera, this.state.time.deltaT);
     for (const entity of this.state.entities) {
       this.gridHash.updateClient(entity);
-      entity.handleInteraction?.(this.nearEntities(entity));
+      const near = this.gridHash.findNear(entity);
+      entity.handleInteraction?.(
+        this.state.entities.filter((e) => near.includes(e.id))
+      );
       entity.step(this.state.time.deltaT);
       if (entity.typeId === "player") {
-        if (entity.state.dead) {
-          console.log("ri[");
-          this.state.currStateOfGame = "loseLife";
-          this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;
-        }
+        this.updatePlayer(entity);
       }
     }
 
     reconcileActions(this.state);
 
     if (this.state.entities.some((e) => e.state.dead)) {
+      const dead = this.state.entities.filter((e) => e.state.dead);
       this.state.entities = this.state.entities.filter((e) => !e.state.dead);
+      for (const d of dead) {
+        this.gridHash.removeClient(d);
+      }
     }
   }
 
-  nearEntities(e: Entity): Entity[] {
-    const near = this.gridHash.findNear(e);
-    return this.state.entities.filter((e) => near.includes(e.id));
+  updatePlayer(champ: Entity) {
+    if (champ.state.dead) {
+      this.state.currStateOfGame = "loseLife";
+      this.state.stats.lives.curr -= 1;
+      this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;
+    }
+    if (champ.state.position.curr[0] > this.currentLevel.endPosition) {
+      this.state.currStateOfGame = "nextLevel";
+      this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;
+      this.state.stats.level.curr += 1;
+    }
+  }
+
+  startLevel() {
+    this.state.camera.position = [0, 0];
+    this.gridHash.dropAll();
+    this.state.entities.length = 0;
+
+    this.addEntity(new Champ1({ curr: [400, 400], prev: [400, 400] }));
+    for (const entity of levelToEntities(this.currentLevel)) {
+      this.addEntity(entity);
+    }
+    this.state.currStateOfGame = "playing";
+  }
+
+  get currentLevel() {
+    return getLevelInfo(this.state.stats.level.curr, this.levels);
+  }
+
+  addEntity(e: Entity) {
+    this.gridHash.newClient(e);
+    this.state.entities.push(e);
   }
 
   /** Render */
   render(cxt: CanvasRenderingContext2D) {
-    if (this.state.currStateOfGame === "nextLevel") {
-      displayNextLevel(cxt, this.state.currStateOfGame, 1);
+    if (
+      this.state.currStateOfGame === "nextLevel" ||
+      this.state.currStateOfGame === "loseLife"
+    ) {
+      displayNextLevel(
+        cxt,
+        this.state.currStateOfGame,
+        this.state.stats.level.curr
+      );
       return;
     }
 
@@ -111,24 +139,6 @@ export class Game {
       entity.render(cxt);
       cxt.restore();
     }
-
     cxt.restore();
   }
 }
-
-export function areTouching1(
-  objectAPos: Coors,
-  where: Coors,
-  dist: number
-): boolean {
-  // For some reason, 'where' was coming in as undefined here (from looping through opponents)
-  const distBetween = Math.sqrt(
-    Math.pow(objectAPos[0] - (where?.[0] ?? 0), 2) +
-      Math.pow(objectAPos[1] - (where?.[1] ?? 0), 2)
-  );
-  return distBetween < dist;
-}
-
-export const gameStateConst = {
-  showMessageTime: 2000,
-} as const;

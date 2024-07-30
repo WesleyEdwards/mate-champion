@@ -1,7 +1,6 @@
 import { cameraConst } from "../../Game/constants";
-import { Camera } from "../camera";
 import { ChampState } from "../champ";
-import { Coors } from "./helpers";
+import { Camera } from "../entityTypes";
 import { updateTimers, updateWithTime } from "./timeHelpers";
 
 export const updateCamera = (cam: Camera, deltaT: number) => {

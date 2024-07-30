@@ -1,6 +1,8 @@
 import { createId } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
 import { Champ1 } from "./champ";
+import { Coors, CurrAndPrev, Entity } from "./entityTypes";
+import { areTouching1 } from "./helpers";
 import { calcPlatEntityCollision } from "./interactions";
 import { renderGroog } from "./render/groog";
 import { accountForPosition } from "./render/helpers";
@@ -9,7 +11,6 @@ import {
   processGroogActions,
   updateGroog,
 } from "./state/groog";
-import { Coors, CurrAndPrev } from "./state/helpers";
 import {
   emptyTime,
   TimerDown,
@@ -17,7 +18,6 @@ import {
   updatePosAndVel,
   updateTimers,
 } from "./state/timeHelpers";
-import { areTouching1, Entity } from "./State1";
 
 export type GroogState = {
   facing: "left" | "right";
@@ -95,6 +95,9 @@ export class Groog1 implements Entity {
           processGroogActionRaw(this.state, { name: "setY", y });
           // this.state.queueActions.push({ name: "setY", y });
         }
+      }
+      if (this.state.timers.actionTimeRemain.val > 0) {
+        continue;
       }
       if (entity.typeId === "player") {
         const touching = areTouching1(

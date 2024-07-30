@@ -1,4 +1,4 @@
-import { Entity } from "./State1";
+import { Entity } from "./entityTypes";
 
 /**
  * @param entity The entity that may collide with the floor

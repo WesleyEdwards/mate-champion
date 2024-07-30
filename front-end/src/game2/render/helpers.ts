@@ -1,8 +1,7 @@
 import { Coordinates } from "../../Game/models";
 import { ChampState } from "../champ";
+import { CurrAndPrev } from "../entityTypes";
 import { GroogState } from "../groog";
-import { CurrAndPrev } from "../state/helpers";
-import { GameStateProps } from "../State1";
 
 export type RenderFun<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
 

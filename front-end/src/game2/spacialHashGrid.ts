@@ -1,5 +1,4 @@
-import { Coors, Id } from "./state/helpers";
-import { Entity } from "./State1";
+import { Coors, Entity, Id } from "./entityTypes";
 
 type Position = [number, number];
 
@@ -51,7 +50,9 @@ export class SpacialHashGrid {
     return near.map((n) => n.id);
   }
 
-  private remove(client: Entity) {}
+  dropAll() {
+    this.arr.length = 0;
+  }
 
   private getCellIndex(position: Coors) {
     const x = sat(

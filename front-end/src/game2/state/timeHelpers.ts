@@ -1,5 +1,5 @@
 import { Coordinates } from "../../Game/models";
-import { Coors, CurrAndPrev } from "./helpers";
+import { Coors, CurrAndPrev } from "../entityTypes";
 
 export type TimerUp = { count: "up"; val: number };
 export type TimerDown = { count: "down"; val: number };

@@ -2,10 +2,10 @@ import { bulletConst } from "../Game/constants";
 import { createId, generateRandomInt } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
 import { Textures } from "../gameAssets/textures";
+import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { Groog1 } from "./groog";
-import { Coors, CurrAndPrev, distBetween } from "./state/helpers";
+import { distBetween } from "./state/helpers";
 import { TimerUp, updatePosAndVel } from "./state/timeHelpers";
-import { Entity } from "./State1";
 
 export type MBulletState = {
   timers: { timeAlive: TimerUp };
