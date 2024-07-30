@@ -125,10 +125,7 @@ const processActionMap: ActionMap<ChampAction, ChampState> = {
     p.timers.coyote.val = 0;
   },
   kill: (p, act) => {
-    // p.position.curr[1] = act.y;
-    // p.velocity[1] = 0;
-    // p.timers.coyote.val = 0;
-    console.log("TODO, kill player");
+    p.dead = true;
   },
 };
 

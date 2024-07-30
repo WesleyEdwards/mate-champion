@@ -1,20 +1,13 @@
-import { addEventListeners } from "../Game/helpers/eventListeners";
 import { WinState } from "../Game/helpers/types";
 import { Keys } from "../Game/models";
-import { MBulletState } from "./bullet";
 import { Camera } from "./camera";
-import { ChampState, Champ1 } from "./champ";
-import { FloorState, floorConst } from "./floor";
-import { Floor1, Platform1, PlatformState } from "./platform";
-import { renderBg } from "./render/background";
+import { displayNextLevel, renderBg } from "./render/background";
 import { accountForPosition } from "./render/helpers";
 import { SpacialHashGrid } from "./spacialHashGrid";
 import { reconcileActions } from "./state/reconcileActions";
 import { updateCamera } from "./state/camera";
-import { processChampActionRaw } from "./state/champ/actions";
 import { Coors, CurrAndPrev, Id, ToRemove, updateTime } from "./state/helpers";
-import { updateKeys } from "./state/keys";
-import { emptyTime } from "./state/timeHelpers";
+import { TimerDown, updateTimers } from "./state/timeHelpers";
 
 export type GameStateProps = {
   currStateOfGame: WinState;
@@ -23,12 +16,14 @@ export type GameStateProps = {
     deltaT: number;
     prevStamp: number;
   };
+  timers: {
+    nextLevelTimer: TimerDown;
+  };
   stats: {
     score: number;
   };
   entities: Entity[];
   keys: Keys;
-  toRemove: Id[];
 };
 
 export type EntityType = "player" | "groog" | "floor" | "platform" | "bullet";
@@ -55,17 +50,33 @@ export class Game {
     }
   }
 
-  remove: Id[] = [];
-
   /** Step */
   step(timeStamp: number) {
     updateTime(this.state.time, timeStamp);
-    updateCamera(this.state.camera, this.state.time.deltaT);
+    updateTimers(this.state.timers, this.state.time.deltaT);
 
+    if (this.state.currStateOfGame === "playing") {
+      this.stepGamePlay();
+    } else {
+      if (this.state.timers.nextLevelTimer.val <= 0) {
+        this.state.currStateOfGame = "playing";
+      }
+    }
+  }
+
+  stepGamePlay() {
+    updateCamera(this.state.camera, this.state.time.deltaT);
     for (const entity of this.state.entities) {
       this.gridHash.updateClient(entity);
       entity.handleInteraction?.(this.nearEntities(entity));
       entity.step(this.state.time.deltaT);
+      if (entity.typeId === "player") {
+        if (entity.state.dead) {
+          console.log("ri[");
+          this.state.currStateOfGame = "loseLife";
+          this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;
+        }
+      }
     }
 
     reconcileActions(this.state);
@@ -82,6 +93,11 @@ export class Game {
 
   /** Render */
   render(cxt: CanvasRenderingContext2D) {
+    if (this.state.currStateOfGame === "nextLevel") {
+      displayNextLevel(cxt, this.state.currStateOfGame, 1);
+      return;
+    }
+
     const camPos = this.state.camera.position;
 
     cxt.save();
@@ -93,7 +109,6 @@ export class Game {
       cxt.save();
       accountForPosition(entity.state.position, cxt);
       entity.render(cxt);
-
       cxt.restore();
     }
 
@@ -113,3 +128,7 @@ export function areTouching1(
   );
   return distBetween < dist;
 }
+
+export const gameStateConst = {
+  showMessageTime: 2000,
+} as const;

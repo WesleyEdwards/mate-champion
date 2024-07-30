@@ -9,9 +9,9 @@ export const Controls: FC<ScreenProps> = (props) => {
     <Stack gap="1rem">
       <div
         style={{
-          width: 750,
+          width: 550,
           borderRadius: 10,
-          height: 600,
+          height: 450,
           background: `linear-gradient(rgba(50, 56, 62, 0.5), rgba(50, 56, 62, 0.5)),url("${instructions}")`,
           backgroundSize: "cover",
         }}

@@ -5,7 +5,7 @@ import { floorConst } from "./floor";
 import { Groog1 } from "./groog";
 import { Floor1, Platform1 } from "./platform";
 import { emptyTime } from "./state/timeHelpers";
-import { Entity, GameStateProps } from "./State1";
+import { Entity, gameStateConst, GameStateProps } from "./State1";
 
 export const initGameState = ({
   firstLevel,
@@ -44,20 +44,26 @@ export const initGameState = ({
   entities.push(new Champ1({ curr: [400, 400], prev: [400, 400] }));
 
   return {
-    currStateOfGame: "initial",
+    currStateOfGame: "nextLevel",
     camera: {
       position: [0, 0],
       velocity: [0, 0],
       time: { idleTime: emptyTime("up") },
     },
-    time: { deltaT: 0, prevStamp: performance.now() },
+    time: {
+      deltaT: 0,
+      prevStamp: performance.now(),
+      
+    },
+    timers: {
+      nextLevelTimer: { count: "down", val: gameStateConst.showMessageTime },
+    },
     stats: { score: 0 },
-    entities: entities,
+    entities,
 
     keys: addEventListeners(() => {
       window.pause = !window.pause;
       console.log("Paused", window.pause);
     }),
-    toRemove: [],
   };
 };

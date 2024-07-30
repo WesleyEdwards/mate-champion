@@ -19,6 +19,10 @@ export const updatePlayer: UpdateFun<ChampState> = (p, deltaT) => {
     p.velocity[1] = p.velocity[1] + jumpFactor * deltaT;
   }
 
+  if (p.timers.actionTimeRemain.val <= 0) {
+    p.action = null;
+  }
+
   handleChampActions(p);
   updateChampSpriteInfo(p);
   return;

@@ -12,6 +12,7 @@ const initialKeyStatus: Keys = {
   toJump: 0,
   toShoot: 0,
   toShank: 0,
+  mostRecentX: "right",
 };
 
 export function addEventListeners(togglePause: () => void): Keys {

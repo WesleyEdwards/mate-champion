@@ -1,18 +1,10 @@
-import { areTouching } from "../Game/GameState/GameStateFunctions";
 import { PlayerAction } from "../Game/Player/PlayerVectorManager";
-import { generateRandomInt } from "../Game/helpers/utils";
-import { Coordinates } from "../Game/models";
 import { areTouching1, Entity } from "./State1";
-import { Groog1, groogConst } from "./groog";
+import { Groog1 } from "./groog";
 import { calcPlatEntityCollision } from "./interactions";
 import { renderPlayer } from "./render/champ";
-import { accountForPosition } from "./render/helpers";
-import {
-  handleChampActions,
-  processChampActionRaw,
-} from "./state/champ/actions";
+import { processChampActionRaw } from "./state/champ/actions";
 import { updatePlayer } from "./state/champ/champ";
-import { updateChampSpriteInfo } from "./state/champ/spriteInfo";
 import { Coors, CurrAndPrev } from "./state/helpers";
 import {
   emptyTime,
@@ -26,7 +18,7 @@ export type ChampState = {
   position: CurrAndPrev;
   velocity: Coors;
   dimensions: Coors;
-  dead: false;
+  dead: boolean;
   facing: {
     x: ChampDirectionX;
     y: ChampDirectionY;
@@ -150,7 +142,22 @@ export class Champ1 implements Entity {
         if (y !== null) processChampActionRaw(this.state, { name: "setY", y });
       }
       if (entity instanceof Groog1) {
-        // if ()
+        if (this.state.action === "melee") {
+          const meleePos =
+            this.state.position.curr[0] +
+            (this.state.facing.x === "right"
+              ? champConst.melee.reach
+              : -champConst.melee.reach);
+          if (
+            areTouching1(
+              [meleePos, this.state.position.curr[1]],
+              entity.state.position.curr,
+              30
+            )
+          ) {
+            entity.state.queueActions.push({ name: "die" });
+          }
+        }
       }
     }
   };

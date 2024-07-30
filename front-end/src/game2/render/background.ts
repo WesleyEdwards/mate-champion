@@ -2,6 +2,7 @@ import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../../Game/constants";
 import { Camera } from "../camera";
 import { Textures } from "../../gameAssets/textures";
 import { RenderFun } from "./helpers";
+import { WinState } from "../../Game/helpers/types";
 
 export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
   const spacesToRight = Math.floor(cam.position[0] / MAX_CANVAS_WIDTH);
@@ -34,4 +35,16 @@ export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
   }
 
   cxt.restore();
+};
+
+export const displayNextLevel = (
+  cxt: CanvasRenderingContext2D,
+  winState: WinState,
+  level: number
+) => {
+  const message = winState === "loseLife" ? "Try Again" : `Level ${level}`;
+  cxt.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
+  cxt.font = "60px Courier";
+  cxt.fillStyle = "green";
+  cxt.fillText(message, MAX_CANVAS_WIDTH / 3 + 40, MAX_CANVAS_HEIGHT / 2);
 };

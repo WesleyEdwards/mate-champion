@@ -10,12 +10,17 @@ export const updateKeys = (keys: Keys, player: ChampState) => {
     player.jump.isJumping = false;
   }
 
-  if (keys.right) {
+  if (keys.right && keys.left) {
+    const opposite = keys.mostRecentX === "left" ? "right" : "left";
+    player.acceptQueue.push({ name: "moveX", dir: opposite });
+  } else if (keys.right) {
     player.acceptQueue.push({ name: "moveX", dir: "right" });
-  }
-  if (keys.left) {
+    keys.mostRecentX = "right";
+  } else if (keys.left) {
     player.acceptQueue.push({ name: "moveX", dir: "left" });
+    keys.mostRecentX = "left";
   }
+
   if (keys.shank) {
     player.acceptQueue.push({ name: "melee" });
   }
