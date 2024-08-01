@@ -10,7 +10,7 @@ export const StatsDiv: FC<{ stats: PlayStats }> = ({ stats }) => {
   return (
     <Stack direction="row" alignItems="center" minHeight="50px" gap="2rem">
       <Stack direction="row" minWidth="10rem">
-        {lives &&
+        {lives > 0 &&
           new Array(lives)
             .fill(null)
             .map((_, i) => (

@@ -41,6 +41,7 @@ export type Entity = {
     dead: boolean;
   };
   handleInteraction?: (entities: Entity[]) => void;
+  pointsGainWhenDead?: number
 };
 export type Camera = {
   // offset

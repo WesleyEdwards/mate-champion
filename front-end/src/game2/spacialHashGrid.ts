@@ -43,8 +43,8 @@ export class SpacialHashGrid {
     const near = this.arr.filter((a) => {
       if (a.id === entity.id) return false;
       return (
-        Math.abs(a.position[0] - entity.state.position.curr[0]) < 100 ||
-        Math.abs(a.position[1] - entity.state.position.curr[1]) < 100
+        Math.abs(a.position[0] - entity.state.position.curr[0]) < 50 ||
+        Math.abs(a.position[1] - entity.state.position.curr[1]) < 50
       );
     });
     return near.map((n) => n.id);

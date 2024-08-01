@@ -77,6 +77,9 @@ export class Game {
       const dead = this.state.entities.filter((e) => e.state.dead);
       this.state.entities = this.state.entities.filter((e) => !e.state.dead);
       for (const d of dead) {
+        if (d.pointsGainWhenDead) {
+          this.state.stats.score.curr += d.pointsGainWhenDead;
+        }
         this.gridHash.removeClient(d);
       }
     }
@@ -125,8 +128,15 @@ export class Game {
     ) {
       displayNextLevel(
         cxt,
-        this.state.currStateOfGame,
-        this.state.stats.level.curr
+        (() => {
+          if (this.state.currStateOfGame === "loseLife") {
+            if (this.state.stats.lives.curr === 0) {
+              return "Game Over";
+            }
+            return "Try again";
+          }
+          return `Level ${this.state.stats.level.curr}`;
+        })()
       );
       return;
     }

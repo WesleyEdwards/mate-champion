@@ -126,7 +126,6 @@ export class Champ1 implements Entity {
   }
 
   step: Entity["step"] = (deltaT) => {
-    window.debounceLog(this.state.position)
     updateTimers(this.state.timers, deltaT);
     updatePosAndVel(this.state.position, this.state.velocity, deltaT);
     updatePlayer(this.state, deltaT);
@@ -144,16 +143,29 @@ export class Champ1 implements Entity {
       }
       if (entity instanceof Groog1) {
         if (this.state.action === "melee") {
-          const meleePos =
-            this.state.position.curr[0] +
-            (this.state.facing.x === "right"
+          const meleePosX = (() => {
+            if (this.state.facing.y === "up") {
+              return 0;
+            }
+            return this.state.facing.x === "right"
               ? champConst.melee.reach
-              : -champConst.melee.reach);
+              : -champConst.melee.reach;
+          })();
+          const meleePosY = (() => {
+            if (this.state.facing.y === "up") {
+              return -champConst.melee.reach;
+            }
+            return 0;
+          })();
+
           if (
             areTouching1(
-              [meleePos, this.state.position.curr[1]],
+              [
+                this.state.position.curr[0] + meleePosX,
+                this.state.position.curr[1] + meleePosY,
+              ],
               entity.state.position.curr,
-              30
+              champConst.melee.reach / 2
             )
           ) {
             entity.state.queueActions.push({ name: "die" });

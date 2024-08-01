@@ -18,6 +18,7 @@ export const HomeScreen: FC<ScreenProps> = ({ modifyStats }) => {
       <img
         style={{
           margin: "4px auto 24px",
+          width: "80px",
         }}
         src={mateSingle}
       />

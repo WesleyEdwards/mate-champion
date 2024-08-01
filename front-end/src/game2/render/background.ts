@@ -39,10 +39,8 @@ export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
 
 export const displayNextLevel = (
   cxt: CanvasRenderingContext2D,
-  winState: WinState,
-  level: number
+  message: string
 ) => {
-  const message = winState === "loseLife" ? "Try Again" : `Level ${level}`;
   cxt.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
   cxt.font = "60px Courier";
   cxt.fillStyle = "green";

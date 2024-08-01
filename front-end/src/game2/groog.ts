@@ -40,7 +40,8 @@ export const groogConst = {
   render: {
     imageWidth: 75,
   },
-  distFromChampMelee: 10,
+  killChampDist: 70,
+  pointsGainByKilling: 10,
   jumpSpeed: -1,
   dieTimer: 500,
 } as const;
@@ -59,6 +60,7 @@ export class Groog1 implements Entity {
   id = createId("groog");
   typeId = "groog" as const;
   state: GroogState;
+  pointsGainWhenDead = 10;
   constructor(position: Coors, velocity: Coors) {
     this.state = {
       facing: "right",
@@ -103,7 +105,7 @@ export class Groog1 implements Entity {
         const touching = areTouching1(
           this.state.position.curr,
           entity.state.position.curr,
-          100
+          groogConst.killChampDist
         );
         if (touching && entity instanceof Champ1) {
           entity.state.acceptQueue.push({ name: "kill" });
