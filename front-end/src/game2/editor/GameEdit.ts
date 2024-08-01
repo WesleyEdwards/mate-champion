@@ -44,16 +44,14 @@ export class GameEdit {
 
     if (this.state.keys.ctrl.curr) {
       if (this.state.keys.mouseUp.curr) {
-        console.log("Placement");
         this.addEntity(
           new Platform1({
             color: "blue",
             dead: false,
             dimensions: [100, 100],
-            position: toCurrAndPrev(
-              withCamPosition(this.state.keys.mouseUp.curr, this.state.camera)
-            ),
-          })
+            position: toCurrAndPrev([0, 0]),
+          }),
+          this.state.keys.mouseUp.curr
         );
       }
     }
@@ -73,8 +71,16 @@ export class GameEdit {
     this.state.keys.mouseUp.curr = null;
   }
 
-  addEntity(entity: Entity) {
-    // account for cam offset & center of obj
+  addEntity(entity: Entity, pos: Coors) {
+    const center: Coors = [
+      pos[0] - entity.state.dimensions[0] / 2,
+      pos[1] - entity.state.dimensions[1] / 2,
+    ];
+
+    entity.state.position = toCurrAndPrev(
+      withCamPosition(center, this.state.camera)
+    );
+
     this.state.entities.push(entity);
   }
 
