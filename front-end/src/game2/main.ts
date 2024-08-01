@@ -9,10 +9,9 @@ import { Game } from "./State1";
 export function enterGameLoop1(params: {
   setUI: SetUI;
   levels: FullLevelInfo[];
-  setLevel?: (level: Partial<FullLevelInfo>) => void;
-  gameMode: GameMode;
+  gameMode: Exclude<GameMode, "edit">;
 }) {
-  const { setUI, levels, setLevel, gameMode } = params;
+  const { setUI, levels, gameMode } = params;
   const { canvas, context } = getCanvasContext();
   // const gameState: GameState = new GameState(
   //   setUI,
@@ -20,7 +19,6 @@ export function enterGameLoop1(params: {
   //   context,
   //   levels,
   //   gameMode,
-  //   setLevel
   // );
   if (levels.length === 0) {
     return;

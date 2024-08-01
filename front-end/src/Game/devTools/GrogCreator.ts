@@ -1,76 +1,76 @@
-import { ObjectManager } from "../GameState/ObjectManager";
-import { Grog } from "../Opponent/Grog";
-import { Coordinates } from "../models";
-import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
+// import { ObjectManager } from "../GameState/ObjectManager";
+// import { Grog } from "../Opponent/Grog";
+// import { Coordinates } from "../models";
+// import { ContentEvent, CreatingThing, ItemType } from "./CreatingThing";
 
-export class GrogCreator implements CreatingThing<"grog"> {
-  itemType: ItemType = "grog";
-  items: Grog[];
-  selected: Grog[] = [];
+// export class GrogCreator implements CreatingThing<"grog"> {
+//   itemType: ItemType = "grog";
+//   items: Grog[];
+//   selected: Grog[] = [];
 
-  constructor(objectManager: ObjectManager) {
-    this.items = objectManager.opponentManager.opponents.grog;
-  }
+//   constructor(objectManager: ObjectManager) {
+//     this.items = objectManager.opponentManager.opponents.grog;
+//   }
 
-  unSelectAll() {
-    this.selected.splice(0, this.selected.length);
-  }
+//   unSelectAll() {
+//     this.selected.splice(0, this.selected.length);
+//   }
 
-  selectItem(grog: Grog | null, multiple?: boolean) {
-    if (grog && this.selected.includes(grog)) return;
+//   selectItem(grog: Grog | null, multiple?: boolean) {
+//     if (grog && this.selected.includes(grog)) return;
 
-    if (!grog) return this.unSelectAll();
+//     if (!grog) return this.unSelectAll();
 
-    if (!multiple && this.selected.length > 0) {
-      this.unSelectAll();
-    }
+//     if (!multiple && this.selected.length > 0) {
+//       this.unSelectAll();
+//     }
 
-    this.items.forEach((g) => {
-      if (g === grog) this.selected.push(g);
-    });
-  }
+//     this.items.forEach((g) => {
+//       if (g === grog) this.selected.push(g);
+//     });
+//   }
 
-  selectItems(grogs: Grog[]) {
-    this.unSelectAll();
-    grogs.forEach((g) => {
-      this.selected.push(g);
-    });
-  }
+//   selectItems(grogs: Grog[]) {
+//     this.unSelectAll();
+//     grogs.forEach((g) => {
+//       this.selected.push(g);
+//     });
+//   }
 
-  handleEvent(
-    event: ContentEvent,
-    coor?: Coordinates | undefined,
-    shiftKey?: boolean
-  ) {
-    if (event === "delete") return this.handleDelete();
+//   handleEvent(
+//     event: ContentEvent,
+//     coor?: Coordinates | undefined,
+//     shiftKey?: boolean
+//   ) {
+//     if (event === "delete") return this.handleDelete();
 
-    if (!coor) return console.log("no coor");
-    if (event === "drag") {
-      return this.dragItem(coor);
-    }
+//     if (!coor) return console.log("no coor");
+//     if (event === "drag") {
+//       return this.dragItem(coor);
+//     }
 
-    if (event === "create") {
-      return this.handleCreate(coor);
-    }
-  }
+//     if (event === "create") {
+//       return this.handleCreate(coor);
+//     }
+//   }
 
-  dragItem({ x, y }: Coordinates) {
-    if (!this.selected) return;
-    this.selected.forEach((g) => {
-      g.vector.position.x += x;
-      g.vector.position.y += y;
-    });
-  }
+//   dragItem({ x, y }: Coordinates) {
+//     if (!this.selected) return;
+//     this.selected.forEach((g) => {
+//       g.vector.position.x += x;
+//       g.vector.position.y += y;
+//     });
+//   }
 
-  handleCreate(initPos: Coordinates) {
-    const existsInOther = this.items.at(0)?.vector.moveSpeed ?? 0.07;
-    this.items.push(new Grog({ initPos, moveSpeed: existsInOther }));
-  }
-  handleDelete() {
-    this.selected.forEach((g) => {
-      const index = this.items.indexOf(g);
-      this.items.splice(index, 1);
-    });
-    this.selected = [];
-  }
-}
+//   handleCreate(initPos: Coordinates) {
+//     const existsInOther = this.items.at(0)?.vector.moveSpeed ?? 0.07;
+//     this.items.push(new Grog({ initPos, moveSpeed: existsInOther }));
+//   }
+//   handleDelete() {
+//     this.selected.forEach((g) => {
+//       const index = this.items.indexOf(g);
+//       this.items.splice(index, 1);
+//     });
+//     this.selected = [];
+//   }
+// }

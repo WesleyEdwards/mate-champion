@@ -1,45 +1,45 @@
-import { ObjectManager } from "../GameState/ObjectManager";
+// import { ObjectManager } from "../GameState/ObjectManager";
 import { Coordinates, HasPosition, FullLevelInfo } from "../models";
 
 const { round } = Math;
 
-export function exportLevelInfo(objManager: ObjectManager): Partial<FullLevelInfo> {
-  return {
-    packages: objManager.matePackManager.packages
-      .map((p) => ({
-        x: round(p.vector.posX),
-        y: round(p.vector.posY),
-      }))
-      .sort((a, b) => a.x - b.x),
-    opponents: {
-      grog: objManager.opponentManager.opponents.grog
-        .map((o) => ({
-          initPos: { x: round(o.vector.posX), y: round(o.vector.posY) },
-          moveSpeed: o.vector.moveSpeed,
-          jumpOften: o.jumpOften,
-        }))
-        .sort((a, b) => a.initPos.x - b.initPos.x),
-    },
-    platforms: objManager.platformManager.platforms
-      .filter((p) => !p.isFloor)
-      .map((p) => ({
-        x: round(p.vector.position.x),
-        y: round(p.vector.position.y),
-        width: round(p.vector.width),
-        height: round(p.vector.height),
-        color: p.color,
-      }))
-      .sort((a, b) => a.x - b.x),
-    floors: objManager.platformManager.platforms
-      .filter((p) => p.isFloor)
-      .map((p) => ({
-        x: round(p.vector.position.x),
-        width: round(p.vector.width),
-        color: p.color,
-      }))
-      .sort((a, b) => a.x - b.x),
-  };
-}
+// export function exportLevelInfo(objManager: ObjectManager): Partial<FullLevelInfo> {
+//   return {
+//     packages: objManager.matePackManager.packages
+//       .map((p) => ({
+//         x: round(p.vector.posX),
+//         y: round(p.vector.posY),
+//       }))
+//       .sort((a, b) => a.x - b.x),
+//     opponents: {
+//       grog: objManager.opponentManager.opponents.grog
+//         .map((o) => ({
+//           initPos: { x: round(o.vector.posX), y: round(o.vector.posY) },
+//           moveSpeed: o.vector.moveSpeed,
+//           jumpOften: o.jumpOften,
+//         }))
+//         .sort((a, b) => a.initPos.x - b.initPos.x),
+//     },
+//     platforms: objManager.platformManager.platforms
+//       .filter((p) => !p.isFloor)
+//       .map((p) => ({
+//         x: round(p.vector.position.x),
+//         y: round(p.vector.position.y),
+//         width: round(p.vector.width),
+//         height: round(p.vector.height),
+//         color: p.color,
+//       }))
+//       .sort((a, b) => a.x - b.x),
+//     floors: objManager.platformManager.platforms
+//       .filter((p) => p.isFloor)
+//       .map((p) => ({
+//         x: round(p.vector.position.x),
+//         width: round(p.vector.width),
+//         color: p.color,
+//       }))
+//       .sort((a, b) => a.x - b.x),
+//   };
+// }
 
 export function findExistingItems(
   coor1: Coordinates,

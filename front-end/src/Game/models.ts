@@ -1,7 +1,11 @@
-import { PackageProps } from "./Bullet/Package";
 import { GrogProps } from "./Opponent/Grog";
 import { FloatingType, FloorType } from "./Platform/Platform";
 import { Canvas, DrawObjProps, PlayStats } from "./helpers/types";
+
+export type PackageProps = {
+  x: number;
+  y: number;
+};
 
 export type CharAction =
   | "MoveRight"
@@ -64,7 +68,7 @@ export interface Keys {
   toJump: 0 | 1;
   toShoot: 0 | 1;
   toShank: 0 | 1;
-  mostRecentX: "left" | "right"
+  mostRecentX: "left" | "right";
 }
 
 export type OppDirections = "left" | "right";

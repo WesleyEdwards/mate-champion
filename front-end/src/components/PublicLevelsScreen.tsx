@@ -4,7 +4,7 @@ import { LevelInfo } from "../Game/models";
 import { Card, IconButton, Stack, Typography } from "@mui/joy";
 import { PlayArrow } from "@mui/icons-material";
 import { emptyStats } from "../Game/helpers/utils";
-import { enterGameLoop } from "../Game/Main";
+// import { enterGameLoop } from "../Game/Main";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { GridComponent } from "./LevelEditorHome";
@@ -24,18 +24,18 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
 
     setGameMode("test");
 
-    enterGameLoop({
-      setUI: {
-        modifyStats,
-        handleLose: () => {},
-        handlePause: (pause: boolean) => {
-          return setModal(pause ? "pause" : null);
-        },
-      },
-      gameMode: "test",
-      levels: [fullLevel],
-      setLevel: () => {},
-    });
+    // enterGameLoop({
+    //   setUI: {
+    //     modifyStats,
+    //     handleLose: () => {},
+    //     handlePause: (pause: boolean) => {
+    //       return setModal(pause ? "pause" : null);
+    //     },
+    //   },
+    //   gameMode: "test",
+    //   levels: [fullLevel],
+    //   setLevel: () => {},
+    // });
   };
 
   useEffect(() => {

@@ -65,7 +65,7 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         onChange={(e) => {
           setLevelForm((prev) => ({ ...prev, description: e.target.value }));
         }}
-        sx={{ flexGrow: 1, width: "400px" }}
+        sx={{ flexGrow: 1 }}
       />
 
       <PreviewOrEdit {...props} />

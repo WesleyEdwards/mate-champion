@@ -1,17 +1,8 @@
-import {
-  Button,
-  Checkbox,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Skeleton,
-  Stack,
-  Textarea,
-} from "@mui/joy";
+import { Button, Stack, Textarea } from "@mui/joy";
 import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
-import { enterGameLoop } from "../Game/Main";
+// import { enterGameLoop } from "../Game/Main";
 import { Construction, PlayArrow } from "@mui/icons-material";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { DeleteLevel } from "./DeleteLevel";
@@ -19,6 +10,7 @@ import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { VisibilityIcon } from "./MyLevels";
+import { gameLoopEdit } from "../game2/editor/gameLoopEdit";
 
 export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
   const { levelCache, editingLevel, setGameMode } = useLevelContext();
@@ -33,35 +25,47 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
 
     setGameMode(gamePlay);
 
-    const params = {
-      edit: {
-        setUI: {
-          modifyStats,
-          handleLose: () => {},
-          handlePause: (pause: boolean) => {
-            return setModal(pause ? "pause" : null);
-          },
-        },
-        gameMode: gamePlay,
-        levels: editingLevel ? [editingLevel] : [],
+    if (editingLevel === null) {
+      console.error("It's null");
+      return;
+    }
+    if (gamePlay === "edit") {
+      gameLoopEdit({
+        level: editingLevel,
         setLevel: (level: Partial<FullLevelInfo>) =>
           levelCache.update.modify(editingLevel!._id, level),
-      },
-      test: {
-        setUI: {
-          modifyStats,
-          handleLose: () => {},
-          handlePause: (pause: boolean) => {
-            return setModal(pause ? "pause" : null);
-          },
-        },
-        gameMode: gamePlay,
-        levels: editingLevel ? [editingLevel] : [],
-        setLevel: undefined,
-      },
-    }[gamePlay];
+      });
+    }
 
-    enterGameLoop(params);
+    // const params = {
+    //   edit: {
+    //     setUI: {
+    //       modifyStats,
+    //       handleLose: () => {},
+    //       handlePause: (pause: boolean) => {
+    //         return setModal(pause ? "pause" : null);
+    //       },
+    //     },
+    //     gameMode: gamePlay,
+    //     levels: editingLevel ? [editingLevel] : [],
+    //     setLevel: (level: Partial<FullLevelInfo>) =>
+    //       levelCache.update.modify(editingLevel!._id, level),
+    //   },
+    //   test: {
+    //     setUI: {
+    //       modifyStats,
+    //       handleLose: () => {},
+    //       handlePause: (pause: boolean) => {
+    //         return setModal(pause ? "pause" : null);
+    //       },
+    //     },
+    //     gameMode: gamePlay,
+    //     levels: editingLevel ? [editingLevel] : [],
+    //     setLevel: undefined,
+    //   },
+    // }[gamePlay];
+
+    // enterGameLoop(params);
   };
 
   return (

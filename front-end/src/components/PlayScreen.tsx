@@ -1,7 +1,6 @@
 import { Button } from "@mui/joy";
 import { FC } from "react";
 import { useAuthContext } from "../hooks/useAuth";
-import { enterGameLoop } from "../Game/Main";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
 import { localStorageManager } from "../api/localStorageManager";
@@ -65,7 +64,6 @@ export const PlayScreen: FC<{
           },
           gameMode: "play",
           levels: levelsInfo,
-          setLevel: undefined,
         });
       }}
     >
