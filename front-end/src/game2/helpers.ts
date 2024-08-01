@@ -1,7 +1,7 @@
 import { addEventListeners } from "../Game/helpers/eventListeners";
 import { FullLevelInfo } from "../Game/models";
 import { Champ1 } from "./champ";
-import { Coors, Entity, GameStateProps } from "./entityTypes";
+import { Coors, CurrAndPrev, Entity, GameStateProps } from "./entityTypes";
 import { floorConst } from "./floor";
 import { Groog1 } from "./groog";
 import { Floor1, Platform1 } from "./platform";
@@ -41,7 +41,7 @@ export const levelToEntities = (level: FullLevelInfo): Entity[] => {
     entities.push(
       new Platform1({
         color: p.color,
-        position: { curr: [p.x, p.y], prev: [p.x, p.y] },
+        position: toCurrAndPrev([p.x, p.y]),
         dimensions: [p.width, p.height],
         dead: false,
       })
@@ -51,10 +51,7 @@ export const levelToEntities = (level: FullLevelInfo): Entity[] => {
     entities.push(
       new Floor1({
         color: f.color,
-        position: {
-          curr: [f.x, floorConst.floorY],
-          prev: [f.x, floorConst.floorY],
-        },
+        position: toCurrAndPrev([f.x, floorConst.floorY]),
         dimensions: [f.width, floorConst.floorHeight],
         dead: false,
       })
@@ -79,6 +76,10 @@ export function areTouching1(
   );
   return distBetween < dist;
 }
+
+export const toCurrAndPrev = (coors: Coors): CurrAndPrev => {
+  return { curr: [...coors], prev: [...coors] };
+};
 
 export const gameStateConst = {
   showMessageTime: 2000,

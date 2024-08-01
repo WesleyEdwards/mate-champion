@@ -2,7 +2,7 @@ import { createId } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
 import { Champ1 } from "./champ";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { areTouching1 } from "./helpers";
+import { areTouching1, toCurrAndPrev } from "./helpers";
 import { calcPlatEntityCollision } from "./interactions";
 import { renderGroog } from "./render/groog";
 import { accountForPosition } from "./render/helpers";
@@ -62,7 +62,7 @@ export class Groog1 implements Entity {
   constructor(position: Coors, velocity: Coors) {
     this.state = {
       facing: "right",
-      position: { curr: [...position], prev: [...position] },
+      position: toCurrAndPrev(position),
       velocity,
       dimensions: [...groogConst.dimensions],
       dead: false,

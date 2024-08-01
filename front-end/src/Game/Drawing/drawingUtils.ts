@@ -1,6 +1,6 @@
 import playerSprites from "../../assets/mate-player.png";
 import matePackage from "../../assets/mate-package.png";
-import bulletHor from "../../assets/bullet-hor.png";
+// import bulletHor from "../../assets/bullet-hor.png";
 import pot from "../../assets/pot.png";
 
 export type DrawInfo = {
@@ -16,12 +16,12 @@ export type DrawInfo = {
 
 type imageObjects = "matePot" | "bulletVert" | "bulletHor" | "package";
 
-const images: Record<imageObjects, string> = {
-  matePot: pot,
-  bulletHor: bulletHor,
-  bulletVert: bulletHor,
-  package: matePackage,
-};
+// const images: Record<imageObjects, string> = {
+//   matePot: pot,
+//   bulletHor: bulletHor,
+//   bulletVert: bulletHor,
+//   package: matePackage,
+// };
 
 export type MCImage = {
   image: HTMLImageElement;
@@ -36,7 +36,7 @@ export function makeImage(
 ): MCImage {
   const image = new Image(width, height);
 
-  image.src = images[object];
+  // image.src = images[object];
 
   return { image, width, height };
 }

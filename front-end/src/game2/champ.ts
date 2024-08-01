@@ -126,6 +126,7 @@ export class Champ1 implements Entity {
   }
 
   step: Entity["step"] = (deltaT) => {
+    window.debounceLog(this.state.position)
     updateTimers(this.state.timers, deltaT);
     updatePosAndVel(this.state.position, this.state.velocity, deltaT);
     updatePlayer(this.state, deltaT);

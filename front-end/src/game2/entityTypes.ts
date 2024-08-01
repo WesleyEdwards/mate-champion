@@ -22,7 +22,13 @@ export type GameStateProps = {
   keys: Keys;
 };
 
-export type EntityType = "player" | "groog" | "floor" | "platform" | "bullet";
+export type EntityType =
+  | "player"
+  | "groog"
+  | "floor"
+  | "platform"
+  | "bullet"
+  | "endGate";
 
 export type Entity = {
   id: Id;

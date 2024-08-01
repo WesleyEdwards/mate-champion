@@ -9,6 +9,7 @@ import {
   gameStateConst,
   initGameState,
   levelToEntities,
+  toCurrAndPrev,
   uiIsDirty,
   updateStats,
 } from "./helpers";
@@ -16,6 +17,7 @@ import { getLevelInfo } from "../Game/constructors";
 import { Entity, GameStateProps } from "./entityTypes";
 import { FullLevelInfo, SetUI } from "../Game/models";
 import { updateTime } from "./state/helpers";
+import { EndGate } from "./endGate";
 
 export class Game {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20]);
@@ -57,10 +59,12 @@ export class Game {
     updateCamera(this.state.camera, this.state.time.deltaT);
     for (const entity of this.state.entities) {
       this.gridHash.updateClient(entity);
-      const near = this.gridHash.findNear(entity);
-      entity.handleInteraction?.(
-        this.state.entities.filter((e) => near.includes(e.id))
-      );
+      if (entity.handleInteraction) {
+        const near = this.gridHash.findNear(entity);
+        entity.handleInteraction?.(
+          this.state.entities.filter((e) => near.includes(e.id))
+        );
+      }
       entity.step(this.state.time.deltaT);
       if (entity.typeId === "player") {
         this.updatePlayer(entity);
@@ -96,7 +100,8 @@ export class Game {
     this.gridHash.dropAll();
     this.state.entities.length = 0;
 
-    this.addEntity(new Champ1({ curr: [400, 400], prev: [400, 400] }));
+    this.addEntity(new Champ1(toCurrAndPrev([400, 400])));
+    this.addEntity(new EndGate([this.currentLevel.endPosition, 0]));
     for (const entity of levelToEntities(this.currentLevel)) {
       this.addEntity(entity);
     }

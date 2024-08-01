@@ -23,6 +23,10 @@ export const updatePlayer: UpdateFun<ChampState> = (p, deltaT) => {
     p.action = null;
   }
 
+  if (p.position.curr[1] > 1000) {
+    p.dead = true
+  }
+
   handleChampActions(p);
   updateChampSpriteInfo(p);
   return;
