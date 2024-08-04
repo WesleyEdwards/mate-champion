@@ -13,6 +13,7 @@ export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {
     Math.floor(g.timers.sprite.val / asset.cycleTime()) % asset.imgCount;
 
   if (g.facing === "left") {
+    cxt.translate(g.dimensions[0], 0);
     cxt.scale(-1, 1);
   }
 
@@ -27,8 +28,8 @@ export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {
     0,
     w,
     asset.image().height,
-    -drawImageWidth / 2,
-    -(drawImageHeight - groogConst.dimensions[1] / 2),
+    -drawImageWidth / 2 + g.dimensions[0] / 2,
+    -(drawImageHeight - g.dimensions[1]),
     drawImageWidth,
     drawImageHeight
   );

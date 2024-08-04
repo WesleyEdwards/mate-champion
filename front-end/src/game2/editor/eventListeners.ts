@@ -8,16 +8,15 @@ export function addDevEventListeners(
   canvas.addEventListener("mousedown", (e: MouseEvent) => {
     e.preventDefault();
     contentCreator.setEventState("mouseDown", true);
-    contentCreator.setEventState("mouseDrag", [e.offsetX, e.offsetY]);
+    contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY]);
   });
   canvas.addEventListener("mousemove", (e) => {
-    contentCreator.setEventState("mouseDrag", [e.offsetX, e.offsetY]);
+    contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY]);
   });
 
   window.addEventListener("mouseup", (e) => {
     contentCreator.setEventState("mouseDown", false);
     contentCreator.setEventState("mouseUp", [e.offsetX, e.offsetY]);
-    contentCreator.setEventState("mouseDrag", null);
   });
 
   window.addEventListener("keydown", (e) => {
@@ -36,7 +35,6 @@ export function addDevEventListeners(
     if (e.code === "Delete") {
       contentCreator.setEventState("delete", false);
     }
-    console.log(e.code);
     if (e.ctrlKey === false) {
       contentCreator.setEventState("ctrl", false);
     }

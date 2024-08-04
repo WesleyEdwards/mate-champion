@@ -2,9 +2,8 @@ import { addEventListeners } from "../Game/helpers/eventListeners";
 import { FullLevelInfo } from "../Game/models";
 import { Champ1 } from "./champ";
 import { Coors, CurrAndPrev, Entity, GameStateProps } from "./entityTypes";
-import { floorConst } from "./floor";
 import { Groog1 } from "./groog";
-import { Floor1, Platform1 } from "./platform";
+import { Floor1, floorConst, Platform1 } from "./platform";
 import { emptyTime } from "./state/timeHelpers";
 
 export const initGameState = (): GameStateProps => ({

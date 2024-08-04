@@ -1,7 +1,6 @@
 import { remove } from "lodash";
-import { Bullet1 } from "../bullet";
+import { Bullet1, mBulletConst } from "../bullet";
 import { Champ1 } from "../champ";
-import { bulletConst } from "../../Game/constants";
 import { Keys } from "../../Game/models";
 import { updateKeys } from "./keys";
 import { updateCameraWithPlayer } from "./camera";
@@ -29,7 +28,10 @@ export const reconcileActions = (gs: GameStateProps) => {
               velocity: { curr: shot.velocity, prev: shot.velocity },
               dead: false,
               initPos: { ...shot.initPos },
-              dimensions: [bulletConst.width, bulletConst.height],
+              dimensions: [
+                mBulletConst.dimensions[0],
+                mBulletConst.dimensions[1],
+              ],
             })
           );
         }

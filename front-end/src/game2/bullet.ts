@@ -1,4 +1,3 @@
-import { bulletConst } from "../Game/constants";
 import { createId, generateRandomInt } from "../Game/helpers/utils";
 import { Coordinates } from "../Game/models";
 import { Textures } from "../gameAssets/textures";
@@ -17,11 +16,9 @@ export type MBulletState = {
 };
 
 export const mBulletConst = {
-  widthHeight: {
-    x: 42,
-    y: 24,
-  },
-  speed: 0.9,
+  dimensions: [42, 24],
+  speed: 0.2,
+  // speed: 0.9,
   distUntilDud: 800,
   distFromOppHit: 40,
 } as const;
@@ -46,6 +43,7 @@ export class Bullet1 implements Entity {
   };
 
   render: Entity["render"] = (cxt) => {
+    cxt.translate(this.state.dimensions[0] / 2, this.state.dimensions[1] / 2);
     cxt.rotate(
       (() => {
         if (this.state.velocity.curr[0] > 0) return 0;
@@ -53,6 +51,7 @@ export class Bullet1 implements Entity {
         return (Math.PI / 2) * 3;
       })()
     );
+    cxt.translate(-this.state.dimensions[0] / 2, -this.state.dimensions[1] / 2);
 
     const spritesInRow = 4;
     const whichSprite =
@@ -60,8 +59,8 @@ export class Bullet1 implements Entity {
 
     const imgWidth = 28;
 
-    const w = mBulletConst.widthHeight.x;
-    const h = mBulletConst.widthHeight.y;
+    const w = this.state.dimensions[0];
+    const h = this.state.dimensions[1];
 
     cxt.drawImage(
       Textures().bullet,
@@ -79,10 +78,7 @@ export class Bullet1 implements Entity {
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const e of entities) {
       if (e instanceof Groog1) {
-        if (
-          distBetween(e.state.position.curr, this.state.position.curr) <
-          mBulletConst.distFromOppHit
-        ) {
+        if (areBoxesTouching(this.state, e.state)) {
           e.state.queueActions.push({ name: "die" });
           this.state.dead = true;
         }
@@ -90,3 +86,12 @@ export class Bullet1 implements Entity {
     }
   };
 }
+
+const areBoxesTouching = (
+  rect1: Entity["state"],
+  rect2: Entity["state"]
+): boolean =>
+  rect1.position.curr[0] < rect2.position.curr[0] + rect2.dimensions[0] &&
+  rect1.position.curr[0] + rect1.dimensions[0] > rect2.position.curr[0] &&
+  rect1.position.curr[1] < rect2.position.curr[1] + rect2.dimensions[1] &&
+  rect1.position.curr[1] + rect1.dimensions[1] > rect2.position.curr[1];

@@ -80,7 +80,7 @@ export class Groog1 implements Entity {
   }
 
   step: Entity["step"] = (deltaT) => {
-    updateTimers(this.state.timers, deltaT);
+    updateTimers(this.state.timers, deltaT)
     updatePosAndVel(this.state.position, this.state.velocity, deltaT);
     updateGroog(this.state, deltaT);
   };

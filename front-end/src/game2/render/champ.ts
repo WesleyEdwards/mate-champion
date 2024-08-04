@@ -13,6 +13,7 @@ export const renderPlayer = (p: ChampState, cxt: CanvasRenderingContext2D) => {
     Math.floor(p.timers.sprite.val / asset.cycleTime()) % asset.imgCount;
 
   if (p.facing.x === "left") {
+    cxt.translate(p.dimensions[0], 0);
     cxt.scale(-1, 1);
   }
 
@@ -27,8 +28,8 @@ export const renderPlayer = (p: ChampState, cxt: CanvasRenderingContext2D) => {
     0,
     w,
     asset.image().height,
-    -drawImageWidth / 2,
-    -(drawImageHeight - champConst.widthHeight.y / 2),
+    -drawImageWidth / 2 + p.dimensions[0] / 2,
+    -(drawImageHeight - p.dimensions[1]),
     drawImageWidth,
     drawImageHeight
   );

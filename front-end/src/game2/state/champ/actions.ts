@@ -86,19 +86,19 @@ const processActionMap: ActionMap<ChampAction, ChampState> = {
     p.timers.actionCoolDownRemain.val = champConst.shootCoolDown * 2;
     const x = (() => {
       if (p.facing.y === "up") {
-        return p.position.curr[0];
+        return p.position.curr[0] + p.dimensions[0] / 2;
       }
       if (p.facing.x === "right") {
-        return p.position.curr[0] + champConst.widthHeight.x / 2;
+        return p.position.curr[0] + p.dimensions[0];
       }
-      return p.position.curr[0] - champConst.widthHeight.x / 2;
+      return p.position.curr[0];
     })();
 
     const y = (() => {
       if (p.facing.y === "up") {
-        return p.position.curr[1] - champConst.widthHeight.y / 2;
+        return p.position.curr[1];
       }
-      return p.position.curr[1];
+      return p.position.curr[1] + p.dimensions[1] / 2;
     })();
 
     const velocity = ((): Coors => {

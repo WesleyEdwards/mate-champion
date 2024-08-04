@@ -19,7 +19,7 @@ export function calcPlatEntityCollision(
     return null;
   }
 
-  const betweenCenterAndBottom = entity.state.dimensions[1] / 2;
+  const betweenCenterAndBottom = entity.state.dimensions[1];
 
   const previous = entity.state.position.prev[1] + betweenCenterAndBottom;
   const recent = entity.state.position.curr[1] + betweenCenterAndBottom;
@@ -27,9 +27,10 @@ export function calcPlatEntityCollision(
   if (
     recent >= floor.state.position.curr[1] &&
     previous <= floor.state.position.curr[1]
+    // true
   ) {
     const setY = floor.state.position.curr[1] - betweenCenterAndBottom;
-    entity.state.position.curr[1] = entity.state.position.curr[1];
+    entity.state.position.curr[1] = entity.state.position.prev[1];
     return setY;
   }
   return null;
