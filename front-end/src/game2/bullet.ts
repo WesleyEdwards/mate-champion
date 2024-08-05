@@ -13,12 +13,13 @@ export type MBulletState = {
   dead: boolean;
   initPos: Coors;
   dimensions: Coors;
+  drawDimensions: Coors; // rendering is weird with vert
 };
 
 export const mBulletConst = {
-  dimensions: [42, 24],
-  speed: 0.2,
-  // speed: 0.9,
+  dimensions: [24, 24],
+  drawDimensions: [42, 24],
+  speed: 0.9,
   distUntilDud: 800,
   distFromOppHit: 40,
 } as const;
@@ -44,6 +45,7 @@ export class Bullet1 implements Entity {
 
   render: Entity["render"] = (cxt) => {
     cxt.translate(this.state.dimensions[0] / 2, this.state.dimensions[1] / 2);
+
     cxt.rotate(
       (() => {
         if (this.state.velocity.curr[0] > 0) return 0;
@@ -59,8 +61,9 @@ export class Bullet1 implements Entity {
 
     const imgWidth = 28;
 
-    const w = this.state.dimensions[0];
-    const h = this.state.dimensions[1];
+    // Rotate to draw
+    const w = this.state.drawDimensions[0];
+    const h = this.state.drawDimensions[1];
 
     cxt.drawImage(
       Textures().bullet,
@@ -68,8 +71,8 @@ export class Bullet1 implements Entity {
       0,
       imgWidth,
       Textures().bullet.height,
-      -w / 2,
-      -h / 2,
+      0,
+      0,
       w,
       h
     );

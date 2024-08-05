@@ -153,15 +153,15 @@ export class Game {
       accountForPosition(entity.state.position, cxt);
       entity.render(cxt);
 
-      cxt.strokeStyle = "red";
-      cxt.lineWidth = 2;
+      // cxt.strokeStyle = "red";
+      // cxt.lineWidth = 2;
 
-      cxt.strokeRect(
-        0,
-        0,
-        entity.state.dimensions[0],
-        entity.state.dimensions[1]
-      );
+      // cxt.strokeRect(
+      //   0,
+      //   0,
+      //   entity.state.dimensions[0],
+      //   entity.state.dimensions[1]
+      // );
 
       cxt.restore();
     }
