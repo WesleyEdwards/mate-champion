@@ -1,4 +1,5 @@
 import { getLevelInfo } from "../../Game/constructors";
+import { devSettings } from "../../Game/devSettings";
 import { FullLevelInfo } from "../../Game/models";
 import { Camera, Coors, Entity, GameStateProps, Id } from "../entityTypes";
 import {
@@ -13,6 +14,15 @@ import { accountForPosition } from "../render/helpers";
 import { updateCamera } from "../state/camera";
 import { updateTime } from "../state/helpers";
 import { emptyTime, updateTimers } from "../state/timeHelpers";
+import {
+  addEntityToState,
+  GameStateEditProps,
+  incrementPosition,
+  initGameEditState,
+  updateCurrPrevBool,
+  updateCurrPrevDragState,
+  withCamPosition,
+} from "./editHelpers";
 import { addDevEventListeners } from "./eventListeners";
 
 export class GameEdit {
@@ -111,15 +121,7 @@ export class GameEdit {
         });
       }
     } else if (addEntity) {
-      this.addEntity(
-        new Platform1({
-          color: "blue",
-          dead: false,
-          dimensions: [100, 100],
-          position: toCurrAndPrev([0, 0]),
-        }),
-        this.state.keys.mouseUp.curr!
-      );
+      addEntityToState(this);
     }
 
     if (this.state.entities.some((e) => e.state.dead)) {
@@ -217,72 +219,3 @@ export class GameEdit {
     this.state.keys[key].curr = value;
   }
 }
-
-const incrementPosition = (curr: Coors, increment: Coors) => {
-  curr[0] += increment[0];
-  curr[1] += increment[1];
-};
-
-const withCamPosition = (curr: Coors, cam: Camera): Coors => {
-  return [curr[0] + cam.position[0], curr[1] - cam.position[1]];
-};
-
-const initGameEditState = (level: FullLevelInfo): GameStateEditProps => {
-  return {
-    entities: levelToEntities({ ...level }),
-    camera: {
-      time: {
-        idleTime: emptyTime("up"),
-      },
-      position: [0, 0],
-      velocity: [0, 0],
-    },
-    time: {
-      deltaT: 0,
-      prevStamp: performance.now(),
-    },
-    keys: {
-      shift: { prev: false, curr: false },
-      ctrl: { prev: false, curr: false },
-      delete: { prev: false, curr: false },
-      mouseDown: { prev: false, curr: false },
-      mouseUp: { prev: null, curr: null },
-      mousePos: { prev: null, curr: null },
-    },
-  };
-};
-
-type EventState = { prev: boolean; curr: boolean };
-type DragState = { prev: Coors | null; curr: Coors | null };
-
-type GameStateEditProps = {
-  entities: Entity[];
-  camera: Camera;
-  time: {
-    deltaT: number;
-    prevStamp: number;
-  };
-  keys: {
-    shift: EventState;
-    ctrl: EventState;
-    delete: EventState;
-    mouseDown: EventState;
-    mouseUp: DragState;
-    mousePos: DragState;
-  };
-};
-
-const updateCurrPrevBool = (obj: { curr: boolean; prev: boolean }) => {
-  obj.prev = obj.curr;
-};
-
-const updateCurrPrevDragState = (obj: {
-  curr: Coors | null;
-  prev: Coors | null;
-}) => {
-  if (obj.curr === null) {
-    obj.prev = obj.curr;
-  } else {
-    obj.prev = [...obj.curr];
-  }
-};

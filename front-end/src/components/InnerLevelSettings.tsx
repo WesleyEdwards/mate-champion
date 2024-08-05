@@ -2,7 +2,6 @@ import { Stack, Tooltip, IconButton, Input, Typography } from "@mui/joy";
 import { useLevelContext } from "../hooks/useLevels";
 import { useEffect, useState } from "react";
 import { Edit, Undo, Check } from "@mui/icons-material";
-import { ItemType } from "../Game/devTools/CreatingThing";
 import { MCModal } from "./MCModal";
 
 export const InnerLevelSettings = () => {

@@ -9,9 +9,9 @@ import { mateTheme } from "./theme";
 import { AuthContext, useAuth } from "./hooks/useAuth";
 import { LevelsContext, useLevels } from "./hooks/useLevels";
 import { Layout } from "./components/Layout";
-import { ItemType } from "./Game/devTools/CreatingThing";
 import { initializeDevSettings } from "./Game/devSettings";
 import { initializeTextures } from "./gameAssets/textures";
+import { EditableEntity } from "./Game/devTools/CourseBuilderSettings";
 
 declare global {
   interface Window {
@@ -23,7 +23,7 @@ declare global {
       cameraLines: boolean;
       invincibility: boolean;
     };
-    selectedItem: ItemType;
+    selectedItem: EditableEntity;
     debounceLog: (...args: any[]) => void;
   }
 

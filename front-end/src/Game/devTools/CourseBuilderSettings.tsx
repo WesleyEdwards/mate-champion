@@ -1,8 +1,5 @@
 import {
   Stack,
-  Tooltip,
-  IconButton,
-  Input,
   Typography,
   AccordionGroup,
   Accordion,
@@ -14,15 +11,20 @@ import {
 import { contentCreatorModifyObject, devSettings } from "../devSettings";
 import { useEffect, useState } from "react";
 import { useLevelContext } from "../../hooks/useLevels";
-import { ItemType } from "./CreatingThing";
 import grogImg from "../../assets/grog/enemy_walking_single.png";
 import packageImg from "../../assets/mate-package.png";
 import { camelCaseToTitleCase } from "../../helpers";
 import { InnerLevelSettings } from "../../components/InnerLevelSettings";
+import { EntityType } from "../../game2/entityTypes";
+
+export type EditableEntity = Exclude<
+  EntityType,
+  "player" | "bullet" | "endGate"
+>;
 
 export const CourseBuilderSettings = () => {
   const { editingLevel } = useLevelContext();
-  const [editingItemType, setEditingItemType] = useState<ItemType>();
+  const [editingItemType, setEditingItemType] = useState<EditableEntity>();
 
   const updateEditing = () => {
     if (editingItemType !== devSettings().modifyingItem) {
@@ -37,7 +39,7 @@ export const CourseBuilderSettings = () => {
     return () => clearInterval(interval);
   });
 
-  const handleSetEditingItem = (item: ItemType) => {
+  const handleSetEditingItem = (item: EditableEntity) => {
     contentCreatorModifyObject(item);
     setEditingItemType(item);
   };
@@ -84,7 +86,7 @@ export const CourseBuilderSettings = () => {
                 ),
               },
               {
-                obj: "grog",
+                obj: "groog",
                 display: (
                   <img
                     style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
@@ -92,17 +94,17 @@ export const CourseBuilderSettings = () => {
                   />
                 ),
               },
-              {
-                obj: "package",
-                display: (
-                  <img
-                    style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
-                    src={packageImg}
-                  />
-                ),
-              },
+              // {
+              //   obj: "package",
+              //   display: (
+              //     <img
+              //       style={{ maxWidth: imgHeight, maxHeight: imgHeight }}
+              //       src={packageImg}
+              //     />
+              //   ),
+              // },
             ] satisfies {
-              obj: ItemType;
+              obj: EditableEntity;
               display: JSX.Element;
             }[]
           ).map(({ obj, display }) => (

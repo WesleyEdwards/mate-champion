@@ -1,5 +1,5 @@
 import { localStorageManager } from "../api/localStorageManager";
-import { ItemType } from "./devTools/CreatingThing";
+import { EditableEntity } from "./devTools/CourseBuilderSettings";
 import { Coordinates, FullLevelInfo } from "./models";
 
 const prodSettings: Record<keyof Settings, false> = {
@@ -38,7 +38,7 @@ export const setToNoDevSettings = () => {
   localStorageManager.set("dev-settings", window.mateSettings);
 };
 
-export const contentCreatorModifyObject = (item: ItemType) => {
+export const contentCreatorModifyObject = (item: EditableEntity) => {
   window.selectedItem = item;
 };
 
