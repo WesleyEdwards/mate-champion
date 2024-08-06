@@ -1,6 +1,6 @@
 import { Coordinates } from "../../Game/models";
 import { ChampState } from "../champ";
-import { CurrAndPrev } from "../entityTypes";
+import { Coors, CurrAndPrev } from "../entityTypes";
 import { GroogState } from "../groog";
 
 export type RenderFun<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
@@ -18,13 +18,11 @@ export type AssetInfo = {
 };
 
 export const accountForPosition = (
-  position: CurrAndPrev,
+  position: Coors,
   cxt: CanvasRenderingContext2D
 ) => {
   cxt.imageSmoothingEnabled = false;
   cxt.imageSmoothingQuality = "high";
 
-  // window.debounceLog(position);
-
-  cxt.translate(position.curr[0], position.curr[1]);
+  cxt.translate(position[0], position[1]);
 };

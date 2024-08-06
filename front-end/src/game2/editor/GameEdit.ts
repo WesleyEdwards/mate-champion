@@ -19,6 +19,7 @@ import {
   GameStateEditProps,
   incrementPosition,
   initGameEditState,
+  toRounded,
   updateCurrPrevBool,
   updateCurrPrevDragState,
   withCamPosition,
@@ -128,6 +129,13 @@ export class GameEdit {
       this.state.entities = this.state.entities.filter((e) => !e.state.dead);
     }
 
+    if (this.state.keys.delete.curr) {
+      this.state.entities = this.state.entities.filter((e) => {
+        return !this.selectedEntities.has(e.id);
+      });
+      this.state.keys.delete.curr = false;
+    }
+
     Object.values(this.state.keys).forEach((o) => {
       if (typeof o.curr === "boolean") {
         updateCurrPrevBool(o);
@@ -135,6 +143,14 @@ export class GameEdit {
         updateCurrPrevDragState(o as any);
       }
     });
+
+    if (mouseUpAction) {
+      // lock rounded into place.
+      this.state.entities.forEach((e) => {
+        console.log(e.state.position.curr, toRounded(e.state.position.curr));
+        e.state.position.curr = toRounded(e.state.position.curr);
+      });
+    }
 
     this.state.keys.mouseUp.curr = null;
   }
@@ -193,7 +209,7 @@ export class GameEdit {
 
     for (const entity of this.state.entities) {
       cxt.save();
-      accountForPosition(entity.state.position, cxt);
+      accountForPosition(toRounded(entity.state.position.curr), cxt);
       entity.render(cxt);
 
       if (this.selectedEntities.has(entity.id)) {

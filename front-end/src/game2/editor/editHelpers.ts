@@ -2,7 +2,7 @@ import { platformConst } from "../../Game/constants";
 import { devSettings } from "../../Game/devSettings";
 import { EditableEntity } from "../../Game/devTools/CourseBuilderSettings";
 import { FullLevelInfo } from "../../Game/models";
-import { Camera, Coors, Entity } from "../entityTypes";
+import { Camera, Coors, CurrAndPrev, Entity } from "../entityTypes";
 import { Groog1 } from "../groog";
 import { levelToEntities, toCurrAndPrev } from "../helpers";
 import { Floor1, floorConst, Platform1 } from "../platform";
@@ -30,6 +30,13 @@ export const addEntityToState = (gs: GameEdit) => {
   };
 
   gs.addEntity(addable[toAdd], gs.state.keys.mouseUp.curr);
+};
+
+export const toRounded = (pos: Coors): Coors => {
+  const roundTo = 10;
+  const valX = Math.ceil(pos[0] / roundTo) * roundTo;
+  const valY = Math.ceil(pos[1] / roundTo) * roundTo;
+  return [valX, valY];
 };
 
 export const incrementPosition = (curr: Coors, increment: Coors) => {

@@ -14,6 +14,7 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { CreateNewLevel } from "./CreateNewLevel";
 import { useNavigator } from "../hooks/UseNavigator";
+import { abortController } from "../game2/editor/eventListeners";
 
 export const ViewHeaderSubScreen: FC<{
   title: string;
@@ -136,8 +137,7 @@ export const EditLevelDetailHeader: FC = () => {
 };
 
 export const PlayingHeader: FC = () => {
-  const { editingLevel, gameMode, setGameMode } =
-    useLevelContext();
+  const { editingLevel, gameMode, setGameMode } = useLevelContext();
   const { setModal } = usePauseModalContext();
   const { goBack } = useNavigator();
 
@@ -156,6 +156,8 @@ export const PlayingHeader: FC = () => {
     >
       <IconButton
         onClick={() => {
+          // End level editing
+          abortController.abort();
           // if (levelIsDirty) {
           //   setModal("save");
           // } else {

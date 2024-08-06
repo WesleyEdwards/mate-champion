@@ -150,7 +150,7 @@ export class Game {
 
     for (const entity of this.state.entities) {
       cxt.save();
-      accountForPosition(entity.state.position, cxt);
+      accountForPosition(entity.state.position.curr, cxt);
       entity.render(cxt);
 
       // cxt.strokeStyle = "red";

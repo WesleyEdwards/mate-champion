@@ -1,6 +1,7 @@
 import { displayCanvas, getCanvasContext } from "../Game/Drawing/uiHelpers";
 import { FullLevelInfo, SetUI } from "../Game/models";
 import { GameMode } from "../hooks/useAuth";
+import { abortController } from "./editor/eventListeners";
 import { initGameState } from "./helpers";
 import { Game } from "./State1";
 // import { renderGs } from "./render/gameState";
@@ -45,6 +46,7 @@ export function enterGameLoop1(params: {
   }
 
   function handleLose(score: number) {
+    abortController.abort();
     setUI.handleLose(score);
     displayCanvas(false, canvas);
   }

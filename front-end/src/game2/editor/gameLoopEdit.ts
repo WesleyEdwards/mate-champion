@@ -9,7 +9,8 @@ export function gameLoopEdit(params: {
   const { level, setLevel } = params;
   const { canvas, context } = getCanvasContext();
 
-  let game = new GameEdit(level, setLevel, canvas);
+  const game = new GameEdit(level, setLevel, canvas);
+  console.log("New game")
 
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;
