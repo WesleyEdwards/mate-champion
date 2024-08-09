@@ -28,6 +28,7 @@ export type EntityType =
   | "floor"
   | "platform"
   | "bullet"
+  | "package"
   | "endGate";
 
 export type Entity = {

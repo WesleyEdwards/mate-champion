@@ -1,19 +1,9 @@
-import { getLevelInfo } from "../../Game/constructors";
-import { devSettings } from "../../Game/devSettings";
 import { FullLevelInfo } from "../../Game/models";
-import { Camera, Coors, Entity, GameStateProps, Id } from "../entityTypes";
-import {
-  areTouching1,
-  initGameState,
-  levelToEntities,
-  toCurrAndPrev,
-} from "../helpers";
-import { Platform1 } from "../platform";
+import { Coors, Entity, Id } from "../entityTypes";
+import { toCurrAndPrev } from "../helpers";
 import { renderBg } from "../render/background";
 import { accountForPosition } from "../render/helpers";
-import { updateCamera } from "../state/camera";
 import { updateTime } from "../state/helpers";
-import { emptyTime, updateTimers } from "../state/timeHelpers";
 import {
   addEntityToState,
   GameStateEditProps,
@@ -103,12 +93,17 @@ export class GameEdit {
           -this.state.keys.mousePos.curr[0] + this.state.keys.mousePos.prev[0],
           this.state.keys.mousePos.curr[1] - this.state.keys.mousePos.prev[1],
         ];
-        if (this.state.camera.position[0] + diff[0] < -200) {
+        const proposedPos: Coors = [
+          this.state.camera.position[0] + diff[0],
+          this.state.camera.position[1] + diff[1],
+        ];
+        if (proposedPos[0] < -200 || proposedPos[0] > 10_000) {
           diff[0] = 0;
         }
-        if (this.state.camera.position[1] + diff[1] < 0) {
+        if (proposedPos[1] < 0 || proposedPos[1] > 500) {
           diff[1] = 0;
         }
+        window.debounceLog(proposedPos[1]);
         incrementPosition(this.state.camera.position, diff);
       }
     } else if (this.movingEntities.size > 0) {
@@ -147,7 +142,6 @@ export class GameEdit {
     if (mouseUpAction) {
       // lock rounded into place.
       this.state.entities.forEach((e) => {
-        console.log(e.state.position.curr, toRounded(e.state.position.curr));
         e.state.position.curr = toRounded(e.state.position.curr);
       });
     }

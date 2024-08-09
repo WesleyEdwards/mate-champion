@@ -27,6 +27,13 @@ export const addEntityToState = (gs: GameEdit) => {
       dimensions: [300, platformConst.floorHeight],
       dead: false,
     }),
+
+    package: new Platform1({
+      color: "blue",
+      position: toCurrAndPrev([0, 0]),
+      dimensions: [300, platformConst.floorHeight],
+      dead: false,
+    }),
   };
 
   gs.addEntity(addable[toAdd], gs.state.keys.mouseUp.curr);

@@ -27,7 +27,7 @@ export const LevelCreator: FC = () => {
   }
 
   return (
-    <Stack m={2} gap={4} justifyContent="flex-start" height="748px">
+    <Stack m={2} justifyContent="flex-start" height="748px">
       {/* {gameMode === "edit" && editingLevel && (
         <Button
           loading={saving}
@@ -44,7 +44,7 @@ export const LevelCreator: FC = () => {
         </Button>
       )} */}
 
-      <AccordionGroup>
+      {/* <AccordionGroup>
         <Accordion>
           <AccordionSummary>Dev Settings</AccordionSummary>
           {Object.entries(state).map(([setting, enabled]) => (
@@ -77,12 +77,13 @@ export const LevelCreator: FC = () => {
             </AccordionDetails>
           ))}
         </Accordion>
-      </AccordionGroup>
+      </AccordionGroup> */}
 
       <CourseBuilderSettings />
       <Button
         color="neutral"
         variant="plain"
+        sx={{marginTop: "auto"}}
         onClick={(e) => {
           if (
             "pointerType" in e.nativeEvent &&
