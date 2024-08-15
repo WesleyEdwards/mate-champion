@@ -1,6 +1,4 @@
-import { GrogProps } from "./Opponent/Grog";
-import { FloatingType, FloorType } from "./Platform/Platform";
-import { Canvas, DrawObjProps, PlayStats } from "./helpers/types";
+import { PlayStats } from "./helpers/types";
 
 export type PackageProps = {
   x: number;
@@ -52,10 +50,30 @@ export interface Character {
 }
 
 export interface StaticObject extends HasPosition {
-  draw: (drawProps: DrawObjProps) => void;
+  draw: (drawProps: any) => void;
   isFloor: boolean;
   color: string;
 }
+
+export type GrogProps = {
+  initPos: Coordinates;
+  moveSpeed: number;
+  jumpOften?: boolean;
+};
+
+export type FloorType = {
+  x: number;
+  width: number;
+  color: string;
+};
+
+export type FloatingType = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+};
 
 export interface Keys {
   up: boolean;

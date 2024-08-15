@@ -1,8 +1,3 @@
-import { PlayerDescription } from "../../../Game/Player/PlayerSpriteInfo";
-import {
-  PlayerAction,
-  PlayerMove,
-} from "../../../Game/Player/PlayerVectorManager";
 import { ChampState, ChampAssetDes, ChampDescription } from "../../champ";
 
 export const updateChampSpriteInfo = (p: ChampState) => {
@@ -39,3 +34,6 @@ const getChampSpritesInfo = (p: ChampState): ChampAssetDes => {
 
   return sprite;
 };
+
+export type PlayerAction = "shoot" | "melee" | "none";
+export type PlayerMove = "walk" | "jump" | "none";

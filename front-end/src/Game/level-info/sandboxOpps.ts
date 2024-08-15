@@ -1,5 +1,4 @@
-import { Grog, GrogProps } from "../Opponent/Grog";
-import { Coordinates } from "../models";
+import { Coordinates, GrogProps } from "../models";
 
 export const sandboxOpps: (props: {
   direction: "vertical" | "horizontal";

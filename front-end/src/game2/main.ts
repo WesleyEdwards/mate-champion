@@ -3,7 +3,7 @@ import { FullLevelInfo, SetUI } from "../Game/models";
 import { GameMode } from "../hooks/useAuth";
 import { abortController } from "./editor/eventListeners";
 import { initGameState } from "./helpers";
-import { Game } from "./State1";
+import { GameState } from "./GameState";
 // import { renderGs } from "./render/gameState";
 // import { updateGs } from "./state/gameState";
 
@@ -25,7 +25,7 @@ export function enterGameLoop1(params: {
     return;
   }
 
-  let game = new Game(levels, setUI);
+  let game = new GameState(levels, setUI);
 
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;

@@ -39,7 +39,7 @@ export const packageConst = { width: 60, height: 75, worth: 3 } as const;
 
 export const platformConst = {
   floorY: 530,
-  floorHeight: 60,
+  defaultHeight: 40,
 } as const;
 
 export const firebaseCollection = "scores-test-1";

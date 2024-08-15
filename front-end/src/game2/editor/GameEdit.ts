@@ -4,11 +4,13 @@ import { toCurrAndPrev } from "../helpers";
 import { renderBg } from "../render/background";
 import { accountForPosition } from "../render/helpers";
 import { updateTime } from "../state/helpers";
+import { updateTimers } from "../state/timeHelpers";
 import {
   addEntityToState,
+  editStateToLevelInfo,
   GameStateEditProps,
   incrementPosition,
-  initGameEditState,
+  levelInfoToEditState,
   toRounded,
   updateCurrPrevBool,
   updateCurrPrevDragState,
@@ -23,11 +25,11 @@ export class GameEdit {
   hoveringEntities: Set<Id> = new Set();
 
   constructor(
-    private currentLevel: FullLevelInfo,
+    currentLevel: FullLevelInfo,
     private setLevels: (level: Partial<FullLevelInfo>) => void,
     private canvas: HTMLCanvasElement
   ) {
-    this.state = initGameEditState(currentLevel);
+    this.state = levelInfoToEditState(currentLevel);
     addDevEventListeners(this, canvas);
     // https://css-tricks.com/almanac/properties/c/cursor/
     canvas.style.cursor = "move";
@@ -35,13 +37,17 @@ export class GameEdit {
 
   /** Step */
   step(timeStamp: number) {
-    updateTime(this.state.time, timeStamp); // window.debounceLog(this.state.camera.position);
+    updateTime(this.state.time, timeStamp);
+    updateTimers(this.state.timers, this.state.time.deltaT);
+
+    if (this.state.timers.sinceLastSave.val > 10_000) {
+      this.state.timers.sinceLastSave.val = 0;
+      this.setLevels(editStateToLevelInfo(this.state));
+    }
 
     this.hoveringEntities = this.hoverEntities();
 
-    if (this.state.keys.shift.curr) {
-      this.canvas.style.cursor = "move";
-    } else if (this.state.keys.ctrl.curr) {
+    if (this.state.keys.ctrl.curr) {
       if (this.hoveringEntities.size > 0) {
         this.canvas.style.cursor = "pointer";
       } else {
@@ -88,6 +94,7 @@ export class GameEdit {
     }
 
     if (isMovingCanvas) {
+      this.canvas.style.cursor = "move";
       if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
         const diff: Coors = [
           -this.state.keys.mousePos.curr[0] + this.state.keys.mousePos.prev[0],

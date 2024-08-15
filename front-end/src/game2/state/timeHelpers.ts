@@ -13,12 +13,6 @@ export function emptyTime(count: "up" | "down"): Timer {
   return { count: count, val: 0 };
 }
 
-// export const emptyTime = <T extends "up" | "down">(
-//   count: T
-// ): T extends "up" ? TimerUp : TimerDown => {
-//   return { count: count, val: 0 };
-// };
-
 const updateCurr = (currAndPrev: CurrAndPrev) => {
   currAndPrev.prev[0] = currAndPrev.curr[0];
   currAndPrev.prev[1] = currAndPrev.curr[1];

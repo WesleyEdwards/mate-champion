@@ -1,12 +1,12 @@
 import bgImageUrl from "../../assets/clouds-bg.jpg";
 import bgImageClouds from "../../assets/clouds-bg-2.jpg";
 import { MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT, levelConst } from "../constants";
-import { Canvas, WinState } from "../helpers/types";
+import { WinState } from "../helpers/types";
 import { Coordinates } from "../models";
 
 export class GameDrawer {
   drawBackground(
-    cxt: Canvas,
+    cxt: CanvasRenderingContext2D,
     showMessage: boolean,
     winState: WinState,
     level: number,
@@ -20,7 +20,7 @@ export class GameDrawer {
     this.drawLava(cxt, cameraOffset);
   }
 
-  private drawBg(cxt: Canvas, cameraOffset: Coordinates) {
+  private drawBg(cxt: CanvasRenderingContext2D, cameraOffset: Coordinates) {
     const imageWidth = MAX_CANVAS_WIDTH;
     const bgImage = new Image();
     bgImage.src = bgImageUrl;
@@ -53,7 +53,12 @@ export class GameDrawer {
     }
   }
 
-  showDevStats(cxt: Canvas, coor: Coordinates, vel: Coordinates, fps: number) {
+  showDevStats(
+    cxt: CanvasRenderingContext2D,
+    coor: Coordinates,
+    vel: Coordinates,
+    fps: number
+  ) {
     cxt.fillStyle = "rgba(0, 0, 0, 0.75)";
     cxt.fillRect(0, 0, 200, 100);
     cxt.font = "20px Courier";
@@ -63,7 +68,7 @@ export class GameDrawer {
     cxt.fillText(`fps: ${fps}`, 10, 80);
   }
 
-  private drawLava(cxt: Canvas, cameraOffset: Coordinates) {
+  private drawLava(cxt: CanvasRenderingContext2D, cameraOffset: Coordinates) {
     cxt.fillStyle = "red";
     cxt.fillRect(
       -100,
@@ -73,7 +78,11 @@ export class GameDrawer {
     );
   }
 
-  private displayNextLevel(cxt: Canvas, winState: WinState, level: number) {
+  private displayNextLevel(
+    cxt: CanvasRenderingContext2D,
+    winState: WinState,
+    level: number
+  ) {
     const message = winState === "loseLife" ? "Try Again" : `Level ${level}`;
     cxt.clearRect(0, 0, MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT);
     cxt.font = "60px Courier";

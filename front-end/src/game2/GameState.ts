@@ -13,13 +13,12 @@ import {
   uiIsDirty,
   updateStats,
 } from "./helpers";
-import { getLevelInfo } from "../Game/constructors";
 import { Entity, GameStateProps } from "./entityTypes";
 import { FullLevelInfo, SetUI } from "../Game/models";
 import { updateTime } from "./state/helpers";
 import { EndGate } from "./endGate";
 
-export class Game {
+export class GameState {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20]);
   state: GameStateProps = initGameState();
 
@@ -112,7 +111,8 @@ export class Game {
   }
 
   get currentLevel() {
-    return getLevelInfo(this.state.stats.level.curr, this.levels);
+    const level = this.state.stats.level.curr;
+    return this.levels[(level - 1) % this.levels.length];
   }
 
   addEntity(e: Entity) {

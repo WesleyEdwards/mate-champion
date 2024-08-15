@@ -13,11 +13,14 @@ import { useEffect, useState } from "react";
 import { useLevelContext } from "../../hooks/useLevels";
 import grogImg from "../../assets/grog/enemy_walking_single.png";
 import packageImg from "../../assets/mate-package.png";
-import { camelCaseToTitleCase } from "../../helpers";
-import { InnerLevelSettings } from "../../components/InnerLevelSettings";
 import { EntityType } from "../../game2/entityTypes";
 
 export type EditableEntity = Exclude<
+  EntityType,
+  "player" | "bullet"
+>;
+
+export type AddableEntity = Exclude<
   EntityType,
   "player" | "bullet" | "endGate"
 >;

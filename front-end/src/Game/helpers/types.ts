@@ -7,31 +7,10 @@ export type WinState =
   | "nextLevel"
   | "loseLife";
 
-export type StatsManagerInfo = {
-  killedOpp: number;
-  packagesReceived: boolean;
-  shot: boolean;
-};
-
-export type UpdateStatus = {
-  statsInfo: StatsManagerInfo;
-  levelInfo: {
-    isCaught: boolean;
-    nextLevel: boolean;
-  };
-};
-
 export type PlayStats = {
   score: number;
   lives: number;
   level: number;
   ammo: number;
   levelCreator: string;
-};
-
-export type Canvas = CanvasRenderingContext2D;
-
-export type DrawObjProps = {
-  cxt: Canvas;
-  camOffset: Coordinates;
 };
