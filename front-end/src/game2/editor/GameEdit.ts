@@ -120,7 +120,9 @@ export class GameEdit {
           this.state.keys.mousePos.curr[1] - this.state.keys.mousePos.prev[1],
         ];
         this.movingEntities.forEach((entity) => {
-          incrementPosition(this.fromId(entity).state.position.curr, diff);
+          const e = this.fromId(entity);
+          const d: Coors = e.typeId === "floor" ? [diff[0], 0] : [...diff];
+          incrementPosition(e.state.position.curr, d);
         });
       }
     } else if (addEntity) {

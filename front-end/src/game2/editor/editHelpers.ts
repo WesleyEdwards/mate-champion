@@ -22,7 +22,7 @@ export const addEntityToState = (gs: GameEdit) => {
     floor: new Floor1({
       color: "blue",
       position: toCurrAndPrev([0, 0]),
-      dimensions: [300, floorConst.floorHeight],
+      dimensions: [1000, floorConst.floorHeight],
       dead: false,
     }),
     platform: new Platform1({
@@ -52,6 +52,10 @@ export const addEntityToState = (gs: GameEdit) => {
     withCamPosition(center, gs.state.camera)
   );
 
+  if (entity.typeId === "floor") {
+    // Should probably do this higher up in the fun, but this works for now
+    entity.state.position.curr[1] = floorConst.floorY;
+  }
   gs.state.entities.push(entity);
 };
 

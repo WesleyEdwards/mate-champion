@@ -139,7 +139,6 @@ export const EditLevelDetailHeader: FC = () => {
 
 export const PlayingHeader: FC = () => {
   const { editingLevel, gameMode, setGameMode } = useLevelContext();
-  const { setModal } = usePauseModalContext();
   const { goBack } = useNavigator();
 
   if (gameMode === "play") return null;
@@ -171,10 +170,30 @@ export const PlayingHeader: FC = () => {
       </IconButton>
 
       {gameMode === "edit" && (
-        <Typography level="h1">Editing {editingLevel?.name}</Typography>
+        <Typography
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "700px",
+          }}
+          level="h1"
+        >
+          Editing {editingLevel?.name}
+        </Typography>
       )}
       {gameMode === "test" && (
-        <Typography level="h1">{editingLevel?.name}</Typography>
+        <Typography
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "700px",
+          }}
+          level="h1"
+        >
+          {editingLevel?.name}
+        </Typography>
       )}
       <div style={{ width: "2rem" }}></div>
     </Stack>
