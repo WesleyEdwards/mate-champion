@@ -40,7 +40,19 @@ export const addEntityToState = (gs: GameEdit) => {
     }),
   };
 
-  gs.addEntity(addable[toAdd], gs.state.keys.mouseUp.curr);
+  const entity = addable[toAdd];
+  const pos = gs.state.keys.mouseUp.curr;
+
+  const center: Coors = [
+    pos[0] - entity.state.dimensions[0] / 2,
+    pos[1] - entity.state.dimensions[1] / 2,
+  ];
+
+  entity.state.position = toCurrAndPrev(
+    withCamPosition(center, gs.state.camera)
+  );
+
+  gs.state.entities.push(entity);
 };
 
 export const toRounded = (pos: Coors): Coors => {

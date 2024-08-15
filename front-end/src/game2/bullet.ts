@@ -3,6 +3,7 @@ import { Coordinates } from "../Game/models";
 import { Textures } from "../gameAssets/textures";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { Groog1 } from "./groog";
+import { areEntitiesTouching } from "./helpers";
 import { distBetween } from "./state/helpers";
 import { TimerUp, updatePosAndVel } from "./state/timeHelpers";
 
@@ -81,7 +82,7 @@ export class Bullet1 implements Entity {
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const e of entities) {
       if (e instanceof Groog1) {
-        if (areBoxesTouching(this.state, e.state)) {
+        if (areEntitiesTouching(this.state, e.state)) {
           e.state.queueActions.push({ name: "die" });
           this.state.dead = true;
         }
@@ -89,12 +90,3 @@ export class Bullet1 implements Entity {
     }
   };
 }
-
-const areBoxesTouching = (
-  rect1: Entity["state"],
-  rect2: Entity["state"]
-): boolean =>
-  rect1.position.curr[0] < rect2.position.curr[0] + rect2.dimensions[0] &&
-  rect1.position.curr[0] + rect1.dimensions[0] > rect2.position.curr[0] &&
-  rect1.position.curr[1] < rect2.position.curr[1] + rect2.dimensions[1] &&
-  rect1.position.curr[1] + rect1.dimensions[1] > rect2.position.curr[1];

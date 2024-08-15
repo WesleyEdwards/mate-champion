@@ -1,7 +1,6 @@
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { Groog1 } from "./groog";
-import { areTouching1 } from "./helpers";
-import { calcPlatEntityCollision } from "./interactions";
+import { areTouching1, calcPlatEntityCollision } from "./helpers";
 import { renderPlayer } from "./render/champ";
 import { processChampActionRaw } from "./state/champ/actions";
 import { updatePlayer } from "./state/champ/champ";

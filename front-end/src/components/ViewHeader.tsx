@@ -81,6 +81,7 @@ export const EditLevelDetailHeader: FC = () => {
             onClick={() => {
               goBack();
               setEditingLevel(null);
+              abortController.abort();
             }}
           >
             <ArrowBack />

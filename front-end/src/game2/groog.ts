@@ -1,16 +1,13 @@
 import { createId } from "../Game/helpers/utils";
-import { Coordinates } from "../Game/models";
 import { Champ1 } from "./champ";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { areTouching1, toCurrAndPrev } from "./helpers";
-import { calcPlatEntityCollision } from "./interactions";
-import { renderGroog } from "./render/groog";
-import { accountForPosition } from "./render/helpers";
 import {
-  processGroogActionRaw,
-  processGroogActions,
-  updateGroog,
-} from "./state/groog";
+  areTouching1,
+  calcPlatEntityCollision,
+  toCurrAndPrev,
+} from "./helpers";
+import { renderGroog } from "./render/groog";
+import { processGroogActionRaw, updateGroog } from "./state/groog";
 import {
   emptyTime,
   TimerDown,
@@ -80,7 +77,7 @@ export class Groog1 implements Entity {
   }
 
   step: Entity["step"] = (deltaT) => {
-    updateTimers(this.state.timers, deltaT)
+    updateTimers(this.state.timers, deltaT);
     updatePosAndVel(this.state.position, this.state.velocity, deltaT);
     updateGroog(this.state, deltaT);
   };

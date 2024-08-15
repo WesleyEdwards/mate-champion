@@ -75,7 +75,6 @@ export function areTouching1(
   );
   return distBetween < dist;
 }
-
 export const toCurrAndPrev = (coors: Coors): CurrAndPrev => {
   return { curr: [...coors], prev: [...coors] };
 };
@@ -99,3 +98,46 @@ export const updateStats = (stats: GameStateProps["stats"]) => {
   stats.score.prev = stats.score.curr;
   stats.ammo.prev = stats.ammo.curr;
 };
+
+export const areEntitiesTouching = (
+  rect1: Entity["state"],
+  rect2: Entity["state"]
+): boolean =>
+  rect1.position.curr[0] < rect2.position.curr[0] + rect2.dimensions[0] &&
+  rect1.position.curr[0] + rect1.dimensions[0] > rect2.position.curr[0] &&
+  rect1.position.curr[1] < rect2.position.curr[1] + rect2.dimensions[1] &&
+  rect1.position.curr[1] + rect1.dimensions[1] > rect2.position.curr[1];
+
+/**
+ * @param entity The entity that may collide with the floor
+ * @param floor Floor to check
+ * @returns the Y position where the entity should be set. Null if no collision.
+ */
+export function calcPlatEntityCollision(
+  entity: Entity,
+  floor: Entity
+): number | null {
+  const width = entity.state.dimensions[0];
+  const posX = entity.state.position.curr[0];
+  if (
+    posX + width < floor.state.position.curr[0] ||
+    posX > floor.state.position.curr[0] + floor.state.dimensions[0]
+  ) {
+    return null;
+  }
+
+  const betweenCenterAndBottom = entity.state.dimensions[1];
+
+  const previous = entity.state.position.prev[1] + betweenCenterAndBottom;
+  const recent = entity.state.position.curr[1] + betweenCenterAndBottom;
+
+  if (
+    recent >= floor.state.position.curr[1] &&
+    previous <= floor.state.position.curr[1]
+  ) {
+    const setY = floor.state.position.curr[1] - betweenCenterAndBottom;
+    entity.state.position.curr[1] = entity.state.position.prev[1];
+    return setY;
+  }
+  return null;
+}

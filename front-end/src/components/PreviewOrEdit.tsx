@@ -1,72 +1,17 @@
-import { Button, Stack, Textarea } from "@mui/joy";
-import { FC, useEffect, useState } from "react";
+import { Button, Stack } from "@mui/joy";
+import { FC } from "react";
 import { ScreenProps } from "./GameEntry";
 import { emptyStats } from "../Game/helpers/utils";
-// import { enterGameLoop } from "../Game/Main";
 import { Construction, PlayArrow } from "@mui/icons-material";
-import { usePauseModalContext } from "../hooks/PauseModalContext";
-import { DeleteLevel } from "./DeleteLevel";
 import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
-import { VisibilityIcon } from "./MyLevels";
 import { gameLoopEdit } from "../game2/editor/gameLoopEdit";
+import { enterGameLoop1 } from "../game2/main";
 
 export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
   const { levelCache, editingLevel, setGameMode } = useLevelContext();
-  const { setModal } = usePauseModalContext();
   const { navigateTo } = useNavigator();
-
-  const handleEnterGamePlay = (gamePlay: "edit" | "test") => {
-    if (editingLevel === "loading") return;
-    modifyStats({ ...emptyStats });
-    navigateTo("game");
-    window.stopLoop = false;
-
-    setGameMode(gamePlay);
-
-    if (editingLevel === null) {
-      console.error("It's null");
-      return;
-    }
-    if (gamePlay === "edit") {
-      gameLoopEdit({
-        level: editingLevel,
-        setLevel: (level: Partial<FullLevelInfo>) =>
-          levelCache.update.modify(editingLevel!._id, level),
-      });
-    }
-
-    // const params = {
-    //   edit: {
-    //     setUI: {
-    //       modifyStats,
-    //       handleLose: () => {},
-    //       handlePause: (pause: boolean) => {
-    //         return setModal(pause ? "pause" : null);
-    //       },
-    //     },
-    //     gameMode: gamePlay,
-    //     levels: editingLevel ? [editingLevel] : [],
-    //     setLevel: (level: Partial<FullLevelInfo>) =>
-    //       levelCache.update.modify(editingLevel!._id, level),
-    //   },
-    //   test: {
-    //     setUI: {
-    //       modifyStats,
-    //       handleLose: () => {},
-    //       handlePause: (pause: boolean) => {
-    //         return setModal(pause ? "pause" : null);
-    //       },
-    //     },
-    //     gameMode: gamePlay,
-    //     levels: editingLevel ? [editingLevel] : [],
-    //     setLevel: undefined,
-    //   },
-    // }[gamePlay];
-
-    // enterGameLoop(params);
-  };
 
   return (
     <Stack gap="1rem" direction="row">
@@ -75,7 +20,23 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
         fullWidth
         variant="outlined"
         endDecorator={<Construction />}
-        onClick={() => handleEnterGamePlay("edit")}
+        onClick={() => {
+          modifyStats({ ...emptyStats });
+          navigateTo("game");
+          window.stopLoop = false;
+
+          setGameMode("edit");
+
+          if (editingLevel === null || editingLevel === "loading") {
+            return console.error("Invalid state");
+          }
+
+          gameLoopEdit({
+            level: editingLevel,
+            setLevel: (level: Partial<FullLevelInfo>) =>
+              levelCache.update.modify(editingLevel!._id, level),
+          });
+        }}
       >
         Edit
       </Button>
@@ -84,7 +45,26 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
         variant="outlined"
         endDecorator={<PlayArrow />}
         fullWidth
-        onClick={() => handleEnterGamePlay("test")}
+        onClick={() => {
+          modifyStats({ ...emptyStats });
+          navigateTo("game");
+          window.stopLoop = false;
+
+          setGameMode("test");
+          if (editingLevel === null || editingLevel === "loading") {
+            console.error("Invalid state");
+            return;
+          }
+          enterGameLoop1({
+            setUI: {
+              modifyStats: ({}) => {},
+              handleLose: () => {},
+              handlePause: () => {},
+            },
+            gameMode: "test",
+            levels: [editingLevel],
+          });
+        }}
       >
         Preview
       </Button>

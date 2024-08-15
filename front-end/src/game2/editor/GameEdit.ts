@@ -187,19 +187,6 @@ export class GameEdit {
     return this.state.entities.find((e) => e.id === entity)!;
   }
 
-  addEntity(entity: Entity, pos: Coors) {
-    const center: Coors = [
-      pos[0] - entity.state.dimensions[0] / 2,
-      pos[1] - entity.state.dimensions[1] / 2,
-    ];
-
-    entity.state.position = toCurrAndPrev(
-      withCamPosition(center, this.state.camera)
-    );
-
-    this.state.entities.push(entity);
-  }
-
   /** Render */
   render(cxt: CanvasRenderingContext2D) {
     const camPos = this.state.camera.position;

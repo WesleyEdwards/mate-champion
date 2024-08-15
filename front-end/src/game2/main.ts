@@ -30,8 +30,6 @@ export function enterGameLoop1(params: {
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;
     if (window.stopLoop === true) {
-      // gameState.removeSetUi();
-
       window.stopLoop = false;
       return;
     }
