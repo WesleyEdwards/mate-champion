@@ -10,7 +10,8 @@ import { gameLoopEdit } from "../game2/editor/gameLoopEdit";
 import { enterGameLoop1 } from "../game2/main";
 
 export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
-  const { levelCache, editingLevel, setGameMode } = useLevelContext();
+  const { levelCache, editingLevel, setGameMode, setIsDirty } =
+    useLevelContext();
   const { navigateTo } = useNavigator();
 
   return (
@@ -33,8 +34,11 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
 
           gameLoopEdit({
             level: editingLevel,
-            setLevel: (level: Partial<FullLevelInfo>) =>
-              levelCache.update.modify(editingLevel!._id, level),
+            setIsDirty: () => setIsDirty(true),
+            setLevel: (level: Partial<FullLevelInfo>) => {
+              levelCache.update.modify(editingLevel!._id, level);
+              setIsDirty(false)
+            },
           });
         }}
       >

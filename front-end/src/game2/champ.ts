@@ -109,8 +109,8 @@ export class Champ1 implements Entity {
       jump: { jumps: 0, isJumping: false },
       action: null,
       render: {
-        prev: "falling",
-        curr: "falling",
+        prev: "hor-none-none",
+        curr: "hor-none-none",
       },
       acceptQueue: [],
       publishQueue: [],

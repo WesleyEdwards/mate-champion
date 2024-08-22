@@ -8,7 +8,14 @@ import {
   Typography,
 } from "@mui/joy";
 import { MCScreen } from "./GameEntry";
-import { ArrowBack, Check, Edit, Undo } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Check,
+  CheckCircle,
+  Edit,
+  Sync,
+  Undo,
+} from "@mui/icons-material";
 import { FC, useState } from "react";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
@@ -138,7 +145,7 @@ export const EditLevelDetailHeader: FC = () => {
 };
 
 export const PlayingHeader: FC = () => {
-  const { editingLevel, gameMode, setGameMode } = useLevelContext();
+  const { editingLevel, gameMode, setGameMode, isDirty } = useLevelContext();
   const { goBack } = useNavigator();
 
   if (gameMode === "play") return null;
@@ -195,7 +202,39 @@ export const PlayingHeader: FC = () => {
           {editingLevel?.name}
         </Typography>
       )}
-      <div style={{ width: "2rem" }}></div>
+      <Stack
+        direction={"row"}
+        gap="5px"
+        justifyContent={"center"}
+        alignItems={"center"}
+        width="2rem"
+        mr="1rem"
+        sx={{ opacity: 0.3, mb: "10px", position: "relative", right: "2rem" }}
+      >
+        {(() => {
+          if (gameMode !== "edit") {
+            return null;
+          }
+          if (isDirty) {
+            return (
+              <>
+                <Sync />
+                <Typography level="body-lg" variant="plain">
+                  Saving...
+                </Typography>
+              </>
+            );
+          }
+          return (
+            <>
+              <Typography level="body-lg" variant="plain">
+                Saved
+              </Typography>
+              <CheckCircle />
+            </>
+          );
+        })()}
+      </Stack>
     </Stack>
   );
 };

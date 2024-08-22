@@ -1,11 +1,8 @@
 import { platformConst } from "../../Game/constants";
 import { devSettings } from "../../Game/devSettings";
-import {
-  AddableEntity,
-  EditableEntity,
-} from "../../Game/devTools/CourseBuilderSettings";
+import { AddableEntity } from "../../Game/devTools/CourseBuilderSettings";
 import { FullLevelInfo } from "../../Game/models";
-import { Camera, Coors, CurrAndPrev, Entity, EntityType } from "../entityTypes";
+import { Camera, Coors, Entity } from "../entityTypes";
 import { Groog1 } from "../groog";
 import { levelToEntities, toCurrAndPrev } from "../helpers";
 import { Floor1, floorConst, Platform1 } from "../platform";

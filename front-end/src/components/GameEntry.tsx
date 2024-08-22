@@ -1,4 +1,4 @@
-import { Stack } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import { FC, useMemo, useState } from "react";
 import { PlayStats } from "../Game/helpers/types";
 import { emptyStats } from "../Game/helpers/utils";
@@ -20,6 +20,8 @@ import {
 } from "./ViewHeader";
 import { LevelEditorHome } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
+import { useLevelContext } from "../hooks/useLevels";
+import { CheckCircle, Sync } from "@mui/icons-material";
 
 export type MCScreen =
   | "game"
@@ -42,6 +44,7 @@ export interface ScreenProps {
 export const GameEntry: FC = () => {
   const [stats, setStats] = useState<PlayStats>(emptyStats);
   const { currentScreen, navigateTo } = useNavigator();
+  const { gameMode, isDirty } = useLevelContext();
 
   const playing = useMemo(() => currentScreen === "game", [currentScreen]);
 
@@ -49,7 +52,7 @@ export const GameEntry: FC = () => {
     setStats((prev) => ({ ...prev, ...newStats }));
 
   const ScreenViewHeader: JSX.Element = useMemo(
-    () => getSubViewHeader(currentScreen, navigateTo),
+    () => getSubViewHeader(currentScreen),
     [currentScreen]
   );
 
@@ -66,7 +69,6 @@ export const GameEntry: FC = () => {
       </Stack>
 
       <Stack>
-        {playing && <div>Level Author: {stats.levelCreator}</div>}
         <canvas
           style={{ height: playing ? undefined : "0px", borderRadius: "10px" }}
           id="canvas"
@@ -95,10 +97,7 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
   return map[screen];
 };
 
-const getSubViewHeader = (
-  screen: MCScreen,
-  navigateTo: (screen: MCScreen) => void
-): JSX.Element => {
+const getSubViewHeader = (screen: MCScreen): JSX.Element => {
   const subHeaders: Record<MCScreen, JSX.Element> = {
     game: <PlayingHeader />,
     home: <></>,

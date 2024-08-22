@@ -13,6 +13,7 @@ export const useLevels: (params: {
   const [level, setLevel] = useState<FullLevelInfo | null | "loading">(null);
 
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle");
+  const [isDirty, setIsDirty] = useState(false)
   const levelCache = useLevelCache(api!, user!);
 
   const handleSetEditing: LevelsContextType["setEditingLevel"] = (newLevel) => {
@@ -53,6 +54,8 @@ export const useLevels: (params: {
     setGameMode,
     setEditingLevel: handleSetEditing,
     levelCache,
+    isDirty,
+    setIsDirty,
   } satisfies LevelsContextType;
 };
 
@@ -62,6 +65,8 @@ export type LevelsContextType = {
   gameMode: GameMode;
   setGameMode: (show: GameMode) => void;
   levelCache: LevelCache;
+  isDirty: boolean;
+  setIsDirty: (d: boolean) => void;
 };
 
 export const LevelsContext = createContext({} as LevelsContextType);

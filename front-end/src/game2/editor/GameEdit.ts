@@ -1,7 +1,9 @@
 import { FullLevelInfo } from "../../Game/models";
+import { Champ1 } from "../champ";
 import { Coors, Entity, Id } from "../entityTypes";
 import { toCurrAndPrev } from "../helpers";
 import { renderBg } from "../render/background";
+import { renderPlayer } from "../render/champ";
 import { accountForPosition } from "../render/helpers";
 import { updateTime } from "../state/helpers";
 import { updateTimers } from "../state/timeHelpers";
@@ -23,9 +25,12 @@ export class GameEdit {
   movingEntities: Set<Id> = new Set();
   selectedEntities: Set<Id> = new Set();
   hoveringEntities: Set<Id> = new Set();
+  champ: Champ1 = new Champ1(toCurrAndPrev([400, 400]));
+  isDirty: boolean = false;
 
   constructor(
     currentLevel: FullLevelInfo,
+    private setIsDirty: () => void,
     private setLevels: (level: Partial<FullLevelInfo>) => void,
     private canvas: HTMLCanvasElement
   ) {
@@ -43,6 +48,10 @@ export class GameEdit {
     if (this.state.timers.sinceLastSave.val > 10_000) {
       this.state.timers.sinceLastSave.val = 0;
       this.setLevels(editStateToLevelInfo(this.state));
+      this.isDirty = false;
+    }
+    if (this.isDirty) {
+      this.setIsDirty();
     }
 
     this.hoveringEntities = this.hoverEntities();
@@ -123,10 +132,12 @@ export class GameEdit {
           const e = this.fromId(entity);
           const d: Coors = e.typeId === "floor" ? [diff[0], 0] : [...diff];
           incrementPosition(e.state.position.curr, d);
+          this.isDirty = true;
         });
       }
     } else if (addEntity) {
       addEntityToState(this);
+      this.isDirty = true;
     }
 
     if (this.state.entities.some((e) => e.state.dead)) {
@@ -215,6 +226,11 @@ export class GameEdit {
       }
       cxt.restore();
     }
+    cxt.save();
+    accountForPosition([400, 400], cxt);
+    this.champ.render(cxt);
+    cxt.restore();
+
     cxt.restore();
   }
 
