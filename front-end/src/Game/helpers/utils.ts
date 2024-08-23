@@ -1,4 +1,4 @@
-import { Id } from "../../game2/entityTypes";
+import { Id } from "../../game2/entities/entityTypes";
 
 export function generateRandomInt(min: number, max: number): number {
   return Math.floor(min + Math.random() * (max - min + 1));

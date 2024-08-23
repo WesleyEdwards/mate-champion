@@ -1,5 +1,5 @@
 import { Textures } from "../../gameAssets/textures";
-import { GroogState, GroogAssetDes, groogConst } from "../groog";
+import { GroogAssetDes, groogConst, GroogState } from "../entities/groog";
 import { RenderFun, SpriteAssetInfo } from "./helpers";
 
 export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {

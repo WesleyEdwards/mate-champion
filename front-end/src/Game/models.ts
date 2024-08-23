@@ -1,5 +1,3 @@
-import { PlayStats } from "./helpers/types";
-
 export type PackageProps = {
   x: number;
   y: number;
@@ -116,3 +114,17 @@ export type LevelInfo = {
 };
 
 export type FullLevelInfo = LevelMap & LevelInfo;
+
+export type WinState =
+  | "lose"
+  | "playing"
+  | "initial"
+  | "nextLevel"
+  | "loseLife";
+
+export type PlayStats = {
+  score: number;
+  lives: number;
+  level: number;
+  ammo: number;
+};

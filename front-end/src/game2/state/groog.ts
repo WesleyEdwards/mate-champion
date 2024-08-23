@@ -1,5 +1,5 @@
 import { GRAVITY } from "../../Game/constants";
-import { GroogState, GroogAction, groogConst } from "../groog";
+import { GroogState, GroogAction, groogConst } from "../entities/groog";
 import { ActionMap, UpdateFun } from "./helpers";
 
 export const updateGroog: UpdateFun<GroogState> = (groog, deltaT) => {

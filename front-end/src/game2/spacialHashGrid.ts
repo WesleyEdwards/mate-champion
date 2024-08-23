@@ -1,4 +1,4 @@
-import { Coors, Entity, Id } from "./entityTypes";
+import { Coors, Entity, Id } from "./entities/entityTypes";
 
 type Position = [number, number];
 

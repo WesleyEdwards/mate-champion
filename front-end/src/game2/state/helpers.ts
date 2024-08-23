@@ -1,6 +1,6 @@
-import { MBulletState } from "../bullet";
-import { Coors, GameStateProps } from "../entityTypes";
-import { GroogState } from "../groog";
+import { MBulletState } from "../entities/bullet";
+import { Coors, GameStateProps } from "../entities/entityTypes";
+import { GroogState } from "../entities/groog";
 
 export const distBetween = (a: Coors, b: Coors) =>
   Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));

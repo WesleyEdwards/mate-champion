@@ -1,4 +1,4 @@
-import { ChampState, champConst } from "../../champ";
+import { ChampState, champConst } from "../../entities/champ";
 import { UpdateFun } from "../helpers";
 import { handleChampActions } from "./actions";
 import { updateChampSpriteInfo } from "./spriteInfo";

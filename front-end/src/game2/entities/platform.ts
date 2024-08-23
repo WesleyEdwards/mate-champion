@@ -1,5 +1,5 @@
-import { createId, generateRandomInt } from "../Game/helpers/utils";
-import { Coordinates } from "../Game/models";
+import { createId, generateRandomInt } from "../../Game/helpers/utils";
+import { Coordinates } from "../../Game/models";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { GroogState } from "./groog";
 

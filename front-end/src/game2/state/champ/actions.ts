@@ -1,8 +1,8 @@
 import _ from "lodash";
-import { ChampState, ChampAction, champConst } from "../../champ";
-import { mBulletConst } from "../../bullet";
+import { ChampState, ChampAction, champConst } from "../../entities/champ";
 import { ActionMap } from "../helpers";
-import { Coors } from "../../entityTypes";
+import { Coors } from "../../entities/entityTypes";
+import { mBulletConst } from "../../entities/bullet";
 
 export const handleChampActions = (p: ChampState) => {
   cleanActions(p);

@@ -5,12 +5,12 @@ import { GameEdit } from "./GameEdit";
 export function gameLoopEdit(params: {
   level: FullLevelInfo;
   setIsDirty: () => void;
-  setLevel: (level: Partial<FullLevelInfo>) => void;
+  modifyLevel: (level: Partial<FullLevelInfo>) => void;
 }) {
-  const { level, setLevel, setIsDirty } = params;
+  const { level, modifyLevel, setIsDirty } = params;
   const { canvas, context } = getCanvasContext();
 
-  const game = new GameEdit(level, setIsDirty, setLevel, canvas);
+  const game = new GameEdit(level, setIsDirty, modifyLevel, canvas);
 
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;

@@ -35,7 +35,7 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
           gameLoopEdit({
             level: editingLevel,
             setIsDirty: () => setIsDirty(true),
-            setLevel: (level: Partial<FullLevelInfo>) => {
+            modifyLevel: (level: Partial<FullLevelInfo>) => {
               levelCache.update.modify(editingLevel!._id, level);
               setIsDirty(false);
             },

@@ -1,7 +1,7 @@
-import { createId } from "../Game/helpers/utils";
-import { Textures } from "../gameAssets/textures";
-import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { toCurrAndPrev } from "./helpers";
+import { createId } from "../../Game/helpers/utils";
+import { Textures } from "../../gameAssets/textures";
+import { toCurrAndPrev } from "../helpers";
+import { CurrAndPrev, Coors, Entity } from "./entityTypes";
 
 type EndGateState = {
   position: CurrAndPrev;

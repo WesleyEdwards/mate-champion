@@ -1,19 +1,22 @@
-import { PlayStats } from "../Game/helpers/types";
-import { Ammo } from "./Ammo";
-import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { Groog1 } from "./groog";
-import { areTouching1, calcPlatEntityCollision } from "./helpers";
-import { renderPlayer } from "./render/champ";
-import { processChampActionRaw } from "./state/champ/actions";
-import { updatePlayer } from "./state/champ/champ";
-import { PlayerAction } from "./state/champ/spriteInfo";
 import {
-  emptyTime,
-  TimerDown,
+  calcPlatEntityCollision,
+  areTouching1,
+  toCurrAndPrev,
+} from "../helpers";
+import { renderPlayer } from "../render/champ";
+import { processChampActionRaw } from "../state/champ/actions";
+import { updatePlayer } from "../state/champ/champ";
+import { PlayerAction } from "../state/champ/spriteInfo";
+import {
   TimerUp,
-  updatePosAndVel,
+  TimerDown,
+  emptyTime,
   updateTimers,
-} from "./state/timeHelpers";
+  updatePosAndVel,
+} from "../state/timeHelpers";
+import { Ammo } from "./Ammo";
+import { CurrAndPrev, Coors, Entity } from "./entityTypes";
+import { Groog1 } from "./groog";
 
 export type ChampState = {
   position: CurrAndPrev;
@@ -93,16 +96,16 @@ export type ChampAction =
   | { name: "setY"; y: number }
   | { name: "kill" };
 
-export class Champ1 implements Entity {
+export class Champ implements Entity {
   id = "player";
   typeId = "player" as const;
   state: ChampState;
   modifyStatsOnDeath = {
     lives: -1,
   };
-  constructor(position: CurrAndPrev) {
+  constructor(position: Coors) {
     this.state = {
-      position,
+      position: toCurrAndPrev(position),
       dimensions: [champConst.widthHeight.x, champConst.widthHeight.y],
       facing: {
         x: "right",

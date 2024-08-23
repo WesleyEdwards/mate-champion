@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useLevelContext } from "../../hooks/useLevels";
 import grogImg from "../../assets/grog/enemy_walking_single.png";
 import packageImg from "../../assets/mate-package.png";
-import { EntityType } from "../../game2/entityTypes";
+import { EntityType } from "../../game2/entities/entityTypes";
 
 export type EditableEntity = Exclude<
   EntityType,

@@ -4,7 +4,7 @@ import { SpacialHashGrid } from "./spacialHashGrid";
 import { reconcileActions } from "./state/reconcileActions";
 import { updateCamera } from "./state/camera";
 import { TimerDown, updateTimers } from "./state/timeHelpers";
-import { Champ1 } from "./champ";
+import { Champ } from "./entities/champ";
 import {
   gameStateConst,
   initGameState,
@@ -13,10 +13,10 @@ import {
   uiIsDirty,
   updateStats,
 } from "./helpers";
-import { Entity, GameStateProps } from "./entityTypes";
+import { Entity, GameStateProps } from "./entities/entityTypes";
 import { FullLevelInfo, SetUI } from "../Game/models";
 import { updateTime } from "./state/helpers";
-import { EndGate } from "./endGate";
+import { EndGate } from "./entities/endGate";
 
 export class GameState {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20]);
@@ -103,11 +103,14 @@ export class GameState {
     this.gridHash.dropAll();
     this.state.entities.length = 0;
 
-    this.addEntity(new Champ1(toCurrAndPrev([400, 400])));
+    this.addEntity(new Champ([400, 400]));
     this.addEntity(new EndGate([this.currentLevel.endPosition, 0]));
     for (const entity of levelToEntities(this.currentLevel)) {
       this.addEntity(entity);
     }
+    this.state.keys.toJump = 0;
+    this.state.keys.toShank = 0;
+    this.state.keys.toShoot = 0;
     this.state.currStateOfGame = "playing";
   }
 

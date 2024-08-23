@@ -1,7 +1,7 @@
-import { createId } from "../Game/helpers/utils";
-import { Textures } from "../gameAssets/textures";
+import { createId } from "../../Game/helpers/utils";
+import { Textures } from "../../gameAssets/textures";
+import { toCurrAndPrev } from "../helpers";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { toCurrAndPrev } from "./helpers";
 
 export const packageConst = { width: 60, height: 72, worth: 3 } as const;
 

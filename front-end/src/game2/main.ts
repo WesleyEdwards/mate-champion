@@ -1,6 +1,5 @@
 import { displayCanvas, getCanvasContext } from "../Game/Drawing/uiHelpers";
 import { FullLevelInfo, SetUI } from "../Game/models";
-import { GameMode } from "../hooks/useAuth";
 import { abortController } from "./editor/eventListeners";
 import { GameState } from "./GameState";
 
@@ -10,11 +9,10 @@ export function enterGameLoop(params: {
 }) {
   const { setUI, levels } = params;
   const { canvas, context } = getCanvasContext();
-  if (levels.length === 0) {
-    return;
-  }
 
-  let game = new GameState(levels, setUI);
+  if (levels.length === 0) return;
+
+  const game = new GameState(levels, setUI);
 
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;
@@ -22,6 +20,7 @@ export function enterGameLoop(params: {
       window.stopLoop = false;
       return;
     }
+
     if (game.state.currStateOfGame === "lose") {
       return handleLose(game.state.stats.score.curr);
     }
@@ -40,7 +39,6 @@ export function enterGameLoop(params: {
 
   function startGame() {
     displayCanvas(true, canvas);
-
     requestAnimationFrame(gameLoop);
   }
 

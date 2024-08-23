@@ -1,20 +1,20 @@
-import { createId } from "../Game/helpers/utils";
-import { Champ1 } from "./champ";
-import { Coors, CurrAndPrev, Entity } from "./entityTypes";
+import { createId } from "../../Game/helpers/utils";
 import {
-  areTouching1,
-  calcPlatEntityCollision,
   toCurrAndPrev,
-} from "./helpers";
-import { renderGroog } from "./render/groog";
-import { processGroogActionRaw, updateGroog } from "./state/groog";
+  calcPlatEntityCollision,
+  areTouching1,
+} from "../helpers";
+import { renderGroog } from "../render/groog";
+import { updateGroog, processGroogActionRaw } from "../state/groog";
 import {
-  emptyTime,
-  TimerDown,
   TimerUp,
-  updatePosAndVel,
+  TimerDown,
+  emptyTime,
   updateTimers,
-} from "./state/timeHelpers";
+  updatePosAndVel,
+} from "../state/timeHelpers";
+import { Champ } from "./champ";
+import { CurrAndPrev, Coors, Entity } from "./entityTypes";
 
 export type GroogState = {
   facing: "left" | "right";
@@ -104,7 +104,7 @@ export class Groog1 implements Entity {
           entity.state.position.curr,
           groogConst.killChampDist
         );
-        if (touching && entity instanceof Champ1) {
+        if (touching && entity instanceof Champ) {
           entity.state.acceptQueue.push({ name: "kill" });
         }
       }

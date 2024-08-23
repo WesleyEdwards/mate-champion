@@ -3,7 +3,6 @@ import {
   resetAbortController,
 } from "../../game2/editor/eventListeners";
 import { Keys } from "../models";
-import { WinState } from "./types";
 
 const initialKeyStatus: Keys = {
   up: false,

@@ -1,6 +1,5 @@
-import { PlayStats, WinState } from "../Game/helpers/types";
-import { Keys } from "../Game/models";
-import { TimerDown, TimerUp } from "./state/timeHelpers";
+import { Keys, PlayStats, WinState } from "../../Game/models";
+import { TimerDown, TimerUp } from "../state/timeHelpers";
 
 export type GameStateProps = {
   currStateOfGame: WinState;

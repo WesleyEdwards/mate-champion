@@ -1,4 +1,4 @@
-import { ChampState, ChampAssetDes, ChampDescription } from "../../champ";
+import { ChampState, ChampAssetDes, ChampDescription } from "../../entities/champ";
 
 export const updateChampSpriteInfo = (p: ChampState) => {
   const currRender = getChampSpritesInfo(p);

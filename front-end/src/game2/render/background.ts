@@ -1,8 +1,6 @@
 import { MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH } from "../../Game/constants";
 import { Textures } from "../../gameAssets/textures";
-import { RenderFun } from "./helpers";
-import { WinState } from "../../Game/helpers/types";
-import { Camera } from "../entityTypes";
+import { Camera } from "../entities/entityTypes";
 
 export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
   const spacesToRight = Math.floor(cam.position[0] / MAX_CANVAS_WIDTH);

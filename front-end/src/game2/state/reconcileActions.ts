@@ -1,14 +1,14 @@
-import { Bullet1, mBulletConst } from "../bullet";
-import { Champ1 } from "../champ";
+import { Champ } from "../entities/champ";
 import { updateKeys } from "./keys";
 import { updateCameraWithPlayer } from "./camera";
-import { Coors, GameStateProps } from "../entityTypes";
+import { Coors, GameStateProps } from "../entities/entityTypes";
 import { toCurrAndPrev } from "../helpers";
 import { emptyTime } from "./timeHelpers";
+import { Bullet1, mBulletConst } from "../entities/bullet";
 
 export const reconcileActions = (gs: GameStateProps) => {
   for (const entity of gs.entities) {
-    if (entity instanceof Champ1) {
+    if (entity instanceof Champ) {
       const shoot = entity.state.publishQueue.filter((x) => x.name === "shoot");
       for (const shot of shoot) {
         if (gs.stats.ammo.curr > 0) {

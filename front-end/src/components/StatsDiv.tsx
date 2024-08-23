@@ -1,8 +1,8 @@
 import { FC } from "react";
 import lifeImage from "../assets/heart.png";
 import { ScoreStats } from "./ScoreStats";
-import { PlayStats } from "../Game/helpers/types";
 import { Stack, Typography } from "@mui/joy";
+import { PlayStats } from "../Game/models";
 
 export const StatsDiv: FC<{ stats: PlayStats }> = ({ stats }) => {
   const { lives, level, score, ammo } = stats;

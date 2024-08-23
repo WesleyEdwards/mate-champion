@@ -1,4 +1,4 @@
-import { Camera } from "../entityTypes";
+import { Camera } from "../entities/entityTypes";
 import { GameEdit } from "./GameEdit";
 
 export function addDevEventListeners(

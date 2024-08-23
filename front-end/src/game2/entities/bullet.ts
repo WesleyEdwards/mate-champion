@@ -1,11 +1,10 @@
-import { createId, generateRandomInt } from "../Game/helpers/utils";
-import { Coordinates } from "../Game/models";
-import { Textures } from "../gameAssets/textures";
+import { createId } from "../../Game/helpers/utils";
+import { Textures } from "../../gameAssets/textures";
+import { areEntitiesTouching } from "../helpers";
+import { distBetween } from "../state/helpers";
+import { TimerUp, updatePosAndVel } from "../state/timeHelpers";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { Groog1 } from "./groog";
-import { areEntitiesTouching } from "./helpers";
-import { distBetween } from "./state/helpers";
-import { TimerUp, updatePosAndVel } from "./state/timeHelpers";
 
 export type MBulletState = {
   timers: { timeAlive: TimerUp };

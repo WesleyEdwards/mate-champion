@@ -2,13 +2,13 @@ import { platformConst } from "../../Game/constants";
 import { devSettings } from "../../Game/devSettings";
 import { AddableEntity } from "../../Game/devTools/CourseBuilderSettings";
 import { FullLevelInfo } from "../../Game/models";
-import { Ammo, packageConst } from "../Ammo";
-import { Camera, Coors, Entity } from "../entityTypes";
-import { Groog1 } from "../groog";
+import { Camera, Coors, Entity } from "../entities/entityTypes";
 import { levelToEntities, toCurrAndPrev } from "../helpers";
-import { Floor1, floorConst, Platform1 } from "../platform";
+import { Floor1, floorConst, Platform1 } from "../entities/platform";
 import { emptyTime, Timer, TimerUp } from "../state/timeHelpers";
 import { GameEdit } from "./GameEdit";
+import { Groog1 } from "../entities/groog";
+import { Ammo } from "../entities/Ammo";
 
 export const addEntityToState = (gs: GameEdit) => {
   if (!gs.state.keys.mouseUp.curr) return;

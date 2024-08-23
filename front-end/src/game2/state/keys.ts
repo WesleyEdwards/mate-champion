@@ -1,5 +1,5 @@
 import { Keys } from "../../Game/models";
-import { ChampState } from "../champ";
+import { ChampState } from "../entities/champ";
 
 export const updateKeys = (keys: Keys, player: ChampState) => {
   if (keys.jump || keys.toJump > 0) {

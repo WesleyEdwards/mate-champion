@@ -1,6 +1,6 @@
 import { FullLevelInfo } from "../../Game/models";
-import { Champ1 } from "../champ";
-import { Coors, Entity, Id } from "../entityTypes";
+import { Champ } from "../entities/champ";
+import { Coors, Entity, Id } from "../entities/entityTypes";
 import { toCurrAndPrev } from "../helpers";
 import { renderBg } from "../render/background";
 import { renderPlayer } from "../render/champ";
@@ -25,7 +25,7 @@ export class GameEdit {
   movingEntities: Set<Id> = new Set();
   selectedEntities: Set<Id> = new Set();
   hoveringEntities: Set<Id> = new Set();
-  champ: Champ1 = new Champ1(toCurrAndPrev([400, 400]));
+  champ: Champ = new Champ([400, 400]);
   isDirty: boolean = false;
 
   constructor(
