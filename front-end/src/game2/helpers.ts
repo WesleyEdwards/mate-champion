@@ -1,5 +1,6 @@
 import { addEventListeners } from "../Game/helpers/eventListeners";
 import { FullLevelInfo } from "../Game/models";
+import { Ammo } from "./Ammo";
 import { Champ1 } from "./champ";
 import { Coors, CurrAndPrev, Entity, GameStateProps } from "./entityTypes";
 import { Groog1 } from "./groog";
@@ -59,6 +60,10 @@ export const levelToEntities = (level: FullLevelInfo): Entity[] => {
 
   level.opponents.grog.forEach((g) => {
     entities.push(new Groog1([g.initPos.x, g.initPos.y], [g.moveSpeed, 0]));
+  });
+
+  level.packages.forEach((p) => {
+    entities.push(new Ammo([p.x, p.y]));
   });
   return entities;
 };

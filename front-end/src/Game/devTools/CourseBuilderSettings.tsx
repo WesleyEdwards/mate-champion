@@ -96,7 +96,7 @@ export const CourseBuilderSettings = () => {
       ),
     },
     {
-      obj: "package",
+      obj: "ammo",
       display: (
         <img style={{ maxWidth: "30px", maxHeight: "30px" }} src={packageImg} />
       ),

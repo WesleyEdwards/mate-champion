@@ -12,5 +12,4 @@ export type PlayStats = {
   lives: number;
   level: number;
   ammo: number;
-  levelCreator: string;
 };

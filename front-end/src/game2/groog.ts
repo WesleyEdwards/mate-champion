@@ -57,7 +57,7 @@ export class Groog1 implements Entity {
   id = createId("groog");
   typeId = "groog" as const;
   state: GroogState;
-  pointsGainWhenDead = 10;
+  modifyStatsOnDeath = { score: 10 };
   constructor(position: Coors, velocity: Coors) {
     this.state = {
       facing: "right",

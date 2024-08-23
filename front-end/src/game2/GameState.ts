@@ -35,6 +35,10 @@ export class GameState {
         score: this.state.stats.score.curr,
         ammo: this.state.stats.ammo.curr,
       });
+      if (this.state.stats.lives.curr < this.state.stats.lives.prev) {
+        this.state.currStateOfGame = "loseLife";
+        this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;
+      }
       updateStats(this.state.stats);
     }
 
@@ -76,8 +80,10 @@ export class GameState {
       const dead = this.state.entities.filter((e) => e.state.dead);
       this.state.entities = this.state.entities.filter((e) => !e.state.dead);
       for (const d of dead) {
-        if (d.pointsGainWhenDead) {
-          this.state.stats.score.curr += d.pointsGainWhenDead;
+        if (d.modifyStatsOnDeath) {
+          for (const [k, v] of Object.entries(d.modifyStatsOnDeath)) {
+            if (v) this.state.stats[k].curr += v;
+          }
         }
         this.gridHash.removeClient(d);
       }
@@ -85,11 +91,6 @@ export class GameState {
   }
 
   updatePlayer(champ: Entity) {
-    if (champ.state.dead) {
-      this.state.currStateOfGame = "loseLife";
-      this.state.stats.lives.curr -= 1;
-      this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;
-    }
     if (champ.state.position.curr[0] > this.currentLevel.endPosition) {
       this.state.currStateOfGame = "nextLevel";
       this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime;

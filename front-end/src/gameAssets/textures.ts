@@ -18,6 +18,7 @@ export type TextureMap = {
   };
   bullet: HTMLImageElement;
   endGate: HTMLImageElement;
+  ammo: HTMLImageElement;
 };
 
 const loadTexture = (path: string): Promise<HTMLImageElement> => {
@@ -54,6 +55,8 @@ export const initializeTextures = async () => {
     //bullet
     bullet,
     endGate,
+
+    ammo,
   ] = await Promise.all(
     [
       "clouds-bg.jpg",
@@ -73,6 +76,7 @@ export const initializeTextures = async () => {
       "mate_bullet.png",
 
       "end_gate.png",
+      "mate-package.png",
     ].map(loadTexture)
   ).catch((error) => {
     console.error(error);
@@ -98,6 +102,7 @@ export const initializeTextures = async () => {
     },
     bullet,
     endGate,
+    ammo,
   };
   textures = map;
 };

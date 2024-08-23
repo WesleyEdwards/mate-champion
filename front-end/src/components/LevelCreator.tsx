@@ -1,13 +1,4 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionGroup,
-  AccordionSummary,
-  Button,
-  Stack,
-  Switch,
-  Typography,
-} from "@mui/joy";
+import { Button, Stack, Switch, Typography } from "@mui/joy";
 import { Settings, modifyDevSettings } from "../Game/devSettings";
 import { CourseBuilderSettings } from "../Game/devTools/CourseBuilderSettings";
 import { camelCaseToTitleCase } from "../helpers";
@@ -83,7 +74,7 @@ export const LevelCreator: FC = () => {
       <Button
         color="neutral"
         variant="plain"
-        sx={{marginTop: "auto"}}
+        sx={{ marginTop: "auto" }}
         onClick={(e) => {
           if (
             "pointerType" in e.nativeEvent &&

@@ -35,8 +35,6 @@ export const grogConst = {
   jumpSpeed: -1,
 } as const;
 
-export const packageConst = { width: 60, height: 75, worth: 3 } as const;
-
 export const platformConst = {
   floorY: 530,
   defaultHeight: 40,

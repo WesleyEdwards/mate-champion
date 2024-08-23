@@ -7,7 +7,7 @@ import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { gameLoopEdit } from "../game2/editor/gameLoopEdit";
-import { enterGameLoop1 } from "../game2/main";
+import { enterGameLoop } from "../game2/main";
 
 export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
   const { levelCache, editingLevel, setGameMode, setIsDirty } =
@@ -37,7 +37,7 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
             setIsDirty: () => setIsDirty(true),
             setLevel: (level: Partial<FullLevelInfo>) => {
               levelCache.update.modify(editingLevel!._id, level);
-              setIsDirty(false)
+              setIsDirty(false);
             },
           });
         }}
@@ -59,13 +59,12 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
             console.error("Invalid state");
             return;
           }
-          enterGameLoop1({
+          enterGameLoop({
             setUI: {
               modifyStats: ({}) => {},
               handleLose: () => {},
               handlePause: () => {},
             },
-            gameMode: "test",
             levels: [editingLevel],
           });
         }}

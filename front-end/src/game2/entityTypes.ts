@@ -1,4 +1,4 @@
-import { WinState } from "../Game/helpers/types";
+import { PlayStats, WinState } from "../Game/helpers/types";
 import { Keys } from "../Game/models";
 import { TimerDown, TimerUp } from "./state/timeHelpers";
 
@@ -28,7 +28,7 @@ export type EntityType =
   | "floor"
   | "platform"
   | "bullet"
-  | "package"
+  | "ammo"
   | "endGate";
 
 export type Entity = {
@@ -42,7 +42,7 @@ export type Entity = {
     dead: boolean;
   };
   handleInteraction?: (entities: Entity[]) => void;
-  pointsGainWhenDead?: number;
+  modifyStatsOnDeath?: Partial<PlayStats>;
 };
 export type Camera = {
   // offset

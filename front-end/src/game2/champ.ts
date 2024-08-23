@@ -1,3 +1,5 @@
+import { PlayStats } from "../Game/helpers/types";
+import { Ammo } from "./Ammo";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
 import { Groog1 } from "./groog";
 import { areTouching1, calcPlatEntityCollision } from "./helpers";
@@ -95,6 +97,9 @@ export class Champ1 implements Entity {
   id = "player";
   typeId = "player" as const;
   state: ChampState;
+  modifyStatsOnDeath = {
+    lives: -1,
+  };
   constructor(position: CurrAndPrev) {
     this.state = {
       position,
@@ -169,6 +174,17 @@ export class Champ1 implements Entity {
           ) {
             entity.state.queueActions.push({ name: "die" });
           }
+        }
+      }
+      if (entity instanceof Ammo) {
+        if (
+          areTouching1(
+            this.state.position.curr,
+            entity.state.position.curr,
+            100
+          )
+        ) {
+          entity.state.dead = true;
         }
       }
     }

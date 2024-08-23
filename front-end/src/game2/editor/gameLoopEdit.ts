@@ -1,6 +1,5 @@
 import { displayCanvas, getCanvasContext } from "../../Game/Drawing/uiHelpers";
 import { FullLevelInfo, SetUI } from "../../Game/models";
-import { abortController } from "./eventListeners";
 import { GameEdit } from "./GameEdit";
 
 export function gameLoopEdit(params: {

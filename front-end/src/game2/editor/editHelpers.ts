@@ -2,6 +2,7 @@ import { platformConst } from "../../Game/constants";
 import { devSettings } from "../../Game/devSettings";
 import { AddableEntity } from "../../Game/devTools/CourseBuilderSettings";
 import { FullLevelInfo } from "../../Game/models";
+import { Ammo, packageConst } from "../Ammo";
 import { Camera, Coors, Entity } from "../entityTypes";
 import { Groog1 } from "../groog";
 import { levelToEntities, toCurrAndPrev } from "../helpers";
@@ -29,12 +30,7 @@ export const addEntityToState = (gs: GameEdit) => {
       dead: false,
     }),
 
-    package: new Platform1({
-      color: "blue",
-      position: toCurrAndPrev([0, 0]),
-      dimensions: [300, platformConst.defaultHeight],
-      dead: false,
-    }),
+    ammo: new Ammo([0, 0]),
   };
 
   const entity = addable[toAdd];
@@ -173,7 +169,7 @@ export const editStateToLevelInfo = (
         })),
     },
     packages: gs.entities
-      .filter((e) => e.typeId === "package")
+      .filter((e) => e.typeId === "ammo")
       .map((p) => ({
         x: p.state.position.curr[0],
         y: p.state.position.curr[1],

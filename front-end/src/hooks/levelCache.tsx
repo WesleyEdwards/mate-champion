@@ -7,7 +7,6 @@ import {
   getLevelDiff,
   objectsAreDifferent,
 } from "../helpers";
-import _ from "lodash";
 import { levelCache, setLevelCache } from "../levelCache/cacheLocalStorage";
 
 export type CacheObj = {
@@ -90,7 +89,7 @@ export const useLevelCache = (api: Api, user: User): LevelCache => {
       return {
         ...prev,
         owned: prev.owned?.filter((l) => l !== level),
-        public: prev.public?.filter((l_1) => l_1 !== level),
+        public: prev.public?.filter((l) => l !== level),
         levelInfo,
         levelMaps,
       };

@@ -9,7 +9,7 @@ import levelsInfo from "../levels.json";
 import { setToNoDevSettings } from "../Game/devSettings";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
-import { enterGameLoop1 } from "../game2/main";
+import { enterGameLoop } from "../game2/main";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;
@@ -49,20 +49,19 @@ export const PlayScreen: FC<{
     <Button
       sx={{ width: "11rem", mb: "2rem" }}
       onClick={() => {
-        modifyStats({ ...emptyStats, levelCreator: levelsInfo[0].creatorName });
+        modifyStats({ ...emptyStats });
         setScreen("game");
 
         setGameMode("play");
         setToNoDevSettings();
 
         window.stopLoop = false;
-        enterGameLoop1({
+        enterGameLoop({
           setUI: {
             modifyStats,
             handleLose,
             handlePause: (pause) => setModal(pause ? "pause" : null),
           },
-          gameMode: "play",
           levels: levelsInfo,
         });
       }}
