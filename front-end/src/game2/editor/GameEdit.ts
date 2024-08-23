@@ -68,8 +68,13 @@ export class GameEdit {
       this.canvas.style.cursor = "auto";
     }
 
+    // this.state.keys.shift.curr && this.state.keys.mouseDown.curr;
+    const guaranteeMovingCanvas =
+      this.state.keys.mouseDown.curr && this.state.keys.shift.curr;
     const isMovingCanvas =
-      this.state.keys.shift.curr && this.state.keys.mouseDown.curr;
+      this.movingEntities.size === 0 &&
+      ((this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0) ||
+        guaranteeMovingCanvas);
 
     const mouseDownAction =
       this.state.keys.mouseDown.curr && !this.state.keys.mouseDown.prev;
@@ -77,7 +82,7 @@ export class GameEdit {
     const mouseUpAction =
       this.state.keys.mouseUp.curr && !this.state.keys.mouseUp.prev;
 
-    const startingToGrab = !isMovingCanvas && mouseDownAction;
+    const startingToGrab = !guaranteeMovingCanvas && mouseDownAction;
 
     const stopGrabbing = !this.state.keys.mouseDown.curr;
 

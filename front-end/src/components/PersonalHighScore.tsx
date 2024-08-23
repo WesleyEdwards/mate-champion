@@ -5,16 +5,13 @@ import { useAuthContext } from "../hooks/useAuth";
 import { MCScreen, ScreenProps } from "./GameEntry";
 import { useNavigator } from "../hooks/UseNavigator";
 
-export const PersonalHighScore: FC<ScreenProps> = ({
-  score,
-  modifyStats,
-}) => {
+export const PersonalHighScore: FC<ScreenProps> = ({ score, modifyStats }) => {
   const { user } = useAuthContext();
   const { navigateTo } = useNavigator();
 
   if (user) {
     return (
-      <Stack gap="2rem">
+      <Stack gap="2rem" sx={{ width: "722px" }}>
         <Typography level="h2">
           You got a personal high score of {score}!
         </Typography>
@@ -30,10 +27,5 @@ export const PersonalHighScore: FC<ScreenProps> = ({
     );
   }
 
-  return (
-    <CreateAccount
-      score={score}
-      modifyStats={modifyStats}
-    />
-  );
+  return <CreateAccount score={score} modifyStats={modifyStats} />;
 };

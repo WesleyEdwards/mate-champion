@@ -12,7 +12,7 @@ export const HomeScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { user } = useAuthContext();
   const { navigateTo } = useNavigator();
   return (
-    <Stack width="100%" alignItems={"center"}>
+    <Stack width="100%" alignItems={"center"} sx={{ width: "722px" }}>
       <Typography level="h1">Mate Champion</Typography>
       <Instructions />
       <img

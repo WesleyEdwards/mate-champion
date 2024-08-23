@@ -56,7 +56,7 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
   };
 
   return (
-    <Stack>
+    <Stack sx={{ width: "722px" }}>
       <Stack direction="row" justifyContent="space-between">
         {score > 0 && <Typography level="h2">Score: {score}</Typography>}
       </Stack>

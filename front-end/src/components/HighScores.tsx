@@ -19,7 +19,7 @@ export const HighScores: FC<ScreenProps> = ({ score }) => {
   }, []);
 
   return (
-    <Stack gap="1rem">
+    <Stack gap="1rem" sx={{ width: "722px" }}>
       <Stack alignSelf="center">
         {!highScores &&
           !error &&

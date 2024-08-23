@@ -2,20 +2,20 @@ import { Logout, Save, Undo } from "@mui/icons-material";
 import { Button, IconButton, Input, Stack, Typography } from "@mui/joy";
 import { FC } from "react";
 import { ScreenProps } from "./GameEntry";
-import { EditEmailOrName } from "./EditEmailOrName";
 import { useNavigator } from "../hooks/UseNavigator";
 import { useAuthContext } from "../hooks/useAuth";
+import { EditEmail, EditName } from "./EditEmailOrName";
 
 export const Profile: FC<ScreenProps> = () => {
   const { resetStack, navigateTo } = useNavigator();
   const { user, logout } = useAuthContext();
 
   return (
-    <Stack gap="1rem" mb={2}>
+    <Stack gap="1rem" mb={2} sx={{ width: "722px" }}>
       {user ? (
         <>
-          <EditEmailOrName type={"name"} />
-          <EditEmailOrName type={"email"} />
+          <EditName />
+          <EditEmail />
           <Button
             onClick={() => {
               logout();

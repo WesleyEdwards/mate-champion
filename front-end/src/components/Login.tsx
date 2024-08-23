@@ -35,7 +35,7 @@ export const Login: FC<ScreenProps> = () => {
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <Divider />
-      <Stack gap="1rem" my={2}>
+      <Stack gap="1rem" my={2} sx={{ width: "722px" }}>
         <Input
           placeholder="Email/Username"
           value={email}

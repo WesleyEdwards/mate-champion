@@ -20,7 +20,6 @@ import {
 import { LevelEditorHome } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
 import { useLevelContext } from "../hooks/useLevels";
-import { CheckCircle, Sync } from "@mui/icons-material";
 import { PlayStats } from "../Game/models";
 
 export type MCScreen =
@@ -64,7 +63,7 @@ export const GameEntry: FC = () => {
   return (
     <>
       {ScreenViewHeader}
-      <Stack mb={2} sx={{ width: "100%", minWidth: "546px" }}>
+      <Stack mb={2} sx={{ minWidth: "546px", maxWidth: "1300px" }}>
         <RenderScreen score={stats.score} modifyStats={modifyStats} />
       </Stack>
 

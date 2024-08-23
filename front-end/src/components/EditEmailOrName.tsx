@@ -4,51 +4,117 @@ import { FC, useState } from "react";
 import { useAuthContext } from "../hooks/useAuth";
 import { camelCaseToTitleCase } from "../helpers";
 
-export const EditEmailOrName: FC<{ type: "name" | "email" }> = ({ type }) => {
+export const EditName: FC = () => {
   const { user, api, modifyUser } = useAuthContext();
   if (!user) {
     throw new Error("This component requires the user to not be null");
   }
-  const [displayString, setDisplayString] = useState<string>(
-    type === "name" ? user.name : user.email ?? ""
-  );
-  const [editingString, setEditingString] = useState<boolean>(false);
+  const [displayName, setDisplayName] = useState<string>(user.name);
+  const [editing, setEditing] = useState<boolean>(false);
 
   return (
-    <Stack direction="row" minWidth="32rem" justifyContent="space-between">
-      <Stack direction="row" alignItems="center" gap="1rem">
-        <Typography level="h4">{camelCaseToTitleCase(type)}:</Typography>
-        {editingString ? (
+    <Stack
+      direction="row"
+      height="40px"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Stack direction="column" alignItems="center">
+        {editing ? (
           <Input
-            value={displayString}
-            onChange={(e) => setDisplayString(e.target.value)}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
           />
         ) : (
-          <Typography level="h4">{user[type]}</Typography>
+          <Typography level="h4">{user.name}</Typography>
         )}
+
+        <Typography level="body-sm" alignSelf={"flex-start"}>
+          Name
+        </Typography>
       </Stack>
-      {editingString ? (
+      {editing ? (
         <Stack direction="row" gap="1rem">
           <IconButton
             onClick={() => {
-              setEditingString(false);
-              setDisplayString(user[type] ?? "");
+              setEditing(false);
+              setDisplayName(user.name);
             }}
           >
             <Undo />
           </IconButton>
           <IconButton
             onClick={() => {
-              setEditingString(false);
-              modifyUser({ [type]: displayString });
-              api.user.modify(user._id, { [type]: displayString });
+              setEditing(false);
+              if (displayName !== user.name) {
+                modifyUser({ name: displayName });
+                api.user.modify(user._id, { name: displayName });
+              }
             }}
           >
             <Check />
           </IconButton>
         </Stack>
       ) : (
-        <IconButton onClick={() => setEditingString(true)}>
+        <IconButton onClick={() => setEditing(true)}>
+          <Edit />
+        </IconButton>
+      )}
+    </Stack>
+  );
+};
+
+export const EditEmail: FC = () => {
+  const { user, api, modifyUser } = useAuthContext();
+  if (!user) {
+    throw new Error("This component requires the user to not be null");
+  }
+  const [displayEmail, setDisplayEmail] = useState<string>(user.email ?? "");
+  const [editing, setEditing] = useState<boolean>(false);
+
+  return (
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack direction="column" alignItems="center">
+        {editing ? (
+          <Input
+            sx={{ height: "40px" }}
+            value={displayEmail}
+            onChange={(e) => setDisplayEmail(e.target.value)}
+          />
+        ) : (
+          <Typography sx={{ height: "40px" }} level="h4">
+            {user.email}
+          </Typography>
+        )}
+        <Typography level="body-sm" alignSelf={"flex-start"}>
+          Email
+        </Typography>
+      </Stack>
+
+      {editing ? (
+        <Stack direction="row" gap="1rem">
+          <IconButton
+            onClick={() => {
+              setEditing(false);
+              setDisplayEmail(user.email ?? "");
+            }}
+          >
+            <Undo />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              setEditing(false);
+              if (displayEmail !== user.email) {
+                modifyUser({ email: displayEmail });
+                api.user.modify(user._id, { email: displayEmail });
+              }
+            }}
+          >
+            <Check />
+          </IconButton>
+        </Stack>
+      ) : (
+        <IconButton onClick={() => setEditing(true)}>
           <Edit />
         </IconButton>
       )}
