@@ -42,8 +42,8 @@ export interface ScreenProps {
 
 export const GameEntry: FC = () => {
   const [stats, setStats] = useState<PlayStats>(emptyStats);
-  const { currentScreen, navigateTo } = useNavigator();
-  const { gameMode, isDirty } = useLevelContext();
+  const { currentScreen } = useNavigator();
+  const { gameMode } = useLevelContext();
 
   const playing = useMemo(() => currentScreen === "game", [currentScreen]);
 
@@ -73,7 +73,7 @@ export const GameEntry: FC = () => {
           id="canvas"
         ></canvas>
 
-        {playing && <StatsDiv stats={stats} />}
+        {playing && gameMode === "play" && <StatsDiv stats={stats} />}
       </Stack>
     </>
   );

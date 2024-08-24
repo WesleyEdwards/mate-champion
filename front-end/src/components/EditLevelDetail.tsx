@@ -42,7 +42,7 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         gap="1rem"
         alignItems="center"
         height="300px"
-        width="400px"
+        width="546px"
         mt="1rem"
       >
         <Skeleton height="20px" variant="rectangular" />

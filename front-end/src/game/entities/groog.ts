@@ -5,7 +5,7 @@ import {
   areTouching1,
 } from "../helpers";
 import { renderGroog } from "../render/groog";
-import { updateGroog, processGroogActionRaw } from "../state/groog";
+import { processGroogActionRaw, processGroogActions } from "../state/groog";
 import {
   TimerUp,
   TimerDown,
@@ -15,6 +15,7 @@ import {
 } from "../state/timeHelpers";
 import { Champ } from "./champ";
 import { CurrAndPrev, Coors, Entity } from "./entityTypes";
+import { GRAVITY } from "../loopShared/constants";
 
 export type GroogState = {
   facing: "left" | "right";
@@ -22,9 +23,11 @@ export type GroogState = {
   velocity: Coors;
   dimensions: Coors;
   dead: boolean;
+  timeUntilTurn: number;
   timers: {
     sprite: TimerUp;
-    actionTimeRemain: TimerDown; // right now, just dying
+    dyingTimer: TimerDown;
+    turnX: TimerUp;
   };
   render: {
     curr: GroogAssetDes;
@@ -63,11 +66,13 @@ export class Groog1 implements Entity {
       facing: "right",
       position: toCurrAndPrev(position),
       velocity,
+      timeUntilTurn: 3000,
       dimensions: [...groogConst.dimensions],
       dead: false,
       timers: {
         sprite: emptyTime("up"),
-        actionTimeRemain: emptyTime("down"), // right now, just dying
+        dyingTimer: emptyTime("down"),
+        turnX: emptyTime("up"),
       },
       render: {
         curr: "walk",
@@ -79,7 +84,26 @@ export class Groog1 implements Entity {
   step: Entity["step"] = (deltaT) => {
     updateTimers(this.state.timers, deltaT);
     updatePosAndVel(this.state.position, this.state.velocity, deltaT);
-    updateGroog(this.state, deltaT);
+    if (
+      this.state.render.curr === "die" &&
+      this.state.timers.dyingTimer.val <= 0
+    ) {
+      this.state.dead = true;
+    }
+    if (
+      this.state.render.curr !== "die" &&
+      this.state.timers.turnX.val > this.state.timeUntilTurn
+    ) {
+      this.state.timers.turnX.val = 0;
+      processGroogActionRaw(this.state, {
+        name: "setX",
+        dir: this.state.facing === "left" ? "right" : "left",
+      });
+    }
+
+    this.state.velocity[1] += GRAVITY * deltaT;
+
+    processGroogActions(this.state);
   };
 
   render: Entity["render"] = (cxt) => {
@@ -95,7 +119,7 @@ export class Groog1 implements Entity {
           // this.state.queueActions.push({ name: "setY", y });
         }
       }
-      if (this.state.timers.actionTimeRemain.val > 0) {
+      if (this.state.timers.dyingTimer.val > 0) {
         continue;
       }
       if (entity.typeId === "player") {

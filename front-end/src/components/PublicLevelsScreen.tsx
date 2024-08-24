@@ -9,6 +9,7 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { GridComponent } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
+import { enterGameLoopPreview } from "../game/previewer/previewLoop";
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { setGameMode, levelCache } = useLevelContext();
@@ -20,22 +21,10 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
     const fullLevel = await levelCache.read.getFull(levelId);
 
     navigateTo("game");
-    modifyStats({ ...emptyStats });
 
     setGameMode("test");
 
-    // enterGameLoop({
-    //   setUI: {
-    //     modifyStats,
-    //     handleLose: () => {},
-    //     handlePause: (pause: boolean) => {
-    //       return setModal(pause ? "pause" : null);
-    //     },
-    //   },
-    //   gameMode: "test",
-    //   levels: [fullLevel],
-    //   setLevel: () => {},
-    // });
+    enterGameLoopPreview(fullLevel);
   };
 
   useEffect(() => {
@@ -75,12 +64,7 @@ export const LevelCard: FC<{
   actionButton: React.ReactNode;
 }> = ({ level, actionButton, subtitle }) => {
   return (
-    <Card
-      key={level._id}
-      sx={{
-        width: "100%",
-      }}
-    >
+    <Card key={level._id} sx={{ width: "100%" }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack sx={{ overflow: "hidden" }}>
           <Typography

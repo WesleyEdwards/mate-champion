@@ -9,7 +9,7 @@ import { ScreenProps } from "./GameEntry";
 export const HighScores: FC<ScreenProps> = ({ score }) => {
   const [highScores, setHighScores] = useState<TopScore[]>();
   const [error, setError] = useState<string>();
-  const { api } = useAuthContext();
+  const { api, user } = useAuthContext();
 
   useEffect(() => {
     api.score
@@ -36,7 +36,7 @@ export const HighScores: FC<ScreenProps> = ({ score }) => {
           <ScoreListItem num={i + 1} score={info} key={i} />
         ))}
       </Stack>
-      {!api.getToken() &&
+      {!user &&
         highScores?.some(
           (s) => s.score < localStorageManager.get("high-score") ?? 0
         ) && (

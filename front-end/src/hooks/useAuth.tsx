@@ -2,13 +2,14 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Api } from "../api/Api";
 import { LoginBody, User } from "../types";
 import { localStorageManager } from "../api/localStorageManager";
+import { LiveApi } from "../api/LiveApi";
 
 export type GameMode = "play" | "edit" | "test" | "idle";
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>();
 
-  const api = useMemo(() => new Api(localStorageManager.get("token")), []);
+  const api = useMemo(() => new LiveApi(localStorageManager.get("token")), []);
 
   useEffect(() => {
     if (localStorageManager.get("token")) {

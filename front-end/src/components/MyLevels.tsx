@@ -51,7 +51,16 @@ export const MyLevels: FC<ScreenProps> = () => {
                 </Typography>
                 <Stack direction="row" gap="5px" alignItems={"center"}>
                   <VisibilityIcon publicLevel={level.public} />
-                  <Typography level="body-sm">{level.description}</Typography>
+                  <Typography
+                    level="body-sm"
+                    sx={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {level.description}
+                  </Typography>
                 </Stack>
               </Stack>
               <Edit />

@@ -2,21 +2,11 @@ import { GRAVITY } from "../loopShared/constants";
 import { GroogState, GroogAction, groogConst } from "../entities/groog";
 import { ActionMap, UpdateFun } from "./helpers";
 
-export const updateGroog: UpdateFun<GroogState> = (groog, deltaT) => {
-  if (groog.render.curr === "die" && groog.timers.actionTimeRemain.val <= 0) {
-    groog.dead = true;
-  }
-
-  groog.velocity[1] += GRAVITY * deltaT;
-
-  processGroogActions(groog);
-};
-
 const processActionMap: ActionMap<GroogAction, GroogState> = {
   die: (g, _) => {
     if (g.render.curr === "die") return;
     g.render.curr = "die";
-    g.timers.actionTimeRemain.val = groogConst.dieTimer;
+    g.timers.dyingTimer.val = groogConst.dieTimer;
     g.timers.sprite.val = 0;
   },
   jump: (g, _) => {
