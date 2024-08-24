@@ -8,6 +8,7 @@ import {
 import { useLevelContext } from "../hooks/useLevels";
 import grogImg from "../assets/grog/enemy_walking_single.png";
 import packageImg from "../assets/mate-package.png";
+import platformImg from "../assets/platform.png";
 
 export type EditableEntity = Exclude<EntityType, "player" | "bullet">;
 
@@ -61,16 +62,13 @@ export const CourseBuilderSettings = () => {
     {
       obj: "floor",
       display: (
-        <div
+        <img
+          src={platformImg}
           style={{
             width: "60px",
             height: "30px",
-            backgroundColor: "green",
-            borderColor: "black",
-            borderWidth: "3px",
-            borderStyle: "solid",
           }}
-        ></div>
+        />
       ),
     },
     {

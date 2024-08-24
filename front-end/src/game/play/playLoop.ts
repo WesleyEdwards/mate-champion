@@ -1,7 +1,7 @@
 import { FullLevelInfo, SetUI } from "../loopShared/models";
 import { abortController } from "../editor/eventListeners";
 import { getCanvasContext, displayCanvas } from "../loopShared/loopHelpers";
-import { GamePlay } from "./GameState";
+import { GamePlay } from "./GamePlay";
 
 export function playLoop(params: { setUI: SetUI; levels: FullLevelInfo[] }) {
   const { setUI, levels } = params;
@@ -14,6 +14,7 @@ export function playLoop(params: { setUI: SetUI; levels: FullLevelInfo[] }) {
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;
     if (window.stopLoop === true) {
+      console.log("stop")
       window.stopLoop = false;
       return;
     }

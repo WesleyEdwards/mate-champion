@@ -13,11 +13,6 @@ export function gameLoopEdit(params: {
   const game = new GameEdit(level, setIsDirty, modifyLevel, canvas);
 
   function gameLoop(timeStamp: number) {
-    window.mateSettings.collisionBoxesVisible = true;
-    if (window.stopLoop === true) {
-      window.stopLoop = false;
-      return;
-    }
     game.step(timeStamp);
     game.render(context);
 

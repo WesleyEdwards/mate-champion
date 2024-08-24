@@ -34,7 +34,6 @@ export const initGameState = (): GameStateProps => ({
   entities: [],
   keys: addEventListeners(() => {
     window.pause = !window.pause;
-    console.log("Paused", window.pause);
   }),
 });
 
