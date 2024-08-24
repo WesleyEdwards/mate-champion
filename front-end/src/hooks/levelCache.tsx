@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FullLevelInfo, LevelInfo, LevelMap } from "../Game/models";
+import { FullLevelInfo, LevelInfo, LevelMap } from "../game/loopShared/models";
 import { Api } from "../api/Api";
 import { User } from "../types";
 import {

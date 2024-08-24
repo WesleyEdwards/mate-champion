@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { FullLevelInfo, LevelInfo, LevelMap } from "./Game/models";
+import { FullLevelInfo, LevelInfo, LevelMap } from "./game/loopShared/models";
 
 export function camelCaseToTitleCase(str: string) {
   return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {

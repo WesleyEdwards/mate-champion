@@ -1,14 +1,14 @@
 import { Button, Stack } from "@mui/joy";
 import { FC } from "react";
 import { ScreenProps } from "./GameEntry";
-import { emptyStats } from "../Game/helpers/utils";
+import { emptyStats } from "../game/loopShared/utils";
 import { Construction, PlayArrow } from "@mui/icons-material";
-import { FullLevelInfo, LevelInfo } from "../Game/models";
+import { FullLevelInfo, LevelInfo } from "../game/loopShared/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
-import { gameLoopEdit } from "../game2/editor/gameLoopEdit";
-import { playLoop } from "../game2/play/playLoop";
-import { enterGameLoopPreview } from "../game2/previewer/previewLoop";
+import { gameLoopEdit } from "../game/editor/gameLoopEdit";
+import { playLoop } from "../game/play/playLoop";
+import { enterGameLoopPreview } from "../game/previewer/previewLoop";
 
 export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
   const { levelCache, editingLevel, setGameMode, setIsDirty } =

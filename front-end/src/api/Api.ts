@@ -1,4 +1,4 @@
-import { LevelInfo, LevelMap } from "../Game/models";
+import { LevelInfo, LevelMap } from "../game/loopShared/models";
 import { User, LoginBody, Condition, Score, TopScore } from "../types";
 import { localStorageManager } from "./localStorageManager";
 

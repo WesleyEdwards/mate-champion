@@ -9,9 +9,9 @@ import { mateTheme } from "./theme";
 import { AuthContext, useAuth } from "./hooks/useAuth";
 import { LevelsContext, useLevels } from "./hooks/useLevels";
 import { Layout } from "./components/Layout";
-import { initializeDevSettings } from "./Game/devSettings";
+import { initializeDevSettings } from "./game/loopShared/devTools/devSettings";
 import { initializeTextures } from "./gameAssets/textures";
-import { EditableEntity } from "./Game/devTools/CourseBuilderSettings";
+import { EditableEntity } from "./components/CourseBuilderSettings";
 
 declare global {
   interface Window {

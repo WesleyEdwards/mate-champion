@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { FullLevelInfo, LevelInfo } from "../Game/models";
+import { FullLevelInfo, LevelInfo } from "../game/loopShared/models";
 import { Api } from "../api/Api";
 import { GameMode } from "./useAuth";
 import { User } from "../types";

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useAuthContext } from "../hooks/useAuth";
 import { MCScreen, ScreenProps } from "./GameEntry";
-import { LevelInfo } from "../Game/models";
+import { LevelInfo } from "../game/loopShared/models";
 import {
   Stack,
   Tab,

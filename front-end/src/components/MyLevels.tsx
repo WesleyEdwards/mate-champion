@@ -5,7 +5,7 @@ import { useLevelContext } from "../hooks/useLevels";
 import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 import { GridComponent } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
-import { LevelInfo } from "../Game/models";
+import { LevelInfo } from "../game/loopShared/models";
 
 export const MyLevels: FC<ScreenProps> = () => {
   const { setEditingLevel, levelCache } = useLevelContext();

@@ -1,9 +1,9 @@
 import { FC, useEffect, useState } from "react";
 import { ScreenProps } from "./GameEntry";
-import { LevelInfo } from "../Game/models";
+import { LevelInfo } from "../game/loopShared/models";
 import { Card, IconButton, Stack, Typography } from "@mui/joy";
 import { PlayArrow } from "@mui/icons-material";
-import { emptyStats } from "../Game/helpers/utils";
+import { emptyStats } from "../game/loopShared/utils";
 // import { enterGameLoop } from "../Game/Main";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";

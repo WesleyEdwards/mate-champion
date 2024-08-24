@@ -2,7 +2,7 @@ import { FC } from "react";
 import lifeImage from "../assets/heart.png";
 import { ScoreStats } from "./ScoreStats";
 import { Stack, Typography } from "@mui/joy";
-import { PlayStats } from "../Game/models";
+import { PlayStats } from "../game/loopShared/models";
 
 export const StatsDiv: FC<{ stats: PlayStats }> = ({ stats }) => {
   const { lives, level, score, ammo } = stats;

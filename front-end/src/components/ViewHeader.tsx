@@ -21,7 +21,7 @@ import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { CreateNewLevel } from "./CreateNewLevel";
 import { useNavigator } from "../hooks/UseNavigator";
-import { abortController } from "../game2/editor/eventListeners";
+import { abortController } from "../game/editor/eventListeners";
 
 export const ViewHeaderSubScreen: FC<{
   title: string;

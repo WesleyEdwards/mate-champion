@@ -1,4 +1,4 @@
-import { FullLevelInfo } from "../Game/models";
+import { FullLevelInfo } from "../game/loopShared/models";
 
 type KeyName = "token" | "high-score" | "dev-settings";
 

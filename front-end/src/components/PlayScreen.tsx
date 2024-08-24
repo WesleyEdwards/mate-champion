@@ -1,15 +1,15 @@
 import { Button } from "@mui/joy";
 import { FC } from "react";
 import { useAuthContext } from "../hooks/useAuth";
-import { emptyStats } from "../Game/helpers/utils";
+import { emptyStats } from "../game/loopShared/utils";
 import { localStorageManager } from "../api/localStorageManager";
 import { MCScreen } from "./GameEntry";
 import levelsInfo from "../levels.json";
-import { setToNoDevSettings } from "../Game/devSettings";
+import { setToNoDevSettings } from "../game/loopShared/devTools/devSettings";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
-import { playLoop } from "../game2/play/playLoop";
-import { PlayStats } from "../Game/models";
+import { playLoop } from "../game/play/playLoop";
+import { PlayStats } from "../game/loopShared/models";
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void;

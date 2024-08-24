@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/joy";
 import { FC, useMemo, useState } from "react";
-import { emptyStats } from "../Game/helpers/utils";
+import { emptyStats } from "../game/loopShared/utils";
 import HighScores from "./HighScores";
 import Settings from "./Settings";
 import StatsDiv from "./StatsDiv";
@@ -20,7 +20,7 @@ import {
 import { LevelEditorHome } from "./LevelEditorHome";
 import { useNavigator } from "../hooks/UseNavigator";
 import { useLevelContext } from "../hooks/useLevels";
-import { PlayStats } from "../Game/models";
+import { PlayStats } from "../game/loopShared/models";
 
 export type MCScreen =
   | "game"
