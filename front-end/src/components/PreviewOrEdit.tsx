@@ -7,7 +7,8 @@ import { FullLevelInfo, LevelInfo } from "../Game/models";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { gameLoopEdit } from "../game2/editor/gameLoopEdit";
-import { enterGameLoop } from "../game2/main";
+import { playLoop } from "../game2/play/playLoop";
+import { enterGameLoopPreview } from "../game2/previewer/previewLoop";
 
 export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
   const { levelCache, editingLevel, setGameMode, setIsDirty } =
@@ -59,14 +60,7 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
             console.error("Invalid state");
             return;
           }
-          enterGameLoop({
-            setUI: {
-              modifyStats: ({}) => {},
-              handleLose: () => {},
-              handlePause: () => {},
-            },
-            levels: [editingLevel],
-          });
+          enterGameLoopPreview(editingLevel);
         }}
       >
         Preview

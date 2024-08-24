@@ -8,7 +8,7 @@ import levelsInfo from "../levels.json";
 import { setToNoDevSettings } from "../Game/devSettings";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
-import { enterGameLoop } from "../game2/main";
+import { playLoop } from "../game2/play/playLoop";
 import { PlayStats } from "../Game/models";
 
 export const PlayScreen: FC<{
@@ -56,7 +56,7 @@ export const PlayScreen: FC<{
         setToNoDevSettings();
 
         window.stopLoop = false;
-        enterGameLoop({
+        playLoop({
           setUI: {
             modifyStats,
             handleLose,

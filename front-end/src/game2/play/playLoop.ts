@@ -1,9 +1,9 @@
-import { displayCanvas, getCanvasContext } from "../Game/Drawing/uiHelpers";
-import { FullLevelInfo, SetUI } from "../Game/models";
-import { abortController } from "./editor/eventListeners";
-import { GameState } from "./GameState";
+import { displayCanvas, getCanvasContext } from "../../Game/Drawing/uiHelpers";
+import { FullLevelInfo, SetUI } from "../../Game/models";
+import { abortController } from "../editor/eventListeners";
+import { GamePlay } from "./GameState";
 
-export function enterGameLoop(params: {
+export function playLoop(params: {
   setUI: SetUI;
   levels: FullLevelInfo[];
 }) {
@@ -12,7 +12,7 @@ export function enterGameLoop(params: {
 
   if (levels.length === 0) return;
 
-  const game = new GameState(levels, setUI);
+  const game = new GamePlay(levels, setUI);
 
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true;

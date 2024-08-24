@@ -1,24 +1,23 @@
-import { displayNextLevel, renderBg } from "./render/background";
-import { accountForPosition } from "./render/helpers";
-import { SpacialHashGrid } from "./spacialHashGrid";
-import { reconcileActions } from "./state/reconcileActions";
-import { updateCamera } from "./state/camera";
-import { TimerDown, updateTimers } from "./state/timeHelpers";
-import { Champ } from "./entities/champ";
+import { displayNextLevel, renderBg } from "../render/background";
+import { accountForPosition } from "../render/helpers";
+import { SpacialHashGrid } from "../spacialHashGrid";
+import { reconcileActions } from "../state/reconcileActions";
+import { updateCamera } from "../state/camera";
+import { updateTimers } from "../state/timeHelpers";
+import { Champ } from "../entities/champ";
 import {
   gameStateConst,
   initGameState,
   levelToEntities,
-  toCurrAndPrev,
   uiIsDirty,
   updateStats,
-} from "./helpers";
-import { Entity, GameStateProps } from "./entities/entityTypes";
-import { FullLevelInfo, SetUI } from "../Game/models";
-import { updateTime } from "./state/helpers";
-import { EndGate } from "./entities/endGate";
+} from "../helpers";
+import { Entity, GameStateProps } from "../entities/entityTypes";
+import { FullLevelInfo, SetUI } from "../../Game/models";
+import { updateTime } from "../state/helpers";
+import { EndGate } from "../entities/endGate";
 
-export class GameState {
+export class GamePlay {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20]);
   state: GameStateProps = initGameState();
 

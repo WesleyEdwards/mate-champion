@@ -1,9 +1,7 @@
 import { FullLevelInfo } from "../../Game/models";
 import { Champ } from "../entities/champ";
 import { Coors, Entity, Id } from "../entities/entityTypes";
-import { toCurrAndPrev } from "../helpers";
 import { renderBg } from "../render/background";
-import { renderPlayer } from "../render/champ";
 import { accountForPosition } from "../render/helpers";
 import { updateTime } from "../state/helpers";
 import { updateTimers } from "../state/timeHelpers";
@@ -135,6 +133,7 @@ export class GameEdit {
         ];
         this.movingEntities.forEach((entity) => {
           const e = this.fromId(entity);
+          if (!e) return;
           const d: Coors = e.typeId === "floor" ? [diff[0], 0] : [...diff];
           incrementPosition(e.state.position.curr, d);
           this.isDirty = true;
@@ -201,8 +200,8 @@ export class GameEdit {
     return entity.id;
   }
 
-  fromId(entity: Id): Entity {
-    return this.state.entities.find((e) => e.id === entity)!;
+  fromId(entity: Id): Entity | undefined {
+    return this.state.entities.find((e) => e.id === entity);
   }
 
   /** Render */
