@@ -204,6 +204,12 @@ export class GameEdit {
     return this.state.entities.find((e) => e.id === entity);
   }
 
+  get currentlySelected(): Entity[] {
+    return [...this.selectedEntities]
+      .map((e) => this.fromId(e))
+      .filter(Boolean) as Entity[];
+  }
+
   /** Render */
   render(cxt: CanvasRenderingContext2D) {
     const camPos = this.state.camera.position;

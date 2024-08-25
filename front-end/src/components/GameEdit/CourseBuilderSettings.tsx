@@ -1,14 +1,18 @@
-import { CircularProgress, Stack, Card } from "@mui/joy";
-import { useState, useEffect } from "react";
-import { EntityType } from "../game/entities/entityTypes";
 import {
-  devSettings,
-  contentCreatorModifyObject,
-} from "../game/loopShared/devTools/devSettings";
-import { useLevelContext } from "../hooks/useLevels";
-import grogImg from "../assets/grog/enemy_walking_single.png";
-import packageImg from "../assets/mate-package.png";
-import platformImg from "../assets/platform.png";
+  CircularProgress,
+  Stack,
+  Card,
+  IconButton,
+  Typography,
+  CardContent,
+} from "@mui/joy";
+import { useState, useEffect, FC } from "react";
+import { Entity, EntityType } from "../../game/entities/entityTypes";
+import { devSettings } from "../../game/loopShared/devTools/devSettings";
+import { useLevelContext } from "../../hooks/useLevels";
+import { EditingItem, renderEntity } from "./ItemTypeEdit";
+import { Add, Remove } from "@mui/icons-material";
+import { PlatformState } from "../../game/entities/platform";
 
 export type EditableEntity = Exclude<EntityType, "player" | "bullet">;
 
@@ -20,109 +24,105 @@ export type AddableEntity = Exclude<
 export const CourseBuilderSettings = () => {
   const { editingLevel } = useLevelContext();
   const [editingItemType, setEditingItemType] = useState<EditableEntity>();
+  const [editingEntities, setEditingEntities] = useState<Entity[]>([]);
 
   const updateEditing = () => {
     if (editingItemType !== devSettings().modifyingItem) {
       setEditingItemType(devSettings().modifyingItem);
+    }
+    if (!arraysAreSame(editingEntities, window.editingEntities)) {
+      setEditingEntities([...window.editingEntities]);
     }
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
       updateEditing();
-    }, 300);
+    }, 100);
     return () => clearInterval(interval);
   });
-
-  const handleSetEditingItem = (item: EditableEntity) => {
-    contentCreatorModifyObject(item);
-    setEditingItemType(item);
-  };
 
   if (editingLevel === "loading" || editingLevel === undefined) {
     return <CircularProgress />;
   }
 
-  const images = [
-    {
-      obj: "platform",
-      display: (
-        <div
-          style={{
-            width: "60px",
-            height: "30px",
-            backgroundColor: "springgreen",
-            borderColor: "black",
-            borderWidth: "3px",
-            borderStyle: "solid",
-          }}
-        ></div>
-      ),
-    },
-    {
-      obj: "floor",
-      display: (
-        <img
-          src={platformImg}
-          style={{
-            width: "60px",
-            height: "30px",
-          }}
-        />
-      ),
-    },
-    {
-      obj: "groog",
-      display: (
-        <img
-          style={{
-            maxWidth: "50px",
-            maxHeight: "50px",
-            marginBlockEnd: "-10px",
-          }}
-          src={grogImg}
-        />
-      ),
-    },
-    {
-      obj: "ammo",
-      display: (
-        <img style={{ maxWidth: "30px", maxHeight: "30px" }} src={packageImg} />
-      ),
-    },
-  ] satisfies {
-    obj: EditableEntity;
-    display: JSX.Element;
-  }[];
+  return (
+    <Stack gap="2rem">
+      <EditingItem edit={editingItemType} setEdit={setEditingItemType} />
+      <EditingEntities edit={editingEntities} setEdit={setEditingEntities} />
+    </Stack>
+  );
+};
 
+export const EditingEntities: FC<{
+  edit: Entity[];
+  setEdit: React.Dispatch<React.SetStateAction<Entity[]>>;
+}> = ({ edit, setEdit }) => {
   return (
     <Stack>
-      <Stack gap="1rem" minWidth="200px">
-        {images.map(({ obj, display }) => (
-          <Card
-            key={obj}
-            variant={editingItemType === obj ? "solid" : "plain"}
-            sx={{
-              cursor: "pointer",
-              "&:hover": {
-                opacity: 0.8,
-              },
-              paddingY: "5px",
-              minHeight: "60px",
-            }}
-            onClick={() => handleSetEditingItem(obj)}
-          >
-            <Stack
-              justifyContent="space-between"
-              direction="row"
-              alignItems="center"
-              height="100%"
-            >
-              {obj} {display}
-            </Stack>
-          </Card>
-        ))}
-      </Stack>
+      {edit.map((entity) => {
+        if (entity.typeId === "platform") {
+          return (
+            <Card key={entity.id}>
+              <CardContent>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "30px",
+                    backgroundColor: (entity.state as PlatformState).color,
+                    borderColor: "black",
+                    borderWidth: "3px",
+                    borderStyle: "solid",
+                  }}
+                ></div>
+                <Stack alignItems={"center"}>
+                  <Typography level="body-lg">Width</Typography>
+                  <Stack
+                    direction="row"
+                    p="10px"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                  >
+                    <IconButton
+                      onClick={() => {
+                        setEdit((prev) =>
+                          prev.map((e) => {
+                            if (e.id === entity.id) {
+                              entity.state.dimensions[0] -= 10;
+                              return entity;
+                            }
+                            return e;
+                          })
+                        );
+                      }}
+                    >
+                      <Remove />
+                    </IconButton>
+                    <Typography>{entity.state.dimensions[0]}</Typography>
+                    <IconButton
+                      onClick={() => {
+                        setEdit((prev) =>
+                          prev.map((e) => {
+                            if (e.id === entity.id) {
+                              entity.state.dimensions[0] += 10;
+                              return entity;
+                            }
+                            return e;
+                          })
+                        );
+                      }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Stack>
+                </Stack>
+              </CardContent>
+            </Card>
+          );
+        }
+        return <div key={entity.id}>{entity.typeId}</div>;
+      })}
     </Stack>
   );
 };
@@ -242,3 +242,7 @@ export const CourseBuilderSettings = () => {
 //     </Stack>
 //   );
 // };
+
+export const arraysAreSame = (a: Entity[], b: Entity[]) =>
+  a.every((e) => b.find((entity) => entity.id === e.id)) &&
+  b.every((e) => a.find((entity) => entity.id === e.id));

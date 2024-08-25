@@ -8,7 +8,7 @@ import { emptyTime, Timer, TimerUp } from "../state/timeHelpers";
 import { GameEdit } from "./GameEdit";
 import { Groog1 } from "../entities/groog";
 import { Ammo } from "../entities/Ammo";
-import { AddableEntity } from "../../components/CourseBuilderSettings";
+import { AddableEntity } from "../../components/GameEdit/CourseBuilderSettings";
 
 export const addEntityToState = (gs: GameEdit) => {
   if (!gs.state.keys.mouseUp.curr) return;

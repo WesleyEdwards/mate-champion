@@ -3,8 +3,6 @@ import { ScreenProps } from "./GameEntry";
 import { LevelInfo } from "../game/loopShared/models";
 import { Card, IconButton, Stack, Typography } from "@mui/joy";
 import { PlayArrow } from "@mui/icons-material";
-import { emptyStats } from "../game/loopShared/utils";
-// import { enterGameLoop } from "../Game/Main";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
 import { GridComponent } from "./LevelEditorHome";
@@ -13,7 +11,6 @@ import { enterGameLoopPreview } from "../game/previewer/previewLoop";
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   const { setGameMode, levelCache } = useLevelContext();
-  const { setModal } = usePauseModalContext();
   const { navigateTo } = useNavigator();
   const [levels, setLevels] = useState<LevelInfo[]>();
 
@@ -21,7 +18,6 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
     const fullLevel = await levelCache.read.getFull(levelId);
 
     navigateTo("game");
-
     setGameMode("test");
 
     enterGameLoopPreview(fullLevel);
@@ -58,29 +54,27 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
   );
 };
 
-export const LevelCard: FC<{
+const LevelCard: FC<{
   level: LevelInfo;
   subtitle?: string;
   actionButton: React.ReactNode;
-}> = ({ level, actionButton, subtitle }) => {
-  return (
-    <Card key={level._id} sx={{ width: "100%" }}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Stack sx={{ overflow: "hidden" }}>
-          <Typography
-            level="h4"
-            sx={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {level.name}
-          </Typography>
-          {subtitle && <Typography level="body-sm">{subtitle}</Typography>}
-        </Stack>
-        {actionButton}
+}> = ({ level, actionButton, subtitle }) => (
+  <Card key={level._id} sx={{ width: "100%" }}>
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack sx={{ overflow: "hidden" }}>
+        <Typography
+          level="h4"
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {level.name}
+        </Typography>
+        {subtitle && <Typography level="body-sm">{subtitle}</Typography>}
       </Stack>
-    </Card>
-  );
-};
+      {actionButton}
+    </Stack>
+  </Card>
+);

@@ -1,7 +1,5 @@
-import { FC, useEffect, useState } from "react";
-import { useAuthContext } from "../hooks/useAuth";
-import { MCScreen, ScreenProps } from "./GameEntry";
-import { LevelInfo } from "../game/loopShared/models";
+import { FC, useState } from "react";
+import { ScreenProps } from "./GameEntry";
 import {
   Stack,
   Tab,
@@ -14,11 +12,23 @@ import {
 } from "@mui/joy";
 import { MyLevels } from "./MyLevels";
 import { PublicLevelsScreen } from "./PublicLevelsScreen";
+import { localStorageManager } from "../api/localStorageManager";
 
 export const LevelEditorHome: FC<ScreenProps> = ({ modifyStats }) => {
+  const [value, setValue] = useState<number>(
+    +localStorageManager.get("level-tab")
+  );
   return (
     <Stack maxHeight="calc(100vh - 8rem)">
-      <Tabs>
+      <Tabs
+        value={value}
+        onChange={(_, v) => {
+          if (typeof v === "number") {
+            localStorageManager.set("level-tab", v);
+            setValue(v);
+          }
+        }}
+      >
         <TabList
           sx={{
             pt: 1,

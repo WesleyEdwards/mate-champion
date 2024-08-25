@@ -73,7 +73,12 @@ export const EditEmail: FC = () => {
   const [editing, setEditing] = useState<boolean>(false);
 
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center">
+    <Stack
+      direction="row"
+      height="40px"
+      justifyContent="space-between"
+      alignItems="center"
+    >
       <Stack direction="column" alignItems="center">
         {editing ? (
           <Input

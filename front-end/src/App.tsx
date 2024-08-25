@@ -11,7 +11,8 @@ import { LevelsContext, useLevels } from "./hooks/useLevels";
 import { Layout } from "./components/Layout";
 import { initializeDevSettings } from "./game/loopShared/devTools/devSettings";
 import { initializeTextures } from "./gameAssets/textures";
-import { EditableEntity } from "./components/CourseBuilderSettings";
+import { EditableEntity } from "./components/GameEdit/CourseBuilderSettings";
+import { Entity } from "./game/entities/entityTypes";
 
 declare global {
   interface Window {
@@ -21,8 +22,8 @@ declare global {
       showDevStats: boolean;
       collisionBoxesVisible: boolean;
       cameraLines: boolean;
-      invincibility: boolean;
     };
+    editingEntities: Entity[];
     selectedItem: EditableEntity;
     debounceLog: (...args: any[]) => void;
   }
@@ -38,11 +39,11 @@ initializeTextures();
 
 function debounceLog(...args: any[]) {
   const rand = Math.floor(0 + Math.random() * (10 + 1));
-  if (rand === 1) {
-    console.log(...args);
-  }
+  if (rand === 1) console.log(...args);
 }
+
 window.debounceLog = debounceLog;
+window.editingEntities = [];
 
 const theme: Theme = extendTheme(mateTheme);
 

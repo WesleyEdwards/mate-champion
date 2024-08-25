@@ -1,12 +1,11 @@
 import { localStorageManager } from "../../../api/localStorageManager";
 import { Coordinates, FullLevelInfo } from "../models";
-import { EditableEntity } from "../../../components/CourseBuilderSettings";
+import { EditableEntity } from "../../../components/GameEdit/CourseBuilderSettings";
 
 const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,
   collisionBoxesVisible: false,
   cameraLines: false,
-  invincibility: false,
 } as const;
 
 export type DevStats = {
@@ -18,7 +17,6 @@ export type Settings = {
   showDevStats: boolean;
   collisionBoxesVisible: boolean;
   cameraLines: boolean;
-  invincibility: boolean;
 };
 
 export const devSettings = () => {

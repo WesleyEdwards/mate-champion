@@ -10,7 +10,7 @@ export const Instructions: FC = () => {
           mate! Try to make it as far as you can without dying.
         </Typography>
         <Typography style={{ overflow: "wrap", maxWidth: "500px" }}>
-          Collect Mate to help you survive longer, avoid the lava, and be
+          Collect Mate to help you survive longer, avoid falling, and be
           careful. Good luck.
         </Typography>
       </Stack>

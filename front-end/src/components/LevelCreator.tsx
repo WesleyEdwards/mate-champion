@@ -4,7 +4,7 @@ import { camelCaseToTitleCase } from "../helpers";
 import { FC, useState } from "react";
 import { usePauseModalContext } from "../hooks/PauseModalContext";
 import { useLevelContext } from "../hooks/useLevels";
-import { CourseBuilderSettings } from "./CourseBuilderSettings";
+import { CourseBuilderSettings } from "./GameEdit/CourseBuilderSettings";
 
 export const LevelCreator: FC = () => {
   const { gameMode, editingLevel, levelCache } = useLevelContext();
