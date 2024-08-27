@@ -53,10 +53,10 @@ type GroogDirX = "left" | "right";
 export type GroogAction =
   | { name: "die" }
   | { name: "jump" }
-  | { name: "setX"; dir: GroogDirX }
+  | { name: "setFacingX"; dir: GroogDirX }
   | { name: "setY"; y: number };
 
-export class Groog1 implements Entity {
+export class Groog implements Entity {
   id = createId("groog");
   typeId = "groog" as const;
   state: GroogState;
@@ -96,7 +96,7 @@ export class Groog1 implements Entity {
     ) {
       this.state.timers.turnX.val = 0;
       processGroogActionRaw(this.state, {
-        name: "setX",
+        name: "setFacingX",
         dir: this.state.facing === "left" ? "right" : "left",
       });
     }

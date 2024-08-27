@@ -4,7 +4,7 @@ import { areEntitiesTouching } from "../helpers";
 import { distBetween } from "../state/helpers";
 import { TimerUp, updatePosAndVel } from "../state/timeHelpers";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { Groog1 } from "./groog";
+import { Groog } from "./groog";
 
 export type MBulletState = {
   timers: { timeAlive: TimerUp };
@@ -80,7 +80,7 @@ export class Bullet1 implements Entity {
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const e of entities) {
-      if (e instanceof Groog1) {
+      if (e instanceof Groog) {
         if (areEntitiesTouching(this.state, e.state)) {
           e.state.queueActions.push({ name: "die" });
           this.state.dead = true;

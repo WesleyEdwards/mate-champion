@@ -7,7 +7,7 @@ import {
   Entity,
   GameStateProps,
 } from "./entities/entityTypes";
-import { Groog1 } from "./entities/groog";
+import { Groog } from "./entities/groog";
 import { Floor, floorConst, Platform } from "./entities/platform";
 import { emptyTime } from "./state/timeHelpers";
 
@@ -62,7 +62,7 @@ export const levelToEntities = (level: FullLevelInfo): Entity[] => {
   });
 
   level.opponents.grog.forEach((g) => {
-    entities.push(new Groog1([g.initPos.x, g.initPos.y], [g.moveSpeed, 0]));
+    entities.push(new Groog([g.initPos.x, g.initPos.y], [g.moveSpeed, 0]));
   });
 
   level.packages.forEach((p) => {

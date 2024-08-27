@@ -11,7 +11,7 @@ import { LevelsContext, useLevels } from "./hooks/useLevels";
 import { Layout } from "./components/Layout";
 import { initializeDevSettings } from "./game/loopShared/devTools/devSettings";
 import { initializeTextures } from "./gameAssets/textures";
-import { EditableEntity } from "./components/GameEdit/CourseBuilderSettings";
+import { AddableEntity } from "./components/GameEdit/CourseBuilderSettings";
 import { Entity } from "./game/entities/entityTypes";
 
 declare global {
@@ -24,7 +24,7 @@ declare global {
       cameraLines: boolean;
     };
     editingEntities: Entity[];
-    selectedItem: EditableEntity;
+    addingEntityType: AddableEntity;
     debounceLog: (...args: any[]) => void;
   }
 

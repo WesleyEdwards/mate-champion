@@ -17,6 +17,7 @@ import {
   withCamPosition,
 } from "./editHelpers";
 import { addDevEventListeners } from "./eventListeners";
+import { Groog } from "../entities/groog";
 
 export class GameEdit {
   state: GameStateEditProps;
@@ -169,6 +170,13 @@ export class GameEdit {
         e.state.position.curr = toRounded(e.state.position.curr);
       });
     }
+
+    // Fix entities
+    this.state.entities.forEach((entity) => {
+      if (entity instanceof Groog) {
+        entity.state.facing = entity.state.velocity[0] > 0 ? "right" : "left";
+      }
+    });
 
     this.state.keys.mouseUp.curr = null;
   }

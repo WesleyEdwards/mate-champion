@@ -16,7 +16,7 @@ import {
 } from "../state/timeHelpers";
 import { Ammo } from "./Ammo";
 import { CurrAndPrev, Coors, Entity } from "./entityTypes";
-import { Groog1 } from "./groog";
+import { Groog } from "./groog";
 
 export type ChampState = {
   position: CurrAndPrev;
@@ -148,7 +148,7 @@ export class Champ implements Entity {
         const y = calcPlatEntityCollision(this, entity);
         if (y !== null) processChampActionRaw(this.state, { name: "setY", y });
       }
-      if (entity instanceof Groog1) {
+      if (entity instanceof Groog) {
         if (this.state.action === "melee") {
           const meleePosX = (() => {
             if (this.state.facing.y === "up") {

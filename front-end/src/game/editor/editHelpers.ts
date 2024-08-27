@@ -6,7 +6,7 @@ import { levelToEntities, toCurrAndPrev } from "../helpers";
 import { Floor, floorConst, Platform } from "../entities/platform";
 import { emptyTime, Timer, TimerUp } from "../state/timeHelpers";
 import { GameEdit } from "./GameEdit";
-import { Groog1 } from "../entities/groog";
+import { Groog } from "../entities/groog";
 import { Ammo } from "../entities/Ammo";
 import { AddableEntity } from "../../components/GameEdit/CourseBuilderSettings";
 
@@ -14,15 +14,15 @@ export const addEntityToState = (gs: GameEdit) => {
   if (!gs.state.keys.mouseUp.curr) return;
 
   const addable: Record<AddableEntity, Entity> = {
-    groog: new Groog1([0, 0], [0.3, 0]),
+    groog: new Groog([0, 0], [0.3, 0]),
     floor: new Floor({
-      color: "blue",
+      color: "springgreen",
       position: toCurrAndPrev([0, 0]),
       dimensions: [1000, floorConst.floorHeight],
       dead: false,
     }),
     platform: new Platform({
-      color: "blue",
+      color: "springgreen",
       position: toCurrAndPrev([0, 0]),
       dimensions: [300, platformConst.defaultHeight],
       dead: false,
@@ -31,8 +31,7 @@ export const addEntityToState = (gs: GameEdit) => {
     ammo: new Ammo([0, 0]),
   };
 
-  const toAdd = devSettings().modifyingItem;
-  if (toAdd === "endGate") return;
+  const toAdd = devSettings().addingEntityType;
 
   const entity = addable[toAdd];
   const pos = gs.state.keys.mouseUp.curr;
@@ -165,7 +164,7 @@ export const editStateToLevelInfo = (
         .filter((e) => e.typeId === "groog")
         .map((g) => ({
           initPos: { x: g.state.position.curr[0], y: g.state.position.curr[1] },
-          moveSpeed: (g as Groog1).state.velocity[0],
+          moveSpeed: (g as Groog).state.velocity[0],
           jumpOften: false,
         })),
     },

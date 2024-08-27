@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { CSSProperties, FC, useState } from "react";
 import { ScreenProps } from "./GameEntry";
 import {
   Stack,
@@ -74,9 +74,7 @@ export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
       width: "100%",
       maxHeight: "calc(100vh - 8rem)",
       overflowY: "auto",
-      scrollbarColor: "rgb(153, 153, 153) rgba(0, 0, 0, 0)",
-      scrollbarWidth: "thin",
-      scrollbarGutter: "auto",
+      ...scrollbarProps,
     }}
   >
     {(items === "loading"
@@ -95,3 +93,9 @@ export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
     ))}
   </Grid>
 );
+
+export const scrollbarProps: CSSProperties = {
+  scrollbarColor: "rgb(153, 153, 153) rgba(0, 0, 0, 0)",
+  scrollbarWidth: "thin",
+  scrollbarGutter: "auto",
+};

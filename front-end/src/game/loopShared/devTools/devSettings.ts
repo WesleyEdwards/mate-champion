@@ -1,6 +1,6 @@
 import { localStorageManager } from "../../../api/localStorageManager";
-import { Coordinates, FullLevelInfo } from "../models";
-import { EditableEntity } from "../../../components/GameEdit/CourseBuilderSettings";
+import { Coordinates } from "../models";
+import { AddableEntity } from "../../../components/GameEdit/CourseBuilderSettings";
 
 const prodSettings: Record<keyof Settings, false> = {
   showDevStats: false,
@@ -21,7 +21,7 @@ export type Settings = {
 
 export const devSettings = () => {
   return {
-    modifyingItem: window.selectedItem,
+    addingEntityType: window.addingEntityType,
     mateSettings: window.mateSettings,
   };
 };
@@ -36,8 +36,8 @@ export const setToNoDevSettings = () => {
   localStorageManager.set("dev-settings", window.mateSettings);
 };
 
-export const contentCreatorModifyObject = (item: EditableEntity) => {
-  window.selectedItem = item;
+export const contentCreatorModifyObject = (item: AddableEntity) => {
+  window.addingEntityType = item;
 };
 
 export const initializeDevSettings = () => {
@@ -48,5 +48,5 @@ export const initializeDevSettings = () => {
     localStorageManager.set("dev-settings", prodSettings);
     window.mateSettings = prodSettings;
   }
-  window.selectedItem = "platform";
+  window.addingEntityType = "platform";
 };
