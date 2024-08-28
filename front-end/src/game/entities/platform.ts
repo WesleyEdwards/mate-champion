@@ -1,8 +1,7 @@
-import { createId, generateRandomInt } from "../loopShared/utils";
-import { Coordinates } from "../loopShared/models";
+import { createId } from "../loopShared/utils";
 import { Textures } from "../../gameAssets/textures";
 import { Coors, CurrAndPrev, Entity } from "./entityTypes";
-import { GroogState } from "./groog";
+import { toCurrAndPrev } from "../helpers";
 
 export const floorConst = {
   floorY: 530,
@@ -21,8 +20,13 @@ export class Platform implements Entity {
   typeId = "platform" as const;
   state: PlatformState;
 
-  constructor(s: PlatformState) {
-    this.state = s;
+  constructor(params: { color: string; position: Coors; dimensions: Coors }) {
+    this.state = {
+      color: params.color,
+      dimensions: params.dimensions,
+      position: toCurrAndPrev(params.position),
+      dead: false,
+    };
   }
 
   step: Entity["step"] = (deltaT) => {};
@@ -49,8 +53,13 @@ export class Floor implements Entity {
   typeId = "floor" as const;
   state: PlatformState;
 
-  constructor(s: PlatformState) {
-    this.state = s;
+  constructor(params: { color: string; startX: number; width: number }) {
+    this.state = {
+      color: params.color,
+      dimensions: [params.width, floorConst.floorHeight],
+      position: toCurrAndPrev([params.startX, floorConst.floorY]),
+      dead: false,
+    };
   }
   step: Entity["step"] = (deltaT) => {};
 

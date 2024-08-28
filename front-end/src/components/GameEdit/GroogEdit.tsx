@@ -1,18 +1,4 @@
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardContent,
-  Dropdown,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  Select,
-  Stack,
-  Option,
-  Typography,
-} from "@mui/joy";
+import { Card, CardContent, Select, Stack, Option, Typography } from "@mui/joy";
 import { FC } from "react";
 import { entityFC } from "./ItemTypeEdit";
 import { Groog } from "../../game/entities/groog";

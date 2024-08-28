@@ -1,7 +1,13 @@
-import { platformConst } from "../loopShared/constants";
+import { MAX_CANVAS_HEIGHT, platformConst } from "../loopShared/constants";
 import { devSettings } from "../loopShared/devTools/devSettings";
 import { FullLevelInfo } from "../loopShared/models";
-import { Camera, Coors, Entity } from "../entities/entityTypes";
+import {
+  Camera,
+  Coors,
+  CurrAndPrev,
+  Entity,
+  EntityOfType,
+} from "../entities/entityTypes";
 import { levelToEntities, toCurrAndPrev } from "../helpers";
 import { Floor, floorConst, Platform } from "../entities/platform";
 import { emptyTime, Timer, TimerUp } from "../state/timeHelpers";
@@ -15,19 +21,12 @@ export const addEntityToState = (gs: GameEdit) => {
 
   const addable: Record<AddableEntity, Entity> = {
     groog: new Groog([0, 0], [0.3, 0]),
-    floor: new Floor({
-      color: "springgreen",
-      position: toCurrAndPrev([0, 0]),
-      dimensions: [1000, floorConst.floorHeight],
-      dead: false,
-    }),
+    floor: new Floor({ color: "springgreen", startX: 0, width: 1000 }),
     platform: new Platform({
       color: "springgreen",
-      position: toCurrAndPrev([0, 0]),
+      position: [0, 0],
       dimensions: [300, platformConst.defaultHeight],
-      dead: false,
     }),
-
     ammo: new Ammo([0, 0]),
   };
 
@@ -50,6 +49,47 @@ export const addEntityToState = (gs: GameEdit) => {
     entity.state.position.curr[1] = floorConst.floorY;
   }
   gs.state.entities.push(entity);
+};
+
+export const copyEntity = (e: Entity): Entity | undefined => {
+  const copyOfWithOffset = (coors: CurrAndPrev): Coors => {
+    const correctForY = coors.curr[0] + 80 > MAX_CANVAS_HEIGHT ? -100 : 100;
+    return [coors.curr[0] + 100, coors.curr[1] + correctForY];
+  };
+
+  const map: {
+    [K in AddableEntity]: (old: EntityOfType[K]) => EntityOfType[K];
+  } = {
+    groog: (old) =>
+      new Groog(copyOfWithOffset(old.state.position), [
+        old.state.velocity[0],
+        old.state.velocity[1],
+      ]),
+    floor: (old) =>
+      new Floor({
+        color: old.state.color,
+        startX: old.state.position.curr[0],
+        width: old.state.dimensions[0],
+      }),
+    platform: (old) =>
+      new Platform({
+        color: old.state.color,
+        dimensions: [old.state.dimensions[0], old.state.dimensions[1]],
+        position: copyOfWithOffset(old.state.position),
+      }),
+    ammo: (old) => new Ammo(old.state.position.curr),
+  };
+
+  if (
+    // Shouldn't ever happen
+    e.typeId === "endGate" ||
+    e.typeId === "player" ||
+    e.typeId === "floor" ||
+    e.typeId === "bullet"
+  ) {
+    return undefined;
+  }
+  return map[e.typeId](e as never);
 };
 
 export const toRounded = (pos: Coors): Coors => {
@@ -87,6 +127,7 @@ export type GameStateEditProps = {
     ctrl: EventState;
     delete: EventState;
     mouseDown: EventState;
+    copy: EventState;
     mouseUp: DragState;
     mousePos: DragState;
   };
@@ -130,6 +171,7 @@ export const levelInfoToEditState = (
       shift: { prev: false, curr: false },
       ctrl: { prev: false, curr: false },
       delete: { prev: false, curr: false },
+      copy: { prev: false, curr: false },
       mouseDown: { prev: false, curr: false },
       mouseUp: { prev: null, curr: null },
       mousePos: { prev: null, curr: null },

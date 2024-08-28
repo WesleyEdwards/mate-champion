@@ -17,6 +17,14 @@ export const MyLevels: FC<ScreenProps> = () => {
     levelCache.read.owned().then(setOwnedLevels);
   }, []);
 
+  if (ownedLevels?.length === 0) {
+    return (
+      <Typography textAlign={"center"} mt="2rem" level="body-sm">
+        No levels yet!
+      </Typography>
+    );
+  }
+
   return (
     <GridComponent
       items={

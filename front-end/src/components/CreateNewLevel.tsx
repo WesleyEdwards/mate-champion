@@ -1,20 +1,12 @@
 import { FC, useEffect, useState } from "react";
-import {
-  Button,
-  Input,
-  Stack,
-  Modal,
-  ModalDialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/joy";
+import { Button, Input } from "@mui/joy";
 import { Add } from "@mui/icons-material";
 import { useAuthContext } from "../hooks/useAuth";
 import { useLevelContext } from "../hooks/useLevels";
 import { useNavigator } from "../hooks/UseNavigator";
 import { MCModal } from "./MCModal";
 
-export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
+export const CreateNewLevel: FC = () => {
   const { user } = useAuthContext();
   const { setEditingLevel, levelCache } = useLevelContext();
   const { navigateTo } = useNavigator();
@@ -22,8 +14,6 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
   const [creating, setCreating] = useState(false);
 
   const [makingNew, setMakingNew] = useState<string>();
-
-  // if (!user) throw new Error("User must be authenticated");
 
   const createLevel = async (name: string) => {
     const createdLevel = await levelCache.update.create({
@@ -48,7 +38,7 @@ export const CreateNewLevel: FC<{ text: string }> = ({ text }) => {
         loading={creating}
         endDecorator={<Add />}
       >
-        {text}
+        Create
       </Button>
 
       <MCModal

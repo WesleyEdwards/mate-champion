@@ -50,7 +50,7 @@ export const LevelsHeader: FC = () => {
           <ArrowBack />
         </IconButton>
         <Typography level="h2">Levels</Typography>
-        <CreateNewLevel text="Create" />
+        <CreateNewLevel />
       </Stack>
       <Divider />
     </Stack>
@@ -114,7 +114,7 @@ export const EditLevelDetailHeader: FC = () => {
           <Input
             value={editingName}
             onChange={(e) => setEditingName(e.target.value)}
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 1, fontSize: "2rem" }}
           />
           <Tooltip title="Undo">
             <IconButton

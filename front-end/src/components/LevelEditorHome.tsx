@@ -72,6 +72,7 @@ export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
     spacing={2}
     sx={{
       width: "100%",
+      minWidth: "42rem",
       maxHeight: "calc(100vh - 8rem)",
       overflowY: "auto",
       ...scrollbarProps,

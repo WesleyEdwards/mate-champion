@@ -4,7 +4,7 @@ import { updateCameraWithPlayer } from "./camera";
 import { Coors, GameStateProps } from "../entities/entityTypes";
 import { toCurrAndPrev } from "../helpers";
 import { emptyTime } from "./timeHelpers";
-import { Bullet1, mBulletConst } from "../entities/bullet";
+import { Bullet, mBulletConst } from "../entities/bullet";
 
 export const reconcileActions = (gs: GameStateProps) => {
   for (const entity of gs.entities) {
@@ -27,7 +27,7 @@ export const reconcileActions = (gs: GameStateProps) => {
               ];
 
           gs.entities.push(
-            new Bullet1({
+            new Bullet({
               timers: {
                 timeAlive: emptyTime("up"),
               },

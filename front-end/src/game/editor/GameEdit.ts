@@ -7,6 +7,7 @@ import { updateTime } from "../state/helpers";
 import { updateTimers } from "../state/timeHelpers";
 import {
   addEntityToState,
+  copyEntity,
   editStateToLevelInfo,
   GameStateEditProps,
   incrementPosition,
@@ -35,7 +36,6 @@ export class GameEdit {
   ) {
     this.state = levelInfoToEditState(currentLevel);
     addDevEventListeners(this, canvas);
-    // https://css-tricks.com/almanac/properties/c/cursor/
     canvas.style.cursor = "move";
   }
 
@@ -98,9 +98,11 @@ export class GameEdit {
         this.selectedEntities.clear(); // unselect when not ctrl click or when
       }
 
-      this.hoveringEntities.forEach((h) => {
-        this.selectedEntities.add(h);
-      });
+      const last = Array.from(this.hoveringEntities).pop();
+      if (last) {
+        this.selectedEntities.add(last);
+      }
+
       this.movingEntities = new Set(this.selectedEntities);
     } else if (stopGrabbing) {
       this.movingEntities.clear();
@@ -123,7 +125,6 @@ export class GameEdit {
         if (proposedPos[1] < 0 || proposedPos[1] > 500) {
           diff[1] = 0;
         }
-        window.debounceLog(proposedPos[1]);
         incrementPosition(this.state.camera.position, diff);
       }
     } else if (this.movingEntities.size > 0) {
@@ -169,6 +170,22 @@ export class GameEdit {
       this.state.entities.forEach((e) => {
         e.state.position.curr = toRounded(e.state.position.curr);
       });
+    }
+
+    if (this.state.keys.copy.curr) {
+      this.currentlySelected.forEach((e) => {
+        console.log("Copying")
+        const newE = copyEntity(e);
+        console.log(newE)
+        if (newE) {
+          this.state.entities.push(newE);
+          console.log(this.state.entities.length)
+        }
+      });
+      this.state.keys.copy.curr = false;
+      if (this.currentlySelected.length > 0) {
+        this.selectedEntities.clear();
+      }
     }
 
     // Fix entities

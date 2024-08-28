@@ -44,21 +44,13 @@ export const levelToEntities = (level: FullLevelInfo): Entity[] => {
     entities.push(
       new Platform({
         color: p.color,
-        position: toCurrAndPrev([p.x, p.y]),
+        position: [p.x, p.y],
         dimensions: [p.width, p.height],
-        dead: false,
       })
     );
   });
   level.floors.forEach((f) => {
-    entities.push(
-      new Floor({
-        color: f.color,
-        position: toCurrAndPrev([f.x, floorConst.floorY]),
-        dimensions: [f.width, floorConst.floorHeight],
-        dead: false,
-      })
-    );
+    entities.push(new Floor({ color: f.color, startX: f.x, width: f.width }));
   });
 
   level.opponents.grog.forEach((g) => {

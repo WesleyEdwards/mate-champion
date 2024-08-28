@@ -19,7 +19,7 @@ export class Ammo implements Entity {
     ammo: 3,
   };
 
-  constructor(public pos: Coors) {
+  constructor(pos: Coors) {
     this.state = {
       position: toCurrAndPrev(pos),
       dimensions: [packageConst.width, packageConst.height],

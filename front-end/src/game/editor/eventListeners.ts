@@ -39,6 +39,10 @@ export function addDevEventListeners(
       if (e.code === "Delete") {
         contentCreator.setEventState("delete", true);
       }
+      if (e.code === "KeyD" && e.ctrlKey) {
+        e.preventDefault()
+        contentCreator.setEventState("copy", true);
+      }
       if (e.ctrlKey) {
         contentCreator.setEventState("ctrl", true);
       }
@@ -68,5 +72,5 @@ export function addDevEventListeners(
 
 export const resetAbortController = () => {
   abortController = new AbortController();
-}
+};
 export let abortController: AbortController = new AbortController();

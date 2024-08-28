@@ -1,5 +1,11 @@
 import { Keys, PlayStats, WinState } from "../loopShared/models";
 import { TimerDown, TimerUp } from "../state/timeHelpers";
+import { Ammo } from "./Ammo";
+import { Bullet } from "./bullet";
+import { Champ } from "./champ";
+import { EndGate } from "./endGate";
+import { Groog } from "./groog";
+import { Floor, Platform } from "./platform";
 
 export type GameStateProps = {
   currStateOfGame: WinState;
@@ -29,6 +35,16 @@ export type EntityType =
   | "bullet"
   | "ammo"
   | "endGate";
+
+export type EntityOfType = {
+  player: Champ;
+  groog: Groog;
+  floor: Floor;
+  platform: Platform;
+  bullet: Bullet;
+  ammo: Ammo;
+  endGate: EndGate;
+};
 
 export type Entity = {
   id: Id;

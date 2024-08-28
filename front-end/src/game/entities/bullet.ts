@@ -24,7 +24,7 @@ export const mBulletConst = {
   distFromOppHit: 40,
 } as const;
 
-export class Bullet1 implements Entity {
+export class Bullet implements Entity {
   id = createId();
   typeId = "bullet" as const;
   state: MBulletState;
@@ -81,6 +81,7 @@ export class Bullet1 implements Entity {
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const e of entities) {
       if (e instanceof Groog) {
+        if (e.state.render.curr === "die") continue;
         if (areEntitiesTouching(this.state, e.state)) {
           e.state.queueActions.push({ name: "die" });
           this.state.dead = true;
