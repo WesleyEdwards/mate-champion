@@ -5,20 +5,20 @@ import {
   IconButton,
   Modal,
   ModalDialog,
-  Stack,
-} from "@mui/joy";
-import { FC, useState } from "react";
-import { LevelInfo } from "../game/loopShared/models";
-import { Delete } from "@mui/icons-material";
-import { useLevelContext } from "../hooks/useLevels";
+  Stack
+} from "@mui/joy"
+import {FC, useState} from "react"
+import {LevelInfo} from "../game/loopShared/models"
+import {Delete} from "@mui/icons-material"
+import {useLevelContext} from "../hooks/useLevels"
 
 export const DeleteLevel: FC<{
-  name: string;
-  id: string;
-  showWordDelete?: boolean;
-}> = ({ name, id, showWordDelete }) => {
-  const [deleting, setDeleting] = useState(false);
-  const { levelCache, setEditingLevel } = useLevelContext();
+  name: string
+  id: string
+  showWordDelete?: boolean
+}> = ({name, id, showWordDelete}) => {
+  const [deleting, setDeleting] = useState(false)
+  const {levelCache, setEditingLevel} = useLevelContext()
   return (
     <>
       {showWordDelete ? (
@@ -51,12 +51,12 @@ export const DeleteLevel: FC<{
             <Button
               endDecorator={<Delete />}
               color="danger"
-              sx={{ alignSelf: "flex-end" }}
+              sx={{alignSelf: "flex-end"}}
               onClick={() => {
                 levelCache.update.delete(id ?? "").then(() => {
-                  setDeleting(false);
-                });
-                setEditingLevel(null);
+                  setDeleting(false)
+                })
+                setEditingLevel(null)
               }}
             >
               Delete
@@ -65,5 +65,5 @@ export const DeleteLevel: FC<{
         </ModalDialog>
       </Modal>
     </>
-  );
-};
+  )
+}

@@ -6,37 +6,37 @@ import {
   Menu,
   MenuItem,
   MenuButton,
-  Dropdown,
-} from "@mui/joy";
-import { contentCreatorModifyObject } from "../../game/loopShared/devTools/devSettings";
-import { AddableEntity, EditableEntity } from "./CourseBuilderSettings";
-import grogImg from "../../assets/grog/enemy_walking_single.png";
-import packageImg from "../../assets/mate-package.png";
-import platformImg from "../../assets/platform.png";
-import { FC } from "react";
-import { capitalize } from "lodash";
-import { Edit } from "@mui/icons-material";
+  Dropdown
+} from "@mui/joy"
+import {contentCreatorModifyObject} from "../../game/loopShared/devTools/devSettings"
+import {AddableEntity, EditableEntity} from "./CourseBuilderSettings"
+import grogImg from "../../assets/grog/enemy_walking_single.png"
+import packageImg from "../../assets/mate-package.png"
+import platformImg from "../../assets/platform.png"
+import {FC} from "react"
+import {capitalize} from "lodash"
+import {Edit} from "@mui/icons-material"
 
 export const AddingEntity = ({
   edit,
-  setEdit,
+  setEdit
 }: {
-  edit: AddableEntity | undefined;
-  setEdit: (e: AddableEntity) => void;
+  edit: AddableEntity | undefined
+  setEdit: (e: AddableEntity) => void
 }) => {
   const handleSetEditingItem = (item: AddableEntity) => {
-    contentCreatorModifyObject(item);
-    setEdit(item);
-  };
+    contentCreatorModifyObject(item)
+    setEdit(item)
+  }
 
-  if (!edit) return null;
+  if (!edit) return null
 
-  const Render = entityFC[edit];
+  const Render = entityFC[edit]
 
   return (
     <Card
       style={{
-        padding: "12px",
+        padding: "12px"
       }}
     >
       <Stack>
@@ -50,12 +50,12 @@ export const AddingEntity = ({
           </Stack>
           <Dropdown>
             <MenuButton
-              slots={{ root: IconButton }}
+              slots={{root: IconButton}}
               slotProps={{
                 root: {
                   variant: "outlined",
-                  color: "neutral",
-                },
+                  color: "neutral"
+                }
               }}
             >
               <Edit />
@@ -76,7 +76,7 @@ export const AddingEntity = ({
         <Render />
       </Stack>
     </Card>
-  );
+  )
 
   // return (
   //   <Stack gap="1rem" minWidth="200px">
@@ -106,13 +106,13 @@ export const AddingEntity = ({
   //     ))}
   //   </Stack>
   // );
-};
+}
 
 export const entityFC: Record<
   AddableEntity,
-  FC<{ style?: React.CSSProperties | undefined }>
+  FC<{style?: React.CSSProperties | undefined}>
 > = {
-  platform: ({ style }) => (
+  platform: ({style}) => (
     <div
       style={{
         width: "60px",
@@ -121,30 +121,27 @@ export const entityFC: Record<
         borderColor: "black",
         borderWidth: "3px",
         borderStyle: "solid",
-        ...style,
+        ...style
       }}
     ></div>
   ),
-  floor: ({ style }) => (
-    <img
-      src={platformImg}
-      style={{ ...style, width: "60px", height: "30px" }}
-    />
+  floor: ({style}) => (
+    <img src={platformImg} style={{...style, width: "60px", height: "30px"}} />
   ),
-  groog: ({ style }) => (
+  groog: ({style}) => (
     <img
       style={{
         ...style,
         maxWidth: "50px",
-        maxHeight: "50px",
+        maxHeight: "50px"
       }}
       src={grogImg}
     />
   ),
-  ammo: ({ style }) => (
+  ammo: ({style}) => (
     <img
-      style={{ ...style, maxWidth: "30px", maxHeight: "30px" }}
+      style={{...style, maxWidth: "30px", maxHeight: "30px"}}
       src={packageImg}
     />
-  ),
-};
+  )
+}

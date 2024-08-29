@@ -1,19 +1,19 @@
-import { FC, useEffect, useState } from "react";
-import { Button, Input } from "@mui/joy";
-import { Add } from "@mui/icons-material";
-import { useAuthContext } from "../hooks/useAuth";
-import { useLevelContext } from "../hooks/useLevels";
-import { useNavigator } from "../hooks/UseNavigator";
-import { MCModal } from "./MCModal";
+import {FC, useEffect, useState} from "react"
+import {Button, Input} from "@mui/joy"
+import {Add} from "@mui/icons-material"
+import {useAuthContext} from "../hooks/useAuth"
+import {useLevelContext} from "../hooks/useLevels"
+import {useNavigator} from "../hooks/UseNavigator"
+import {MCModal} from "./MCModal"
 
 export const CreateNewLevel: FC = () => {
-  const { user } = useAuthContext();
-  const { setEditingLevel, levelCache } = useLevelContext();
-  const { navigateTo } = useNavigator();
+  const {user} = useAuthContext()
+  const {setEditingLevel, levelCache} = useLevelContext()
+  const {navigateTo} = useNavigator()
 
-  const [creating, setCreating] = useState(false);
+  const [creating, setCreating] = useState(false)
 
-  const [makingNew, setMakingNew] = useState<string>();
+  const [makingNew, setMakingNew] = useState<string>()
 
   const createLevel = async (name: string) => {
     const createdLevel = await levelCache.update.create({
@@ -24,16 +24,16 @@ export const CreateNewLevel: FC = () => {
       public: false,
       name: name,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-    setEditingLevel(createdLevel._id);
-  };
+      updatedAt: new Date().toISOString()
+    })
+    setEditingLevel(createdLevel._id)
+  }
 
   return (
     <>
       <Button
         onClick={() => {
-          setMakingNew("");
+          setMakingNew("")
         }}
         loading={creating}
         endDecorator={<Add />}
@@ -46,11 +46,11 @@ export const CreateNewLevel: FC = () => {
         open={makingNew !== undefined}
         onClose={() => setMakingNew(undefined)}
         onConfirm={() => {
-          setCreating(true);
+          setCreating(true)
           createLevel(makingNew ?? "").then(() => {
-            setCreating(false);
-            navigateTo("editorDetail");
-          });
+            setCreating(false)
+            navigateTo("editorDetail")
+          })
         }}
         disableConfirm={!makingNew}
         confirmLabel="Create"
@@ -62,5 +62,5 @@ export const CreateNewLevel: FC = () => {
         />
       </MCModal>
     </>
-  );
-};
+  )
+}

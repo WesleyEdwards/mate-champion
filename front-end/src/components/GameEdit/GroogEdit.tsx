@@ -1,16 +1,16 @@
-import { Card, CardContent, Select, Stack, Option, Typography } from "@mui/joy";
-import { FC } from "react";
-import { entityFC } from "./ItemTypeEdit";
-import { Groog } from "../../game/entities/groog";
-import { MCSlider, SizeControl } from "./helpers";
+import {Card, CardContent, Select, Stack, Option, Typography} from "@mui/joy"
+import {FC} from "react"
+import {entityFC} from "./ItemTypeEdit"
+import {Groog} from "../../game/entities/groog"
+import {MCSlider, SizeControl} from "./helpers"
 
 export const GroogEdit: FC<{
-  groog: Groog;
-  editGroog: (g: Groog) => void;
-}> = ({ groog, editGroog }) => {
-  const Renderer = entityFC["groog"];
+  groog: Groog
+  editGroog: (g: Groog) => void
+}> = ({groog, editGroog}) => {
+  const Renderer = entityFC["groog"]
 
-  const facing = groog.state.velocity[0] > 0 ? "right" : "left";
+  const facing = groog.state.velocity[0] > 0 ? "right" : "left"
 
   return (
     <Card>
@@ -18,7 +18,7 @@ export const GroogEdit: FC<{
         <Renderer
           style={{
             width: "100%",
-            marginBottom: "1rem",
+            marginBottom: "1rem"
           }}
         />
 
@@ -28,13 +28,13 @@ export const GroogEdit: FC<{
           <Select
             defaultValue={facing}
             onChange={(e, value) => {
-              const abs = Math.abs(groog.state.velocity[0]);
+              const abs = Math.abs(groog.state.velocity[0])
               if (value === "left") {
-                groog.state.velocity[0] = -abs;
+                groog.state.velocity[0] = -abs
               } else {
-                groog.state.velocity[0] = abs;
+                groog.state.velocity[0] = abs
               }
-              editGroog(groog);
+              editGroog(groog)
             }}
           >
             <Option value="left">Left</Option>
@@ -45,9 +45,9 @@ export const GroogEdit: FC<{
         <MCSlider
           title="Speed"
           setValue={(value) => {
-            const accountForDir = groog.state.velocity[0] > 0 ? value : -value;
-            groog.state.velocity[0] = accountForDir / 100;
-            return editGroog(groog);
+            const accountForDir = groog.state.velocity[0] > 0 ? value : -value
+            groog.state.velocity[0] = accountForDir / 100
+            return editGroog(groog)
           }}
           value={Math.abs(Math.floor(groog.state.velocity[0] * 100))}
           incrementBy={1}
@@ -56,5 +56,5 @@ export const GroogEdit: FC<{
         />
       </CardContent>
     </Card>
-  );
-};
+  )
+}

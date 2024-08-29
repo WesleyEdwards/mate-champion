@@ -1,5 +1,5 @@
-import { CssVarsThemeOptions } from "@mui/joy";
-import { Palette, PaletteOptions } from "@mui/joy/styles/types/colorSystem";
+import {CssVarsThemeOptions} from "@mui/joy"
+import {Palette, PaletteOptions} from "@mui/joy/styles/types/colorSystem"
 
 const palette: Partial<Palette> = {
   mode: "dark",
@@ -39,8 +39,8 @@ const palette: Partial<Palette> = {
     solidDisabledBg: "#0a4e0d",
     mainChannel: "76, 175, 80",
     lightChannel: "118, 255, 123",
-    darkChannel: "46, 125, 50",
-  },
+    darkChannel: "46, 125, 50"
+  }
   //   neutral: {
   //     50: "#f5f5f5",
   //     100: "#eeeeee",
@@ -74,28 +74,28 @@ const palette: Partial<Palette> = {
   //   text: {
   //     // Define text colors
   //   },
-};
+}
 
 export const mateTheme: CssVarsThemeOptions = {
   fontFamily: {
     body: "Courier New,Courier,monospace",
-    display: "Courier New,Courier,monospace",
+    display: "Courier New,Courier,monospace"
   },
   colorSchemes: {
     light: {
-      palette: palette,
+      palette: palette
     },
     dark: {
-      palette: palette,
-    },
+      palette: palette
+    }
   },
   components: {
     JoyButton: {
       styleOverrides: {
         root: {
-          borderRadius: "20px",
-        },
-      },
-    },
-  },
-};
+          borderRadius: "20px"
+        }
+      }
+    }
+  }
+}

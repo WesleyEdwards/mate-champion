@@ -1,16 +1,16 @@
-import { Undo, Check, Edit } from "@mui/icons-material";
-import { Stack, Typography, Input, IconButton } from "@mui/joy";
-import { FC, useState } from "react";
-import { useAuthContext } from "../hooks/useAuth";
-import { camelCaseToTitleCase } from "../helpers";
+import {Undo, Check, Edit} from "@mui/icons-material"
+import {Stack, Typography, Input, IconButton} from "@mui/joy"
+import {FC, useState} from "react"
+import {useAuthContext} from "../hooks/useAuth"
+import {camelCaseToTitleCase} from "../helpers"
 
 export const EditName: FC = () => {
-  const { user, api, modifyUser } = useAuthContext();
+  const {user, api, modifyUser} = useAuthContext()
   if (!user) {
-    throw new Error("This component requires the user to not be null");
+    throw new Error("This component requires the user to not be null")
   }
-  const [displayName, setDisplayName] = useState<string>(user.name);
-  const [editing, setEditing] = useState<boolean>(false);
+  const [displayName, setDisplayName] = useState<string>(user.name)
+  const [editing, setEditing] = useState<boolean>(false)
 
   return (
     <Stack
@@ -37,18 +37,18 @@ export const EditName: FC = () => {
         <Stack direction="row" gap="1rem">
           <IconButton
             onClick={() => {
-              setEditing(false);
-              setDisplayName(user.name);
+              setEditing(false)
+              setDisplayName(user.name)
             }}
           >
             <Undo />
           </IconButton>
           <IconButton
             onClick={() => {
-              setEditing(false);
+              setEditing(false)
               if (displayName !== user.name) {
-                modifyUser({ name: displayName });
-                api.user.modify(user._id, { name: displayName });
+                modifyUser({name: displayName})
+                api.user.modify(user._id, {name: displayName})
               }
             }}
           >
@@ -61,16 +61,16 @@ export const EditName: FC = () => {
         </IconButton>
       )}
     </Stack>
-  );
-};
+  )
+}
 
 export const EditEmail: FC = () => {
-  const { user, api, modifyUser } = useAuthContext();
+  const {user, api, modifyUser} = useAuthContext()
   if (!user) {
-    throw new Error("This component requires the user to not be null");
+    throw new Error("This component requires the user to not be null")
   }
-  const [displayEmail, setDisplayEmail] = useState<string>(user.email ?? "");
-  const [editing, setEditing] = useState<boolean>(false);
+  const [displayEmail, setDisplayEmail] = useState<string>(user.email ?? "")
+  const [editing, setEditing] = useState<boolean>(false)
 
   return (
     <Stack
@@ -82,12 +82,12 @@ export const EditEmail: FC = () => {
       <Stack direction="column" alignItems="center">
         {editing ? (
           <Input
-            sx={{ height: "40px" }}
+            sx={{height: "40px"}}
             value={displayEmail}
             onChange={(e) => setDisplayEmail(e.target.value)}
           />
         ) : (
-          <Typography sx={{ height: "40px" }} level="h4">
+          <Typography sx={{height: "40px"}} level="h4">
             {user.email}
           </Typography>
         )}
@@ -100,18 +100,18 @@ export const EditEmail: FC = () => {
         <Stack direction="row" gap="1rem">
           <IconButton
             onClick={() => {
-              setEditing(false);
-              setDisplayEmail(user.email ?? "");
+              setEditing(false)
+              setDisplayEmail(user.email ?? "")
             }}
           >
             <Undo />
           </IconButton>
           <IconButton
             onClick={() => {
-              setEditing(false);
+              setEditing(false)
               if (displayEmail !== user.email) {
-                modifyUser({ email: displayEmail });
-                api.user.modify(user._id, { email: displayEmail });
+                modifyUser({email: displayEmail})
+                api.user.modify(user._id, {email: displayEmail})
               }
             }}
           >
@@ -124,5 +124,5 @@ export const EditEmail: FC = () => {
         </IconButton>
       )}
     </Stack>
-  );
-};
+  )
+}

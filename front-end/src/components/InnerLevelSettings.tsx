@@ -1,47 +1,47 @@
-import { Stack, Tooltip, IconButton, Input, Typography } from "@mui/joy";
-import { useLevelContext } from "../hooks/useLevels";
-import { useEffect, useState } from "react";
-import { Edit, Undo, Check } from "@mui/icons-material";
-import { MCModal } from "./MCModal";
+import {Stack, Tooltip, IconButton, Input, Typography} from "@mui/joy"
+import {useLevelContext} from "../hooks/useLevels"
+import {useEffect, useState} from "react"
+import {Edit, Undo, Check} from "@mui/icons-material"
+import {MCModal} from "./MCModal"
 
 export const InnerLevelSettings = () => {
-  const { editingLevel, levelCache } = useLevelContext();
+  const {editingLevel, levelCache} = useLevelContext()
   const [editingLength, setEditingLength] = useState<{
-    original: number;
-    dirty: number;
-  }>({ original: 0, dirty: 0 });
-  const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
+    original: number
+    dirty: number
+  }>({original: 0, dirty: 0})
+  const [open, setOpen] = useState(false)
+  const [error, setError] = useState("")
 
-  if (editingLevel === "loading") return null;
+  if (editingLevel === "loading") return null
 
   useEffect(() => {
     setEditingLength({
       original: editingLevel?.endPosition ?? 0,
-      dirty: editingLevel?.endPosition ?? 0,
-    });
-  }, [editingLevel]);
+      dirty: editingLevel?.endPosition ?? 0
+    })
+  }, [editingLevel])
 
   const submit = () => {
     if (editingLength.dirty < 100) {
-      return setError("Are you kidding? That's way too short!");
+      return setError("Are you kidding? That's way too short!")
     }
     if (editingLength.dirty > 20000) {
       return setError(
         "Hmm. That's quite long, it'll be more fun if it's shorter"
-      );
+      )
     }
-    setError("");
+    setError("")
 
     levelCache.update.modify(editingLevel!._id, {
-      endPosition: editingLength.dirty,
-    });
+      endPosition: editingLength.dirty
+    })
     setEditingLength({
       original: editingLength.dirty,
-      dirty: editingLength.dirty,
-    });
-    setOpen(false);
-  };
+      dirty: editingLength.dirty
+    })
+    setOpen(false)
+  }
 
   return (
     <>
@@ -70,12 +70,12 @@ export const InnerLevelSettings = () => {
         title={"Level Length"}
         open={open}
         onClose={() => {
-          setError("");
+          setError("")
           setEditingLength((prev) => ({
             ...prev,
-            dirty: prev.original,
-          }));
-          return setOpen(false);
+            dirty: prev.original
+          }))
+          return setOpen(false)
         }}
         onConfirm={submit}
         error={error}
@@ -85,18 +85,18 @@ export const InnerLevelSettings = () => {
           fullWidth
           value={editingLength.dirty}
           type="number"
-          sx={{ width: "8rem", alignSelf: "center" }}
+          sx={{width: "8rem", alignSelf: "center"}}
           onChange={(e) =>
             setEditingLength((prev) => ({
               original: prev.original,
-              dirty: isNaN(+e.target.value) ? 0 : +e.target.value,
+              dirty: isNaN(+e.target.value) ? 0 : +e.target.value
             }))
           }
         />
       </MCModal>
     </>
-  );
-};
+  )
+}
 
 // {editingOpponentSpeed === undefined ? (
 //         <Stack

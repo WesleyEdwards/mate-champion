@@ -1,84 +1,84 @@
-import { MAX_CANVAS_HEIGHT, platformConst } from "../loopShared/constants";
-import { devSettings } from "../loopShared/devTools/devSettings";
-import { FullLevelInfo } from "../loopShared/models";
+import {MAX_CANVAS_HEIGHT, platformConst} from "../loopShared/constants"
+import {devSettings} from "../loopShared/devTools/devSettings"
+import {FullLevelInfo} from "../loopShared/models"
 import {
   Camera,
   Coors,
   CurrAndPrev,
   Entity,
-  EntityOfType,
-} from "../entities/entityTypes";
-import { levelToEntities, toCurrAndPrev } from "../helpers";
-import { Floor, floorConst, Platform } from "../entities/platform";
-import { emptyTime, Timer, TimerUp } from "../state/timeHelpers";
-import { GameEdit } from "./GameEdit";
-import { Groog } from "../entities/groog";
-import { Ammo } from "../entities/Ammo";
-import { AddableEntity } from "../../components/GameEdit/CourseBuilderSettings";
+  EntityOfType
+} from "../entities/entityTypes"
+import {levelToEntities, toCurrAndPrev} from "../helpers"
+import {Floor, floorConst, Platform} from "../entities/platform"
+import {emptyTime, Timer, TimerUp} from "../state/timeHelpers"
+import {GameEdit} from "./GameEdit"
+import {Groog} from "../entities/groog"
+import {Ammo} from "../entities/Ammo"
+import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
 
 export const addEntityToState = (gs: GameEdit) => {
-  if (!gs.state.keys.mouseUp.curr) return;
+  if (!gs.state.keys.mouseUp.curr) return
 
   const addable: Record<AddableEntity, Entity> = {
     groog: new Groog([0, 0], [0.3, 0]),
-    floor: new Floor({ color: "springgreen", startX: 0, width: 1000 }),
+    floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
     platform: new Platform({
       color: "springgreen",
       position: [0, 0],
-      dimensions: [300, platformConst.defaultHeight],
+      dimensions: [300, platformConst.defaultHeight]
     }),
-    ammo: new Ammo([0, 0]),
-  };
+    ammo: new Ammo([0, 0])
+  }
 
-  const toAdd = devSettings().addingEntityType;
+  const toAdd = devSettings().addingEntityType
 
-  const entity = addable[toAdd];
-  const pos = gs.state.keys.mouseUp.curr;
+  const entity = addable[toAdd]
+  const pos = gs.state.keys.mouseUp.curr
 
   const center: Coors = [
     pos[0] - entity.state.dimensions[0] / 2,
-    pos[1] - entity.state.dimensions[1] / 2,
-  ];
+    pos[1] - entity.state.dimensions[1] / 2
+  ]
 
   entity.state.position = toCurrAndPrev(
     withCamPosition(center, gs.state.camera)
-  );
+  )
 
   if (entity.typeId === "floor") {
     // Should probably do this higher up in the fun, but this works for now
-    entity.state.position.curr[1] = floorConst.floorY;
+    entity.state.position.curr[1] = floorConst.floorY
   }
-  gs.state.entities.push(entity);
-};
+  gs.state.entities.push(entity)
+}
 
 export const copyEntity = (e: Entity): Entity | undefined => {
   const copyOfWithOffset = (coors: CurrAndPrev): Coors => {
-    const correctForY = coors.curr[0] + 80 > MAX_CANVAS_HEIGHT ? -100 : 100;
-    return [coors.curr[0] + 100, coors.curr[1] + correctForY];
-  };
+    const correctForY = coors.curr[0] + 80 > MAX_CANVAS_HEIGHT ? -100 : 100
+    return [coors.curr[0] + 100, coors.curr[1] + correctForY]
+  }
 
   const map: {
-    [K in AddableEntity]: (old: EntityOfType[K]) => EntityOfType[K];
+    [K in AddableEntity]: (old: EntityOfType[K]) => EntityOfType[K]
   } = {
     groog: (old) =>
       new Groog(copyOfWithOffset(old.state.position), [
         old.state.velocity[0],
-        old.state.velocity[1],
+        old.state.velocity[1]
       ]),
     floor: (old) =>
       new Floor({
         color: old.state.color,
         startX: old.state.position.curr[0],
-        width: old.state.dimensions[0],
+        width: old.state.dimensions[0]
       }),
     platform: (old) =>
       new Platform({
         color: old.state.color,
         dimensions: [old.state.dimensions[0], old.state.dimensions[1]],
-        position: copyOfWithOffset(old.state.position),
+        position: copyOfWithOffset(old.state.position)
       }),
-    ammo: (old) => new Ammo(old.state.position.curr),
-  };
+    ammo: (old) => new Ammo(old.state.position.curr)
+  }
 
   if (
     // Shouldn't ever happen
@@ -87,98 +87,98 @@ export const copyEntity = (e: Entity): Entity | undefined => {
     e.typeId === "floor" ||
     e.typeId === "bullet"
   ) {
-    return undefined;
+    return undefined
   }
-  return map[e.typeId](e as never);
-};
+  return map[e.typeId](e as never)
+}
 
 export const toRounded = (pos: Coors): Coors => {
-  const roundTo = 10;
-  const valX = Math.ceil(pos[0] / roundTo) * roundTo;
-  const valY = Math.ceil(pos[1] / roundTo) * roundTo;
-  return [valX, valY];
-};
+  const roundTo = 10
+  const valX = Math.ceil(pos[0] / roundTo) * roundTo
+  const valY = Math.ceil(pos[1] / roundTo) * roundTo
+  return [valX, valY]
+}
 
 export const incrementPosition = (curr: Coors, increment: Coors) => {
-  curr[0] += increment[0];
-  curr[1] += increment[1];
-};
+  curr[0] += increment[0]
+  curr[1] += increment[1]
+}
 
 export const withCamPosition = (curr: Coors, cam: Camera): Coors => {
-  return [curr[0] + cam.position[0], curr[1] - cam.position[1]];
-};
+  return [curr[0] + cam.position[0], curr[1] - cam.position[1]]
+}
 
-export type EventState = { prev: boolean; curr: boolean };
-export type DragState = { prev: Coors | null; curr: Coors | null };
+export type EventState = {prev: boolean; curr: boolean}
+export type DragState = {prev: Coors | null; curr: Coors | null}
 
 export type GameStateEditProps = {
-  entities: Entity[];
-  endPosition: number;
-  camera: Camera;
+  entities: Entity[]
+  endPosition: number
+  camera: Camera
   time: {
-    deltaT: number;
-    prevStamp: number;
-  };
+    deltaT: number
+    prevStamp: number
+  }
   timers: {
-    sinceLastSave: TimerUp;
-  };
+    sinceLastSave: TimerUp
+  }
   keys: {
-    shift: EventState;
-    ctrl: EventState;
-    delete: EventState;
-    mouseDown: EventState;
-    copy: EventState;
-    mouseUp: DragState;
-    mousePos: DragState;
-  };
-};
+    shift: EventState
+    ctrl: EventState
+    delete: EventState
+    mouseDown: EventState
+    copy: EventState
+    mouseUp: DragState
+    mousePos: DragState
+  }
+}
 
-export const updateCurrPrevBool = (obj: { curr: boolean; prev: boolean }) => {
-  obj.prev = obj.curr;
-};
+export const updateCurrPrevBool = (obj: {curr: boolean; prev: boolean}) => {
+  obj.prev = obj.curr
+}
 
 export const updateCurrPrevDragState = (obj: {
-  curr: Coors | null;
-  prev: Coors | null;
+  curr: Coors | null
+  prev: Coors | null
 }) => {
   if (obj.curr === null) {
-    obj.prev = obj.curr;
+    obj.prev = obj.curr
   } else {
-    obj.prev = [...obj.curr];
+    obj.prev = [...obj.curr]
   }
-};
+}
 
 export const levelInfoToEditState = (
   level: FullLevelInfo
 ): GameStateEditProps => {
   return {
-    entities: levelToEntities({ ...level }),
+    entities: levelToEntities({...level}),
     camera: {
       time: {
-        idleTime: emptyTime("up"),
+        idleTime: emptyTime("up")
       },
       position: [0, 0],
-      velocity: [0, 0],
+      velocity: [0, 0]
     },
     time: {
       deltaT: 0,
-      prevStamp: performance.now(),
+      prevStamp: performance.now()
     },
     timers: {
-      sinceLastSave: emptyTime("up"),
+      sinceLastSave: emptyTime("up")
     },
     keys: {
-      shift: { prev: false, curr: false },
-      ctrl: { prev: false, curr: false },
-      delete: { prev: false, curr: false },
-      copy: { prev: false, curr: false },
-      mouseDown: { prev: false, curr: false },
-      mouseUp: { prev: null, curr: null },
-      mousePos: { prev: null, curr: null },
+      shift: {prev: false, curr: false},
+      ctrl: {prev: false, curr: false},
+      delete: {prev: false, curr: false},
+      copy: {prev: false, curr: false},
+      mouseDown: {prev: false, curr: false},
+      mouseUp: {prev: null, curr: null},
+      mousePos: {prev: null, curr: null}
     },
-    endPosition: level.endPosition,
-  };
-};
+    endPosition: level.endPosition
+  }
+}
 
 export const editStateToLevelInfo = (
   gs: GameStateEditProps
@@ -190,7 +190,7 @@ export const editStateToLevelInfo = (
       .map((f) => ({
         x: f.state.position.curr[0],
         width: f.state.dimensions[0],
-        color: (f as Floor).state.color,
+        color: (f as Floor).state.color
       })),
     platforms: gs.entities
       .filter((e) => e.typeId === "platform")
@@ -199,22 +199,22 @@ export const editStateToLevelInfo = (
         y: f.state.position.curr[1],
         width: f.state.dimensions[0],
         height: f.state.dimensions[1],
-        color: (f as Platform).state.color,
+        color: (f as Platform).state.color
       })),
     opponents: {
       grog: gs.entities
         .filter((e) => e.typeId === "groog")
         .map((g) => ({
-          initPos: { x: g.state.position.curr[0], y: g.state.position.curr[1] },
+          initPos: {x: g.state.position.curr[0], y: g.state.position.curr[1]},
           moveSpeed: (g as Groog).state.velocity[0],
-          jumpOften: false,
-        })),
+          jumpOften: false
+        }))
     },
     packages: gs.entities
       .filter((e) => e.typeId === "ammo")
       .map((p) => ({
         x: p.state.position.curr[0],
-        y: p.state.position.curr[1],
-      })),
-  };
-};
+        y: p.state.position.curr[1]
+      }))
+  }
+}

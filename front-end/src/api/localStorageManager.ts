@@ -1,19 +1,19 @@
-import { FullLevelInfo } from "../game/loopShared/models";
+import {FullLevelInfo} from "../game/loopShared/models"
 
-type KeyName = "token" | "high-score" | "dev-settings" | "level-tab";
+type KeyName = "token" | "high-score" | "dev-settings" | "level-tab"
 
 export const localStorageManager = {
   get: (key: KeyName) => {
-    const value = localStorage.getItem(`mate-${key}`);
+    const value = localStorage.getItem(`mate-${key}`)
     if (value) {
-      return JSON.parse(value);
+      return JSON.parse(value)
     }
-    return null;
+    return null
   },
   set: (key: KeyName, value: any) => {
-    localStorage.setItem(`mate-${key}`, JSON.stringify(value));
+    localStorage.setItem(`mate-${key}`, JSON.stringify(value))
   },
   remove: (key: string) => {
-    localStorage.removeItem(`mate-${key}`);
-  },
-};
+    localStorage.removeItem(`mate-${key}`)
+  }
+}

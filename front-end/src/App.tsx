@@ -3,53 +3,53 @@ import {
   CssVarsProvider,
   Theme,
   ThemeProvider,
-  extendTheme,
-} from "@mui/joy";
-import { mateTheme } from "./theme";
-import { AuthContext, useAuth } from "./hooks/useAuth";
-import { LevelsContext, useLevels } from "./hooks/useLevels";
-import { Layout } from "./components/Layout";
-import { initializeDevSettings } from "./game/loopShared/devTools/devSettings";
-import { initializeTextures } from "./gameAssets/textures";
-import { AddableEntity } from "./components/GameEdit/CourseBuilderSettings";
-import { Entity } from "./game/entities/entityTypes";
+  extendTheme
+} from "@mui/joy"
+import {mateTheme} from "./theme"
+import {AuthContext, useAuth} from "./hooks/useAuth"
+import {LevelsContext, useLevels} from "./hooks/useLevels"
+import {Layout} from "./components/Layout"
+import {initializeDevSettings} from "./game/loopShared/devTools/devSettings"
+import {initializeTextures} from "./gameAssets/textures"
+import {AddableEntity} from "./components/GameEdit/CourseBuilderSettings"
+import {Entity} from "./game/entities/entityTypes"
 
 declare global {
   interface Window {
-    stopLoop: boolean;
-    pause: boolean;
+    stopLoop: boolean
+    pause: boolean
     mateSettings: {
-      showDevStats: boolean;
-      collisionBoxesVisible: boolean;
-      cameraLines: boolean;
-    };
-    editingEntities: Entity[];
-    addingEntityType: AddableEntity;
-    debounceLog: (...args: any[]) => void;
+      showDevStats: boolean
+      collisionBoxesVisible: boolean
+      cameraLines: boolean
+    }
+    editingEntities: Entity[]
+    addingEntityType: AddableEntity
+    debounceLog: (...args: any[]) => void
   }
 
   interface ObjectConstructor {
-    entries<T extends object, K extends keyof T>(o: T): [K, T[K]][];
-    keys<T extends object>(o: T): (keyof T)[];
+    entries<T extends object, K extends keyof T>(o: T): [K, T[K]][]
+    keys<T extends object>(o: T): (keyof T)[]
   }
 }
 
-initializeDevSettings();
-initializeTextures();
+initializeDevSettings()
+initializeTextures()
 
 function debounceLog(...args: any[]) {
-  const rand = Math.floor(0 + Math.random() * (10 + 1));
-  if (rand === 1) console.log(...args);
+  const rand = Math.floor(0 + Math.random() * (10 + 1))
+  if (rand === 1) console.log(...args)
 }
 
-window.debounceLog = debounceLog;
-window.editingEntities = [];
+window.debounceLog = debounceLog
+window.editingEntities = []
 
-const theme: Theme = extendTheme(mateTheme);
+const theme: Theme = extendTheme(mateTheme)
 
 function App() {
-  const authInfo = useAuth();
-  const levelManager = useLevels({ api: authInfo.api, user: authInfo.user });
+  const authInfo = useAuth()
+  const levelManager = useLevels({api: authInfo.api, user: authInfo.user})
 
   return (
     <CssVarsProvider defaultMode="dark" theme={theme}>
@@ -62,7 +62,7 @@ function App() {
         </AuthContext.Provider>
       </ThemeProvider>
     </CssVarsProvider>
-  );
+  )
 }
 
-export default App;
+export default App

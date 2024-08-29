@@ -1,19 +1,18 @@
-import { Button, Stack } from "@mui/joy";
-import { FC } from "react";
-import { ScreenProps } from "./GameEntry";
-import { emptyStats } from "../game/loopShared/utils";
-import { Construction, PlayArrow } from "@mui/icons-material";
-import { FullLevelInfo, LevelInfo } from "../game/loopShared/models";
-import { useLevelContext } from "../hooks/useLevels";
-import { useNavigator } from "../hooks/UseNavigator";
-import { gameLoopEdit } from "../game/editor/gameLoopEdit";
-import { playLoop } from "../game/play/playLoop";
-import { enterGameLoopPreview } from "../game/previewer/previewLoop";
+import {Button, Stack} from "@mui/joy"
+import {FC} from "react"
+import {ScreenProps} from "./GameEntry"
+import {emptyStats} from "../game/loopShared/utils"
+import {Construction, PlayArrow} from "@mui/icons-material"
+import {FullLevelInfo, LevelInfo} from "../game/loopShared/models"
+import {useLevelContext} from "../hooks/useLevels"
+import {useNavigator} from "../hooks/UseNavigator"
+import {gameLoopEdit} from "../game/editor/gameLoopEdit"
+import {playLoop} from "../game/play/playLoop"
+import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 
-export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
-  const { levelCache, editingLevel, setGameMode, setIsDirty } =
-    useLevelContext();
-  const { navigateTo } = useNavigator();
+export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
+  const {levelCache, editingLevel, setGameMode, setIsDirty} = useLevelContext()
+  const {navigateTo} = useNavigator()
 
   return (
     <Stack gap="1rem" direction="row">
@@ -23,24 +22,24 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
         variant="outlined"
         endDecorator={<Construction />}
         onClick={() => {
-          modifyStats({ ...emptyStats });
-          navigateTo("game");
-          window.stopLoop = false;
+          modifyStats({...emptyStats})
+          navigateTo("game")
+          window.stopLoop = false
 
-          setGameMode("edit");
+          setGameMode("edit")
 
           if (editingLevel === null || editingLevel === "loading") {
-            return console.error("Invalid state");
+            return console.error("Invalid state")
           }
 
           gameLoopEdit({
             level: editingLevel,
             setIsDirty: () => setIsDirty(true),
             modifyLevel: (level: Partial<FullLevelInfo>) => {
-              levelCache.update.modify(editingLevel!._id, level);
-              setIsDirty(false);
-            },
-          });
+              levelCache.update.modify(editingLevel!._id, level)
+              setIsDirty(false)
+            }
+          })
         }}
       >
         Edit
@@ -51,20 +50,20 @@ export const PreviewOrEdit: FC<ScreenProps> = ({ modifyStats }) => {
         endDecorator={<PlayArrow />}
         fullWidth
         onClick={() => {
-          modifyStats({ ...emptyStats });
-          navigateTo("game");
-          window.stopLoop = false;
+          modifyStats({...emptyStats})
+          navigateTo("game")
+          window.stopLoop = false
 
-          setGameMode("test");
+          setGameMode("test")
           if (editingLevel === null || editingLevel === "loading") {
-            console.error("Invalid state");
-            return;
+            console.error("Invalid state")
+            return
           }
-          enterGameLoopPreview(editingLevel);
+          enterGameLoopPreview(editingLevel)
         }}
       >
         Preview
       </Button>
     </Stack>
-  );
-};
+  )
+}

@@ -1,11 +1,11 @@
-import { Id } from "../entities/entityTypes";
+import {Id} from "../entities/entityTypes"
 
 export function generateRandomInt(min: number, max: number): number {
-  return Math.floor(min + Math.random() * (max - min + 1));
+  return Math.floor(min + Math.random() * (max - min + 1))
 }
 
 export function randomOutOf(max: number): boolean {
-  return generateRandomInt(0, max) === 1;
+  return generateRandomInt(0, max) === 1
 }
 
 export const emptyStats = {
@@ -13,9 +13,9 @@ export const emptyStats = {
   lives: 3,
   level: 1,
   ammo: 20,
-  levelCreator: "",
-};
+  levelCreator: ""
+}
 
 export function createId(type?: string): Id {
-  return `${type}-${generateRandomInt(0, 10000)}`;
+  return `${type}-${generateRandomInt(0, 10000)}`
 }

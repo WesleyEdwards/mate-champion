@@ -1,42 +1,42 @@
 export type TextureMap = {
   champ: {
-    idle: HTMLImageElement;
-    jump: HTMLImageElement;
-    meleeAttack: HTMLImageElement;
-    rangedAttack: HTMLImageElement;
-    walk: HTMLImageElement;
-    upLookWalk: HTMLImageElement;
-  };
+    idle: HTMLImageElement
+    jump: HTMLImageElement
+    meleeAttack: HTMLImageElement
+    rangedAttack: HTMLImageElement
+    walk: HTMLImageElement
+    upLookWalk: HTMLImageElement
+  }
   grog: {
-    walking: HTMLImageElement;
-    jumpAndFall: HTMLImageElement;
-    death: HTMLImageElement;
-  };
+    walking: HTMLImageElement
+    jumpAndFall: HTMLImageElement
+    death: HTMLImageElement
+  }
   background: {
-    clouds: HTMLImageElement;
-    cloudsTop: HTMLImageElement;
-  };
-  bullet: HTMLImageElement;
-  endGate: HTMLImageElement;
-  ammo: HTMLImageElement;
-  platform: HTMLImageElement;
-};
+    clouds: HTMLImageElement
+    cloudsTop: HTMLImageElement
+  }
+  bullet: HTMLImageElement
+  endGate: HTMLImageElement
+  ammo: HTMLImageElement
+  platform: HTMLImageElement
+}
 
 const loadTexture = (path: string): Promise<HTMLImageElement> => {
-  const basePath = import.meta.env.DEV ? "./src/assets" : "./assets";
-  const src = `${basePath}/${path}`;
+  const basePath = import.meta.env.DEV ? "./src/assets" : "./assets"
+  const src = `${basePath}/${path}`
 
-  const texture = new Image();
-  texture.src = src;
+  const texture = new Image()
+  texture.src = src
   return new Promise((resolve, reject) => {
     texture.onload = () => {
-      resolve(texture);
-    };
+      resolve(texture)
+    }
     texture.onerror = () => {
-      reject(`Could not load texture ${src}`);
-    };
-  });
-};
+      reject(`Could not load texture ${src}`)
+    }
+  })
+}
 
 export const initializeTextures = async () => {
   const [
@@ -57,7 +57,7 @@ export const initializeTextures = async () => {
     bullet,
     endGate,
     ammo,
-    platform,
+    platform
   ] = await Promise.all(
     [
       "champ/idle.png",
@@ -78,12 +78,12 @@ export const initializeTextures = async () => {
 
       "end_gate.png",
       "mate-package.png",
-      "platform.png",
+      "platform.png"
     ].map(loadTexture)
   ).catch((error) => {
-    console.error(error);
-    throw new Error("Could not load textures");
-  });
+    console.error(error)
+    throw new Error("Could not load textures")
+  })
   const map: TextureMap = {
     champ: {
       idle: champIdle,
@@ -91,25 +91,25 @@ export const initializeTextures = async () => {
       meleeAttack: champMeleeAttacks,
       rangedAttack: champRangedAttacks,
       walk: champWalking,
-      upLookWalk: champUpLookWalk,
+      upLookWalk: champUpLookWalk
     },
     grog: {
       walking: grogWalking,
       jumpAndFall: grogJumpAndFall,
-      death: grogDeath,
+      death: grogDeath
     },
     background: {
       clouds,
-      cloudsTop,
+      cloudsTop
     },
     bullet,
     endGate,
     ammo,
-    platform,
-  };
-  textures = map;
-};
+    platform
+  }
+  textures = map
+}
 
-let textures: TextureMap | undefined;
+let textures: TextureMap | undefined
 
-export const Textures = () => textures!;
+export const Textures = () => textures!

@@ -1,4 +1,4 @@
-import { Coordinates, HasPosition } from "../models";
+import {Coordinates, HasPosition} from "../models"
 
 export function findExistingItems(
   coor1: Coordinates,
@@ -11,7 +11,7 @@ export function findExistingItems(
       coor2.x >= item.vector.position.x &&
       coor1.y <= item.vector.position.y + item.vector.height &&
       coor2.y >= item.vector.position.y
-  );
+  )
 }
 
 export function findExistingItem(
@@ -29,16 +29,16 @@ export function findExistingItem(
           x <= item.vector.position.x + item.vector.width &&
           y >= item.vector.position.y &&
           y <= item.vector.position.y + item.vector.height
-        );
+        )
       }
-      const distX = item.vector.width / 2;
-      const distY = item.vector.height / 2;
+      const distX = item.vector.width / 2
+      const distY = item.vector.height / 2
       return (
         x >= item.vector.position.x - distX &&
         x <= item.vector.position.x + distX &&
         y >= item.vector.position.y - distY &&
         y <= item.vector.position.y + distY
-      );
+      )
     }) || null
-  );
+  )
 }

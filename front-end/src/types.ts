@@ -1,35 +1,35 @@
 export type User = {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email?: string | undefined;
-  highScore: number;
-  userType: "User" | "Editor" | "Admin";
-};
+  _id: string
+  createdAt: string
+  updatedAt: string
+  name: string
+  email?: string | undefined
+  highScore: number
+  userType: "User" | "Editor" | "Admin"
+}
 
 export type LoginBody = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 export type Score = {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
-  score: number;
-};
+  _id: string
+  createdAt: string
+  updatedAt: string
+  userId: string
+  score: number
+}
 
 export type HasId = {
-  _id: string;
-};
+  _id: string
+}
 
 export type Condition<T extends HasId> = {
-  [P in keyof T]?: T[P][] | T[P];
-};
+  [P in keyof T]?: T[P][] | T[P]
+}
 
 export type TopScore = {
-  name: string;
-  score: number;
-};
+  name: string
+  score: number
+}

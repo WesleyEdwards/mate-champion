@@ -1,27 +1,27 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { MCScreen } from "../components/GameEntry";
+import {createContext, useContext, useEffect, useState} from "react"
+import {MCScreen} from "../components/GameEntry"
 
 type NavigatorContextType = {
-  navigateTo: (screen: MCScreen) => void;
-  goBack: () => void;
-  resetStack: () => void;
-  currentScreen: MCScreen;
-};
+  navigateTo: (screen: MCScreen) => void
+  goBack: () => void
+  resetStack: () => void
+  currentScreen: MCScreen
+}
 
 const NavigatorContext = createContext<NavigatorContextType>(
   {} as NavigatorContextType
-);
+)
 
-export const NavigatorProvider = (props: { children: React.ReactNode }) => {
-  const [screenStack, setScreenStack] = useState<MCScreen[]>(["home"]);
+export const NavigatorProvider = (props: {children: React.ReactNode}) => {
+  const [screenStack, setScreenStack] = useState<MCScreen[]>(["home"])
 
   const navigateTo = (screen: MCScreen) => {
-    setScreenStack([...screenStack, screen]);
-  };
+    setScreenStack([...screenStack, screen])
+  }
 
   const goBack = () => {
-    setScreenStack(screenStack.slice(0, -1));
-  };
+    setScreenStack(screenStack.slice(0, -1))
+  }
 
   return (
     <NavigatorContext.Provider
@@ -29,15 +29,15 @@ export const NavigatorProvider = (props: { children: React.ReactNode }) => {
         navigateTo,
         goBack,
         currentScreen: screenStack.at(-1) ?? "home",
-        resetStack: () => setScreenStack(["home"]),
+        resetStack: () => setScreenStack(["home"])
       }}
     >
       {props.children}
     </NavigatorContext.Provider>
-  );
-};
+  )
+}
 
 export const useNavigator = () => {
-  const navigatorContext = useContext(NavigatorContext);
-  return navigatorContext;
-};
+  const navigatorContext = useContext(NavigatorContext)
+  return navigatorContext
+}

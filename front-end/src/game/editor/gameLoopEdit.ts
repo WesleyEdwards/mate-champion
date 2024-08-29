@@ -1,41 +1,41 @@
-import { arraysAreSame } from "../../components/GameEdit/CourseBuilderSettings";
-import { getCanvasContext, displayCanvas } from "../loopShared/loopHelpers";
-import { FullLevelInfo, SetUI } from "../loopShared/models";
-import { GameEdit } from "./GameEdit";
+import {arraysAreSame} from "../../components/GameEdit/CourseBuilderSettings"
+import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
+import {FullLevelInfo, SetUI} from "../loopShared/models"
+import {GameEdit} from "./GameEdit"
 
 export function gameLoopEdit(params: {
-  level: FullLevelInfo;
-  setIsDirty: () => void;
-  modifyLevel: (level: Partial<FullLevelInfo>) => void;
+  level: FullLevelInfo
+  setIsDirty: () => void
+  modifyLevel: (level: Partial<FullLevelInfo>) => void
 }) {
-  const { level, modifyLevel, setIsDirty } = params;
-  const { canvas, context } = getCanvasContext();
+  const {level, modifyLevel, setIsDirty} = params
+  const {canvas, context} = getCanvasContext()
 
-  const game = new GameEdit(level, setIsDirty, modifyLevel, canvas);
+  const game = new GameEdit(level, setIsDirty, modifyLevel, canvas)
 
   function gameLoop(timeStamp: number) {
     if (window.stopLoop === true) {
-      console.log("stop");
-      window.stopLoop = false;
-      return;
+      console.log("stop")
+      window.stopLoop = false
+      return
     }
 
-    game.step(timeStamp);
-    game.render(context);
+    game.step(timeStamp)
+    game.render(context)
 
-    const diff = arraysAreSame(game.currentlySelected, window.editingEntities);
+    const diff = arraysAreSame(game.currentlySelected, window.editingEntities)
 
     if (!diff) {
-      window.editingEntities = [...game.currentlySelected];
+      window.editingEntities = [...game.currentlySelected]
     }
 
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop)
   }
 
   function startGame() {
-    displayCanvas(true, canvas);
-    requestAnimationFrame(gameLoop);
+    displayCanvas(true, canvas)
+    requestAnimationFrame(gameLoop)
   }
 
-  startGame();
+  startGame()
 }

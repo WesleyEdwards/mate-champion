@@ -1,32 +1,32 @@
-import { FC, useEffect, useState } from "react";
-import { ScreenProps } from "./GameEntry";
-import { LevelInfo } from "../game/loopShared/models";
-import { Card, IconButton, Stack, Typography } from "@mui/joy";
-import { PlayArrow } from "@mui/icons-material";
-import { usePauseModalContext } from "../hooks/PauseModalContext";
-import { useLevelContext } from "../hooks/useLevels";
-import { GridComponent } from "./LevelEditorHome";
-import { useNavigator } from "../hooks/UseNavigator";
-import { enterGameLoopPreview } from "../game/previewer/previewLoop";
+import {FC, useEffect, useState} from "react"
+import {ScreenProps} from "./GameEntry"
+import {LevelInfo} from "../game/loopShared/models"
+import {Card, IconButton, Stack, Typography} from "@mui/joy"
+import {PlayArrow} from "@mui/icons-material"
+import {usePauseModalContext} from "../hooks/PauseModalContext"
+import {useLevelContext} from "../hooks/useLevels"
+import {GridComponent} from "./LevelEditorHome"
+import {useNavigator} from "../hooks/UseNavigator"
+import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 
-export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
-  const { setGameMode, levelCache } = useLevelContext();
-  const { navigateTo } = useNavigator();
-  const [levels, setLevels] = useState<LevelInfo[]>();
+export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
+  const {setGameMode, levelCache} = useLevelContext()
+  const {navigateTo} = useNavigator()
+  const [levels, setLevels] = useState<LevelInfo[]>()
 
   const handleEnterGamePlay = async (levelId: string) => {
-    const fullLevel = await levelCache.read.getFull(levelId);
+    const fullLevel = await levelCache.read.getFull(levelId)
 
-    navigateTo("game");
-    setGameMode("test");
+    navigateTo("game")
+    setGameMode("test")
 
-    enterGameLoopPreview(fullLevel);
-  };
+    enterGameLoopPreview(fullLevel)
+  }
 
   useEffect(() => {
-    setLevels(undefined);
-    levelCache.read.public().then(setLevels);
-  }, []);
+    setLevels(undefined)
+    levelCache.read.public().then(setLevels)
+  }, [])
 
   return (
     <>
@@ -39,7 +39,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
               actionButton={
                 <IconButton
                   onClick={() => {
-                    handleEnterGamePlay(level._id);
+                    handleEnterGamePlay(level._id)
                   }}
                   color="success"
                 >
@@ -51,23 +51,23 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({ modifyStats }) => {
         }
       />
     </>
-  );
-};
+  )
+}
 
 const LevelCard: FC<{
-  level: LevelInfo;
-  subtitle?: string;
-  actionButton: React.ReactNode;
-}> = ({ level, actionButton, subtitle }) => (
-  <Card key={level._id} sx={{ width: "100%" }}>
+  level: LevelInfo
+  subtitle?: string
+  actionButton: React.ReactNode
+}> = ({level, actionButton, subtitle}) => (
+  <Card key={level._id} sx={{width: "100%"}}>
     <Stack direction="row" justifyContent="space-between" alignItems="center">
-      <Stack sx={{ overflow: "hidden" }}>
+      <Stack sx={{overflow: "hidden"}}>
         <Typography
           level="h4"
           sx={{
             whiteSpace: "nowrap",
             overflow: "hidden",
-            textOverflow: "ellipsis",
+            textOverflow: "ellipsis"
           }}
         >
           {level.name}
@@ -77,4 +77,4 @@ const LevelCard: FC<{
       {actionButton}
     </Stack>
   </Card>
-);
+)

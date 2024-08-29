@@ -1,28 +1,28 @@
-import { FC, useEffect, useState } from "react";
-import { ScreenProps } from "./GameEntry";
-import { Stack, Typography, Card, Tooltip } from "@mui/joy";
-import { useLevelContext } from "../hooks/useLevels";
-import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
-import { GridComponent } from "./LevelEditorHome";
-import { useNavigator } from "../hooks/UseNavigator";
-import { LevelInfo } from "../game/loopShared/models";
+import {FC, useEffect, useState} from "react"
+import {ScreenProps} from "./GameEntry"
+import {Stack, Typography, Card, Tooltip} from "@mui/joy"
+import {useLevelContext} from "../hooks/useLevels"
+import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
+import {GridComponent} from "./LevelEditorHome"
+import {useNavigator} from "../hooks/UseNavigator"
+import {LevelInfo} from "../game/loopShared/models"
 
 export const MyLevels: FC<ScreenProps> = () => {
-  const { setEditingLevel, levelCache } = useLevelContext();
-  const { navigateTo } = useNavigator();
+  const {setEditingLevel, levelCache} = useLevelContext()
+  const {navigateTo} = useNavigator()
 
-  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>();
+  const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>()
 
   useEffect(() => {
-    levelCache.read.owned().then(setOwnedLevels);
-  }, []);
+    levelCache.read.owned().then(setOwnedLevels)
+  }, [])
 
   if (ownedLevels?.length === 0) {
     return (
       <Typography textAlign={"center"} mt="2rem" level="body-sm">
         No levels yet!
       </Typography>
-    );
+    )
   }
 
   return (
@@ -33,12 +33,12 @@ export const MyLevels: FC<ScreenProps> = () => {
             sx={{
               "&:hover": {
                 opacity: 0.8,
-                cursor: "pointer",
-              },
+                cursor: "pointer"
+              }
             }}
             onClick={() => {
-              setEditingLevel(level._id);
-              navigateTo("editorDetail");
+              setEditingLevel(level._id)
+              navigateTo("editorDetail")
             }}
           >
             <Stack
@@ -46,13 +46,13 @@ export const MyLevels: FC<ScreenProps> = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Stack sx={{ overflow: "hidden" }}>
+              <Stack sx={{overflow: "hidden"}}>
                 <Typography
                   level="h4"
                   sx={{
                     whiteSpace: "nowrap",
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   {level.name}
@@ -64,7 +64,7 @@ export const MyLevels: FC<ScreenProps> = () => {
                     sx={{
                       whiteSpace: "nowrap",
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      textOverflow: "ellipsis"
                     }}
                   >
                     {level.description}
@@ -77,19 +77,19 @@ export const MyLevels: FC<ScreenProps> = () => {
         )) ?? "loading"
       }
     />
-  );
-};
+  )
+}
 
-export const VisibilityIcon = ({ publicLevel }: { publicLevel: boolean }) => {
+export const VisibilityIcon = ({publicLevel}: {publicLevel: boolean}) => {
   return (
     <Tooltip title={publicLevel ? "Public" : "Only you can see this level"}>
-      <Stack style={{ minHeight: "1rem" }} justifyContent="center">
+      <Stack style={{minHeight: "1rem"}} justifyContent="center">
         {publicLevel ? (
-          <Visibility sx={{ height: "15px" }} />
+          <Visibility sx={{height: "15px"}} />
         ) : (
-          <VisibilityOff sx={{ height: "15px" }} />
+          <VisibilityOff sx={{height: "15px"}} />
         )}
       </Stack>
     </Tooltip>
-  );
-};
+  )
+}

@@ -5,28 +5,28 @@ import {
   Skeleton,
   Stack,
   Tooltip,
-  Typography,
-} from "@mui/joy";
-import { MCScreen } from "./GameEntry";
+  Typography
+} from "@mui/joy"
+import {MCScreen} from "./GameEntry"
 import {
   ArrowBack,
   Check,
   CheckCircle,
   Edit,
   Sync,
-  Undo,
-} from "@mui/icons-material";
-import { FC, useState } from "react";
-import { usePauseModalContext } from "../hooks/PauseModalContext";
-import { useLevelContext } from "../hooks/useLevels";
-import { CreateNewLevel } from "./CreateNewLevel";
-import { useNavigator } from "../hooks/UseNavigator";
-import { abortController } from "../game/editor/eventListeners";
+  Undo
+} from "@mui/icons-material"
+import {FC, useState} from "react"
+import {usePauseModalContext} from "../hooks/PauseModalContext"
+import {useLevelContext} from "../hooks/useLevels"
+import {CreateNewLevel} from "./CreateNewLevel"
+import {useNavigator} from "../hooks/UseNavigator"
+import {abortController} from "../game/editor/eventListeners"
 
 export const ViewHeaderSubScreen: FC<{
-  title: string;
-}> = ({ title }) => {
-  const { goBack } = useNavigator();
+  title: string
+}> = ({title}) => {
+  const {goBack} = useNavigator()
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
       <Stack direction="row" justifyContent="space-between">
@@ -34,15 +34,15 @@ export const ViewHeaderSubScreen: FC<{
           <ArrowBack />
         </IconButton>
         <Typography level="h2">{title}</Typography>
-        <div style={{ width: "2rem" }}></div>
+        <div style={{width: "2rem"}}></div>
       </Stack>
       <Divider />
     </Stack>
-  );
-};
+  )
+}
 
 export const LevelsHeader: FC = () => {
-  const { goBack } = useNavigator();
+  const {goBack} = useNavigator()
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
       <Stack direction="row" justifyContent="space-between">
@@ -54,24 +54,24 @@ export const LevelsHeader: FC = () => {
       </Stack>
       <Divider />
     </Stack>
-  );
-};
+  )
+}
 
-export const ViewHeaderMainScreen: FC<{ title: string }> = ({ title }) => {
+export const ViewHeaderMainScreen: FC<{title: string}> = ({title}) => {
   return (
     <Stack alignItems="center" width="100%">
       <Typography level="h2">{title}</Typography>
     </Stack>
-  );
-};
+  )
+}
 
 export const EditLevelDetailHeader: FC = () => {
-  const { goBack } = useNavigator();
-  const [editingName, setEditingName] = useState<string>();
-  const { levelCache, editingLevel, setEditingLevel } = useLevelContext();
+  const {goBack} = useNavigator()
+  const [editingName, setEditingName] = useState<string>()
+  const {levelCache, editingLevel, setEditingLevel} = useLevelContext()
 
   if (editingLevel === "loading" || editingLevel === null) {
-    return <Skeleton height="40px" variant="rectangular" />;
+    return <Skeleton height="40px" variant="rectangular" />
   }
 
   return (
@@ -86,9 +86,9 @@ export const EditLevelDetailHeader: FC = () => {
         >
           <IconButton
             onClick={() => {
-              goBack();
-              setEditingLevel(null);
-              abortController.abort();
+              goBack()
+              setEditingLevel(null)
+              abortController.abort()
             }}
           >
             <ArrowBack />
@@ -114,7 +114,7 @@ export const EditLevelDetailHeader: FC = () => {
           <Input
             value={editingName}
             onChange={(e) => setEditingName(e.target.value)}
-            sx={{ flexGrow: 1, fontSize: "2rem" }}
+            sx={{flexGrow: 1, fontSize: "2rem"}}
           />
           <Tooltip title="Undo">
             <IconButton
@@ -128,9 +128,9 @@ export const EditLevelDetailHeader: FC = () => {
             <IconButton
               onClick={() => {
                 levelCache.update.modify(editingLevel._id, {
-                  name: editingName,
-                });
-                setEditingName(undefined);
+                  name: editingName
+                })
+                setEditingName(undefined)
               }}
             >
               <Check />
@@ -138,20 +138,20 @@ export const EditLevelDetailHeader: FC = () => {
           </Tooltip>
         </Stack>
       )}
-      <div style={{ width: "2rem" }}></div>
+      <div style={{width: "2rem"}}></div>
       <Divider />
     </Stack>
-  );
-};
+  )
+}
 
 export const PlayingHeader: FC = () => {
-  const { editingLevel, gameMode, setGameMode, isDirty } = useLevelContext();
-  const { goBack } = useNavigator();
+  const {editingLevel, gameMode, setGameMode, isDirty} = useLevelContext()
+  const {goBack} = useNavigator()
 
-  if (gameMode === "play") return null;
+  if (gameMode === "play") return null
 
   if (editingLevel === "loading") {
-    return <Skeleton height="40px" variant="rectangular" />;
+    return <Skeleton height="40px" variant="rectangular" />
   }
 
   return (
@@ -164,12 +164,12 @@ export const PlayingHeader: FC = () => {
       <IconButton
         onClick={() => {
           // End level editing
-          abortController.abort();
+          abortController.abort()
           // if (levelIsDirty) {
           //   setModal("save");
           // } else {
-          setGameMode("idle");
-          goBack();
+          setGameMode("idle")
+          goBack()
           // }
         }}
       >
@@ -182,7 +182,7 @@ export const PlayingHeader: FC = () => {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            maxWidth: "700px",
+            maxWidth: "700px"
           }}
           level="h1"
         >
@@ -195,7 +195,7 @@ export const PlayingHeader: FC = () => {
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            maxWidth: "700px",
+            maxWidth: "700px"
           }}
           level="h1"
         >
@@ -209,11 +209,11 @@ export const PlayingHeader: FC = () => {
         alignItems={"center"}
         width="2rem"
         mr="1rem"
-        sx={{ opacity: 0.3, mb: "10px", position: "relative", right: "2rem" }}
+        sx={{opacity: 0.3, mb: "10px", position: "relative", right: "2rem"}}
       >
         {(() => {
           if (gameMode !== "edit") {
-            return null;
+            return null
           }
           if (isDirty) {
             return (
@@ -223,7 +223,7 @@ export const PlayingHeader: FC = () => {
                   Saving...
                 </Typography>
               </>
-            );
+            )
           }
           return (
             <>
@@ -232,9 +232,9 @@ export const PlayingHeader: FC = () => {
               </Typography>
               <CheckCircle />
             </>
-          );
+          )
         })()}
       </Stack>
     </Stack>
-  );
-};
+  )
+}

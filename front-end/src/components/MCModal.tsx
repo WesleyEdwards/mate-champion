@@ -8,20 +8,20 @@ import {
   ModalClose,
   ModalDialog,
   Stack,
-  Typography,
-} from "@mui/joy";
-import { FC, useEffect } from "react";
+  Typography
+} from "@mui/joy"
+import {FC, useEffect} from "react"
 
 export const MCModal: FC<{
-  title: string;
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  disableConfirm?: boolean;
-  confirmLabel?: string;
-  subtext?: string;
-  error?: string;
-  children: React.ReactNode;
+  title: string
+  open: boolean
+  onClose: () => void
+  onConfirm: () => void
+  disableConfirm?: boolean
+  confirmLabel?: string
+  subtext?: string
+  error?: string
+  children: React.ReactNode
 }> = ({
   title,
   open,
@@ -31,11 +31,11 @@ export const MCModal: FC<{
   disableConfirm = false,
   subtext,
   error = "",
-  children,
+  children
 }) => {
   useEffect(() => {
-    window.pause = open;
-  }, [open]);
+    window.pause = open
+  }, [open])
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -69,5 +69,5 @@ export const MCModal: FC<{
         </DialogActions>
       </ModalDialog>
     </Modal>
-  );
-};
+  )
+}

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import {FC, useState} from "react"
 import {
   Alert,
   Button,
@@ -6,35 +6,35 @@ import {
   IconButton,
   Input,
   Stack,
-  Typography,
-} from "@mui/joy";
-import { useAuthContext } from "../hooks/useAuth";
-import { ArrowBack } from "@mui/icons-material";
-import { ScreenProps } from "./GameEntry";
-import { useNavigator } from "../hooks/UseNavigator";
+  Typography
+} from "@mui/joy"
+import {useAuthContext} from "../hooks/useAuth"
+import {ArrowBack} from "@mui/icons-material"
+import {ScreenProps} from "./GameEntry"
+import {useNavigator} from "../hooks/UseNavigator"
 
-export const CreateAccount: FC<ScreenProps> = ({ score }) => {
-  const { createAccount } = useAuthContext();
-  const { resetStack, goBack } = useNavigator();
+export const CreateAccount: FC<ScreenProps> = ({score}) => {
+  const {createAccount} = useAuthContext()
+  const {resetStack, goBack} = useNavigator()
 
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
   const handleSubmitNew = async () => {
     if (!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)) {
-      setError("Invalid email");
-      return;
+      setError("Invalid email")
+      return
     }
 
-    setSubmitting(true);
-    setError(null);
-    if (!name) return;
+    setSubmitting(true)
+    setError(null)
+    if (!name) return
     if (name.length > 300) {
-      setError("Name is too long");
-      return setSubmitting(false);
+      setError("Name is too long")
+      return setSubmitting(false)
     }
     try {
       await createAccount({
@@ -45,22 +45,22 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
         highScore: score ?? 0,
         userType: "User",
         updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-      });
+        createdAt: new Date().toISOString()
+      })
 
-      return resetStack();
+      return resetStack()
     } catch (e) {
-      setError("Error creating account");
-      setSubmitting(false);
+      setError("Error creating account")
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
-    <Stack sx={{ width: "722px" }}>
+    <Stack sx={{width: "722px"}}>
       <Stack direction="row" justifyContent="space-between">
         {score > 0 && <Typography level="h2">Score: {score}</Typography>}
       </Stack>
-      <Stack sx={{ gap: "1rem", my: "1rem" }}>
+      <Stack sx={{gap: "1rem", my: "1rem"}}>
         {score !== undefined && score !== 0 && (
           <Stack>
             <Typography>That&apos;s a new record for you!</Typography>
@@ -98,5 +98,5 @@ export const CreateAccount: FC<ScreenProps> = ({ score }) => {
         </Button>
       </Stack>
     </Stack>
-  );
-};
+  )
+}

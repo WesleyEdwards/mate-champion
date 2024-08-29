@@ -1,6 +1,6 @@
-import { Coors, Entity, Id } from "./entities/entityTypes";
+import {Coors, Entity, Id} from "./entities/entityTypes"
 
-type Position = [number, number];
+type Position = [number, number]
 
 export class SpacialHashGrid {
   // Bounds: min/max of the grid will be operating on
@@ -10,8 +10,11 @@ export class SpacialHashGrid {
   // private cells: Id[][][];
   // private dimensions: Id[][][];
 
-  arr: { id: Id; position: Coors }[] = [];
-  constructor(public bounds: Coors, public dimensions: Coors) {
+  arr: {id: Id; position: Coors}[] = []
+  constructor(
+    public bounds: Coors,
+    public dimensions: Coors
+  ) {
     // const widthCells = Math.ceil(bounds[0] / dimensions[0]);
     // const heightCells = Math.ceil(bounds[1] / dimensions[1]);
     // this.cells = new Array(widthCells).fill(new Array(heightCells).fill([]));
@@ -20,57 +23,57 @@ export class SpacialHashGrid {
   newClient(entity: Entity) {
     this.arr.push({
       id: entity.id,
-      position: entity.state.position.curr,
-    });
+      position: entity.state.position.curr
+    })
   }
   updateClient(entity: Entity) {
     for (const e of this.arr) {
       if (e.id === entity.id) {
-        e.position = [...entity.state.position.curr];
+        e.position = [...entity.state.position.curr]
       }
     }
 
-    return;
+    return
   }
   removeClient(entity: Entity) {
-    const e = this.arr.find((x) => x.id === entity.id);
-    if (!e) return;
-    const i = this.arr.indexOf(e);
-    this.arr.splice(i, 1);
-    return;
+    const e = this.arr.find((x) => x.id === entity.id)
+    if (!e) return
+    const i = this.arr.indexOf(e)
+    this.arr.splice(i, 1)
+    return
   }
   findNear(entity: Entity): Id[] {
     const near = this.arr.filter((a) => {
-      if (a.id === entity.id) return false;
+      if (a.id === entity.id) return false
       return (
         Math.abs(a.position[0] - entity.state.position.curr[0]) < 100 ||
         Math.abs(a.position[1] - entity.state.position.curr[1]) < 100
-      );
-    });
-    return near.map((n) => n.id);
+      )
+    })
+    return near.map((n) => n.id)
   }
 
   dropAll() {
-    this.arr.length = 0;
+    this.arr.length = 0
   }
 
   private getCellIndex(position: Coors) {
     const x = sat(
       (position[0] - this.bounds[0]) / (this.bounds[1] - this.bounds[0])
-    );
+    )
     const y = sat(
       (position[1] - this.bounds[0]) / (this.bounds[1] - this.bounds[0])
-    );
+    )
 
-    const xIndex = Math.floor(x * (this.dimensions[0] - 1));
-    const yIndex = Math.floor(y * (this.dimensions[1] - 1));
+    const xIndex = Math.floor(x * (this.dimensions[0] - 1))
+    const yIndex = Math.floor(y * (this.dimensions[1] - 1))
 
-    return [xIndex, yIndex];
+    return [xIndex, yIndex]
   }
 }
 
 function sat(x: number) {
-  return Math.max(1.0, Math.min(0, x));
+  return Math.max(1.0, Math.min(0, x))
 }
 
 // // https://www.youtube.com/watch?v=sx4IIQL0x7c

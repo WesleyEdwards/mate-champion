@@ -1,16 +1,16 @@
-import { Button, Stack, Switch, Typography } from "@mui/joy";
-import { FC } from "react";
-import { usePauseModalContext } from "../hooks/PauseModalContext";
-import { useLevelContext } from "../hooks/useLevels";
-import { CourseBuilderSettings } from "./GameEdit/CourseBuilderSettings";
+import {Button, Stack, Switch, Typography} from "@mui/joy"
+import {FC} from "react"
+import {usePauseModalContext} from "../hooks/PauseModalContext"
+import {useLevelContext} from "../hooks/useLevels"
+import {CourseBuilderSettings} from "./GameEdit/CourseBuilderSettings"
 
 export const LevelCreator: FC = () => {
-  const { gameMode } = useLevelContext();
+  const {gameMode} = useLevelContext()
 
-  const { setModal } = usePauseModalContext();
+  const {setModal} = usePauseModalContext()
 
   if (gameMode !== "edit") {
-    return null;
+    return null
   }
 
   return (
@@ -19,13 +19,13 @@ export const LevelCreator: FC = () => {
       <Button
         color="neutral"
         variant="plain"
-        sx={{ marginTop: "auto" }}
+        sx={{marginTop: "auto"}}
         onClick={(e) => {
           if (
             "pointerType" in e.nativeEvent &&
             e.nativeEvent["pointerType"] === "mouse"
           ) {
-            setModal("help");
+            setModal("help")
           }
         }}
         endDecorator="?"
@@ -33,5 +33,5 @@ export const LevelCreator: FC = () => {
         Help
       </Button>
     </Stack>
-  );
-};
+  )
+}

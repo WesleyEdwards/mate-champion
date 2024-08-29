@@ -1,76 +1,76 @@
-import { Camera } from "../entities/entityTypes";
-import { GameEdit } from "./GameEdit";
+import {Camera} from "../entities/entityTypes"
+import {GameEdit} from "./GameEdit"
 
 export function addDevEventListeners(
   contentCreator: GameEdit,
   canvas: HTMLCanvasElement
 ) {
-  abortController = new AbortController();
+  abortController = new AbortController()
 
   canvas.addEventListener(
     "mousedown",
     (e: MouseEvent) => {
-      e.preventDefault();
-      contentCreator.setEventState("mouseDown", true);
-      contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY]);
+      e.preventDefault()
+      contentCreator.setEventState("mouseDown", true)
+      contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY])
     },
-    { signal: abortController.signal }
-  );
+    {signal: abortController.signal}
+  )
   canvas.addEventListener(
     "mousemove",
     (e) => {
-      contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY]);
+      contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY])
     },
-    { signal: abortController.signal }
-  );
+    {signal: abortController.signal}
+  )
 
   window.addEventListener(
     "mouseup",
     (e) => {
-      contentCreator.setEventState("mouseDown", false);
-      contentCreator.setEventState("mouseUp", [e.offsetX, e.offsetY]);
+      contentCreator.setEventState("mouseDown", false)
+      contentCreator.setEventState("mouseUp", [e.offsetX, e.offsetY])
     },
-    { signal: abortController.signal }
-  );
+    {signal: abortController.signal}
+  )
 
   window.addEventListener(
     "keydown",
     (e) => {
       if (e.code === "Delete") {
-        contentCreator.setEventState("delete", true);
+        contentCreator.setEventState("delete", true)
       }
       if (e.code === "KeyD" && e.ctrlKey) {
         e.preventDefault()
-        contentCreator.setEventState("copy", true);
+        contentCreator.setEventState("copy", true)
       }
       if (e.ctrlKey) {
-        contentCreator.setEventState("ctrl", true);
+        contentCreator.setEventState("ctrl", true)
       }
       if (e.shiftKey) {
-        contentCreator.setEventState("shift", true);
+        contentCreator.setEventState("shift", true)
       }
     },
-    { signal: abortController.signal }
-  );
+    {signal: abortController.signal}
+  )
 
   window.addEventListener(
     "keyup",
     (e) => {
       if (e.code === "Delete") {
-        contentCreator.setEventState("delete", false);
+        contentCreator.setEventState("delete", false)
       }
       if (e.ctrlKey === false) {
-        contentCreator.setEventState("ctrl", false);
+        contentCreator.setEventState("ctrl", false)
       }
       if (e.shiftKey === false) {
-        contentCreator.setEventState("shift", false);
+        contentCreator.setEventState("shift", false)
       }
     },
-    { signal: abortController.signal }
-  );
+    {signal: abortController.signal}
+  )
 }
 
 export const resetAbortController = () => {
-  abortController = new AbortController();
-};
-export let abortController: AbortController = new AbortController();
+  abortController = new AbortController()
+}
+export let abortController: AbortController = new AbortController()

@@ -6,35 +6,35 @@ import {
   FormHelperText,
   Skeleton,
   Stack,
-  Textarea,
-} from "@mui/joy";
-import { FC, useEffect, useState } from "react";
-import { ScreenProps } from "./GameEntry";
-import { DeleteLevel } from "./DeleteLevel";
-import { useLevelContext } from "../hooks/useLevels";
-import { useNavigator } from "../hooks/UseNavigator";
-import { VisibilityIcon } from "./MyLevels";
-import { PreviewOrEdit } from "./PreviewOrEdit";
+  Textarea
+} from "@mui/joy"
+import {FC, useEffect, useState} from "react"
+import {ScreenProps} from "./GameEntry"
+import {DeleteLevel} from "./DeleteLevel"
+import {useLevelContext} from "../hooks/useLevels"
+import {useNavigator} from "../hooks/UseNavigator"
+import {VisibilityIcon} from "./MyLevels"
+import {PreviewOrEdit} from "./PreviewOrEdit"
 
 export const EditLevelDetail: FC<ScreenProps> = (props) => {
-  const { levelCache, editingLevel } = useLevelContext();
-  const { navigateTo } = useNavigator();
+  const {levelCache, editingLevel} = useLevelContext()
+  const {navigateTo} = useNavigator()
 
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState(false)
 
   const [levelForm, setLevelForm] = useState<{
-    public: boolean;
-    description: string;
-  }>({ public: true, description: "" });
+    public: boolean
+    description: string
+  }>({public: true, description: ""})
 
   useEffect(() => {
     if (editingLevel && editingLevel !== "loading") {
       setLevelForm({
         public: editingLevel.public,
-        description: editingLevel.description ?? "",
-      });
+        description: editingLevel.description ?? ""
+      })
     }
-  }, [editingLevel]);
+  }, [editingLevel])
 
   if (editingLevel === "loading") {
     return (
@@ -48,12 +48,12 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         <Skeleton height="20px" variant="rectangular" />
         <Skeleton height="100%" variant="rectangular" />
       </Stack>
-    );
+    )
   }
 
   if (!editingLevel) {
-    navigateTo("home");
-    return null;
+    navigateTo("home")
+    return null
   }
 
   return (
@@ -63,9 +63,9 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         placeholder="Description"
         minRows={2}
         onChange={(e) => {
-          setLevelForm((prev) => ({ ...prev, description: e.target.value }));
+          setLevelForm((prev) => ({...prev, description: e.target.value}))
         }}
-        sx={{ flexGrow: 1 }}
+        sx={{flexGrow: 1}}
       />
 
       <PreviewOrEdit {...props} />
@@ -75,7 +75,7 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
           label="Public"
           checked={levelForm.public}
           onChange={(e) => {
-            setLevelForm((prev) => ({ ...prev, public: e.target.checked }));
+            setLevelForm((prev) => ({...prev, public: e.target.checked}))
           }}
         />
         <FormHelperText>
@@ -87,12 +87,12 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
       </FormControl>
 
       <Button
-        sx={{ alignSelf: "flex-end" }}
+        sx={{alignSelf: "flex-end"}}
         onClick={() => {
-          setSaving(true);
+          setSaving(true)
           levelCache.update
             .modify(editingLevel._id, levelForm)
-            .then(() => setSaving(false));
+            .then(() => setSaving(false))
         }}
         disabled={
           levelForm.description === (editingLevel.description ?? "") &&
@@ -111,5 +111,5 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         showWordDelete
       />
     </Stack>
-  );
-};
+  )
+}

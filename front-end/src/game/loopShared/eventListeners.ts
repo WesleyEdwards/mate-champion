@@ -1,8 +1,5 @@
-import {
-  abortController,
-  resetAbortController,
-} from "../editor/eventListeners";
-import { Keys } from "./models";
+import {abortController, resetAbortController} from "../editor/eventListeners"
+import {Keys} from "./models"
 
 const initialKeyStatus: Keys = {
   up: false,
@@ -15,100 +12,100 @@ const initialKeyStatus: Keys = {
   toJump: 0,
   toShoot: 0,
   toShank: 0,
-  mostRecentX: "right",
-};
+  mostRecentX: "right"
+}
 
 export function addEventListeners(togglePause: () => void): Keys {
-  resetAbortController();
-  const keys = { ...initialKeyStatus };
+  resetAbortController()
+  const keys = {...initialKeyStatus}
   window.addEventListener(
     "keydown",
     (e) => {
       switch (e.code) {
         case "KeyW":
-          keys.up = true;
-          break;
+          keys.up = true
+          break
         case "ArrowUp":
-          keys.up = true;
-          break;
+          keys.up = true
+          break
         case "KeyD":
-          keys.right = true;
-          break;
+          keys.right = true
+          break
         case "ArrowRight":
-          keys.right = true;
-          break;
+          keys.right = true
+          break
         case "KeyA":
-          keys.left = true;
-          break;
+          keys.left = true
+          break
         case "ArrowLeft":
-          keys.left = true;
-          break;
+          keys.left = true
+          break
         case "KeyS":
-          keys.down = true;
-          break;
+          keys.down = true
+          break
         case "ArrowDown":
-          keys.down = true;
-          break;
+          keys.down = true
+          break
         case "Space":
-          keys.jump = true;
-          keys.toJump = 1;
-          break;
+          keys.jump = true
+          keys.toJump = 1
+          break
         case "KeyJ":
-          keys.shoot = true;
-          keys.toShoot = 1;
-          break;
+          keys.shoot = true
+          keys.toShoot = 1
+          break
         case "KeyK":
-          keys.shank = true;
-          keys.toShank = 1;
-          break;
+          keys.shank = true
+          keys.toShank = 1
+          break
       }
     },
-    { signal: abortController.signal }
-  );
+    {signal: abortController.signal}
+  )
 
   window.addEventListener(
     "keyup",
-    ({ code }) => {
+    ({code}) => {
       switch (code) {
         case "KeyW":
-          keys.up = false;
-          break;
+          keys.up = false
+          break
         case "ArrowUp":
-          keys.up = false;
-          break;
+          keys.up = false
+          break
         case "KeyD":
-          keys.right = false;
-          break;
+          keys.right = false
+          break
         case "ArrowRight":
-          keys.right = false;
-          break;
+          keys.right = false
+          break
         case "KeyA":
-          keys.left = false;
-          break;
+          keys.left = false
+          break
         case "ArrowLeft":
-          keys.left = false;
-          break;
+          keys.left = false
+          break
         case "KeyS":
-          keys.down = false;
-          break;
+          keys.down = false
+          break
         case "ArrowDown":
-          keys.down = false;
-          break;
+          keys.down = false
+          break
         case "Space":
-          keys.jump = false;
-          break;
+          keys.jump = false
+          break
         case "KeyJ":
-          keys.shoot = false;
-          break;
+          keys.shoot = false
+          break
         case "KeyK":
-          keys.shank = false;
-          break;
+          keys.shank = false
+          break
         case "Escape":
-          togglePause();
-          break;
+          togglePause()
+          break
       }
     },
-    { signal: abortController.signal }
-  );
-  return keys;
+    {signal: abortController.signal}
+  )
+  return keys
 }

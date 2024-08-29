@@ -1,13 +1,13 @@
-export const MAX_CANVAS_HEIGHT = 576;
-export const MAX_CANVAS_WIDTH = MAX_CANVAS_HEIGHT * 1.78;
+export const MAX_CANVAS_HEIGHT = 576
+export const MAX_CANVAS_WIDTH = MAX_CANVAS_HEIGHT * 1.78
 
 // export const GRAVITY = 0.001;
-export const GRAVITY = 0.004;
+export const GRAVITY = 0.004
 
 export const levelConst = {
   endPos: 4500,
-  playerMinX: 300,
-};
+  playerMinX: 300
+}
 
 export const playerConst = {
   radius: 32,
@@ -17,27 +17,27 @@ export const playerConst = {
   meleeCoolDown: 275,
   meleeReach: 120,
   shootCoolDown: 200,
-  initPos: { x: 400, y: 400 },
+  initPos: {x: 400, y: 400},
   maxCoyoteTime: 80,
   jumpGravityFactor: 0.9,
-  jumpGravityFrameDecrease: 0.93,
-} as const;
+  jumpGravityFrameDecrease: 0.93
+} as const
 
 export const cameraConst = {
   idealDistFromLeftWall: 400,
-  idealMinDistFromCeiling: 290,
-};
+  idealMinDistFromCeiling: 290
+}
 
 export const grogConst = {
   width: 90,
   height: 90,
   distFromChampMelee: 10,
-  jumpSpeed: -1,
-} as const;
+  jumpSpeed: -1
+} as const
 
 export const platformConst = {
   floorY: 530,
-  defaultHeight: 40,
-} as const;
+  defaultHeight: 40
+} as const
 
-export const firebaseCollection = "scores-test-1";
+export const firebaseCollection = "scores-test-1"

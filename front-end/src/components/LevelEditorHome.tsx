@@ -1,5 +1,5 @@
-import { CSSProperties, FC, useState } from "react";
-import { ScreenProps } from "./GameEntry";
+import {CSSProperties, FC, useState} from "react"
+import {ScreenProps} from "./GameEntry"
 import {
   Stack,
   Tab,
@@ -8,24 +8,24 @@ import {
   TabPanel,
   Tabs,
   Grid,
-  Skeleton,
-} from "@mui/joy";
-import { MyLevels } from "./MyLevels";
-import { PublicLevelsScreen } from "./PublicLevelsScreen";
-import { localStorageManager } from "../api/localStorageManager";
+  Skeleton
+} from "@mui/joy"
+import {MyLevels} from "./MyLevels"
+import {PublicLevelsScreen} from "./PublicLevelsScreen"
+import {localStorageManager} from "../api/localStorageManager"
 
-export const LevelEditorHome: FC<ScreenProps> = ({ modifyStats }) => {
+export const LevelEditorHome: FC<ScreenProps> = ({modifyStats}) => {
   const [value, setValue] = useState<number>(
     +localStorageManager.get("level-tab")
-  );
+  )
   return (
     <Stack maxHeight="calc(100vh - 8rem)">
       <Tabs
         value={value}
         onChange={(_, v) => {
           if (typeof v === "number") {
-            localStorageManager.set("level-tab", v);
-            setValue(v);
+            localStorageManager.set("level-tab", v)
+            setValue(v)
           }
         }}
       >
@@ -43,10 +43,10 @@ export const LevelEditorHome: FC<ScreenProps> = ({ modifyStats }) => {
                   height: 2,
                   borderTopLeftRadius: 3,
                   borderTopRightRadius: 3,
-                  bgcolor: "primary.500",
-                },
-              },
-            },
+                  bgcolor: "primary.500"
+                }
+              }
+            }
           }}
         >
           <Tab color="neutral">My Levels</Tab>
@@ -61,11 +61,11 @@ export const LevelEditorHome: FC<ScreenProps> = ({ modifyStats }) => {
         </TabPanel>
       </Tabs>
     </Stack>
-  );
-};
+  )
+}
 
-export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
-  items,
+export const GridComponent: FC<{items: React.ReactNode[] | "loading"}> = ({
+  items
 }) => (
   <Grid
     container
@@ -75,13 +75,13 @@ export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
       minWidth: "42rem",
       maxHeight: "calc(100vh - 8rem)",
       overflowY: "auto",
-      ...scrollbarProps,
+      ...scrollbarProps
     }}
   >
     {(items === "loading"
       ? new Array(15).fill(
           <Skeleton
-            sx={{ minWidth: "10rem", width: "100%" }}
+            sx={{minWidth: "10rem", width: "100%"}}
             variant="rectangular"
             height="80px"
           />
@@ -93,10 +93,10 @@ export const GridComponent: FC<{ items: React.ReactNode[] | "loading" }> = ({
       </Grid>
     ))}
   </Grid>
-);
+)
 
 export const scrollbarProps: CSSProperties = {
   scrollbarColor: "rgb(153, 153, 153) rgba(0, 0, 0, 0)",
   scrollbarWidth: "thin",
-  scrollbarGutter: "auto",
-};
+  scrollbarGutter: "auto"
+}
