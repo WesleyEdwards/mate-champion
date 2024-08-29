@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { ChampState, ChampAction, champConst } from "../../entities/champ";
+import { ChampState, champConst, ChampDirectionY } from "../../entities/champ";
 import { ActionMap } from "../helpers";
 import { Coors } from "../../entities/entityTypes";
 import { mBulletConst } from "../../entities/bullet";
@@ -48,6 +48,17 @@ const cleanActions = (p: ChampState) => {
     p.acceptQueue = p.acceptQueue.filter((a) => !n(a.name));
   }
 };
+
+export type ChampAction =
+  | { name: "moveX"; dir: "left" | "right" }
+  | { name: "stopX" }
+  | { name: "jump" }
+  | { name: "melee" }
+  | { name: "shoot" }
+  | { name: "setFacingY"; dir: ChampDirectionY }
+  | { name: "setY"; y: number; onEntity?: boolean }
+  | { name: "setX"; x: number }
+  | { name: "kill" };
 
 export const processChampActionRaw = (
   champ: ChampState,
@@ -122,8 +133,13 @@ const processActionMap: ActionMap<ChampAction, ChampState> = {
   },
   setY: (p, act) => {
     p.position.curr[1] = act.y;
-    p.velocity[1] = 0;
-    p.timers.coyote.val = 0;
+    if (act.onEntity) {
+      p.velocity[1] = 0;
+      p.timers.coyote.val = 0;
+    }
+  },
+  setX: (p, act) => {
+    p.position.curr[0] = act.x;
   },
   kill: (p, act) => {
     p.dead = true;

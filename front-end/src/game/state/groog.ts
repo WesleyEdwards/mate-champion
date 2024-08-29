@@ -1,6 +1,15 @@
 import { GRAVITY } from "../loopShared/constants";
-import { GroogState, GroogAction, groogConst } from "../entities/groog";
+import { GroogState, groogConst } from "../entities/groog";
 import { ActionMap, UpdateFun } from "./helpers";
+
+type GroogDirX = "left" | "right";
+
+export type GroogAction =
+  | { name: "die" }
+  | { name: "jump" }
+  | { name: "setFacingX"; dir: GroogDirX }
+  | { name: "setY"; y: number; onEntity?: boolean }
+  | { name: "setX"; x: number };
 
 const processActionMap: ActionMap<GroogAction, GroogState> = {
   die: (g, _) => {
@@ -14,11 +23,16 @@ const processActionMap: ActionMap<GroogAction, GroogState> = {
   },
   setFacingX: (g, act) => {
     g.facing = act.dir;
-    g.velocity[0] = -g.velocity[0]
+    g.velocity[0] = -g.velocity[0];
   },
   setY: (g, act) => {
     g.position.curr[1] = act.y;
-    g.velocity[1] = 0;
+    if (act.onEntity) {
+      g.velocity[1] = 0;
+    }
+  },
+  setX: (g, act) => {
+    g.position.curr[0] = act.x;
   },
 };
 

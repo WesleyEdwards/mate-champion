@@ -1,6 +1,6 @@
 import { Textures } from "../../gameAssets/textures";
 import { GroogAssetDes, groogConst, GroogState } from "../entities/groog";
-import { RenderFun, SpriteAssetInfo } from "./helpers";
+import { SpriteAssetInfo } from "./helpers";
 
 export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {
   const asset = grogSpritesInfo[g.render.curr];

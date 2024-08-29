@@ -108,6 +108,25 @@ export const areEntitiesTouching = (
   rect1.position.curr[1] < rect2.position.curr[1] + rect2.dimensions[1] &&
   rect1.position.curr[1] + rect1.dimensions[1] > rect2.position.curr[1];
 
+function notInlineX(entity: Entity, floor: Entity): boolean {
+  const width = entity.state.dimensions[0];
+  const posX = entity.state.position.curr[0];
+  return (
+    posX + width < floor.state.position.curr[0] ||
+    posX > floor.state.position.curr[0] + floor.state.dimensions[0]
+  );
+}
+
+function notInlineY(entity: Entity, floor: Entity): boolean {
+  const height = entity.state.dimensions[1];
+  const posY = entity.state.position.curr[1];
+  return (
+    posY + height < floor.state.position.curr[1] ||
+    posY > floor.state.position.curr[1] + floor.state.dimensions[1]
+  );
+}
+
+type CollInfo = { x: number | null; bottom: number | null; top: number | null };
 /**
  * @param entity The entity that may collide with the floor
  * @param floor Floor to check
@@ -116,28 +135,67 @@ export const areEntitiesTouching = (
 export function calcPlatEntityCollision(
   entity: Entity,
   floor: Entity
+): CollInfo {
+  let coors: CollInfo = { x: null, bottom: null, top: null };
+
+  if (!notInlineX(entity, floor)) {
+    coors.top = calcPlatEntityCollisionTop(entity, floor);
+    coors.bottom = calcPlatEntityCollisionBottom(entity, floor);
+  }
+
+  if (!notInlineY(entity, floor)) {
+    const left = calcPlatEntityCollisionLeft(entity, floor);
+    const right = calcPlatEntityCollisionRight(entity, floor);
+    coors.x = left ?? right;
+  }
+  return coors;
+}
+function calcPlatEntityCollisionTop(
+  entity: Entity,
+  floor: Entity
 ): number | null {
-  const width = entity.state.dimensions[0];
-  const posX = entity.state.position.curr[0];
-  if (
-    posX + width < floor.state.position.curr[0] ||
-    posX > floor.state.position.curr[0] + floor.state.dimensions[0]
-  ) {
-    return null;
-  }
+  const eHeight = entity.state.dimensions[1];
+  const previous = entity.state.position.prev[1] + eHeight;
+  const recent = entity.state.position.curr[1] + eHeight;
+  const fPos = floor.state.position.curr[1];
 
-  const betweenCenterAndBottom = entity.state.dimensions[1];
+  if (recent >= fPos && previous <= fPos) return fPos - eHeight;
+  return null;
+}
+function calcPlatEntityCollisionBottom(
+  entity: Entity,
+  floor: Entity
+): number | null {
+  const previous = entity.state.position.prev[1];
+  const recent = entity.state.position.curr[1];
+  const fPos = floor.state.position.curr[1] + floor.state.dimensions[1];
 
-  const previous = entity.state.position.prev[1] + betweenCenterAndBottom;
-  const recent = entity.state.position.curr[1] + betweenCenterAndBottom;
+  if (recent <= fPos && previous >= fPos) return fPos;
+  return null;
+}
 
-  if (
-    recent >= floor.state.position.curr[1] &&
-    previous <= floor.state.position.curr[1]
-  ) {
-    const setY = floor.state.position.curr[1] - betweenCenterAndBottom;
-    entity.state.position.curr[1] = entity.state.position.prev[1];
-    return setY;
-  }
+function calcPlatEntityCollisionLeft(
+  entity: Entity,
+  floor: Entity
+): number | null {
+  const eWidth = entity.state.dimensions[0];
+
+  const previous = entity.state.position.prev[0] + eWidth;
+  const recent = entity.state.position.curr[0] + eWidth;
+  const fPos = floor.state.position.curr[0];
+
+  if (recent >= fPos && previous <= fPos) return fPos - eWidth;
+  return null;
+}
+
+function calcPlatEntityCollisionRight(
+  entity: Entity,
+  floor: Entity
+): number | null {
+  const previous = entity.state.position.prev[0];
+  const recent = entity.state.position.curr[0];
+  const fPos = floor.state.position.curr[0] + floor.state.dimensions[0];
+
+  if (recent <= fPos && previous >= fPos) return fPos;
   return null;
 }

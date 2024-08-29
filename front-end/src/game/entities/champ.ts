@@ -4,7 +4,7 @@ import {
   toCurrAndPrev,
 } from "../helpers";
 import { renderPlayer } from "../render/champ";
-import { processChampActionRaw } from "../state/champ/actions";
+import { ChampAction, processChampActionRaw } from "../state/champ/actions";
 import { updatePlayer } from "../state/champ/champ";
 import { PlayerAction } from "../state/champ/spriteInfo";
 import {
@@ -86,16 +86,6 @@ export const champConst = {
 export type ChampDirectionY = "up" | "down" | "hor";
 export type ChampDirectionX = "left" | "right";
 
-export type ChampAction =
-  | { name: "moveX"; dir: "left" | "right" }
-  | { name: "stopX" }
-  | { name: "jump" }
-  | { name: "melee" }
-  | { name: "shoot" }
-  | { name: "setFacingY"; dir: ChampDirectionY }
-  | { name: "setY"; y: number }
-  | { name: "kill" };
-
 export class Champ implements Entity {
   id = "player";
   typeId = "player" as const;
@@ -145,8 +135,16 @@ export class Champ implements Entity {
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const entity of entities) {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
-        const y = calcPlatEntityCollision(this, entity);
-        if (y !== null) processChampActionRaw(this.state, { name: "setY", y });
+        const { x, bottom, top } = calcPlatEntityCollision(this, entity);
+        if (x !== null) processChampActionRaw(this.state, { name: "setX", x });
+        if (bottom !== null)
+          processChampActionRaw(this.state, { name: "setY", y: bottom });
+        if (top !== null)
+          processChampActionRaw(this.state, {
+            name: "setY",
+            y: top,
+            onEntity: true,
+          });
       }
       if (entity instanceof Groog) {
         if (this.state.action === "melee") {

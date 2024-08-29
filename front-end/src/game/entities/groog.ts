@@ -5,7 +5,11 @@ import {
   areTouching1,
 } from "../helpers";
 import { renderGroog } from "../render/groog";
-import { processGroogActionRaw, processGroogActions } from "../state/groog";
+import {
+  GroogAction,
+  processGroogActionRaw,
+  processGroogActions,
+} from "../state/groog";
 import {
   TimerUp,
   TimerDown,
@@ -34,27 +38,6 @@ export type GroogState = {
   };
   queueActions: GroogAction[];
 };
-
-export const groogConst = {
-  dimensions: [80, 80],
-  render: {
-    imageWidth: 75,
-  },
-  killChampDist: 70,
-  pointsGainByKilling: 10,
-  jumpSpeed: -1,
-  dieTimer: 500,
-} as const;
-
-export type GroogAssetDes = "walk" | "die" | "rising" | "falling";
-
-type GroogDirX = "left" | "right";
-
-export type GroogAction =
-  | { name: "die" }
-  | { name: "jump" }
-  | { name: "setFacingX"; dir: GroogDirX }
-  | { name: "setY"; y: number };
 
 export class Groog implements Entity {
   id = createId("groog");
@@ -113,10 +96,19 @@ export class Groog implements Entity {
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const entity of entities) {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
-        const y = calcPlatEntityCollision(this, entity);
-        if (y !== null) {
-          processGroogActionRaw(this.state, { name: "setY", y });
-          // this.state.queueActions.push({ name: "setY", y });
+        const { x, bottom, top } = calcPlatEntityCollision(this, entity);
+        if (x !== null) {
+          processGroogActionRaw(this.state, { name: "setX", x });
+        }
+        if (bottom !== null) {
+          processGroogActionRaw(this.state, { name: "setY", y: bottom });
+        }
+        if (top !== null) {
+          processGroogActionRaw(this.state, {
+            name: "setY",
+            y: top,
+            onEntity: true,
+          });
         }
       }
       if (this.state.timers.dyingTimer.val > 0) {
@@ -135,3 +127,16 @@ export class Groog implements Entity {
     }
   };
 }
+
+export const groogConst = {
+  dimensions: [80, 80],
+  render: {
+    imageWidth: 75,
+  },
+  killChampDist: 70,
+  pointsGainByKilling: 10,
+  jumpSpeed: -1,
+  dieTimer: 500,
+} as const;
+
+export type GroogAssetDes = "walk" | "die" | "rising" | "falling";

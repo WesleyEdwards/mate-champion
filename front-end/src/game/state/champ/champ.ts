@@ -24,7 +24,7 @@ export const updatePlayer: UpdateFun<ChampState> = (p, deltaT) => {
   }
 
   if (p.position.curr[1] > 1000) {
-    p.dead = true
+    p.dead = true;
   }
 
   handleChampActions(p);

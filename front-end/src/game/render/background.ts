@@ -6,30 +6,36 @@ export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
   const spacesToRight = Math.floor(cam.position[0] / MAX_CANVAS_WIDTH);
   const spacesUp = Math.floor(cam.position[1] / MAX_CANVAS_HEIGHT);
 
-  const widthHeight = [MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT];
+  const canvasDimensions = [MAX_CANVAS_WIDTH, MAX_CANVAS_HEIGHT];
 
   cxt.save();
 
-  const pos = [widthHeight[0] * spacesToRight, widthHeight[1] * spacesUp];
+  const pos = [
+    canvasDimensions[0] * spacesToRight,
+    canvasDimensions[1] * spacesUp,
+  ];
 
   for (let i = 0; i < 2; i++) {
     cxt.drawImage(
       Textures().background.clouds,
       pos[0],
       pos[1],
-      widthHeight[0],
-      widthHeight[1]
+      canvasDimensions[0],
+      canvasDimensions[1]
     );
 
-    cxt.drawImage(
-      Textures().background.cloudsTop,
-      pos[0],
-      pos[1] - widthHeight[1],
-      widthHeight[0],
-      widthHeight[1]
-    );
+    for (let j = 1; j < 4; j++) {
+      const dy = canvasDimensions[1] * j;
+      cxt.drawImage(
+        Textures().background.cloudsTop,
+        pos[0],
+        pos[1] - dy,
+        canvasDimensions[0],
+        canvasDimensions[1]
+      );
+    }
 
-    cxt.translate(widthHeight[0], 0);
+    cxt.translate(canvasDimensions[0], 0);
   }
 
   cxt.restore();

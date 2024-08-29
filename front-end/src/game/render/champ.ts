@@ -1,6 +1,6 @@
 import { Textures } from "../../gameAssets/textures";
 import { ChampState, ChampAssetDes, champConst } from "../entities/champ";
-import { RenderFun, SpriteAssetInfo } from "./helpers";
+import { SpriteAssetInfo } from "./helpers";
 
 export const renderPlayer = (p: ChampState, cxt: CanvasRenderingContext2D) => {
   const asset = champAssets[p.render.curr];

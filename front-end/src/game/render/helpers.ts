@@ -1,7 +1,5 @@
 import { Coors } from "../entities/entityTypes";
 
-export type RenderFun<T> = (obj: T) => (cxt: CanvasRenderingContext2D) => void;
-
 export type SpriteAssetInfo<DESCRIPTION extends string> = Record<
   DESCRIPTION,
   AssetInfo | undefined
