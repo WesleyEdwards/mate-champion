@@ -22,8 +22,8 @@ const processActionMap: ActionMap<GroogAction, GroogState> = {
     g.velocity[1] = groogConst.jumpSpeed
   },
   setFacingX: (g, act) => {
-    g.facing = act.dir
-    g.velocity[0] = -g.velocity[0]
+    const abs = Math.abs(g.velocity[0])
+    g.velocity[0] = act.dir === "left" ? -abs : abs
   },
   setY: (g, act) => {
     g.position.curr[1] = act.y

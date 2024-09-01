@@ -44,3 +44,18 @@ export const modifyLevelMap: ReqBuilder =
 
     return res.json(updatedLevel)
   }
+
+
+  export const generateLevels: ReqBuilder =
+  (client) =>
+  async ({body}, res) => {
+    const levelIds = body as string[]
+    if (!Array.isArray(levelIds)) {
+      return res.status(400).json("Please supply a list of ids of levels")
+    }
+    const levels = await client.levelMap.findMany({_id: levelIds})
+
+    return res.json(
+      levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))
+    )
+  }

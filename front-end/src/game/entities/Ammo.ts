@@ -12,7 +12,7 @@ type AmmoState = {
 }
 
 export class Ammo implements Entity {
-  id = createId()
+  id = createId("ammo")
   typeId = "ammo" as const
   state: AmmoState
   modifyStatsOnDeath = {

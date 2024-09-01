@@ -10,7 +10,9 @@ export class SpacialHashGrid {
   // private cells: Id[][][];
   // private dimensions: Id[][][];
 
-  arr: {id: Id; position: Coors}[] = []
+  clients: Record<Id, {position: Coors; dimensions: Coors} | undefined> = {}
+
+  // arr: {id: Id; position: Coors}[] = []
   constructor(
     public bounds: Coors,
     public dimensions: Coors
@@ -21,40 +23,40 @@ export class SpacialHashGrid {
   }
 
   newClient(entity: Entity) {
-    this.arr.push({
-      id: entity.id,
-      position: entity.state.position.curr
-    })
-  }
-  updateClient(entity: Entity) {
-    for (const e of this.arr) {
-      if (e.id === entity.id) {
-        e.position = [...entity.state.position.curr]
-      }
+    this.clients[entity.id] = {
+      position: [...entity.state.position.curr],
+      dimensions: [...entity.state.dimensions]
     }
-
-    return
   }
+
+  updateClient(entity: Entity) {
+    this.clients[entity.id] = {
+      position: [...entity.state.position.curr],
+      dimensions: [...entity.state.dimensions]
+    }
+  }
+
   removeClient(entity: Entity) {
-    const e = this.arr.find((x) => x.id === entity.id)
-    if (!e) return
-    const i = this.arr.indexOf(e)
-    this.arr.splice(i, 1)
-    return
+    this.clients[entity.id] = undefined
   }
   findNear(entity: Entity): Id[] {
-    const near = this.arr.filter((a) => {
-      if (a.id === entity.id) return false
-      return (
-        Math.abs(a.position[0] - entity.state.position.curr[0]) < 100 ||
-        Math.abs(a.position[1] - entity.state.position.curr[1]) < 100
-      )
-    })
-    return near.map((n) => n.id)
+    const near = Object.entries(this.clients).reduce<Id[]>((acc, [id, a]) => {
+      if (!a) return acc
+
+      if (
+        Math.abs(a.position[0]) - Math.abs(entity.state.position.curr[0]) <
+          100 ||
+        Math.abs(a.position[1]) - Math.abs(entity.state.position.curr[1]) < 100
+      ) {
+        acc.push(id)
+      }
+      return acc
+    }, [])
+    return near
   }
 
   dropAll() {
-    this.arr.length = 0
+    this.clients = {}
   }
 
   private getCellIndex(position: Coors) {

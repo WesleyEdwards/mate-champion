@@ -144,8 +144,8 @@ export function calcPlatEntityCollision(
   }
 
   if (!notInlineY(entity, floor)) {
-    const left = calcPlatEntityCollisionLeft(entity, floor)
-    const right = calcPlatEntityCollisionRight(entity, floor)
+    const left = entityIsLeftOfFloor(entity, floor)
+    const right = entityIsRightOfFloor(entity, floor)
     coors.x = left ?? right
   }
   return coors
@@ -174,28 +174,26 @@ function calcPlatEntityCollisionBottom(
   return null
 }
 
-function calcPlatEntityCollisionLeft(
-  entity: Entity,
-  floor: Entity
-): number | null {
+function entityIsLeftOfFloor(entity: Entity, floor: Entity): number | null {
   const eWidth = entity.state.dimensions[0]
 
   const previous = entity.state.position.prev[0] + eWidth
   const recent = entity.state.position.curr[0] + eWidth
   const fPos = floor.state.position.curr[0]
 
-  if (recent >= fPos && previous <= fPos) return fPos - eWidth
+  if (recent >= fPos && previous <= fPos) {
+    return fPos - eWidth
+  }
   return null
 }
 
-function calcPlatEntityCollisionRight(
-  entity: Entity,
-  floor: Entity
-): number | null {
+function entityIsRightOfFloor(entity: Entity, floor: Entity): number | null {
   const previous = entity.state.position.prev[0]
   const recent = entity.state.position.curr[0]
   const fPos = floor.state.position.curr[0] + floor.state.dimensions[0]
 
-  if (recent <= fPos && previous >= fPos) return fPos
+  if (recent <= fPos && previous >= fPos) {
+    return fPos
+  }
   return null
 }

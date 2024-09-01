@@ -191,7 +191,7 @@ export class GameEdit {
     // Fix entities
     this.state.entities.forEach((entity) => {
       if (entity instanceof Groog) {
-        entity.state.facing = entity.state.velocity[0] > 0 ? "right" : "left"
+        // entity.state.facing = entity.state.velocity[0] > 0 ? "right" : "left"
       }
     })
 

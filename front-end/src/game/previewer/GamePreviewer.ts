@@ -29,6 +29,9 @@ export class GamePreviewer {
       this.gridHash.updateClient(entity)
       if (entity.handleInteraction) {
         const near = this.gridHash.findNear(entity)
+        if (entity.typeId === "player") {
+          console.log(near)
+        }
         entity.handleInteraction?.(
           this.state.entities.filter((e) => near.includes(e.id))
         )

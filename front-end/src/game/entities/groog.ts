@@ -18,7 +18,6 @@ import {CurrAndPrev, Coors, Entity} from "./entityTypes"
 import {GRAVITY} from "../loopShared/constants"
 
 export type GroogState = {
-  facing: "left" | "right"
   position: CurrAndPrev
   velocity: Coors
   dimensions: Coors
@@ -42,7 +41,6 @@ export class Groog implements Entity {
   modifyStatsOnDeath = {score: 10}
   constructor(position: Coors, velocity: Coors) {
     this.state = {
-      facing: "right",
       position: toCurrAndPrev(position),
       velocity,
       timeUntilTurn: 3000,
@@ -76,7 +74,7 @@ export class Groog implements Entity {
       this.state.timers.turnX.val = 0
       processGroogActionRaw(this.state, {
         name: "setFacingX",
-        dir: this.state.facing === "left" ? "right" : "left"
+        dir: this.state.velocity[0] > 0 ? "left" : "right"
       })
     }
 

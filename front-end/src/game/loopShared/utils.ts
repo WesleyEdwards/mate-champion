@@ -16,6 +16,6 @@ export const emptyStats = {
   levelCreator: ""
 }
 
-export function createId(type?: string): Id {
+export function createId(type: string): Id {
   return `${type}-${generateRandomInt(0, 10000)}`
 }

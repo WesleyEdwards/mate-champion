@@ -10,7 +10,7 @@ type EndGateState = {
 }
 
 export class EndGate implements Entity {
-  id = createId()
+  id = createId("endGate")
   typeId = "endGate" as const
   state: EndGateState
 

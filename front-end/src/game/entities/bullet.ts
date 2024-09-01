@@ -25,7 +25,7 @@ export const mBulletConst = {
 } as const
 
 export class Bullet implements Entity {
-  id = createId()
+  id = createId("bullet")
   typeId = "bullet" as const
   state: MBulletState
 

@@ -16,7 +16,7 @@ export type PlatformState = {
 }
 
 export class Platform implements Entity {
-  id = createId()
+  id = createId("platform")
   typeId = "platform" as const
   state: PlatformState
 
@@ -49,7 +49,7 @@ export class Platform implements Entity {
 }
 
 export class Floor implements Entity {
-  id = createId()
+  id = createId("floor")
   typeId = "floor" as const
   state: PlatformState
 
