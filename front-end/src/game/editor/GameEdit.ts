@@ -1,4 +1,4 @@
-import {FullLevelInfo} from "../loopShared/models"
+import {LevelMap} from "../loopShared/models"
 import {Champ} from "../entities/champ"
 import {Coors, Entity, Id} from "../entities/entityTypes"
 import {renderBg} from "../render/background"
@@ -29,9 +29,9 @@ export class GameEdit {
   isDirty: boolean = false
 
   constructor(
-    currentLevel: FullLevelInfo,
+    currentLevel: LevelMap,
     private setIsDirty: () => void,
-    private setLevels: (level: Partial<FullLevelInfo>) => void,
+    private setLevels: (level: Partial<LevelMap>) => void,
     private canvas: HTMLCanvasElement
   ) {
     this.state = levelInfoToEditState(currentLevel)

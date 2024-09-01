@@ -1,9 +1,9 @@
-import {createContext, useContext, useEffect, useMemo, useState} from "react"
-import {FullLevelInfo, LevelInfo} from "../game/loopShared/models"
+import {createContext, useContext, useEffect, useState} from "react"
+import {FullLevelInfo} from "../game/loopShared/models"
 import {Api} from "../api/Api"
 import {GameMode} from "./useAuth"
 import {User} from "../types"
-import {getLevelDiff, objectsAreDifferent} from "../helpers"
+import {objectsAreDifferent} from "../helpers"
 import {LevelCache, useLevelCache} from "./levelCache"
 
 export const useLevels: (params: {

@@ -1,4 +1,4 @@
-import {FullLevelInfo, SetUI} from "../loopShared/models"
+import {LevelMap} from "../loopShared/models"
 import {Champ} from "../entities/champ"
 import {EndGate} from "../entities/endGate"
 import {GameStateProps, Entity} from "../entities/entityTypes"
@@ -15,7 +15,7 @@ export class GamePreviewer {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])
   state: GameStateProps = initGameState()
 
-  constructor(private level: FullLevelInfo) {
+  constructor(private level: LevelMap) {
     this.startLevel()
   }
 

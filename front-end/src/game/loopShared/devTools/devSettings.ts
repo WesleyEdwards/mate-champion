@@ -1,5 +1,4 @@
 import {localStorageManager} from "../../../api/localStorageManager"
-import {Coordinates} from "../models"
 import {AddableEntity} from "../../../components/GameEdit/CourseBuilderSettings"
 
 const prodSettings: Record<keyof Settings, false> = {
@@ -7,11 +6,6 @@ const prodSettings: Record<keyof Settings, false> = {
   collisionBoxesVisible: false,
   cameraLines: false
 } as const
-
-export type DevStats = {
-  coor: Coordinates
-  vel: Coordinates
-}
 
 export type Settings = {
   showDevStats: boolean

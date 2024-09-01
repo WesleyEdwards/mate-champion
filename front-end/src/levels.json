@@ -11,10 +11,7 @@
     "opponents": {
       "grog": [
         {
-          "initPos": {
-            "x": 200,
-            "y": 100
-          },
+          "initPos": [200, 100],
           "moveSpeed": 0.05,
           "jumpOften": false
         }
@@ -159,242 +156,152 @@
     "opponents": {
       "grog": [
         {
-          "initPos": {
-            "x": 4005,
-            "y": 137
-          },
+          "initPos": [4005, 137],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4217,
-            "y": 48
-          },
+          "initPos": [4217, 48],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4051,
-            "y": 75
-          },
+          "initPos": [4051, 75],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4152,
-            "y": 28
-          },
+          "initPos": [4152, 28],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4416,
-            "y": 57
-          },
+          "initPos": [4416, 57],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4564,
-            "y": 12
-          },
+          "initPos": [4564, 12],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4667,
-            "y": 69
-          },
+          "initPos": [4667, 69],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4767,
-            "y": 42
-          },
+          "initPos": [4767, 42],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4697,
-            "y": 160
-          },
+          "initPos": [4697, 160],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4472,
-            "y": 190
-          },
+          "initPos": [4472, 190],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4573,
-            "y": 231
-          },
+          "initPos": [4573, 231],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4487,
-            "y": 304
-          },
+          "initPos": [4487, 304],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4192,
-            "y": 328
-          },
+          "initPos": [4192, 328],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4233,
-            "y": 422
-          },
+          "initPos": [4233, 422],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4870,
-            "y": 352
-          },
+          "initPos": [4870, 352],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 4681,
-            "y": 382
-          },
+          "initPos": [4681, 382],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3747,
-            "y": 330
-          },
+          "initPos": [3747, 330],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3579,
-            "y": 244
-          },
+          "initPos": [3579, 244],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3579,
-            "y": 244
-          },
+          "initPos": [3579, 244],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3745,
-            "y": 212
-          },
+          "initPos": [3745, 212],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3749,
-            "y": 130
-          },
+          "initPos": [3749, 130],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3822,
-            "y": 65
-          },
+          "initPos": [3822, 65],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3614,
-            "y": 486
-          },
+          "initPos": [3614, 486],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3836,
-            "y": 485
-          },
+          "initPos": [3836, 485],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3086,
-            "y": 151
-          },
+          "initPos": [3086, 151],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3075,
-            "y": 320
-          },
+          "initPos": [3075, 320],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3205,
-            "y": 247
-          },
+          "initPos": [3205, 247],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 2913,
-            "y": 175
-          },
+          "initPos": [2913, 175],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3331,
-            "y": 75
-          },
+          "initPos": [3331, 75],
           "moveSpeed": 0.3,
           "jumpOften": true
         },
         {
-          "initPos": {
-            "x": 3168,
-            "y": 384
-          },
+          "initPos": [3168, 384],
           "moveSpeed": 0.3,
           "jumpOften": true
         }

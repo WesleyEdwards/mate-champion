@@ -3,11 +3,10 @@ import {FC} from "react"
 import {ScreenProps} from "./GameEntry"
 import {emptyStats} from "../game/loopShared/utils"
 import {Construction, PlayArrow} from "@mui/icons-material"
-import {FullLevelInfo, LevelInfo} from "../game/loopShared/models"
+import {LevelMap} from "../game/loopShared/models"
 import {useLevelContext} from "../hooks/useLevels"
 import {useNavigator} from "../hooks/UseNavigator"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
-import {playLoop} from "../game/play/playLoop"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 
 export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
@@ -35,7 +34,7 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
           gameLoopEdit({
             level: editingLevel,
             setIsDirty: () => setIsDirty(true),
-            modifyLevel: (level: Partial<FullLevelInfo>) => {
+            modifyLevel: (level: Partial<LevelMap>) => {
               levelCache.update.modify(editingLevel!._id, level)
               setIsDirty(false)
             }

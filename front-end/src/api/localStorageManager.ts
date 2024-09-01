@@ -1,5 +1,3 @@
-import {FullLevelInfo} from "../game/loopShared/models"
-
 type KeyName = "token" | "high-score" | "dev-settings" | "level-tab"
 
 export const localStorageManager = {

@@ -1,6 +1,6 @@
 import {MAX_CANVAS_HEIGHT, platformConst} from "../loopShared/constants"
 import {devSettings} from "../loopShared/devTools/devSettings"
-import {FullLevelInfo} from "../loopShared/models"
+import {LevelMap} from "../loopShared/models"
 import {
   Camera,
   Coors,
@@ -148,9 +148,7 @@ export const updateCurrPrevDragState = (obj: {
   }
 }
 
-export const levelInfoToEditState = (
-  level: FullLevelInfo
-): GameStateEditProps => {
+export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => {
   return {
     entities: levelToEntities({...level}),
     camera: {
@@ -182,39 +180,32 @@ export const levelInfoToEditState = (
 
 export const editStateToLevelInfo = (
   gs: GameStateEditProps
-): Partial<FullLevelInfo> => {
-  return {
-    endPosition: gs.endPosition,
-    floors: gs.entities
-      .filter((e) => e.typeId === "floor")
-      .map((f) => ({
-        x: f.state.position.curr[0],
-        width: f.state.dimensions[0],
-        color: (f as Floor).state.color
-      })),
-    platforms: gs.entities
-      .filter((e) => e.typeId === "platform")
-      .map((f) => ({
-        x: f.state.position.curr[0],
-        y: f.state.position.curr[1],
-        width: f.state.dimensions[0],
-        height: f.state.dimensions[1],
-        color: (f as Platform).state.color
-      })),
-    opponents: {
-      grog: gs.entities
-        .filter((e) => e.typeId === "groog")
-        .map((g) => ({
-          initPos: {x: g.state.position.curr[0], y: g.state.position.curr[1]},
-          moveSpeed: (g as Groog).state.velocity[0],
-          jumpOften: false
-        }))
-    },
-    packages: gs.entities
-      .filter((e) => e.typeId === "ammo")
-      .map((p) => ({
-        x: p.state.position.curr[0],
-        y: p.state.position.curr[1]
+): Partial<LevelMap> => ({
+  endPosition: gs.endPosition,
+  floors: gs.entities
+    .filter((e) => e.typeId === "floor")
+    .map((f) => ({
+      x: f.state.position.curr[0],
+      width: f.state.dimensions[0],
+      color: (f as Floor).state.color
+    })),
+  platforms: gs.entities
+    .filter((e) => e.typeId === "platform")
+    .map((f) => ({
+      position: [...f.state.position.curr],
+      dimensions: [...f.state.dimensions],
+      color: (f as Platform).state.color
+    })),
+  opponents: {
+    grog: gs.entities
+      .filter((e) => e.typeId === "groog")
+      .map((g) => ({
+        position: [...g.state.position.curr],
+        moveSpeed: (g as Groog).state.velocity[0],
+        jumpOften: false
       }))
-  }
-}
+  },
+  packages: gs.entities
+    .filter((e) => e.typeId === "ammo")
+    .map((p) => [...p.state.position.curr])
+})

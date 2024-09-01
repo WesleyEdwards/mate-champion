@@ -1,12 +1,12 @@
 import {arraysAreSame} from "../../components/GameEdit/CourseBuilderSettings"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
-import {FullLevelInfo, SetUI} from "../loopShared/models"
+import {LevelMap} from "../loopShared/models"
 import {GameEdit} from "./GameEdit"
 
 export function gameLoopEdit(params: {
-  level: FullLevelInfo
+  level: LevelMap
   setIsDirty: () => void
-  modifyLevel: (level: Partial<FullLevelInfo>) => void
+  modifyLevel: (level: Partial<LevelMap>) => void
 }) {
   const {level, modifyLevel, setIsDirty} = params
   const {canvas, context} = getCanvasContext()

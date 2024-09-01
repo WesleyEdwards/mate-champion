@@ -13,18 +13,20 @@ import {
   updateStats
 } from "../helpers"
 import {Entity, GameStateProps} from "../entities/entityTypes"
-import {FullLevelInfo, SetUI} from "../loopShared/models"
 import {updateTime} from "../state/helpers"
 import {EndGate} from "../entities/endGate"
+import {PlayLoopParams} from "./playLoop"
 
 export class GamePlay {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])
   state: GameStateProps = initGameState()
+  levels: PlayLoopParams["levels"]
+  setUi: PlayLoopParams["setUI"]
 
-  constructor(
-    private levels: FullLevelInfo[],
-    private setUi: SetUI
-  ) {}
+  constructor(params: PlayLoopParams) {
+    this.levels = params.levels
+    this.setUi = params.setUI
+  }
 
   /** Step */
   step(timeStamp: number) {

@@ -1,5 +1,5 @@
 import {addEventListeners} from "./loopShared/eventListeners"
-import {FullLevelInfo} from "./loopShared/models"
+import {LevelMap} from "./loopShared/models"
 import {Ammo} from "./entities/Ammo"
 import {
   Coors,
@@ -8,7 +8,7 @@ import {
   GameStateProps
 } from "./entities/entityTypes"
 import {Groog} from "./entities/groog"
-import {Floor, floorConst, Platform} from "./entities/platform"
+import {Floor, Platform} from "./entities/platform"
 import {emptyTime} from "./state/timeHelpers"
 
 export const initGameState = (): GameStateProps => ({
@@ -37,15 +37,15 @@ export const initGameState = (): GameStateProps => ({
   })
 })
 
-export const levelToEntities = (level: FullLevelInfo): Entity[] => {
+export const levelToEntities = (level: LevelMap): Entity[] => {
   const entities: Entity[] = []
 
   level.platforms.forEach((p) => {
     entities.push(
       new Platform({
         color: p.color,
-        position: [p.x, p.y],
-        dimensions: [p.width, p.height]
+        position: [...p.position],
+        dimensions: [...p.dimensions]
       })
     )
   })
@@ -54,11 +54,11 @@ export const levelToEntities = (level: FullLevelInfo): Entity[] => {
   })
 
   level.opponents.grog.forEach((g) => {
-    entities.push(new Groog([g.initPos.x, g.initPos.y], [g.moveSpeed, 0]))
+    entities.push(new Groog([...g.position], [g.moveSpeed, 0]))
   })
 
   level.packages.forEach((p) => {
-    entities.push(new Ammo([p.x, p.y]))
+    entities.push(new Ammo([...p]))
   })
   return entities
 }

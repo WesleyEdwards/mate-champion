@@ -9,7 +9,7 @@ import {setToNoDevSettings} from "../game/loopShared/devTools/devSettings"
 import {usePauseModalContext} from "../hooks/PauseModalContext"
 import {useLevelContext} from "../hooks/useLevels"
 import {playLoop} from "../game/play/playLoop"
-import {PlayStats} from "../game/loopShared/models"
+import {LevelMap, PlayStats} from "../game/loopShared/models"
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void
@@ -62,7 +62,7 @@ export const PlayScreen: FC<{
             handleLose,
             handlePause: (pause) => setModal(pause ? "pause" : null)
           },
-          levels: levelsInfo
+          levels: levelsInfo as unknown as LevelMap[]
         })
       }}
     >

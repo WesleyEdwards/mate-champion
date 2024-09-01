@@ -1,4 +1,3 @@
-import {Coordinates} from "../loopShared/models"
 import {Coors, CurrAndPrev} from "../entities/entityTypes"
 
 export type TimerUp = {count: "up"; val: number}
@@ -24,18 +23,9 @@ const updateCurr = (currAndPrev: CurrAndPrev) => {
  * @param vel
  * @param deltaT
  */
-export const updateWithTime = <T extends Coordinates | Coors>(
-  pos: T,
-  vel: T,
-  deltaT: number
-) => {
-  if ("x" in pos && "x" in vel) {
-    pos.x += vel.x * deltaT
-    pos.y += vel.y * deltaT
-  } else {
-    ;(pos as Coors)[0] += (vel as Coors)[0] * deltaT
-    ;(pos as Coors)[1] += (vel as Coors)[1] * deltaT
-  }
+export const updateWithTime = (pos: Coors, vel: Coors, deltaT: number) => {
+  pos[0] += vel[0] * deltaT
+  pos[1] += vel[1] * deltaT
 }
 
 /**
@@ -46,7 +36,7 @@ export const updateWithTime = <T extends Coordinates | Coors>(
  */
 export const updatePosAndVel = (
   pos: CurrAndPrev,
-  vel: Coordinates | Coors,
+  vel: Coors,
   deltaT: number
 ) => {
   updateCurr(pos)

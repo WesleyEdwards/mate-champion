@@ -1,15 +1,23 @@
-import {FullLevelInfo, SetUI} from "../loopShared/models"
+import {LevelMap, PlayStats} from "../loopShared/models"
 import {abortController} from "../editor/eventListeners"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
 import {GamePlay} from "./GamePlay"
 
-export function playLoop(params: {setUI: SetUI; levels: FullLevelInfo[]}) {
+export type PlayLoopParams = {
+  setUI: {
+    modifyStats: (stats: Partial<PlayStats>) => void
+    handleLose: (score: number) => void
+    handlePause: (pause: boolean) => void
+  }
+  levels: LevelMap[]
+}
+export function playLoop(params: PlayLoopParams) {
   const {setUI, levels} = params
   const {canvas, context} = getCanvasContext()
 
   if (levels.length === 0) return
 
-  const game = new GamePlay(levels, setUI)
+  const game = new GamePlay(params)
 
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true

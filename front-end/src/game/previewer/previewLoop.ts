@@ -1,8 +1,8 @@
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
-import {FullLevelInfo} from "../loopShared/models"
+import {LevelMap} from "../loopShared/models"
 import {GamePreviewer} from "./GamePreviewer"
 
-export function enterGameLoopPreview(level: FullLevelInfo) {
+export function enterGameLoopPreview(level: LevelMap) {
   const {canvas, context} = getCanvasContext()
 
   const game = new GamePreviewer(level)

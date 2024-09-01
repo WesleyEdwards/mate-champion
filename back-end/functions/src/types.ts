@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from "uuid"
 import {z} from "zod"
 
-const baseObjectSchema = z.object({
+export const baseObjectSchema = z.object({
   _id: z.string().default(uuidv4),
   createdAt: z.string().default(new Date().toISOString()),
   updatedAt: z.string().default(new Date().toISOString())
@@ -29,10 +29,12 @@ const scoreSchema = z
   })
   .merge(baseObjectSchema)
 
-const coordinates = z.object({
+export const coordinates = z.object({
   x: z.number(),
   y: z.number()
 })
+
+export const coors = z.array(z.number()).length(2)
 
 const levelSchema = z
   .object({
@@ -47,13 +49,13 @@ const levelSchema = z
 // this will have the same _id as the associated level
 const levelMapSchema = z
   .object({
-    packages: coordinates.array().default([]),
+    packages: coors.array().default([]),
     endPosition: z.number().default(4500),
     opponents: z
       .object({
         grog: z
           .object({
-            initPos: coordinates,
+            position: coors,
             moveSpeed: z.number(),
             jumpOften: z.boolean().optional().default(false)
           })
@@ -62,10 +64,8 @@ const levelMapSchema = z
       .default({grog: []}),
     platforms: z
       .object({
-        x: z.number(),
-        y: z.number(),
-        width: z.number(),
-        height: z.number(),
+        dimensions: coors,
+        position: coors,
         color: z.string()
       })
       .array()

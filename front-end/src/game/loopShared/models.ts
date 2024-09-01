@@ -1,79 +1,6 @@
-export type PackageProps = {
-  x: number
-  y: number
-}
+import {Coors} from "../entities/entityTypes"
 
-export type CharAction =
-  | "MoveRight"
-  | "MoveLeft"
-  | "Jump"
-  | "Duck"
-  | "StopX"
-  | "StopY"
-
-export interface Coordinates {
-  x: number
-  y: number
-}
-
-export interface SetUI {
-  modifyStats: (stats: Partial<PlayStats>) => void
-  handleLose: (score: number) => void
-  handlePause: (pause: boolean) => void
-}
-
-export interface HasPosition {
-  vector: VectorMan
-}
-
-export interface VectorMan {
-  position: Coordinates
-  width: number
-  height: number
-  setPosX: (newX: number) => void
-  setPosY: (newY: number) => void
-  relativePos: (xOffset: number) => Coordinates
-}
-
-export interface CharVectorMan extends VectorMan {
-  velocity: Coordinates
-  prevPosX: number
-  prevPosY: number
-}
-
-export interface Character {
-  vector: CharVectorMan
-  move: (action: CharAction) => void
-  setOnPlatform: (newY: number) => void
-}
-
-export interface StaticObject extends HasPosition {
-  draw: (drawProps: any) => void
-  isFloor: boolean
-  color: string
-}
-
-export type GrogProps = {
-  initPos: Coordinates
-  moveSpeed: number
-  jumpOften?: boolean
-}
-
-export type FloorType = {
-  x: number
-  width: number
-  color: string
-}
-
-export type FloatingType = {
-  x: number
-  y: number
-  width: number
-  height: number
-  color: string
-}
-
-export interface Keys {
+export type Keys = {
   up: boolean
   right: boolean
   left: boolean
@@ -87,17 +14,27 @@ export interface Keys {
   mostRecentX: "left" | "right"
 }
 
-export type OppDirections = "left" | "right"
-
-export type VagueFacing = "left" | "right" | "up" | "down"
-
 export type LevelMap = {
   _id: string
   endPosition: number
-  packages: PackageProps[]
-  opponents: {grog: GrogProps[]}
-  platforms: FloatingType[]
-  floors: FloorType[]
+  packages: Coors[]
+  opponents: {
+    grog: {
+      position: Coors
+      moveSpeed: number
+      jumpOften?: boolean
+    }[]
+  }
+  platforms: {
+    dimensions: Coors
+    position: Coors
+    color: string
+  }[]
+  floors: {
+    x: number
+    width: number
+    color: string
+  }[]
   createdAt: string
   updatedAt: string
 }
