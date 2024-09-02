@@ -1,14 +1,6 @@
-import {
-  CircularProgress,
-  Stack,
-  Card,
-  IconButton,
-  Typography,
-  CardContent
-} from "@mui/joy"
+import {CircularProgress, Stack} from "@mui/joy"
 import {useState, useEffect, FC} from "react"
 import {Entity, EntityType} from "../../game/entities/entityTypes"
-import {devSettings} from "../../game/loopShared/devTools/devSettings"
 import {useLevelContext} from "../../hooks/useLevels"
 import {AddingEntity} from "./ItemTypeEdit"
 import {Platform} from "../../game/entities/platform"
@@ -21,14 +13,22 @@ export type EditableEntity = Exclude<EntityType, "player" | "bullet">
 
 export type AddableEntity = Exclude<EntityType, "player" | "bullet" | "endGate">
 
+export type Adding = {
+  type: AddableEntity | undefined
+  color: string
+}
+
 export const CourseBuilderSettings = () => {
   const {editingLevel} = useLevelContext()
-  const [AddType, setAddType] = useState<AddableEntity>()
+  const [adding, setAdding] = useState<Adding>({type: undefined, color: ""})
   const [editingEntities, setEditingEntities] = useState<Entity[]>([])
 
   const updateEditing = () => {
-    if (AddType !== devSettings().addingEntityType) {
-      setAddType(devSettings().addingEntityType)
+    if (
+      adding.type !== window.addingEntity.type ||
+      adding.color !== window.addingEntity.color
+    ) {
+      setAdding({...window.addingEntity})
     }
     if (!arraysAreSame(editingEntities, window.editingEntities)) {
       setEditingEntities([...window.editingEntities])
@@ -48,7 +48,7 @@ export const CourseBuilderSettings = () => {
 
   return (
     <Stack gap="2rem">
-      <AddingEntity edit={AddType} setEdit={setAddType} />
+      <AddingEntity edit={adding} setEdit={setAdding} />
       <EditingEntities edit={editingEntities} setEdit={setEditingEntities} />
     </Stack>
   )

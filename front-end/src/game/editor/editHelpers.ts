@@ -1,5 +1,4 @@
 import {MAX_CANVAS_HEIGHT, platformConst} from "../loopShared/constants"
-import {devSettings} from "../loopShared/devTools/devSettings"
 import {LevelMap} from "../loopShared/models"
 import {
   Camera,
@@ -23,14 +22,14 @@ export const addEntityToState = (gs: GameEdit) => {
     groog: new Groog([0, 0], [0.3, 0]),
     floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
     platform: new Platform({
-      color: "springgreen",
+      color: window.addingEntity.color,
       position: [0, 0],
       dimensions: [300, platformConst.defaultHeight]
     }),
     ammo: new Ammo([0, 0])
   }
 
-  const toAdd = devSettings().addingEntityType
+  const toAdd = window.addingEntity.type ?? "platform"
 
   const entity = addable[toAdd]
   const pos = gs.state.keys.mouseUp.curr

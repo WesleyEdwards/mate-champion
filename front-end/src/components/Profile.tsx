@@ -4,18 +4,33 @@ import {FC} from "react"
 import {ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
 import {useAuthContext} from "../hooks/useAuth"
-import {EditEmail, EditName} from "./EditEmailOrName"
+import {EditField} from "./EditField"
 
 export const Profile: FC<ScreenProps> = () => {
   const {resetStack, navigateTo} = useNavigator()
-  const {user, logout} = useAuthContext()
+  const {user, logout, modifyUser, api} = useAuthContext()
 
   return (
     <Stack gap="1rem" mb={2} sx={{width: "722px"}}>
       {user ? (
-        <>
-          <EditName />
-          <EditEmail />
+        <Stack gap="3rem">
+          <EditField
+            init={user.name ?? ""}
+            label={"Name"}
+            handleChange={(newName) => {
+              modifyUser({name: newName})
+              api.user.modify(user._id, {name: newName})
+            }}
+          />
+
+          <EditField
+            init={user.email ?? ""}
+            label={"Email"}
+            handleChange={(newEmail) => {
+              modifyUser({email: newEmail})
+              api.user.modify(user._id, {email: newEmail})
+            }}
+          />
           <Button
             onClick={() => {
               logout()
@@ -26,7 +41,7 @@ export const Profile: FC<ScreenProps> = () => {
           >
             Log Out
           </Button>
-        </>
+        </Stack>
       ) : (
         <Stack my="2rem" gap="2rem">
           <Button

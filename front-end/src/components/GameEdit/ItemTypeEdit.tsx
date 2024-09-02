@@ -1,111 +1,84 @@
-import {
-  Stack,
-  Card,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-  MenuButton,
-  Dropdown
-} from "@mui/joy"
-import {contentCreatorModifyObject} from "../../game/loopShared/devTools/devSettings"
-import {AddableEntity, EditableEntity} from "./CourseBuilderSettings"
+import {Stack, Card, Typography, Option, Select} from "@mui/joy"
+import {AddableEntity, Adding} from "./CourseBuilderSettings"
 import grogImg from "../../assets/grog/enemy_walking_single.png"
 import packageImg from "../../assets/mate-package.png"
 import platformImg from "../../assets/platform.png"
 import {FC} from "react"
 import {capitalize} from "lodash"
-import {Edit} from "@mui/icons-material"
+import {ColorPicker} from "./ColorPicker"
 
 export const AddingEntity = ({
   edit,
   setEdit
 }: {
-  edit: AddableEntity | undefined
-  setEdit: (e: AddableEntity) => void
+  edit: Adding
+  setEdit: React.Dispatch<React.SetStateAction<Adding>>
 }) => {
-  const handleSetEditingItem = (item: AddableEntity) => {
-    contentCreatorModifyObject(item)
-    setEdit(item)
+  const handleSetEditingItem = (params: Partial<Adding>) => {
+    window.addingEntity = {...window.addingEntity, ...params}
+    setEdit((prev) => ({...prev, ...params}))
   }
 
-  if (!edit) return null
+  if (!edit.type) return null
 
-  const Render = entityFC[edit]
+  const Render = entityFC[edit.type]
 
   return (
-    <Card
-      style={{
-        padding: "12px"
-      }}
-    >
+    <Card style={{padding: "12px"}}>
       <Stack>
         <Stack direction="row" justifyContent="space-between">
           <Stack>
-            <Typography level="title-lg">{capitalize(edit)}</Typography>
-            <Typography level="body-xs">
-              Ctrl + Click to add a{edit === "ammo" ? "n" : ""}{" "}
-              {capitalize(edit)}.
-            </Typography>
-          </Stack>
-          <Dropdown>
-            <MenuButton
-              slots={{root: IconButton}}
-              slotProps={{
-                root: {
-                  variant: "outlined",
-                  color: "neutral"
+            <Select
+              sx={{mb: "5px"}}
+              defaultValue={"platform" as const}
+              value={edit.type}
+              onChange={(_, value) => {
+                if (value) {
+                  handleSetEditingItem({type: value})
                 }
               }}
+              renderValue={(k) => (
+                <Typography level="title-lg">
+                  {capitalize(k?.value ?? "platform")}
+                </Typography>
+              )}
             >
-              <Edit />
-            </MenuButton>
-            <Menu>
               {Object.keys(entityFC).map((k) => (
-                <MenuItem
-                  key={k}
-                  onClick={() => handleSetEditingItem(k)}
-                  disabled={edit === k}
-                >
-                  {k}
-                </MenuItem>
+                <Option value={k}>
+                  <Typography level="title-lg">{capitalize(k)}</Typography>
+                </Option>
               ))}
-            </Menu>
-          </Dropdown>
+            </Select>
+            <Typography level="body-xs">
+              Ctrl + Click to add a{edit.type === "ammo" ? "n" : ""}{" "}
+              {capitalize(edit.type)}.
+            </Typography>
+          </Stack>
         </Stack>
-        <Render />
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          minHeight={"6rem"}
+        >
+          <Render
+            style={{
+              backgroundColor: edit.type === "platform" ? edit.color : undefined
+            }}
+          />
+          {edit.type === "platform" && (
+            <Stack margin="1rem" direction={"row"}>
+              <ColorPicker
+                color={edit.color}
+                setColor={(color) => handleSetEditingItem({color})}
+                buttonLabel="Color"
+              />
+            </Stack>
+          )}
+        </Stack>
       </Stack>
     </Card>
   )
-
-  // return (
-  //   <Stack gap="1rem" minWidth="200px">
-  //     {Object.entries(entityFC).map(([obj, Display]) => (
-  //       <Card
-  //         key={obj}
-  //         variant={edit === obj ? "solid" : "plain"}
-  //         sx={{
-  //           cursor: "pointer",
-  //           "&:hover": {
-  //             opacity: 0.8,
-  //           },
-  //           paddingY: "5px",
-  //           minHeight: "60px",
-  //         }}
-  //         onClick={() => handleSetEditingItem(obj)}
-  //       >
-  //         <Stack
-  //           justifyContent="space-between"
-  //           direction="row"
-  //           alignItems="center"
-  //           height="100%"
-  //         >
-  //           {obj} <Display />
-  //         </Stack>
-  //       </Card>
-  //     ))}
-  //   </Stack>
-  // );
 }
 
 export const entityFC: Record<

@@ -5,7 +5,6 @@ import {emptyStats} from "../game/loopShared/utils"
 import {localStorageManager} from "../api/localStorageManager"
 import {MCScreen} from "./GameEntry"
 import levelsInfo from "../levels.json"
-import {setToNoDevSettings} from "../game/loopShared/devTools/devSettings"
 import {usePauseModalContext} from "../hooks/PauseModalContext"
 import {useLevelContext} from "../hooks/useLevels"
 import {playLoop} from "../game/play/playLoop"
@@ -53,7 +52,6 @@ export const PlayScreen: FC<{
         setScreen("game")
 
         setGameMode("play")
-        setToNoDevSettings()
 
         window.stopLoop = false
         playLoop({

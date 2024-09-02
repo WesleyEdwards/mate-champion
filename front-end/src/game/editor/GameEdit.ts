@@ -174,12 +174,9 @@ export class GameEdit {
 
     if (this.state.keys.copy.curr) {
       this.currentlySelected.forEach((e) => {
-        console.log("Copying")
         const newE = copyEntity(e)
-        console.log(newE)
         if (newE) {
           this.state.entities.push(newE)
-          console.log(this.state.entities.length)
         }
       })
       this.state.keys.copy.curr = false

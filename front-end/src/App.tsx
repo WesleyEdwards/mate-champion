@@ -9,9 +9,11 @@ import {mateTheme} from "./theme"
 import {AuthContext, useAuth} from "./hooks/useAuth"
 import {LevelsContext, useLevels} from "./hooks/useLevels"
 import {Layout} from "./components/Layout"
-import {initializeDevSettings} from "./game/loopShared/devTools/devSettings"
 import {initializeTextures} from "./gameAssets/textures"
-import {AddableEntity} from "./components/GameEdit/CourseBuilderSettings"
+import {
+  AddableEntity,
+  Adding
+} from "./components/GameEdit/CourseBuilderSettings"
 import {Entity} from "./game/entities/entityTypes"
 
 declare global {
@@ -24,7 +26,7 @@ declare global {
       cameraLines: boolean
     }
     editingEntities: Entity[]
-    addingEntityType: AddableEntity
+    addingEntity: Adding
     debounceLog: (...args: any[]) => void
   }
 
@@ -34,7 +36,6 @@ declare global {
   }
 }
 
-initializeDevSettings()
 initializeTextures()
 
 function debounceLog(...args: any[]) {
@@ -42,8 +43,14 @@ function debounceLog(...args: any[]) {
   if (rand === 1) console.log(...args)
 }
 
+window.addingEntity = {type: "platform", color: "#00ff7f"}
 window.debounceLog = debounceLog
 window.editingEntities = []
+window.mateSettings = {
+  showDevStats: false,
+  collisionBoxesVisible: false,
+  cameraLines: false
+}
 
 const theme: Theme = extendTheme(mateTheme)
 

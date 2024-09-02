@@ -7,7 +7,6 @@ import {
   Tooltip,
   Typography
 } from "@mui/joy"
-import {MCScreen} from "./GameEntry"
 import {
   ArrowBack,
   Check,
@@ -17,7 +16,6 @@ import {
   Undo
 } from "@mui/icons-material"
 import {FC, useState} from "react"
-import {usePauseModalContext} from "../hooks/PauseModalContext"
 import {useLevelContext} from "../hooks/useLevels"
 import {CreateNewLevel} from "./CreateNewLevel"
 import {useNavigator} from "../hooks/UseNavigator"
