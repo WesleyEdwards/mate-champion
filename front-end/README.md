@@ -1,4 +1,4 @@
-# Mate Champeon
+# Mate Champion
 
 This is being hosted at https://mate-champion.web.app
 
