@@ -9,7 +9,7 @@ import {
 } from "../entities/entityTypes"
 import {levelToEntities, toCurrAndPrev} from "../helpers"
 import {Floor, floorConst, Platform} from "../entities/platform"
-import {emptyTime, Timer, TimerUp} from "../state/timeHelpers"
+import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {GameEdit} from "./GameEdit"
 import {Groog} from "../entities/groog"
 import {Ammo} from "../entities/Ammo"

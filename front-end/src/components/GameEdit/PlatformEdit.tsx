@@ -19,8 +19,6 @@ export const PlatformEditor: FC<{
 }> = ({platform, editPlatform}) => {
   const Renderer = entityFC["platform"]
 
-  // const [color, setColor] = useState(platform.state.color)
-
   return (
     <Card>
       <CardContent>

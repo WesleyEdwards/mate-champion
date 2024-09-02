@@ -44,7 +44,7 @@ export class GameEdit {
     updateTime(this.state.time, timeStamp)
     updateTimers(this.state.timers, this.state.time.deltaT)
 
-    if (this.state.timers.sinceLastSave.val > 10_000) {
+    if (this.state.timers.sinceLastSave.val > 5_000) {
       this.state.timers.sinceLastSave.val = 0
       this.setLevels(editStateToLevelInfo(this.state))
       this.isDirty = false
