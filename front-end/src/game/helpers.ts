@@ -10,6 +10,7 @@ import {
 import {Groog} from "./entities/groog"
 import {Floor, Platform} from "./entities/platform"
 import {emptyTime} from "./state/timeHelpers"
+import {EndGate} from "./entities/endGate"
 
 export const initGameState = (): GameStateProps => ({
   currStateOfGame: "nextLevel",
@@ -60,6 +61,7 @@ export const levelToEntities = (level: LevelMap): Entity[] => {
   level.packages.forEach((p) => {
     entities.push(new Ammo([...p]))
   })
+  entities.push(new EndGate([level.endPosition, 0]))
   return entities
 }
 
