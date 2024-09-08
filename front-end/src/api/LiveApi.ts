@@ -81,12 +81,6 @@ export class LiveApi implements Api {
     query: (filter: Condition<LevelInfo>): Promise<LevelInfo[]> => {
       return this.post("level/query", filter)
     },
-    queryPartial: (
-      filter: Condition<LevelInfo>,
-      fields: (keyof LevelInfo)[]
-    ): Promise<Partial<LevelInfo>[]> => {
-      return this.post("level/query-partial", {condition: filter, fields})
-    },
     create: (body: LevelInfo): Promise<LevelInfo> => {
       return this.post("level/create", body)
     },

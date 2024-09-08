@@ -20,10 +20,6 @@ export interface Api {
   readonly level: {
     detail: (id: string) => Promise<LevelInfo>
     query: (filter: Condition<LevelInfo>) => Promise<LevelInfo[]>
-    queryPartial: (
-      filter: Condition<LevelInfo>,
-      fields: (keyof LevelInfo)[]
-    ) => Promise<Partial<LevelInfo>[]>
     create: (body: LevelInfo) => Promise<LevelInfo>
     modify: (id: string, mod: Partial<LevelInfo>) => Promise<LevelInfo>
     delete: (id: string) => Promise<LevelInfo>

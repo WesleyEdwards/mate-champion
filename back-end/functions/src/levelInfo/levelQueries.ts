@@ -52,7 +52,7 @@ export const createLevel: ReqBuilder =
       endPosition: 4500,
       packages: [],
       opponents: {grog: []},
-      floors: [{ x: -500, width: 7000, color: "green" }],
+      floors: [{x: -500, width: 7000, color: "green"}],
       platforms: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -71,23 +71,6 @@ export const queryLevel: ReqBuilder =
         ? body
         : {...body, or: [{owner: jwtBody?.userId}, {public: true}]}
     const levels = await client.level.findMany(query)
-    return res.json(levels)
-  }
-
-export const queryPartialLevel: ReqBuilder =
-  (client) =>
-  async ({jwtBody, body}, res) => {
-    if (!("condition" in body)) {
-      return res.status(400).json("Please provide a condition")
-    }
-    if (!("fields" in body) || !Array.isArray(body.fields)) {
-      return res.status(400).json("Please provide fields to query by")
-    }
-    const query: Condition<LevelInfo> =
-      jwtBody?.userType === "Admin"
-        ? body.condition
-        : {...body.condition, or: [{owner: jwtBody?.userId}, {public: true}]}
-    const levels = await client.level.queryPartial(query, body.fields)
     return res.json(levels)
   }
 
