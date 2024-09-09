@@ -7,8 +7,8 @@ import {useNavigator} from "../hooks/UseNavigator"
 import {MCModal} from "./MCModal"
 
 export const CreateNewLevel: FC = () => {
-  const {user} = useAuthContext()
-  const {setEditingLevel, levelCache} = useLevelContext()
+  const {user, api} = useAuthContext()
+  const {setEditingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
 
   const [creating, setCreating] = useState(false)
@@ -16,7 +16,7 @@ export const CreateNewLevel: FC = () => {
   const [makingNew, setMakingNew] = useState<string>()
 
   const createLevel = async (name: string) => {
-    const createdLevel = await levelCache.update.create({
+    const createdLevel = await api.level.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
       description: null,

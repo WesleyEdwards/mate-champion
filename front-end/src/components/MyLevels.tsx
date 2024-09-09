@@ -6,15 +6,17 @@ import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
 import {GridComponent} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {LevelInfo} from "../game/loopShared/models"
+import {useAuthContext} from "../hooks/useAuth"
 
 export const MyLevels: FC<ScreenProps> = () => {
-  const {setEditingLevel, levelCache} = useLevelContext()
+  const {api, user} = useAuthContext()
+  const {setEditingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
 
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>()
 
   useEffect(() => {
-    levelCache.read.owned().then(setOwnedLevels)
+    api.level.query({owner: user?._id ?? ""}).then(setOwnedLevels)
   }, [])
 
   if (ownedLevels?.length === 0) {

@@ -15,9 +15,11 @@ import {useLevelContext} from "../hooks/useLevels"
 import {useNavigator} from "../hooks/UseNavigator"
 import {VisibilityIcon} from "./MyLevels"
 import {PreviewOrEdit} from "./PreviewOrEdit"
+import {useAuthContext} from "../hooks/useAuth"
 
 export const EditLevelDetail: FC<ScreenProps> = (props) => {
-  const {levelCache, editingLevel} = useLevelContext()
+  const {api} = useAuthContext()
+  const {editingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
 
   const [saving, setSaving] = useState(false)
@@ -90,7 +92,7 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         sx={{alignSelf: "flex-end"}}
         onClick={() => {
           setSaving(true)
-          levelCache.update
+          api.level
             .modify(editingLevel._id, levelForm)
             .then(() => setSaving(false))
         }}

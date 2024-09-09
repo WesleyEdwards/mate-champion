@@ -50,8 +50,6 @@ export type LevelInfo = {
   updatedAt: string
 }
 
-export type FullLevelInfo = LevelMap & LevelInfo
-
 export type WinState = "lose" | "playing" | "initial" | "nextLevel" | "loseLife"
 
 export type PlayStats = {

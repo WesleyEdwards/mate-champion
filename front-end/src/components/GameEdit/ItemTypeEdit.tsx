@@ -44,7 +44,7 @@ export const AddingEntity = ({
               )}
             >
               {Object.keys(entityFC).map((k) => (
-                <Option value={k}>
+                <Option value={k} key={k}>
                   <Typography level="title-lg">{capitalize(k)}</Typography>
                 </Option>
               ))}

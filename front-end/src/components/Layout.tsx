@@ -1,12 +1,9 @@
-import {Alert, IconButton, Sheet, Stack, Typography} from "@mui/joy"
+import {Sheet, Stack} from "@mui/joy"
 import {GameEntry, MCScreen} from "./GameEntry"
 import {LevelCreator} from "./LevelCreator"
-import {createContext, useContext, useState} from "react"
 import {PauseModalProvider} from "../hooks/PauseModalContext"
-import {Close} from "@mui/icons-material"
 import {useLevelContext} from "../hooks/useLevels"
-import {NavigatorProvider, useNavigator} from "../hooks/UseNavigator"
-import {EditLevelTopBar} from "./EditLevelTopBar"
+import {NavigatorProvider} from "../hooks/UseNavigator"
 
 export const Layout = () => {
   const {gameMode} = useLevelContext()
@@ -14,7 +11,6 @@ export const Layout = () => {
   return (
     <NavigatorProvider>
       <PauseModalProvider>
-        <EditLevelTopBar />
         <Stack
           direction="row"
           justifyContent="center"

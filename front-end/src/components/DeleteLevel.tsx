@@ -8,9 +8,9 @@ import {
   Stack
 } from "@mui/joy"
 import {FC, useState} from "react"
-import {LevelInfo} from "../game/loopShared/models"
 import {Delete} from "@mui/icons-material"
 import {useLevelContext} from "../hooks/useLevels"
+import {useAuthContext} from "../hooks/useAuth"
 
 export const DeleteLevel: FC<{
   name: string
@@ -18,7 +18,8 @@ export const DeleteLevel: FC<{
   showWordDelete?: boolean
 }> = ({name, id, showWordDelete}) => {
   const [deleting, setDeleting] = useState(false)
-  const {levelCache, setEditingLevel} = useLevelContext()
+  const {setEditingLevel} = useLevelContext()
+  const {api} = useAuthContext()
   return (
     <>
       {showWordDelete ? (
@@ -53,7 +54,7 @@ export const DeleteLevel: FC<{
               color="danger"
               sx={{alignSelf: "flex-end"}}
               onClick={() => {
-                levelCache.update.delete(id ?? "").then(() => {
+                api.level.delete(id).then(() => {
                   setDeleting(false)
                 })
                 setEditingLevel(null)

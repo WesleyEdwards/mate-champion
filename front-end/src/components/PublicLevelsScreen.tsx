@@ -8,14 +8,16 @@ import {useLevelContext} from "../hooks/useLevels"
 import {GridComponent} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
+import {useAuthContext} from "../hooks/useAuth"
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
-  const {setGameMode, levelCache} = useLevelContext()
+  const {api} = useAuthContext()
+  const {setGameMode} = useLevelContext()
   const {navigateTo} = useNavigator()
   const [levels, setLevels] = useState<LevelInfo[]>()
 
   const handleEnterGamePlay = async (levelId: string) => {
-    const fullLevel = await levelCache.read.getFull(levelId)
+    const fullLevel = await api.level.levelMapDetail(levelId)
 
     navigateTo("game")
     setGameMode("test")
@@ -25,7 +27,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
 
   useEffect(() => {
     setLevels(undefined)
-    levelCache.read.public().then(setLevels)
+    api.level.query({public: true}).then(setLevels)
   }, [])
 
   return (

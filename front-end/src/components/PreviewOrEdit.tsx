@@ -8,9 +8,13 @@ import {useLevelContext} from "../hooks/useLevels"
 import {useNavigator} from "../hooks/UseNavigator"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
+import {useAuthContext} from "../hooks/useAuth"
+import {getLevelDiff} from "../helpers"
 
 export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
-  const {levelCache, editingLevel, setGameMode, setIsDirty} = useLevelContext()
+  const {api} = useAuthContext()
+  const {editingLevel, setGameMode, setIsDirty, updateLevelMap} =
+    useLevelContext()
   const {navigateTo} = useNavigator()
 
   return (
@@ -31,13 +35,15 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
             return console.error("Invalid state")
           }
 
-          gameLoopEdit({
-            level: editingLevel,
-            setIsDirty: () => setIsDirty(true),
-            modifyLevel: (level: Partial<LevelMap>) => {
-              levelCache.update.modify(editingLevel!._id, level)
-              setIsDirty(false)
-            }
+          api.level.levelMapDetail(editingLevel._id).then((level) => {
+            gameLoopEdit({
+              level,
+              setIsDirty: () => setIsDirty(true),
+              modifyLevel: (level: Partial<LevelMap>) => {
+                updateLevelMap(level)
+                setIsDirty(false)
+              }
+            })
           })
         }}
       >
@@ -58,7 +64,7 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
             console.error("Invalid state")
             return
           }
-          enterGameLoopPreview(editingLevel)
+          api.level.levelMapDetail(editingLevel._id).then(enterGameLoopPreview)
         }}
       >
         Preview

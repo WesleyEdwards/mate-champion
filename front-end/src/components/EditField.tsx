@@ -1,8 +1,6 @@
 import {Undo, Check, Edit} from "@mui/icons-material"
 import {Stack, Typography, Input, IconButton} from "@mui/joy"
 import {FC, useState} from "react"
-import {useAuthContext} from "../hooks/useAuth"
-import {camelCaseToTitleCase} from "../helpers"
 
 export const EditField = ({
   init,
@@ -18,11 +16,7 @@ export const EditField = ({
 
   if (editing) {
     return (
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="column" alignItems="center">
           <Input
             value={field}

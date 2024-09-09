@@ -20,6 +20,7 @@ import {useLevelContext} from "../hooks/useLevels"
 import {CreateNewLevel} from "./CreateNewLevel"
 import {useNavigator} from "../hooks/UseNavigator"
 import {abortController} from "../game/editor/eventListeners"
+import {useAuthContext} from "../hooks/useAuth"
 
 export const ViewHeaderSubScreen: FC<{
   title: string
@@ -66,7 +67,8 @@ export const ViewHeaderMainScreen: FC<{title: string}> = ({title}) => {
 export const EditLevelDetailHeader: FC = () => {
   const {goBack} = useNavigator()
   const [editingName, setEditingName] = useState<string>()
-  const {levelCache, editingLevel, setEditingLevel} = useLevelContext()
+  const {api} = useAuthContext()
+  const {editingLevel, setEditingLevel} = useLevelContext()
 
   if (editingLevel === "loading" || editingLevel === null) {
     return <Skeleton height="40px" variant="rectangular" />
@@ -125,7 +127,7 @@ export const EditLevelDetailHeader: FC = () => {
           <Tooltip title="Save">
             <IconButton
               onClick={() => {
-                levelCache.update.modify(editingLevel._id, {
+                api.level.modify(editingLevel._id, {
                   name: editingName
                 })
                 setEditingName(undefined)
