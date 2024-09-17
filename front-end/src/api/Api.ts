@@ -2,6 +2,7 @@ import {LevelInfo, LevelMap} from "../game/loopShared/models"
 import {User, LoginBody, Condition, Score, TopScore} from "../types"
 
 export interface Api {
+  type: "cache" | "server" | "unauth"
   readonly auth: {
     createAccount: (
       body: User & {password: string; score?: number}
@@ -22,7 +23,7 @@ export interface Api {
     query: (filter: Condition<LevelInfo>) => Promise<LevelInfo[]>
     create: (body: LevelInfo) => Promise<LevelInfo>
     modify: (id: string, mod: Partial<LevelInfo>) => Promise<LevelInfo>
-    delete: (id: string) => Promise<LevelInfo>
+    delete: (id: string) => Promise<number>
     generate: (ids: string[]) => Promise<LevelInfo[]>
     levelMapDetail: (id: string) => Promise<LevelMap>
     modifyMap: (id: string, mod: Partial<LevelMap>) => Promise<LevelMap>
@@ -32,7 +33,7 @@ export interface Api {
     query: (filter: Condition<Score>) => Promise<Score[]>
     create: (body: Score) => Promise<Score>
     update: (id: string, body: Partial<Score>) => Promise<Score>
-    delete: (id: string) => Promise<Score>
+    delete: (id: string) => Promise<number>
     self: () => Promise<TopScore[]>
     topScores: () => Promise<TopScore[]>
   }

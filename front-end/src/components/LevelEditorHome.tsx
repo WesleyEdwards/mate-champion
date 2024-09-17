@@ -56,7 +56,7 @@ export const LevelEditorHome: FC<ScreenProps> = ({modifyStats}) => {
         <TabPanel value={0}>
           <MyLevels score={0} modifyStats={modifyStats} />
         </TabPanel>
-        <TabPanel value={1}>
+        <TabPanel value={1} sx={{paddingInline: "0rem"}}>
           <PublicLevelsScreen score={0} modifyStats={modifyStats} />
         </TabPanel>
       </Tabs>
@@ -93,6 +93,29 @@ export const GridComponent: FC<{items: React.ReactNode[] | "loading"}> = ({
       </Grid>
     ))}
   </Grid>
+)
+
+export const ListComponent: FC<{items: React.ReactNode[] | "loading"}> = ({
+  items
+}) => (
+  <Stack
+    gap="1rem"
+    sx={{height: "70vh", overflowY: "scroll", ...scrollbarProps}}
+  >
+    {(items === "loading"
+      ? new Array(15).fill(
+          <Skeleton
+            sx={{minWidth: "10rem", width: "100%"}}
+            variant="rectangular"
+            height="80px"
+          />
+        )
+      : items
+    ).map((item, index) => (
+      <div key={index}>{item}</div>
+    ))}
+    {items.length === 0}
+  </Stack>
 )
 
 export const scrollbarProps: CSSProperties = {

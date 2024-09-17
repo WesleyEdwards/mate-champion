@@ -3,7 +3,7 @@ import {ScreenProps} from "./GameEntry"
 import {Stack, Typography, Card, Tooltip} from "@mui/joy"
 import {useLevelContext} from "../hooks/useLevels"
 import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
-import {GridComponent} from "./LevelEditorHome"
+import {GridComponent, ListComponent, scrollbarProps} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {LevelInfo} from "../game/loopShared/models"
 import {useAuthContext} from "../hooks/useAuth"
@@ -28,7 +28,7 @@ export const MyLevels: FC<ScreenProps> = () => {
   }
 
   return (
-    <GridComponent
+    <ListComponent
       items={
         ownedLevels?.map((level) => (
           <Card

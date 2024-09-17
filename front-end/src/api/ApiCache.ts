@@ -5,8 +5,7 @@ import {Api} from "./Api"
 
 export class ApiCache implements Api {
   private cache: Record<string, Promise<any> | undefined> = {}
-
-  private prevMap: LevelMap | null = null
+  type = "cache" as const
 
   constructor(private basedOn: Api) {}
 
@@ -21,6 +20,22 @@ export class ApiCache implements Api {
 
   private async withEviction<T>(promise: Promise<T>) {
     this.cache = {}
+    return promise
+  }
+
+  private async andUpdate<T>(
+    key: string,
+    queryKey: string,
+    promise: Promise<T>
+  ) {
+    this.cache[key] = promise
+
+    for (const [k, v] of Object.entries(this.cache)) {
+      if (k.includes(queryKey)) {
+        console.log("Removing")
+        this.cache[k] = undefined
+      }
+    }
     return promise
   }
 
@@ -68,25 +83,11 @@ export class ApiCache implements Api {
         this.basedOn.level.levelMapDetail(id)
       ),
     modifyMap: (id: string, mod: Partial<LevelMap>) =>
-      this.withEviction(this.basedOn.level.modifyMap(id, mod))
-    // modifyMap: (id: string, mod: Partial<LevelMap>) => {
-    //   if (this.prevMap === null) {
-    //     return this.withEviction(
-    //       this.basedOn.level.modifyMap(id, mod).then((res) => {
-    //         this.prevMap = res
-    //         return res
-    //       })
-    //     )
-    //   }
-    //   const diff = Object.entries(mod).some(([modKey, modVal]) => {
-    //     return objectsAreDifferent(modVal, this.prevMap![modKey])
-    //   })
-    //   if (diff) {
-    //     return this.withEviction(this.basedOn.level.modifyMap(id, mod))
-    //   } else {
-    //     return Promise.resolve(this.prevMap!)
-    //   }
-    // }
+      this.andUpdate(
+        `level.detail.${id}`,
+        "level.query",
+        this.basedOn.level.modifyMap(id, mod)
+      )
   }
 
   readonly score = {

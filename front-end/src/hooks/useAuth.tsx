@@ -4,17 +4,21 @@ import {LoginBody, User} from "../types"
 import {localStorageManager} from "../api/localStorageManager"
 import {LiveApi} from "../api/LiveApi"
 import {ApiCache} from "../api/ApiCache"
+import {LocalApi} from "../api/LocalApi"
 
 export type GameMode = "play" | "edit" | "test" | "idle"
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>()
 
-  const api = useMemo(() => {
+  const api: Api = useMemo(() => {
     const liveApi = new LiveApi(localStorageManager.get("token"))
+    if (user === undefined) {
+      return new LocalApi(liveApi)
+    }
     const cache = new ApiCache(liveApi)
     return cache
-  }, [])
+  }, [user])
 
   useEffect(() => {
     if (localStorageManager.get("token")) {

@@ -55,16 +55,19 @@ export const HomeScreen: FC<ScreenProps> = ({modifyStats}) => {
         >
           Profile
         </Button>
-        {user?.userType === "Editor" ||
-          (user?.userType === "Admin" && (
-            <Button
-              variant="outlined"
-              sx={{width: "10rem"}}
-              onClick={() => navigateTo("levelEditor")}
-            >
-              Level Editor
-            </Button>
-          ))}
+        <Button
+          variant="outlined"
+          sx={{width: "10rem"}}
+          onClick={() => {
+            if (user) {
+              return navigateTo("levelEditor")
+            } else {
+              navigateTo("levelEditor")
+            }
+          }}
+        >
+          Create a level
+        </Button>
       </Stack>
       <PersonalHigh />
     </Stack>

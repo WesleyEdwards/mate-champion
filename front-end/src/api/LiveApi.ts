@@ -8,6 +8,7 @@ type Method = "get" | "post" | "put" | "delete"
 export class LiveApi implements Api {
   private token: string
   public baseUrl = import.meta.env.VITE_BACKEND_URL
+  type = "server" as const
 
   public constructor(token: string | null) {
     this.token = token || ""
@@ -87,7 +88,7 @@ export class LiveApi implements Api {
     modify: (id: string, mod: Partial<LevelInfo>): Promise<LevelInfo> => {
       return this.put(`level/${id}`, mod)
     },
-    delete: (id: string): Promise<LevelInfo> => {
+    delete: (id: string): Promise<number> => {
       return this.del(`level/${id}`)
     },
     generate: (ids: string[]): Promise<LevelInfo[]> => {
@@ -100,7 +101,6 @@ export class LiveApi implements Api {
       return this.put(`level-map/${id}`, mod)
     }
   }
-
   readonly score = {
     detail: (id: string): Promise<Score> => {
       return this.get(`score/${id}`)
@@ -114,7 +114,7 @@ export class LiveApi implements Api {
     update: (id: string, body: Partial<Score>): Promise<Score> => {
       return this.put(`score/${id}`, body)
     },
-    delete: (id: string): Promise<Score> => {
+    delete: (id: string): Promise<number> => {
       return this.del(`score/${id}`)
     },
     self: (): Promise<TopScore[]> => {

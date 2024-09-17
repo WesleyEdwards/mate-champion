@@ -5,7 +5,7 @@ import {Card, IconButton, Stack, Typography} from "@mui/joy"
 import {PlayArrow} from "@mui/icons-material"
 import {usePauseModalContext} from "../hooks/PauseModalContext"
 import {useLevelContext} from "../hooks/useLevels"
-import {GridComponent} from "./LevelEditorHome"
+import {GridComponent, ListComponent, scrollbarProps} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {useAuthContext} from "../hooks/useAuth"
@@ -31,28 +31,26 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
   }, [])
 
   return (
-    <>
-      <GridComponent
-        items={
-          levels?.map((level) => (
-            <LevelCard
-              level={level}
-              subtitle={level.creatorName}
-              actionButton={
-                <IconButton
-                  onClick={() => {
-                    handleEnterGamePlay(level._id)
-                  }}
-                  color="success"
-                >
-                  <PlayArrow />
-                </IconButton>
-              }
-            />
-          )) ?? "loading"
-        }
-      />
-    </>
+    <ListComponent
+      items={
+        levels?.map((level) => (
+          <LevelCard
+            level={level}
+            subtitle={level.creatorName}
+            actionButton={
+              <IconButton
+                onClick={() => {
+                  handleEnterGamePlay(level._id)
+                }}
+                color="success"
+              >
+                <PlayArrow />
+              </IconButton>
+            }
+          />
+        )) ?? "loading"
+      }
+    />
   )
 }
 
