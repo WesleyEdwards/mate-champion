@@ -1,17 +1,18 @@
 import {FC, useEffect, useState} from "react"
 import {ScreenProps} from "./GameEntry"
 import {LevelInfo} from "../game/loopShared/models"
-import {Card, IconButton, Stack, Typography} from "@mui/joy"
-import {PlayArrow} from "@mui/icons-material"
+import {Button, Card, IconButton, Stack, Typography} from "@mui/joy"
+import {LoginRounded, PlayArrow} from "@mui/icons-material"
 import {usePauseModalContext} from "../hooks/PauseModalContext"
 import {useLevelContext} from "../hooks/useLevels"
-import {GridComponent, ListComponent, scrollbarProps} from "./LevelEditorHome"
+import {ListComponent} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {useAuthContext} from "../hooks/useAuth"
+import {Login} from "./Login"
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
-  const {api} = useAuthContext()
+  const {api, user} = useAuthContext()
   const {setGameMode} = useLevelContext()
   const {navigateTo} = useNavigator()
   const [levels, setLevels] = useState<LevelInfo[]>()
@@ -27,6 +28,9 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
 
   useEffect(() => {
     setLevels(undefined)
+    if (!user) {
+      return setLevels([])
+    }
     api.level.query({public: true}).then(setLevels)
   }, [])
 
@@ -49,6 +53,23 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
             }
           />
         )) ?? "loading"
+      }
+      emptyComponent={
+        <Stack gap="2rem">
+          <Typography textAlign="center">
+            Sign in to see levels that <br /> other people have made!
+          </Typography>
+          <Button
+            size="lg"
+            endDecorator={<LoginRounded />}
+            onClick={() => {
+              navigateTo("createAccount")
+            }}
+            sx={{alignSelf: "center", minWidth: "12rem"}}
+          >
+            Sign In
+          </Button>
+        </Stack>
       }
     />
   )

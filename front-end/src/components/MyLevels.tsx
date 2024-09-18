@@ -3,10 +3,11 @@ import {ScreenProps} from "./GameEntry"
 import {Stack, Typography, Card, Tooltip} from "@mui/joy"
 import {useLevelContext} from "../hooks/useLevels"
 import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
-import {GridComponent, ListComponent, scrollbarProps} from "./LevelEditorHome"
+import {ListComponent, scrollbarProps} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {LevelInfo} from "../game/loopShared/models"
 import {useAuthContext} from "../hooks/useAuth"
+import {CreateNewLevel} from "./CreateNewLevel"
 
 export const MyLevels: FC<ScreenProps> = () => {
   const {api, user} = useAuthContext()
@@ -18,14 +19,6 @@ export const MyLevels: FC<ScreenProps> = () => {
   useEffect(() => {
     api.level.query({owner: user?._id ?? ""}).then(setOwnedLevels)
   }, [])
-
-  if (ownedLevels?.length === 0) {
-    return (
-      <Typography textAlign={"center"} mt="2rem" level="body-sm">
-        No levels yet!
-      </Typography>
-    )
-  }
 
   return (
     <ListComponent
@@ -77,6 +70,14 @@ export const MyLevels: FC<ScreenProps> = () => {
             </Stack>
           </Card>
         )) ?? "loading"
+      }
+      emptyComponent={
+        <Stack gap="2rem">
+          <Typography textAlign="center">
+            You don't have any levels yet
+          </Typography>
+          <CreateNewLevel text={"Create a level"} />
+        </Stack>
       }
     />
   )

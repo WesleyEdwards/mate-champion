@@ -37,37 +37,40 @@ export const MCModal: FC<{
     window.pause = open
   }, [open])
 
+  // https://stackoverflow.com/questions/75644447/autofocus-not-working-on-open-form-dialog-with-button-component-in-material-ui-v
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalDialog variant="outlined" role="alertdialog">
-        <ModalClose />
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          <Stack gap="2rem" mt="1rem">
-            <Typography>{subtext}</Typography>
+    <Modal open={open} onClose={onClose} disableRestoreFocus>
+      <form onSubmit={onConfirm}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <ModalClose />
+          <DialogTitle>{title}</DialogTitle>
+          <DialogContent>
+            <Stack gap="2rem" mt="1rem">
+              <Typography>{subtext}</Typography>
 
-            {children}
-            {error && (
-              <Alert variant="soft" color="danger">
-                {error}
-              </Alert>
-            )}
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            disabled={disableConfirm}
-            variant="soft"
-            color="success"
-            onClick={onConfirm}
-          >
-            {confirmLabel}
-          </Button>
-          <Button variant="plain" color="neutral" onClick={onClose}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </ModalDialog>
+              {children}
+              {error && (
+                <Alert variant="soft" color="danger">
+                  {error}
+                </Alert>
+              )}
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              disabled={disableConfirm}
+              variant="soft"
+              color="success"
+              type="submit"
+            >
+              {confirmLabel}
+            </Button>
+            <Button variant="plain" color="neutral" onClick={onClose}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </form>
     </Modal>
   )
 }

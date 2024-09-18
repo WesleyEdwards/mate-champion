@@ -8,7 +8,8 @@ import {
   TabPanel,
   Tabs,
   Grid,
-  Skeleton
+  Skeleton,
+  Typography
 } from "@mui/joy"
 import {MyLevels} from "./MyLevels"
 import {PublicLevelsScreen} from "./PublicLevelsScreen"
@@ -64,40 +65,10 @@ export const LevelEditorHome: FC<ScreenProps> = ({modifyStats}) => {
   )
 }
 
-export const GridComponent: FC<{items: React.ReactNode[] | "loading"}> = ({
-  items
-}) => (
-  <Grid
-    container
-    spacing={2}
-    sx={{
-      width: "100%",
-      minWidth: "42rem",
-      maxHeight: "calc(100vh - 8rem)",
-      overflowY: "auto",
-      ...scrollbarProps
-    }}
-  >
-    {(items === "loading"
-      ? new Array(15).fill(
-          <Skeleton
-            sx={{minWidth: "10rem", width: "100%"}}
-            variant="rectangular"
-            height="80px"
-          />
-        )
-      : items
-    ).map((item, index) => (
-      <Grid xs={12} sm={6} md={6} lg={4} key={index}>
-        {item}
-      </Grid>
-    ))}
-  </Grid>
-)
-
-export const ListComponent: FC<{items: React.ReactNode[] | "loading"}> = ({
-  items
-}) => (
+export const ListComponent: FC<{
+  items: React.ReactNode[] | "loading"
+  emptyComponent: React.ReactNode
+}> = ({items, emptyComponent}) => (
   <Stack
     gap="1rem"
     sx={{height: "70vh", overflowY: "scroll", ...scrollbarProps}}
@@ -114,7 +85,7 @@ export const ListComponent: FC<{items: React.ReactNode[] | "loading"}> = ({
     ).map((item, index) => (
       <div key={index}>{item}</div>
     ))}
-    {items.length === 0}
+    {items.length === 0 && <Stack mt="18rem">{emptyComponent}</Stack>}
   </Stack>
 )
 

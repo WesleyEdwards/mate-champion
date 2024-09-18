@@ -6,16 +6,17 @@ import {
   IconButton,
   Input,
   Stack,
+  Tooltip,
   Typography
 } from "@mui/joy"
 import {useAuthContext} from "../hooks/useAuth"
-import {ArrowBack} from "@mui/icons-material"
+import {ArrowBack, Help, Info, InfoOutlined} from "@mui/icons-material"
 import {ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
 
 export const CreateAccount: FC<ScreenProps> = ({score}) => {
   const {createAccount} = useAuthContext()
-  const {resetStack, goBack} = useNavigator()
+  const {resetStack} = useNavigator()
 
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -34,6 +35,10 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
     if (!name) return
     if (name.length > 300) {
       setError("Name is too long")
+      return setSubmitting(false)
+    }
+    if (password.length < 3) {
+      setError("Password must be at least 3 characters long")
       return setSubmitting(false)
     }
     try {
@@ -56,7 +61,7 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
   }
 
   return (
-    <Stack sx={{width: "722px"}}>
+    <Stack>
       <Stack direction="row" justifyContent="space-between">
         {score > 0 && <Typography level="h2">Score: {score}</Typography>}
       </Stack>
@@ -78,15 +83,17 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <div></div>
-        <Typography variant="soft" level="body-xs">
-          Your email will be used in case you forget your password
-        </Typography>
+        <Stack direction="row" alignItems={"center"} gap="12px">
+          <Input
+            sx={{flexGrow: "1"}}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Tooltip title="Your email can be used to reset your password">
+            <InfoOutlined />
+          </Tooltip>
+        </Stack>
         {error && <Alert color="danger">{error}</Alert>}
         <Button
           disabled={[name, password, email].some((v) => !v)}

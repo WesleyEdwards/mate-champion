@@ -1,4 +1,4 @@
-import {FC, useState} from "react"
+import {FC, useEffect, useRef, useState} from "react"
 import {Button, Input} from "@mui/joy"
 import {Add} from "@mui/icons-material"
 import {useAuthContext} from "../hooks/useAuth"
@@ -6,7 +6,7 @@ import {useLevelContext} from "../hooks/useLevels"
 import {useNavigator} from "../hooks/UseNavigator"
 import {MCModal} from "./MCModal"
 
-export const CreateNewLevel: FC = () => {
+export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
   const {user, api} = useAuthContext()
   const {setEditingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
@@ -35,10 +35,11 @@ export const CreateNewLevel: FC = () => {
         onClick={() => {
           setMakingNew("")
         }}
+        sx={{maxWidth: "12rem", alignSelf: "center"}}
         loading={creating}
         endDecorator={<Add />}
       >
-        Create
+        {text}
       </Button>
 
       <MCModal
@@ -56,6 +57,7 @@ export const CreateNewLevel: FC = () => {
         confirmLabel="Create"
       >
         <Input
+          autoFocus
           value={makingNew}
           onChange={(e) => setMakingNew(e.target.value)}
           placeholder="My level"
