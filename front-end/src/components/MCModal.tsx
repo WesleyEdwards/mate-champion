@@ -21,6 +21,7 @@ export const MCModal: FC<{
   confirmLabel?: string
   subtext?: string
   error?: string
+  hideActions?: boolean
   children: React.ReactNode
 }> = ({
   title,
@@ -31,6 +32,7 @@ export const MCModal: FC<{
   disableConfirm = false,
   subtext,
   error = "",
+  hideActions,
   children
 }) => {
   useEffect(() => {
@@ -56,19 +58,21 @@ export const MCModal: FC<{
               )}
             </Stack>
           </DialogContent>
-          <DialogActions>
-            <Button
-              disabled={disableConfirm}
-              variant="soft"
-              color="success"
-              type="submit"
-            >
-              {confirmLabel}
-            </Button>
-            <Button variant="plain" color="neutral" onClick={onClose}>
-              Cancel
-            </Button>
-          </DialogActions>
+          {!hideActions && (
+            <DialogActions>
+              <Button
+                disabled={disableConfirm}
+                variant="soft"
+                color="success"
+                type="submit"
+              >
+                {confirmLabel}
+              </Button>
+              <Button variant="plain" color="neutral" onClick={onClose}>
+                Cancel
+              </Button>
+            </DialogActions>
+          )}
         </ModalDialog>
       </form>
     </Modal>

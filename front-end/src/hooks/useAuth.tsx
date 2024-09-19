@@ -1,16 +1,16 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react"
 import {Api} from "../api/Api"
 import {LoginBody, User} from "../types"
-import {localStorageManager} from "../api/localStorageManager"
+import {LocalStorageKeys, localStorageManager} from "../api/localStorageManager"
 import {LiveApi} from "../api/LiveApi"
 import {ApiCache} from "../api/ApiCache"
-import {LocalApi} from "../api/LocalApi"
+import {LocalApi, StoreItem} from "../api/LocalApi"
+import {LevelInfo, LevelMap} from "../game/loopShared/models"
 
 export type GameMode = "play" | "edit" | "test" | "idle"
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>()
-
   const api: Api = useMemo(() => {
     const liveApi = new LiveApi(localStorageManager.get("token"))
     if (user === undefined) {
@@ -26,15 +26,30 @@ export const useAuth = (): AuthContextType => {
     }
   }, [])
 
-  const login = (body: LoginBody) => {
-    return api.auth.signIn(body).then((u) => {
-      localStorageManager.set("high-score", u)
-      setUser(u)
-    })
+  const importLevels = async () => {
+    if (
+      localStorage.getItem("unauth-level-info") &&
+      localStorage.getItem("unauth-level-map")
+    ) {
+      const levels = new StoreItem<LevelInfo>("unauth-level-info")
+      const maps = new StoreItem<LevelMap>("unauth-level-map")
+      console.log("To add", {levels: levels.items, maps: maps.items})
+      await api.level.importMap({levels: levels.items, maps: maps.items})
+      localStorage.removeItem("unauth-level-info")
+      localStorage.removeItem("unauth-level-map")
+    }
   }
 
-  const createAccount = (body: User & {password: string}) => {
-    return api.auth.createAccount(body).then(setUser)
+  const login = async (body: LoginBody) => {
+    const authUser = await api.auth.signIn(body)
+    localStorageManager.set("high-score", authUser.highScore)
+    importLevels()
+    setUser(authUser)
+  }
+
+  const createAccount = async (body: User & {password: string}) => {
+    await api.auth.createAccount(body).then(setUser)
+    importLevels()
   }
 
   const logout = () => {

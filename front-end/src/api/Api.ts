@@ -27,6 +27,10 @@ export interface Api {
     generate: (ids: string[]) => Promise<LevelInfo[]>
     levelMapDetail: (id: string) => Promise<LevelMap>
     modifyMap: (id: string, mod: Partial<LevelMap>) => Promise<LevelMap>
+    importMap: (importInfo: {
+      levels: LevelInfo[]
+      maps: LevelMap[]
+    }) => Promise<number>
   }
   readonly score: {
     detail: (id: string) => Promise<Score>

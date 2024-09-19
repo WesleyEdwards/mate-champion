@@ -2,7 +2,7 @@ import {ArrowBack} from "@mui/icons-material"
 import {Stack, Divider, Button, Input, Alert} from "@mui/joy"
 import {FC, useState} from "react"
 import {useAuthContext} from "../hooks/useAuth"
-import {MCScreen, ScreenProps} from "./GameEntry"
+import {MCScreen, PageStack, ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
 
 export const Login: FC<ScreenProps> = () => {
@@ -15,26 +15,25 @@ export const Login: FC<ScreenProps> = () => {
 
   const [submitting, setSubmitting] = useState<boolean>(false)
 
-  const submit = () => {
+  const submit = async () => {
     if (!email || !password) {
       setError("Please enter a username and password")
       return
     }
     setSubmitting(true)
-    login({email, password})
-      .then(() => {
-        setSubmitting(false)
-        resetStack()
-      })
-      .catch((err) => {
-        setSubmitting(false)
-        err.then((e: any) => setError(e.message))
-      })
+    await login({email, password})
+    setSubmitting(false)
+    resetStack()
   }
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <Stack gap="1rem" my={2} sx={{width: "722px"}}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        return submit()
+      }}
+    >
+      <PageStack>
         <Input
           placeholder="Email"
           value={email}
@@ -46,12 +45,12 @@ export const Login: FC<ScreenProps> = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button loading={submitting} onClick={submit}>
+        <Button loading={submitting} type="submit">
           Login
         </Button>
 
         {error && <Alert color="danger">{error}</Alert>}
-      </Stack>
+      </PageStack>
     </form>
   )
 }

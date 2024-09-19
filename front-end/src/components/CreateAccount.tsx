@@ -1,18 +1,10 @@
 import {FC, useState} from "react"
-import {
-  Alert,
-  Button,
-  Divider,
-  IconButton,
-  Input,
-  Stack,
-  Tooltip,
-  Typography
-} from "@mui/joy"
+import {Alert, Button, Input, Stack, Tooltip, Typography} from "@mui/joy"
 import {useAuthContext} from "../hooks/useAuth"
 import {ArrowBack, Help, Info, InfoOutlined} from "@mui/icons-material"
 import {ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
+import {AlreadyHaveAccountButton} from "./SignInButton"
 
 export const CreateAccount: FC<ScreenProps> = ({score}) => {
   const {createAccount} = useAuthContext()
@@ -25,7 +17,7 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
   const [password, setPassword] = useState("")
 
   const handleSubmitNew = async () => {
-    if (!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)) {
+    if (!email.includes("@") || !email.includes(".")) {
       setError("Invalid email")
       return
     }
@@ -55,13 +47,22 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
 
       return resetStack()
     } catch (e) {
-      setError("Error creating account")
-      setSubmitting(false)
+      const error = await e
+      if (typeof error === "object" && !!error && "error" in error) {
+        setError(error.error as string)
+      } else {
+        setError("Error creating account")
+      }
     }
   }
 
   return (
-    <Stack>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        return handleSubmitNew()
+      }}
+    >
       <Stack direction="row" justifyContent="space-between">
         {score > 0 && <Typography level="h2">Score: {score}</Typography>}
       </Stack>
@@ -98,12 +99,12 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
         <Button
           disabled={[name, password, email].some((v) => !v)}
           loading={submitting}
-          onClick={handleSubmitNew}
           type="submit"
         >
           Create Account
         </Button>
+        <AlreadyHaveAccountButton />
       </Stack>
-    </Stack>
+    </form>
   )
 }

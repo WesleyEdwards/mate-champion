@@ -1,15 +1,14 @@
 import {FC, useEffect, useState} from "react"
 import {ScreenProps} from "./GameEntry"
 import {LevelInfo} from "../game/loopShared/models"
-import {Button, Card, IconButton, Stack, Typography} from "@mui/joy"
-import {LoginRounded, PlayArrow} from "@mui/icons-material"
-import {usePauseModalContext} from "../hooks/PauseModalContext"
+import {Card, IconButton, Stack, Typography} from "@mui/joy"
+import {PlayArrow} from "@mui/icons-material"
 import {useLevelContext} from "../hooks/useLevels"
 import {ListComponent} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {useAuthContext} from "../hooks/useAuth"
-import {Login} from "./Login"
+import {SignInButton} from "./SignInButton"
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
   const {api, user} = useAuthContext()
@@ -59,16 +58,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
           <Typography textAlign="center">
             Sign in to see levels that <br /> other people have made!
           </Typography>
-          <Button
-            size="lg"
-            endDecorator={<LoginRounded />}
-            onClick={() => {
-              navigateTo("createAccount")
-            }}
-            sx={{alignSelf: "center", minWidth: "12rem"}}
-          >
-            Sign In
-          </Button>
+          <SignInButton />
         </Stack>
       }
     />

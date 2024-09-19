@@ -4,7 +4,7 @@ import {Alert, Divider, Skeleton, Stack, Typography} from "@mui/joy"
 import {TopScore} from "../types"
 import {useAuthContext} from "../hooks/useAuth"
 import {localStorageManager} from "../api/localStorageManager"
-import {ScreenProps} from "./GameEntry"
+import {PageStack, ScreenProps} from "./GameEntry"
 
 export const HighScores: FC<ScreenProps> = ({score}) => {
   const [highScores, setHighScores] = useState<TopScore[]>()
@@ -19,7 +19,7 @@ export const HighScores: FC<ScreenProps> = ({score}) => {
   }, [])
 
   return (
-    <Stack gap="1rem" sx={{width: "722px"}}>
+    <PageStack>
       <Stack alignSelf="center">
         {!highScores &&
           !error &&
@@ -57,7 +57,7 @@ export const HighScores: FC<ScreenProps> = ({score}) => {
           </Stack>
         </>
       )}
-    </Stack>
+    </PageStack>
   )
 }
 

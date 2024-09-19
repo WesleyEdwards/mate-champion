@@ -1,5 +1,4 @@
 import {LevelInfo, LevelMap} from "../game/loopShared/models"
-import {objectsAreDifferent} from "../helpers"
 import {User, LoginBody, Condition, Score} from "../types"
 import {Api} from "./Api"
 
@@ -39,10 +38,9 @@ export class ApiCache implements Api {
     return promise
   }
 
-  readonly auth = {
-    createAccount: (body: User & {password: string; score?: number}) =>
-      this.basedOn.auth.createAccount(body),
-    signIn: (body: LoginBody) => this.basedOn.auth.signIn(body),
+  readonly auth: Api["auth"] = {
+    createAccount: (body) => this.basedOn.auth.createAccount(body),
+    signIn: (body) => this.basedOn.auth.signIn(body),
     getSelf: () => this.cacheRequest("auth.getSelf", this.basedOn.auth.getSelf)
   }
 
@@ -61,20 +59,19 @@ export class ApiCache implements Api {
     delete: (id: string) => this.withEviction(this.basedOn.user.delete(id))
   }
 
-  readonly level = {
+  readonly level: Api["level"] = {
     detail: (id: string) =>
       this.cacheRequest(`level.detail.${id}`, () =>
         this.basedOn.level.detail(id)
       ),
-    query: (filter: Condition<LevelInfo>) =>
+    query: (filter) =>
       this.cacheRequest(`level.query.${JSON.stringify(filter)}`, () =>
         this.basedOn.level.query(filter)
       ),
-    create: (body: LevelInfo) => this.basedOn.level.create(body),
-    modify: (id: string, mod: Partial<LevelInfo>) =>
-      this.withEviction(this.basedOn.level.modify(id, mod)),
-    delete: (id: string) => this.withEviction(this.basedOn.level.delete(id)),
-    generate: (ids: string[]) =>
+    create: (body) => this.basedOn.level.create(body),
+    modify: (id, mod) => this.withEviction(this.basedOn.level.modify(id, mod)),
+    delete: (id) => this.withEviction(this.basedOn.level.delete(id)),
+    generate: (ids) =>
       this.cacheRequest(`level.generate.${ids.join()}`, () =>
         this.basedOn.level.generate(ids)
       ),
@@ -87,7 +84,8 @@ export class ApiCache implements Api {
         `level.detail.${id}`,
         "level.query",
         this.basedOn.level.modifyMap(id, mod)
-      )
+      ),
+    importMap: (importInfo) => this.basedOn.level.importMap(importInfo)
   }
 
   readonly score = {

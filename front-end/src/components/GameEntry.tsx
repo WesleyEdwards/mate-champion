@@ -1,5 +1,5 @@
 import {Stack, Typography} from "@mui/joy"
-import {FC, useMemo, useState} from "react"
+import {FC, ReactNode, useMemo, useState} from "react"
 import {emptyStats} from "../game/loopShared/utils"
 import HighScores from "./HighScores"
 import Settings from "./Settings"
@@ -111,4 +111,12 @@ const getSubViewHeader = (screen: MCScreen): JSX.Element => {
     editorDetail: <EditLevelDetailHeader />
   }
   return subHeaders[screen]
+}
+
+export const PageStack: FC<{children: ReactNode}> = ({children}) => {
+  return (
+    <Stack gap="1rem" mb={2}>
+      {children}
+    </Stack>
+  )
 }

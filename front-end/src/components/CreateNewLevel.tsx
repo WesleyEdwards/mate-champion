@@ -43,7 +43,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
       </Button>
 
       <MCModal
-        title={"New Level"}
+        title={"Level Name"}
         open={makingNew !== undefined}
         onClose={() => setMakingNew(undefined)}
         onConfirm={() => {

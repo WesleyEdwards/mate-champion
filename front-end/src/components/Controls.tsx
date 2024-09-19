@@ -1,6 +1,6 @@
 import {FC} from "react"
 import instructions from "../assets/instructions.png"
-import {IconButton, Stack, Typography} from "@mui/joy"
+import {Stack, Typography} from "@mui/joy"
 import {ArrowBack} from "@mui/icons-material"
 import {ScreenProps} from "./GameEntry"
 

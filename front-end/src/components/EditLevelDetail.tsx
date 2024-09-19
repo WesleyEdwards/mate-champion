@@ -6,7 +6,8 @@ import {
   FormHelperText,
   Skeleton,
   Stack,
-  Textarea
+  Textarea,
+  Typography
 } from "@mui/joy"
 import {FC, useEffect, useState} from "react"
 import {ScreenProps} from "./GameEntry"
@@ -16,9 +17,12 @@ import {useNavigator} from "../hooks/UseNavigator"
 import {VisibilityIcon} from "./MyLevels"
 import {PreviewOrEdit} from "./PreviewOrEdit"
 import {useAuthContext} from "../hooks/useAuth"
+import {MCModal} from "./MCModal"
+import {CreateAccount} from "./CreateAccount"
+import {SignInButton} from "./SignInButton"
 
 export const EditLevelDetail: FC<ScreenProps> = (props) => {
-  const {api} = useAuthContext()
+  const {api, user} = useAuthContext()
   const {editingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
 
@@ -73,13 +77,17 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
       <PreviewOrEdit {...props} />
 
       <FormControl>
-        <Checkbox
-          label="Public"
-          checked={levelForm.public}
-          onChange={(e) => {
-            setLevelForm((prev) => ({...prev, public: e.target.checked}))
-          }}
-        />
+        {user ? (
+          <Checkbox
+            label="Public"
+            checked={levelForm.public}
+            onChange={(e) => {
+              setLevelForm((prev) => ({...prev, public: e.target.checked}))
+            }}
+          />
+        ) : (
+          <FakePublicOption />
+        )}
         <FormHelperText>
           <VisibilityIcon publicLevel={levelForm.public} />
           {levelForm.public
@@ -113,5 +121,30 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         showWordDelete
       />
     </Stack>
+  )
+}
+
+const FakePublicOption = () => {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <Checkbox
+        label="Public"
+        checked={false}
+        onChange={() => {
+          setOpen(true)
+        }}
+      />
+      <MCModal
+        title={"Create an Account"}
+        open={open}
+        onClose={() => setOpen(false)}
+        onConfirm={() => setOpen(false)}
+        hideActions
+        subtext="Sign in so others can see what you've made!"
+      >
+        <SignInButton />
+      </MCModal>
+    </>
   )
 }

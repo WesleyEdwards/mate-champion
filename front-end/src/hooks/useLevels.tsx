@@ -37,15 +37,15 @@ export const useLevels: (params: {
   const updateLevel = async () => {
     if (!level || level === "loading" || !api) return
     const id = level._id
-    const curr = await api?.level.detail(id)
+    const curr = await api.level.detail(id)
     if (currGameMode === "idle" && objectsAreDifferent(curr, level)) {
       setLevel(curr)
     }
     if (!map) return
-    const currMap = await api?.level.levelMapDetail(id)
+    const currMap = await api.level.levelMapDetail(id)
     if (objectsAreDifferent(currMap, map)) {
       const diff = getLevelDiff(currMap, map)
-      api?.level.modifyMap(map._id, diff).then((res) => {
+      api.level.modifyMap(map._id, diff).then((res) => {
         setMap(res)
       })
     }

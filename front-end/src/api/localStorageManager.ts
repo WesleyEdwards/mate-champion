@@ -15,3 +15,5 @@ export const localStorageManager = {
     localStorage.removeItem(`mate-${key}`)
   }
 }
+
+export type LocalStorageKeys = "unauth-level-info" | "unauth-level-map"

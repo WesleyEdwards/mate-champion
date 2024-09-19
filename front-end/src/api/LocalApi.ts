@@ -1,16 +1,34 @@
+import {MyLevels} from "../components/MyLevels"
 import {LevelInfo, LevelMap} from "../game/loopShared/models"
-import {objectsAreDifferent} from "../helpers"
-import {User, LoginBody, Condition, Score} from "../types"
 import {Api} from "./Api"
+import {LocalStorageKeys} from "./localStorageManager"
+
+export class StoreItem<T> {
+  constructor(private key: LocalStorageKeys) {}
+  get items(): T[] {
+    const items = localStorage.getItem(this.key) ?? "[]"
+    console.log("Items to unparse", items)
+    return JSON.parse(items)
+  }
+  set items(items: T[]) {
+    localStorage.setItem(this.key, JSON.stringify(items))
+  }
+
+  add(item: T) {
+    const i = this.items
+    i.push(item)
+    this.items = i
+  }
+}
 
 export class LocalApi implements Api {
   type = "cache" as const
 
   constructor(private basedOn: Api) {}
 
-  local: {myLevels: LevelInfo[]; maps: LevelMap[]} = {
-    myLevels: [],
-    maps: []
+  local = {
+    myLevels: new StoreItem<LevelInfo>("unauth-level-info"),
+    myMaps: new StoreItem<LevelMap>("unauth-level-map")
   }
 
   readonly auth: Api["auth"] = {
@@ -26,18 +44,19 @@ export class LocalApi implements Api {
     modify: (...args) => this.basedOn.user.modify(...args),
     delete: (...args) => this.basedOn.user.delete(...args)
   }
+
   readonly level: Api["level"] = {
     detail: (id) => {
-      const level = this.local.myLevels.find((l) => l._id === id)
+      const level = this.local.myLevels.items.find((l) => l._id === id)
       if (level) return Promise.resolve(level)
       return Promise.reject("Not found")
     },
     query: () => {
-      return Promise.resolve(this.local.myLevels)
+      return Promise.resolve(this.local.myLevels.items)
     },
     create: (level) => {
-      this.local.myLevels.push(level)
-      this.local.maps.push({
+      this.local.myLevels.add(level)
+      this.local.myMaps.add({
         _id: level._id,
         endPosition: 4500,
         packages: [],
@@ -50,37 +69,36 @@ export class LocalApi implements Api {
       return Promise.resolve(level)
     },
     modify: async (id, mod) => {
-      this.local.myLevels = this.local.myLevels.map((c) => {
+      this.local.myLevels.items = this.local.myLevels.items.map((c) => {
         if (c._id === id) {
           return {...c, mod}
         }
         return c
       })
-      console.log({...this.local})
       return this.level.detail(id)
     },
     delete: (id) => {
-      this.local.myLevels = this.local.myLevels.filter((l) => {
+      this.local.myLevels.items = this.local.myLevels.items.filter((l) => {
         return l._id !== id
       })
       return Promise.resolve(1)
     },
     generate: (...args) => this.basedOn.level.generate(...args),
     levelMapDetail: (id) => {
-      const map = this.local.maps.find((l) => l._id === id)
+      const map = this.local.myMaps.items.find((l) => l._id === id)
       if (map) return Promise.resolve(map)
       return Promise.reject("Not found")
     },
     modifyMap: (id, mod) => {
-      this.local.maps = this.local.maps.map((c) => {
+      this.local.myMaps.items = this.local.myMaps.items.map((c) => {
         if (c._id === id) {
           return {...c, ...mod}
         }
         return c
       })
-      console.log("map", {...this.local})
       return this.level.levelMapDetail(id)
-    }
+    },
+    importMap: (...args) => this.basedOn.level.importMap(...args)
   }
 
   readonly score: Api["score"] = {

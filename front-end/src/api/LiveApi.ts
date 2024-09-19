@@ -75,7 +75,7 @@ export class LiveApi implements Api {
     }
   }
 
-  readonly level = {
+  readonly level: Api["level"] = {
     detail: (id: string): Promise<LevelInfo> => {
       return this.get(`level/${id}`)
     },
@@ -99,6 +99,9 @@ export class LiveApi implements Api {
     },
     modifyMap: (id: string, mod: Partial<LevelMap>): Promise<LevelMap> => {
       return this.put(`level-map/${id}`, mod)
+    },
+    importMap: (info) => {
+      return this.post("level/import-map", info)
     }
   }
   readonly score = {

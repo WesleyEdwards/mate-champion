@@ -7,9 +7,9 @@ export const baseObjectSchema = z.object({
   updatedAt: z.string().default(new Date().toISOString())
 })
 
-const userTypeSchema = z.enum(["User", "Editor", "Admin"])
+export const userTypeSchema = z.enum(["User", "Admin"])
 
-const userSchema = z
+export const userSchema = z
   .object({
     name: z.string({required_error: "Name is required"}),
     email: z
@@ -22,7 +22,7 @@ const userSchema = z
   })
   .merge(baseObjectSchema)
 
-const scoreSchema = z
+export const scoreSchema = z
   .object({
     userId: z.string({required_error: "User Id required"}),
     score: z.number({required_error: "Score required"})
@@ -36,7 +36,7 @@ export const coordinates = z.object({
 
 export const coors = z.array(z.number()).length(2)
 
-const levelSchema = z
+export const levelSchema = z
   .object({
     owner: z.string(),
     public: z.boolean().default(false),
@@ -47,7 +47,7 @@ const levelSchema = z
   .merge(baseObjectSchema)
 
 // this will have the same _id as the associated level
-const levelMapSchema = z
+export const levelMapSchema = z
   .object({
     packages: coors.array().default([]),
     endPosition: z.number().default(4500),

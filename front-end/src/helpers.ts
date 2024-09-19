@@ -18,7 +18,6 @@ export const getLevelDiff = (
       return acc
     }
     if (objectsAreDifferent(original[k], v)) {
-      console.log("diff here. ", original[k], v)
       ;(acc as any)[k] = v
     }
     return acc
