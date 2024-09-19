@@ -31,7 +31,6 @@ export class ApiCache implements Api {
 
     for (const [k, v] of Object.entries(this.cache)) {
       if (k.includes(queryKey)) {
-        console.log("Removing")
         this.cache[k] = undefined
       }
     }

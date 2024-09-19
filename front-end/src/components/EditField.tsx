@@ -57,7 +57,7 @@ export const EditField = ({
       alignItems="center"
     >
       <Stack direction="column" alignItems="center">
-        <Typography sx={{height: "40px"}} level="h4">
+        <Typography sx={{height: "30px"}} level="h4">
           {init}
         </Typography>
         <Typography level="body-sm" alignSelf={"flex-start"}>

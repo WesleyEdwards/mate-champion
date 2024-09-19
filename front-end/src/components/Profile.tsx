@@ -14,7 +14,7 @@ export const Profile: FC<ScreenProps> = () => {
   return (
     <PageStack>
       {user ? (
-        <Stack gap="3rem">
+        <Stack gap="2rem">
           <EditField
             init={user.name ?? ""}
             label={"Name"}

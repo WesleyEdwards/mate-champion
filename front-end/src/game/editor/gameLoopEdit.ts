@@ -15,7 +15,6 @@ export function gameLoopEdit(params: {
 
   function gameLoop(timeStamp: number) {
     if (window.stopLoop === true) {
-      console.log("stop")
       window.stopLoop = false
       return
     }

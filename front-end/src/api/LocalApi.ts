@@ -7,7 +7,6 @@ export class StoreItem<T> {
   constructor(private key: LocalStorageKeys) {}
   get items(): T[] {
     const items = localStorage.getItem(this.key) ?? "[]"
-    console.log("Items to unparse", items)
     return JSON.parse(items)
   }
   set items(items: T[]) {

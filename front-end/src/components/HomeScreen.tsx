@@ -7,6 +7,7 @@ import {useAuthContext} from "../hooks/useAuth"
 import {PersonalHigh} from "./PersonalHigh"
 import {useNavigator} from "../hooks/UseNavigator"
 import mateSingle from "../assets/champ/mate-single.png"
+import {Construction} from "@mui/icons-material"
 
 export const HomeScreen: FC<ScreenProps> = ({modifyStats}) => {
   const {user} = useAuthContext()
@@ -55,20 +56,30 @@ export const HomeScreen: FC<ScreenProps> = ({modifyStats}) => {
         >
           Profile
         </Button>
-        <Button
-          variant="outlined"
-          sx={{width: "10rem"}}
-          onClick={() => {
-            if (user) {
-              return navigateTo("levelEditor")
-            } else {
-              navigateTo("levelEditor")
-            }
-          }}
-        >
-          Create a level
-        </Button>
       </Stack>
+
+      <Typography mb={4}>Or</Typography>
+
+      <Button
+        variant="solid"
+        sx={{
+          width: "24rem",
+          backgroundColor: "#0b6bcb",
+          "&:hover": {
+            backgroundColor: "#084989"
+          }
+        }}
+        onClick={() => {
+          if (user) {
+            return navigateTo("levelEditor")
+          } else {
+            navigateTo("levelEditor")
+          }
+        }}
+        endDecorator={<Construction />}
+      >
+        {user ? "Level Editor" : "Create a level"}
+      </Button>
       <PersonalHigh />
     </Stack>
   )

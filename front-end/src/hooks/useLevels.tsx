@@ -52,7 +52,6 @@ export const useLevels: (params: {
   }
 
   useEffect(() => {
-    console.log("IN use effect")
     const interval = setInterval(() => {
       updateLevel()
     }, 300)

@@ -163,14 +163,9 @@ export const PlayingHeader: FC = () => {
     >
       <IconButton
         onClick={() => {
-          // End level editing
           abortController.abort()
-          // if (levelIsDirty) {
-          //   setModal("save");
-          // } else {
           setGameMode("idle")
           goBack()
-          // }
         }}
       >
         <ArrowBack />

@@ -83,6 +83,7 @@ export const EditingEntities: FC<{
         if (entity.typeId === "groog") {
           return (
             <GroogEdit
+              key={entity.id}
               groog={entity as Groog}
               editGroog={(p) => {
                 setEdit((prev) => prev.map((e) => (e.id === p.id ? p : e)))

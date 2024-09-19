@@ -35,8 +35,15 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
         onClick={() => {
           setMakingNew("")
         }}
-        sx={{maxWidth: "12rem", alignSelf: "center"}}
-        loading={creating}
+        sx={{
+          maxWidth: "12rem",
+          alignSelf: "center",
+          backgroundColor: "#0b6bcb",
+          "&:hover": {
+            backgroundColor: "#084989"
+          }
+        }}
+        // loading={creating} // Color on loading state
         endDecorator={<Add />}
       >
         {text}

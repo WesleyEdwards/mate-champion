@@ -22,7 +22,6 @@ export function playLoop(params: PlayLoopParams) {
   function gameLoop(timeStamp: number) {
     window.mateSettings.collisionBoxesVisible = true
     if (window.stopLoop === true) {
-      console.log("stop")
       window.stopLoop = false
       return
     }

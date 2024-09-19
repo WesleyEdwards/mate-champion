@@ -45,7 +45,17 @@ export const AddingEntity = ({
             >
               {Object.keys(entityFC).map((k) => (
                 <Option value={k} key={k}>
-                  <Typography level="title-lg">{capitalize(k)}</Typography>
+                  <Stack
+                    direction="row"
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    width="100%"
+                  >
+                    <Typography level="title-lg">{capitalize(k)}</Typography>
+                    {entityFC[k]({
+                      style: {maxWidth: "30px", maxHeight: "20px"}
+                    })}
+                  </Stack>
                 </Option>
               ))}
             </Select>
@@ -104,9 +114,9 @@ export const entityFC: Record<
   groog: ({style}) => (
     <img
       style={{
-        ...style,
         maxWidth: "50px",
-        maxHeight: "50px"
+        maxHeight: "50px",
+        ...style
       }}
       src={grogImg}
     />
