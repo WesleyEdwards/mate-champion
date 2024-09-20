@@ -33,8 +33,6 @@ const migrationFun = async (
   return
 }
 
-// Migration functions
-
 const migrationAddLevelMap: MigrationFun = async (db) => {
   const levelMapCollection = db.collection("levelMap")
   const levelCollection = db.collection("level")

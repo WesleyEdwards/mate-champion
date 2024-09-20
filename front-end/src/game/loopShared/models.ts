@@ -25,10 +25,11 @@ export type LevelMap = {
       jumpOften?: boolean
     }[]
   }
+  platformColor: string
   platforms: {
     dimensions: Coors
     position: Coors
-    color: string
+    color: string | null | undefined
   }[]
   floors: {
     x: number

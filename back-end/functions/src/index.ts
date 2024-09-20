@@ -8,11 +8,13 @@ import {usersController} from "./user/user_controller"
 import {scoresController} from "./score/scoresController"
 import {mongoClient} from "./mongo/mongoClient"
 import {levelsController} from "./levelInfo/level_controller"
-import { levelMapController } from "./levelMap/level_map_controller"
+import {levelMapController} from "./levelMap/level_map_controller"
 
-dotenv.config()
+dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
 
-const client: DbClient = mongoClient()
+const dbPath = process.env.MONGO_URI!
+
+const client: DbClient = mongoClient(dbPath)
 
 const app = express()
 app.use(express.json()) // middleware to convert everything to json

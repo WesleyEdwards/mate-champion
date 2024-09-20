@@ -62,11 +62,12 @@ export const levelMapSchema = z
           .array()
       })
       .default({grog: []}),
+    platformColor: z.string().default("springgreen"),
     platforms: z
       .object({
         dimensions: coors,
         position: coors,
-        color: z.string()
+        color: z.string().nullable().default(null)
       })
       .array()
       .default([]),

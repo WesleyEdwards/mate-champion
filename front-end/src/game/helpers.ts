@@ -44,7 +44,7 @@ export const levelToEntities = (level: LevelMap): Entity[] => {
   level.platforms.forEach((p) => {
     entities.push(
       new Platform({
-        color: p.color,
+        color: p.color ?? level.platformColor,
         position: [...p.position],
         dimensions: [...p.dimensions]
       })

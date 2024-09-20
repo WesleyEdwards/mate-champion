@@ -19,6 +19,7 @@ import {
 } from "./editHelpers"
 import {addDevEventListeners} from "./eventListeners"
 import {Groog} from "../entities/groog"
+import {Platform} from "../entities/platform"
 
 export class GameEdit {
   state: GameStateEditProps
@@ -34,6 +35,8 @@ export class GameEdit {
     private setLevels: (level: Partial<LevelMap>) => void,
     private canvas: HTMLCanvasElement
   ) {
+    window.addingEntity.baseColor = currentLevel.platformColor
+
     this.state = levelInfoToEditState(currentLevel)
     addDevEventListeners(this, canvas)
     canvas.style.cursor = "move"
@@ -193,6 +196,22 @@ export class GameEdit {
     })
 
     this.state.keys.mouseUp.curr = null
+
+    // reconcile colors
+
+    if (
+      window.addingEntity.baseColor &&
+      window.addingEntity.baseColor !== this.state.prevBaseColor
+    ) {
+      this.state.entities.forEach((e) => {
+        if (e instanceof Platform) {
+          if (e.state.color === this.state.prevBaseColor) {
+            e.state.color = window.addingEntity.baseColor!
+          }
+        }
+      })
+      this.state.prevBaseColor = window.addingEntity.baseColor
+    }
   }
 
   hoverEntities(): Set<Id> {

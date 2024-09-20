@@ -38,7 +38,7 @@ export const HighScores: FC<ScreenProps> = ({score}) => {
       </Stack>
       {!user &&
         highScores?.some(
-          (s) => s.score < localStorageManager.get("high-score") ?? 0
+          (s) => s.score < localStorageManager.get("high-score")
         ) && (
           <Alert sx={{maxWidth: "22rem", alignSelf: "center"}}>
             Create an account or log in so you show up on the leaderboard!

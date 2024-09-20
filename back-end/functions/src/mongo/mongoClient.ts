@@ -12,29 +12,6 @@ import {runMigrations} from "./mongoMigrations"
 function conditionToFilter<T extends HasId>(
   condition: Condition<T>
 ): Filter<T> {
-  // const filter: Filter<T> = {}
-  // for (const k in condition) {
-  //   const key = k as keyof Condition<T>
-  //   if (key === "or") {
-  //     const arr = condition[key]
-  //     if (!Array.isArray(arr)) {
-  //       throw new Error("or condition must be an array")
-  //     }
-  //     filter.$or = arr.map(conditionToFilter) as any
-  //     continue
-  //   }
-  //   if (condition[key]) {
-  //     if (Array.isArray(condition[key])) {
-  //       filter[key as keyof Filter<T>] = {
-  //         $in: condition[key]
-  //       }
-  //     } else {
-  //       filter[key as keyof Filter<T>] = condition[key]
-  //     }
-  //   }
-  // }
-  // return filter
-
   return Object.entries(condition).reduce((acc, [k, v]) => {
     const key = k as keyof Condition<T>
     if (key === "or") {
@@ -58,8 +35,8 @@ function conditionToFilter<T extends HasId>(
   }, {} as Filter<T>)
 }
 
-export const mongoClient = (): DbClient => {
-  const mClient: MongoClient = new MongoClient(process.env.MONGO_URI!)
+export const mongoClient = (dbPath: string): DbClient => {
+  const mClient: MongoClient = new MongoClient(dbPath)
   const db = mClient.db("reptile-tracker-test")
 
   return {

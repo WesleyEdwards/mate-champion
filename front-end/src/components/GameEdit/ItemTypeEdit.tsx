@@ -22,7 +22,6 @@ export const AddingEntity = ({
   if (!edit.type) return null
 
   const Render = entityFC[edit.type]
-
   return (
     <Card style={{padding: "12px"}}>
       <Stack>
@@ -73,14 +72,18 @@ export const AddingEntity = ({
         >
           <Render
             style={{
-              backgroundColor: edit.type === "platform" ? edit.color : undefined
+              backgroundColor:
+                edit.type === "platform" ? edit.baseColor : undefined
             }}
           />
           {edit.type === "platform" && (
             <Stack margin="1rem" direction={"row"}>
               <ColorPicker
-                color={edit.color}
-                setColor={(color) => handleSetEditingItem({color})}
+                color={edit.color || "springgreen"}
+                setColor={(color) => {
+                  console.log("Setting color!");
+                  handleSetEditingItem({baseColor: color})
+                }}
                 buttonLabel="Color"
               />
             </Stack>

@@ -22,7 +22,7 @@ export const addEntityToState = (gs: GameEdit) => {
     groog: new Groog([0, 0], [0.3, 0]),
     floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
     platform: new Platform({
-      color: window.addingEntity.color,
+      color: window.addingEntity.baseColor ?? "springgreen",
       position: [0, 0],
       dimensions: [300, platformConst.defaultHeight]
     }),
@@ -112,6 +112,7 @@ export type DragState = {prev: Coors | null; curr: Coors | null}
 
 export type GameStateEditProps = {
   entities: Entity[]
+  prevBaseColor: string
   endPosition: number
   camera: Camera
   time: {
@@ -150,6 +151,7 @@ export const updateCurrPrevDragState = (obj: {
 export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => {
   return {
     entities: levelToEntities({...level}),
+    prevBaseColor: level.platformColor,
     camera: {
       time: {
         idleTime: emptyTime("up")
@@ -188,6 +190,7 @@ export const editStateToLevelInfo = (
       width: f.state.dimensions[0],
       color: (f as Floor).state.color
     })),
+  platformColor: gs.prevBaseColor,
   platforms: gs.entities
     .filter((e) => e.typeId === "platform")
     .map((f) => ({

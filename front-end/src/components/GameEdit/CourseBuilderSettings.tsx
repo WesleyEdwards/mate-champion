@@ -15,17 +15,23 @@ export type AddableEntity = Exclude<EntityType, "player" | "bullet" | "endGate">
 
 export type Adding = {
   type: AddableEntity | undefined
-  color: string
+  baseColor: string | undefined
+  color: string | undefined
 }
 
 export const CourseBuilderSettings = () => {
   const {editingLevel} = useLevelContext()
-  const [adding, setAdding] = useState<Adding>({type: undefined, color: ""})
+  const [adding, setAdding] = useState<Adding>({
+    type: undefined,
+    color: undefined,
+    baseColor: undefined
+  })
   const [editingEntities, setEditingEntities] = useState<Entity[]>([])
 
   const updateEditing = () => {
     if (
       adding.type !== window.addingEntity.type ||
+      adding.color !== window.addingEntity.baseColor || 
       adding.color !== window.addingEntity.color
     ) {
       setAdding({...window.addingEntity})

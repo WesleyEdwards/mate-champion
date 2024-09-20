@@ -43,7 +43,7 @@ function debounceLog(...args: any[]) {
   if (rand === 1) console.log(...args)
 }
 
-window.addingEntity = {type: "platform", color: "#00ff7f"}
+window.addingEntity = {type: "platform", color: undefined, baseColor: undefined}
 window.debounceLog = debounceLog
 window.editingEntities = []
 window.mateSettings = {
