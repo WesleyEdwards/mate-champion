@@ -43,11 +43,13 @@ export const useLevels: (params: {
     }
     if (!map) return
     const currMap = await api.level.levelMapDetail(id)
+    console.log({
+      currMap: {...currMap},
+      map: {...map}
+    })
     if (objectsAreDifferent(currMap, map)) {
       const diff = getLevelDiff(currMap, map)
-      api.level.modifyMap(map._id, diff).then((res) => {
-        setMap(res)
-      })
+      api.level.modifyMap(map._id, diff).then(setMap)
     }
   }
 

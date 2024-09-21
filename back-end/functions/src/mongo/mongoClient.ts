@@ -15,6 +15,9 @@ function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
   if ("equal" in condition) {
     return condition.equal as Filter<T>
   }
+  if ("assign" in condition) {
+    return condition.assign as Filter<T>
+  }
   if ("inside" in condition) {
     return {$in: condition.inside} as Filter<T>
   }
@@ -44,9 +47,7 @@ function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
     }
 
     if (value && typeof value === "object") {
-      acc[key as keyof Filter<T>] = conditionToFilter(
-        value as Condition<T[typeof key]>
-      )
+      acc[key as keyof Filter<T>] = conditionToFilter(value as any)
     }
   }
 
@@ -118,8 +119,10 @@ function functionsForModel<T extends HasId>(
     },
     deleteOne: async (id, condition) => {
       const c: Filter<T> = condition
-        ? conditionToFilter({and: [{_id: id}, condition]} as Condition<T>)
-        : conditionToFilter({_id: id} as Condition<T>)
+        ? conditionToFilter({
+            and: [{_id: {equal: id}}, condition]
+          } as Condition<T>)
+        : conditionToFilter({_id: {equal: id}} as Condition<T>)
 
       const item = await collection.findOneAndDelete(c)
       if (!item) {

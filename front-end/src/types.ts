@@ -1,7 +1,5 @@
 export type User = {
   _id: string
-  createdAt: string
-  updatedAt: string
   name: string
   email?: string | undefined
   highScore: number
@@ -23,9 +21,14 @@ export type HasId = {
   _id: string
 }
 
-export type Condition<T extends HasId> = {
-  [P in keyof T]?: T[P][] | T[P]
-}
+export declare type Condition<T> =
+  | {equal: T}
+  | {assign: T}
+  | {inside: T[]}
+  | {or: Array<Condition<T>>}
+  | {and: Array<Condition<T>>}
+  | {always: true}
+  | (T extends object ? { [P in keyof T]?: Condition<T[P]> } : never)
 
 export type TopScore = {
   name: string

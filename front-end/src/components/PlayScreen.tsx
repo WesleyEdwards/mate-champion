@@ -29,8 +29,6 @@ export const PlayScreen: FC<{
       if (user) {
         api.score.create({
           _id: crypto.randomUUID(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
           score: score,
           userId: user._id
         })

@@ -7,7 +7,7 @@ export function camelCaseToTitleCase(str: string) {
   })
 }
 
-const doNotUpdateKeys = ["_id", "createdAt", "updatedAt"]
+const doNotUpdateKeys = ["_id"]
 
 export const getLevelDiff = (
   original: LevelMap,
@@ -25,5 +25,7 @@ export const getLevelDiff = (
 }
 
 export const objectsAreDifferent = <T>(a: T, b: T) => {
+  const areDiff = !_.isEqual(a, b)
+  // console.log("areDiff", areDiff, {...a}, {...b})
   return !_.isEqual(a, b)
 }

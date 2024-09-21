@@ -16,6 +16,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
   const [makingNew, setMakingNew] = useState<string>()
 
   const createLevel = async (name: string) => {
+    console.log("Creating")
     const createdLevel = await api.level.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",
@@ -23,8 +24,6 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
       creatorName: user?.name ?? "",
       public: false,
       name: name,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
     })
     setEditingLevel(createdLevel._id)
   }

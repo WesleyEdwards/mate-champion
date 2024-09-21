@@ -6,11 +6,13 @@ export type HasId = {
 
 export declare type Condition<T> =
   | {equal: T}
+  | {assign: T}
   | {inside: T[]}
   | {or: Array<Condition<T>>}
   | {and: Array<Condition<T>>}
   | {always: true}
-  | {[P in keyof T]?: Condition<T[P]>}
+  | (T extends object ? { [P in keyof T]?: Condition<T[P]> } : never)
+  // | (keyof T extends never ? never : {[P in keyof T]?: Condition<T[P]>})
 
 export function queryContainsKey(query: any, key: string): boolean {
   return Object.entries(query).some(([k, v]) => {

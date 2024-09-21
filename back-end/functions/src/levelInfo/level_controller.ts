@@ -3,12 +3,7 @@ import {DbClient} from "../DbClient"
 import {importLevels} from "./levelQueries"
 import {LevelInfo, User} from "../types"
 import {createBasicEndpoints} from "../requestBuilders"
-import {
-  checkPartialValidation,
-  checkValidation,
-  isParseError,
-  isValid
-} from "../request_body"
+import {checkPartialValidation, checkValidation, isValid} from "../request_body"
 
 const levelBaseEndpoints = (db: DbClient) =>
   createBasicEndpoints<LevelInfo>({
@@ -17,7 +12,7 @@ const levelBaseEndpoints = (db: DbClient) =>
       perms: (jwtBody) => {
         if (jwtBody?.userType === "Admin") return {always: true}
         return {
-          or: [{public: true}, {owner: jwtBody?.userId ?? ""}]
+          or: [{public: {equal: true}}, {owner: {equal: jwtBody?.userId ?? ""}}]
         }
       }
     },
@@ -25,18 +20,23 @@ const levelBaseEndpoints = (db: DbClient) =>
       perms: (jwtBody) =>
         jwtBody?.userType === "Admin"
           ? {always: true}
-          : {or: [{owner: jwtBody?.userId}, {public: true}]}
+          : {
+              or: [
+                {owner: {equal: jwtBody?.userId ?? ""}},
+                {public: {equal: true}}
+              ]
+            }
     },
     create: {
       validate: async (body, jwtBody) => {
         const val = checkValidation("level", body)
-        if (isParseError(val)) return val
-        const user = await db.user.findOne({_id: val._id})
+        if (!isValid<LevelInfo>(val)) return val
+        const user = await db.user.findOne({_id: {equal: val.owner}})
         if (!isValid<User>(user)) return user
         if (jwtBody?.userId !== val.owner) {
           return {error: "not owner"}
         }
-        return {...val, creatorName: user.name}
+        return {...val, creatorName: user.name} satisfies LevelInfo
       },
       postCreate: async (level) => {
         await db.levelMap.insertOne({
@@ -52,14 +52,16 @@ const levelBaseEndpoints = (db: DbClient) =>
     },
     modify: {
       perms: (jwtBody) => {
-        return jwtBody?.userType === "Admin" ? {} : {owner: jwtBody?.userId}
+        return jwtBody?.userType === "Admin"
+          ? {always: true}
+          : {owner: {equal: jwtBody?.userId ?? ""}}
       },
       validate: (body) => {
         return checkPartialValidation("level", body)
       }
     },
     del: {
-      perms: (jwtBody) => ({owner: jwtBody?.userId}),
+      perms: (jwtBody) => ({owner: {equal: jwtBody?.userId ?? ""}}),
       postDelete: async (item) => {
         await db.levelMap.deleteOne(item._id)
       }

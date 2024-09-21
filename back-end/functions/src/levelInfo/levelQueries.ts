@@ -15,7 +15,7 @@ export const importLevels: ReqBuilder =
     const validate = isValidImport(toImport)
     if (isParseError(validate)) return res.json(400).json({error: "Bad input"})
 
-    const creator = await client.user.findOne({_id: jwtBody?.userId})
+    const creator = await client.user.findOne({_id: {equal: jwtBody?.userId ??""}})
     if (!isValid<User>(creator)) {
       return res.json(404).json({error: "User not found"})
     }

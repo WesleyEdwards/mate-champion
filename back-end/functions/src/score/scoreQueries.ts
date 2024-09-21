@@ -11,7 +11,7 @@ export const createScore: ReqBuilder =
     })
     if (isParseError(scoreBody)) return res.status(400).json(scoreBody)
 
-    const user = await client.user.findOne({_id: jwtBody!.userId})
+    const user = await client.user.findOne({_id: {equal: jwtBody!.userId}})
 
     if (!isValid<User>(user)) return res.status(400).json("User does not exist")
     if (scoreBody.score > user.highScore) {
@@ -34,7 +34,9 @@ export const queryScores: ReqBuilder =
 export const getMine: ReqBuilder =
   (client) =>
   async ({jwtBody}, res) => {
-    const scores = await client.score.findMany({userId: jwtBody!.userId})
+    const scores = await client.score.findMany({
+      userId: {equal: jwtBody!.userId}
+    })
     return res.json(scores)
   }
 

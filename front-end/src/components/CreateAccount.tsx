@@ -40,13 +40,12 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
         email: email === "" ? undefined : email,
         password,
         highScore: score ?? 0,
-        userType: "User",
-        updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString()
+        userType: "User"
       })
 
       return resetStack()
     } catch (e) {
+      setSubmitting(false)
       const error = await e
       if (typeof error === "object" && !!error && "error" in error) {
         setError(error.error as string)

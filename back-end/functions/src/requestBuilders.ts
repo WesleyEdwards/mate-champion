@@ -11,6 +11,9 @@ type GetterInfo<T extends HasId> = Skippable & {
   preResponseFilter?: (items: T) => T
 }
 
+const idCondition = <T extends HasId>(id: string): Condition<T> => {
+  return {_id: {equal: id}} as Condition<T>
+}
 const getBuilder = <T extends HasId>(
   info: GetterInfo<T>,
   endpoint: BasicEndpoints<T>
@@ -26,9 +29,9 @@ const getBuilder = <T extends HasId>(
       return res.status(400).json("Bad request")
     }
 
-    const condition = info.perms?.(jwtBody) ?? {}
+    const condition = info.perms?.(jwtBody) ?? {always: true}
     const item = await endpoint.findOne({
-      and: [{_id: {equal: id}}, condition]
+      and: [idCondition(id), condition]
     })
 
     if (isParseError(item)) return res.status(404).json(item)
@@ -119,9 +122,9 @@ export const modifyBuilder = <T extends HasId>(
     const {body, params, jwtBody} = req
     const id = params.id
 
-    const condition = info.perms?.(jwtBody) ?? {}
+    const condition = info.perms?.(jwtBody) ?? {always: true}
 
-    const level = await endpoint.findOne({and: [condition, {_id: {equal: id}}]})
+    const level = await endpoint.findOne({and: [condition, idCondition(id)]})
 
     if (!isValid(level)) return res.status(404).json("Not found")
 
@@ -132,6 +135,8 @@ export const modifyBuilder = <T extends HasId>(
     if (id !== levelPartial._id) {
       return res.status(400).json({error: "Id much match"})
     }
+
+    console.log("LEVEL PARTIAL IS", levelPartial)
 
     const updatedLevel = await endpoint.updateOne(id, levelPartial)
 

@@ -17,7 +17,7 @@ export const MyLevels: FC<ScreenProps> = () => {
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>()
 
   useEffect(() => {
-    api.level.query({owner: user?._id ?? ""}).then(setOwnedLevels)
+    api.level.query({owner: {equal: user?._id ?? ""}}).then(setOwnedLevels)
   }, [])
 
   return (

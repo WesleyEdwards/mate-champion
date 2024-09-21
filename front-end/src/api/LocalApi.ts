@@ -62,9 +62,7 @@ export class LocalApi implements Api {
         opponents: {grog: []},
         floors: [{x: -500, width: 7000, color: "green"}],
         platformColor: "springgreen",
-        platforms: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        platforms: []
       })
       return Promise.resolve(level)
     },

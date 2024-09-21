@@ -82,27 +82,13 @@ export class LiveApi implements Api {
     query: (filter: Condition<LevelInfo>): Promise<LevelInfo[]> => {
       return this.post("level/query", filter)
     },
-    create: (body: LevelInfo): Promise<LevelInfo> => {
-      return this.post("level/create", body)
-    },
-    modify: (id: string, mod: Partial<LevelInfo>): Promise<LevelInfo> => {
-      return this.put(`level/${id}`, mod)
-    },
-    delete: (id: string): Promise<number> => {
-      return this.del(`level/${id}`)
-    },
-    generate: (ids: string[]): Promise<LevelInfo[]> => {
-      return this.post(`level/generate`, ids)
-    },
-    levelMapDetail: (id: string): Promise<LevelMap> => {
-      return this.get(`level-map/${id}`)
-    },
-    modifyMap: (id: string, mod: Partial<LevelMap>): Promise<LevelMap> => {
-      return this.put(`level-map/${id}`, mod)
-    },
-    importMap: (info) => {
-      return this.post("level/import-map", info)
-    }
+    create: (body) => this.post("level/insert", body),
+    modify: (id, mod) => this.put(`level/${id}`, mod),
+    delete: (id) => this.del(`level/${id}`),
+    generate: (ids) => this.post(`level/generate`, ids),
+    levelMapDetail: (id) => this.get(`level-map/${id}`),
+    modifyMap: (id, mod) => this.put(`level-map/${id}`, mod),
+    importMap: (info) => this.post("level/import-map", info)
   }
   readonly score = {
     detail: (id: string): Promise<Score> => {

@@ -9,6 +9,7 @@ export class ApiCache implements Api {
   constructor(private basedOn: Api) {}
 
   cacheRequest<T>(key: string, promiseFactory: () => Promise<T>) {
+    console.log("Getting from cache", this.cache)
     const cached = this.cache[key]
     if (cached) {
       return cached
@@ -79,11 +80,7 @@ export class ApiCache implements Api {
         this.basedOn.level.levelMapDetail(id)
       ),
     modifyMap: (id: string, mod: Partial<LevelMap>) =>
-      this.andUpdate(
-        `level.detail.${id}`,
-        "level.query",
-        this.basedOn.level.modifyMap(id, mod)
-      ),
+      this.withEviction(this.basedOn.level.modifyMap(id, mod)),
     importMap: (importInfo) => this.basedOn.level.importMap(importInfo)
   }
 
