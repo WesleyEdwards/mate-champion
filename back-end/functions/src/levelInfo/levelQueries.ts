@@ -29,7 +29,7 @@ export const importLevels: ReqBuilder =
       ...map
     }))
 
-    let successses = 0
+    let successes = 0
     for (const level of updateLevels) {
       const mapFor = updateMaps.find((m) => m._id === level._id)
       if (!mapFor) continue
@@ -37,8 +37,8 @@ export const importLevels: ReqBuilder =
       if (success) {
         await client.levelMap.insertOne(mapFor)
       }
-      successses++
+      successes++
     }
 
-    return res.json(successses)
+    return res.json(successes)
   }

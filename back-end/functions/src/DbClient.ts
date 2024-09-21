@@ -6,6 +6,7 @@ export type HasId = {
 
 export declare type Condition<T> =
   | {equal: T}
+  | {inside: T[]}
   | {or: Array<Condition<T>>}
   | {and: Array<Condition<T>>}
   | {always: true}

@@ -1,5 +1,6 @@
 import {ReqBuilder} from "../auth/authTypes"
-import {checkPartialValidation, isParseError} from "../request_body"
+import {checkPartialValidation, isParseError, isValid} from "../request_body"
+import {LevelInfo} from "../types"
 
 export const getLevelMap: ReqBuilder =
   (client) =>
@@ -8,7 +9,7 @@ export const getLevelMap: ReqBuilder =
       return res.status(400).json("Bad request")
     }
     const level = await client.level.findOne({_id: params.id})
-    if (!level) return res.status(404).json("Not found")
+    if (!isValid<LevelInfo>(level)) return res.status(404).json("Not found")
     if (
       level.owner !== jwtBody?.userId &&
       jwtBody?.userType !== "Admin" &&
@@ -45,15 +46,14 @@ export const modifyLevelMap: ReqBuilder =
     return res.json(updatedLevel)
   }
 
-
-  export const generateLevels: ReqBuilder =
+export const generateLevels: ReqBuilder =
   (client) =>
   async ({body}, res) => {
     const levelIds = body as string[]
     if (!Array.isArray(levelIds)) {
       return res.status(400).json("Please supply a list of ids of levels")
     }
-    const levels = await client.levelMap.findMany({_id: levelIds})
+    const levels = await client.levelMap.findMany({_id: {inside: levelIds}})
 
     return res.json(
       levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))

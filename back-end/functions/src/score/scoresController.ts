@@ -7,19 +7,19 @@ import {
   queryScores
 } from "./scoreQueries"
 
-export const scoresController = controller("score", [
+export const scoresController = controller("score", (db) => [
   {
     path: "/create",
     method: "post",
-    endpointBuilder: createScore
+    endpointBuilder: createScore(db)
   },
-  {path: "/self", method: "get", endpointBuilder: getMine},
-  {path: "/:id", method: "delete", endpointBuilder: deleteScore},
-  {path: "/query", method: "post", endpointBuilder: queryScores},
+  {path: "/self", method: "get", endpointBuilder: getMine(db)},
+  {path: "/:id", method: "delete", endpointBuilder: deleteScore(db)},
+  {path: "/query", method: "post", endpointBuilder: queryScores(db)},
   {
     path: "/top-scores",
     method: "get",
-    endpointBuilder: getTopScores,
+    endpointBuilder: getTopScores(db),
     skipAuth: true
   }
 ])

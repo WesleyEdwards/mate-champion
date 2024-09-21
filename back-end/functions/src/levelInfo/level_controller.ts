@@ -1,16 +1,8 @@
 import {controller, Route} from "../auth/controller"
-
 import {DbClient} from "../DbClient"
 import {importLevels} from "./levelQueries"
 import {LevelInfo, User} from "../types"
-import {
-  createBuilder,
-  getBuilder,
-  queryBuilder,
-  modifyBuilder,
-  deleteBuilder,
-  BuildEndpoints
-} from "../requestBuilders"
+import {createBasicEndpoints} from "../requestBuilders"
 import {
   checkPartialValidation,
   checkValidation,
@@ -18,33 +10,32 @@ import {
   isValid
 } from "../request_body"
 
-const levelBaseEndpoints: BuildEndpoints<LevelInfo> = (db: DbClient) => {
-  const endpoint = db.level
-  return {
-    get: getBuilder({
-      endpoint,
+const levelBaseEndpoints = (db: DbClient) =>
+  createBasicEndpoints<LevelInfo>({
+    endpoint: db.level,
+    get: {
       perms: (jwtBody) => {
         if (jwtBody?.userType === "Admin") return {always: true}
         return {
           or: [{public: true}, {owner: jwtBody?.userId ?? ""}]
         }
       }
-    }),
-    query: queryBuilder({
-      endpoint,
+    },
+    query: {
       perms: (jwtBody) =>
         jwtBody?.userType === "Admin"
           ? {always: true}
           : {or: [{owner: jwtBody?.userId}, {public: true}]}
-    }),
-    create: createBuilder({
-      endpoint,
-      perms: (jwtBody, level) => jwtBody?.userId === level.owner,
-      validate: async (body) => {
+    },
+    create: {
+      validate: async (body, jwtBody) => {
         const val = checkValidation("level", body)
         if (isParseError(val)) return val
         const user = await db.user.findOne({_id: val._id})
         if (!isValid<User>(user)) return user
+        if (jwtBody?.userId !== val.owner) {
+          return {error: "not owner"}
+        }
         return {...val, creatorName: user.name}
       },
       postCreate: async (level) => {
@@ -58,29 +49,26 @@ const levelBaseEndpoints: BuildEndpoints<LevelInfo> = (db: DbClient) => {
           platforms: []
         })
       }
-    }),
-    modify: modifyBuilder({
-      endpoint,
+    },
+    modify: {
       perms: (jwtBody) => {
         return jwtBody?.userType === "Admin" ? {} : {owner: jwtBody?.userId}
       },
       validate: (body) => {
         return checkPartialValidation("level", body)
       }
-    }),
-    delete: deleteBuilder({
-      endpoint,
+    },
+    del: {
       perms: (jwtBody) => ({owner: jwtBody?.userId}),
       postDelete: async (item) => {
         await db.levelMap.deleteOne(item._id)
       }
-    })
-  }
-}
+    }
+  })
 
 export const levelsController = controller("level", (db: DbClient): Route[] => {
   return [
-    ...Object.values(levelBaseEndpoints(db)),
+    ...levelBaseEndpoints(db),
     {path: "/import-map", method: "post", endpointBuilder: importLevels(db)}
   ]
 })

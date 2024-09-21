@@ -1,30 +1,71 @@
 import {controller} from "../auth/controller"
-import {
-  modifyUser,
-  createUser,
-  getSelf,
-  getUser,
-  loginUser,
-  queryUser,
-  deleteUser
-} from "./userQueries"
+import {DbClient} from "../DbClient"
+import {checkPartialValidation, isValid} from "../request_body"
+import {createBasicEndpoints} from "../requestBuilders"
+import {User} from "../types"
+import {createUser, getSelf, loginUser} from "./userQueries"
 
-export const usersController = controller("user", [
+const userBaseEndpoints = (db: DbClient) => {
+  const preResponseFilter = (user: User) => {
+    const {passwordHash, ...rest} = user
+    return rest as User
+  }
+  return createBasicEndpoints<User>({
+    endpoint: db.user,
+    get: {
+      perms: (jwtBody) => {
+        if (jwtBody?.userType === "Admin") return {always: true}
+        return {_id: {equal: jwtBody?.userId ?? ""}}
+      },
+      preResponseFilter
+    },
+    create: null,
+    query: {
+      perms: (jwtBody) => {
+        if (jwtBody?.userType === "Admin") return {always: true}
+        return {_id: {equal: jwtBody?.userId ?? ""}}
+      },
+      preResponseFilter: (users) => users.map(preResponseFilter)
+    },
+    modify: {
+      perms: (jwtBody) => {
+        if (jwtBody?.userType === "Admin") return {always: true}
+        return {_id: {equal: jwtBody?.userId ?? ""}}
+      },
+      validate: (body, jwtBody) => {
+        const userPartial = checkPartialValidation("user", body)
+        if (!isValid<User>(userPartial)) return userPartial
+
+        if (jwtBody?.userType !== "Admin" && userPartial.userType) {
+          return {error: "Unauthorized"}
+        }
+
+        return userPartial
+      },
+      preResponseFilter
+    },
+    del: {
+      perms: (jwtBody) => {
+        if (jwtBody?.userType === "Admin") return {always: true}
+        return {_id: {equal: jwtBody?.userId ?? ""}}
+      }
+    }
+  })
+}
+
+export const usersController = controller("user", (db) => [
+  ...userBaseEndpoints(db),
+  {path: "/", method: "get", endpointBuilder: getSelf(db)},
   {
     path: "/create",
     method: "post",
-    endpointBuilder: createUser,
+    endpointBuilder: createUser(db),
     skipAuth: true
   },
-  {path: "/", method: "get", endpointBuilder: getSelf},
-  {path: "/:id", method: "get", endpointBuilder: getUser},
-  {path: "/query", method: "post", endpointBuilder: queryUser},
-  {path: "/:id", method: "put", endpointBuilder: modifyUser},
-  {path: "/:id", method: "delete", endpointBuilder: deleteUser},
   {
     path: "/login",
     method: "post",
-    endpointBuilder: loginUser,
+    endpointBuilder: loginUser(db),
     skipAuth: true
   }
 ])

@@ -15,7 +15,9 @@ function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
   if ("equal" in condition) {
     return condition.equal as Filter<T>
   }
-
+  if ("inside" in condition) {
+    return {$in: condition.inside} as Filter<T>
+  }
   if ("or" in condition) {
     acc.$or = condition.or.map((cond) => conditionToFilter(cond)) as any
     return acc
@@ -78,6 +80,7 @@ function functionsForModel<T extends HasId>(
       if (acknowledged) {
         return newItem
       }
+      console.log("NEW ITEM", newItem)
       return {error: "Unknown error"}
     },
     findOne: async (filter) => {
@@ -87,7 +90,7 @@ function functionsForModel<T extends HasId>(
       if (item) {
         return item
       }
-      return {error: "Unknown error"}
+      return {error: "unable to findItem"}
     },
     findMany: async (filter: Condition<T>) => {
       const items = collection.find(conditionToFilter(filter))
@@ -109,7 +112,7 @@ function functionsForModel<T extends HasId>(
         {returnDocument: "after"}
       )
       if (!value) {
-        throw new Error("Item not found")
+        throw new Error("unable to updateOne. Item not found")
       }
       return value as T
     },

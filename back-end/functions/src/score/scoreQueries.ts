@@ -1,5 +1,5 @@
 import {ReqBuilder} from "../auth/authTypes"
-import {checkValidation, isParseError} from "../request_body"
+import {checkValidation, isParseError, isValid} from "../request_body"
 import {Score, User} from "../types"
 
 export const createScore: ReqBuilder =
@@ -13,7 +13,7 @@ export const createScore: ReqBuilder =
 
     const user = await client.user.findOne({_id: jwtBody!.userId})
 
-    if (!user) return res.status(400).json("User does not exist")
+    if (!isValid<User>(user)) return res.status(400).json("User does not exist")
     if (scoreBody.score > user.highScore) {
       await client.user.updateOne(user._id, {highScore: scoreBody.score})
     }
@@ -33,7 +33,7 @@ export const queryScores: ReqBuilder =
 
 export const getMine: ReqBuilder =
   (client) =>
-  async ({body, jwtBody}, res) => {
+  async ({jwtBody}, res) => {
     const scores = await client.score.findMany({userId: jwtBody!.userId})
     return res.json(scores)
   }
@@ -49,7 +49,9 @@ export const getTopScores: ReqBuilder = (client) => async (_, res) => {
   const scores: Score[] = await client.score.findMany({})
 
   const userIds = [...new Set(scores.map((score) => score.userId))]
-  const queryUsers: User[] = await client.user.findMany({_id: userIds})
+  const queryUsers: User[] = await client.user.findMany({
+    _id: {inside: userIds}
+  })
 
   const usersAndScores = scores.reduce((acc, score) => {
     const user = queryUsers.find((user) => user._id === score.userId)!

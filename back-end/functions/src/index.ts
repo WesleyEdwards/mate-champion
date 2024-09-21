@@ -4,10 +4,10 @@ import cookieParser from "cookie-parser"
 import * as functions from "firebase-functions"
 import cors from "cors"
 import {DbClient} from "./DbClient"
-import {usersController} from "./user/user_controller"
-import {scoresController} from "./score/scoresController"
 import {mongoClient} from "./mongo/mongoClient"
 import {levelsController} from "./levelInfo/level_controller"
+import {usersController} from "./user/user_controller"
+import {scoresController} from "./score/scoresController"
 import {levelMapController} from "./levelMap/level_map_controller"
 
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
