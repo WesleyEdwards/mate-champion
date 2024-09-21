@@ -15,8 +15,6 @@ export type LoginBody = {
 
 export type Score = {
   _id: string
-  createdAt: string
-  updatedAt: string
   userId: string
   score: number
 }

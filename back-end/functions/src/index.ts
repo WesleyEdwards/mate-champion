@@ -14,6 +14,8 @@ dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
 
 const dbPath = process.env.MONGO_URI!
 
+console.log("NODE_ENV is", process.env.NODE_ENV)
+
 const client: DbClient = mongoClient(dbPath)
 
 const app = express()

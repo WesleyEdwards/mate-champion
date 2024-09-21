@@ -23,17 +23,18 @@ export const authenticationMiddleware: AuthReqHandler = async (
   return null
 }
 
-type Route = {
+export type Route = {
   path: string
   method: "post" | "put" | "get" | "delete"
-  endpointBuilder: (client: DbClient) => RequestHandler
+  endpointBuilder: RequestHandler
   skipAuth?: boolean
 }
 
 export const controller =
-  (name: string, routes: Route[]) => (app: Express, client: DbClient) => {
+  (name: string, routes: (client: DbClient) => Route[]) =>
+  (app: Express, client: DbClient) => {
     const router = express.Router()
-    routes.forEach((route) => {
+    routes(client).forEach((route) => {
       if (!route.skipAuth) {
         router.use(route.path, (req, res, next) => {
           if (req.method.toLowerCase() === route.method) {
@@ -43,7 +44,7 @@ export const controller =
           }
         })
       }
-      router[route.method](route.path, route.endpointBuilder(client))
+      router[route.method](route.path, route.endpointBuilder)
     })
     app.use(`/${name}`, router)
   }

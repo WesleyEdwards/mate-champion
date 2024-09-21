@@ -4,10 +4,13 @@ export type HasId = {
   _id: string
 }
 
-export type Condition<T extends HasId> =
-  | {[P in keyof T]?: T[P][] | T[P]}
-  | {or?: Condition<T>[]}
-  
+export declare type Condition<T> =
+  | {equal: T}
+  | {or: Array<Condition<T>>}
+  | {and: Array<Condition<T>>}
+  | {always: true}
+  | {[P in keyof T]?: Condition<T[P]>}
+
 export function queryContainsKey(query: any, key: string): boolean {
   return Object.entries(query).some(([k, v]) => {
     if (k === key) return true
@@ -24,7 +27,7 @@ export function queryContainsKey(query: any, key: string): boolean {
   })
 }
 
-export type OrError<T> = T | undefined
+export type OrError<T> = T | {error: string}
 
 export type BasicEndpoints<T extends HasId> = {
   insertOne: (item: T) => Promise<OrError<T>>
@@ -35,7 +38,7 @@ export type BasicEndpoints<T extends HasId> = {
     fields: string[]
   ) => Promise<Partial<T>[]>
   updateOne: (id: string, update: Partial<T>) => Promise<OrError<T>>
-  deleteOne: (id: string) => Promise<string>
+  deleteOne: (id: string, condition?: Condition<T>) => Promise<T>
 }
 
 export type DbClient = {

@@ -36,8 +36,6 @@ export type LevelMap = {
     width: number
     color: string
   }[]
-  createdAt: string
-  updatedAt: string
 }
 
 export type LevelInfo = {
@@ -47,8 +45,6 @@ export type LevelInfo = {
   public: boolean
   creatorName: string
   name: string
-  createdAt: string
-  updatedAt: string
 }
 
 export type WinState = "lose" | "playing" | "initial" | "nextLevel" | "loseLife"

@@ -2,9 +2,7 @@ import {v4 as uuidv4} from "uuid"
 import {z} from "zod"
 
 export const baseObjectSchema = z.object({
-  _id: z.string().default(uuidv4),
-  createdAt: z.string().default(new Date().toISOString()),
-  updatedAt: z.string().default(new Date().toISOString())
+  _id: z.string().uuid().default(uuidv4)
 })
 
 export const userTypeSchema = z.enum(["User", "Admin"])
@@ -85,7 +83,14 @@ export const levelMapSchema = z
 export type UserType = z.infer<typeof userTypeSchema>
 export type User = z.infer<typeof userSchema>
 export type Score = z.infer<typeof scoreSchema>
-export type LevelInfo = z.infer<typeof levelSchema>
+export type LevelInfo = {
+  owner: string;
+  public: boolean;
+  name: string;
+  description: string | null;
+  creatorName: string;
+  _id: string;
+}
 export type LevelMap = z.infer<typeof levelMapSchema>
 
 type Schemas =

@@ -9,35 +9,51 @@ import {BasicEndpoints, Condition, DbClient, HasId} from "../DbClient"
 import {LevelInfo, LevelMap, Score, User} from "../types"
 import {runMigrations} from "./mongoMigrations"
 
-function conditionToFilter<T extends HasId>(
-  condition: Condition<T>
-): Filter<T> {
-  return Object.entries(condition).reduce((acc, [k, v]) => {
-    const key = k as keyof Condition<T>
-    if (key === "or") {
-      const arr = v
-      if (!Array.isArray(arr)) {
-        throw new Error("or condition must be an array")
-      }
-      acc.$or = arr.map(conditionToFilter) as any
-      return acc
-    }
-    if (v) {
-      if (Array.isArray(v)) {
-        acc[key as keyof Filter<T>] = {
-          $in: v
-        }
-      } else {
-        acc[key as keyof Filter<T>] = v
-      }
-    }
+function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
+  const acc: Filter<T> = {}
+
+  if ("equal" in condition) {
+    return condition.equal as Filter<T>
+  }
+
+  if ("or" in condition) {
+    acc.$or = condition.or.map((cond) => conditionToFilter(cond)) as any
     return acc
-  }, {} as Filter<T>)
+  }
+
+  if ("and" in condition) {
+    acc.$and = condition.and.map((cond) => conditionToFilter(cond)) as any
+    return acc
+  }
+
+  if ("always" in condition) {
+    if (condition.always) {
+      return acc
+    } else {
+      throw new Error("Invalid 'always' condition. It must be true.")
+    }
+  }
+
+  for (const key in condition) {
+    const value = condition[key]
+
+    if (key === "equal" || key === "or" || key === "and" || key === "always") {
+      continue
+    }
+
+    if (value && typeof value === "object") {
+      acc[key as keyof Filter<T>] = conditionToFilter(
+        value as Condition<T[typeof key]>
+      )
+    }
+  }
+
+  return acc
 }
 
 export const mongoClient = (dbPath: string): DbClient => {
   const mClient: MongoClient = new MongoClient(dbPath)
-  const db = mClient.db("reptile-tracker-test")
+  const db = mClient.db("mate-db")
 
   return {
     user: functionsForModel<User>(db, "user"),
@@ -62,7 +78,7 @@ function functionsForModel<T extends HasId>(
       if (acknowledged) {
         return newItem
       }
-      return undefined
+      return {error: "Unknown error"}
     },
     findOne: async (filter) => {
       const item = (await collection.findOne(
@@ -71,7 +87,7 @@ function functionsForModel<T extends HasId>(
       if (item) {
         return item
       }
-      return undefined
+      return {error: "Unknown error"}
     },
     findMany: async (filter: Condition<T>) => {
       const items = collection.find(conditionToFilter(filter))
@@ -97,12 +113,16 @@ function functionsForModel<T extends HasId>(
       }
       return value as T
     },
-    deleteOne: async (id: string) => {
-      const item = await collection.findOneAndDelete({_id: id} as Filter<T>)
+    deleteOne: async (id, condition) => {
+      const c: Filter<T> = condition
+        ? conditionToFilter({and: [{_id: id}, condition]} as Condition<T>)
+        : conditionToFilter({_id: id} as Condition<T>)
+
+      const item = await collection.findOneAndDelete(c)
       if (!item) {
         throw new Error("Item not found")
       }
-      return item._id
+      return item as T
     }
   }
 }
