@@ -17,7 +17,7 @@ export class EndGate implements Entity {
   constructor(pos: Coors) {
     this.state = {
       position: toCurrAndPrev(pos),
-      dimensions: [100, 100],
+      dimensions: [200, 800],
       dead: false
     }
   }
@@ -25,7 +25,16 @@ export class EndGate implements Entity {
   step: Entity["step"] = (deltaT) => {}
 
   render: Entity["render"] = (cxt) => {
-    cxt.scale(2.52, 2.52)
-    cxt.drawImage(Textures().endGate, -60, 0)
+    cxt.drawImage(
+      Textures().endGate,
+      0,
+      0,
+      Textures().endGate.width,
+      Textures().endGate.height,
+      -60,
+      0,
+      300,
+      800
+    )
   }
 }

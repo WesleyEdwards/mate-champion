@@ -139,7 +139,10 @@ export class GameEdit {
         this.movingEntities.forEach((entity) => {
           const e = this.fromId(entity)
           if (!e) return
-          const d: Coors = e.typeId === "floor" ? [diff[0], 0] : [...diff]
+          const d: Coors =
+            e.typeId === "floor" || e.typeId === "endGate"
+              ? [diff[0], 0]
+              : [...diff]
           incrementPosition(e.state.position.curr, d)
           this.isDirty = true
         })
@@ -196,6 +199,9 @@ export class GameEdit {
     })
 
     this.state.keys.mouseUp.curr = null
+    this.state.endPosition =
+      this.state.entities.find((e) => e.typeId === "endGate")?.state?.position
+        ?.curr?.[0] ?? 4500
 
     // reconcile colors
 
@@ -268,6 +274,7 @@ export class GameEdit {
         cxt.strokeStyle = "red"
         cxt.lineWidth = 2
 
+        // if (entity.typeId == "endGate") cxt.scale(2.52, 2.52)
         cxt.strokeRect(
           0,
           0,

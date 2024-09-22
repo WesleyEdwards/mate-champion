@@ -10,10 +10,7 @@ import {AuthContext, useAuth} from "./hooks/useAuth"
 import {LevelsContext, useLevels} from "./hooks/useLevels"
 import {Layout} from "./components/Layout"
 import {initializeTextures} from "./gameAssets/textures"
-import {
-  AddableEntity,
-  Adding
-} from "./components/GameEdit/CourseBuilderSettings"
+import {Adding} from "./components/GameEdit/CourseBuilderSettings"
 import {Entity} from "./game/entities/entityTypes"
 
 declare global {

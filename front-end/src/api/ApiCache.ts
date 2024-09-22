@@ -9,7 +9,6 @@ export class ApiCache implements Api {
   constructor(private basedOn: Api) {}
 
   cacheRequest<T>(key: string, promiseFactory: () => Promise<T>) {
-    console.log("Getting from cache", this.cache)
     const cached = this.cache[key]
     if (cached) {
       return cached
