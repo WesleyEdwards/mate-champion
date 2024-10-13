@@ -1,6 +1,6 @@
 import {LevelMap} from "../loopShared/models"
 import {Champ} from "../entities/champ"
-import {Coors, Entity, Id} from "../entities/entityTypes"
+import {Coors, CurrAndPrev, Entity, Id} from "../entities/entityTypes"
 import {renderBg} from "../render/background"
 import {accountForPosition} from "../render/helpers"
 import {updateTime} from "../state/helpers"
@@ -20,117 +20,36 @@ import {
 import {addDevEventListeners} from "./eventListeners"
 import {Groog} from "../entities/groog"
 import {Platform} from "../entities/platform"
+import {toCurrAndPrev} from "../helpers"
 
 export class GameEdit {
   state: GameStateEditProps
   movingEntities: Set<Id> = new Set()
   selectedEntities: Set<Id> = new Set()
   hoveringEntities: Set<Id> = new Set()
+  dragSelection: CurrAndPrev | null = null
   champ: Champ = new Champ([400, 400])
-  isDirty: boolean = false
 
   constructor(
     currentLevel: LevelMap,
-    private setIsDirty: () => void,
     private setLevels: (level: Partial<LevelMap>) => void,
     private canvas: HTMLCanvasElement
   ) {
     window.addingEntity.baseColor = currentLevel.platformColor
-
     this.state = levelInfoToEditState(currentLevel)
     addDevEventListeners(this, canvas)
-    canvas.style.cursor = "move"
   }
 
-  /** Step */
-  step(timeStamp: number) {
-    updateTime(this.state.time, timeStamp)
-    updateTimers(this.state.timers, this.state.time.deltaT)
-
-    if (this.state.timers.sinceLastSave.val > 5_000) {
-      this.state.timers.sinceLastSave.val = 0
-      this.setLevels(editStateToLevelInfo(this.state))
-      this.isDirty = false
-    }
-    if (this.isDirty) {
-      this.setIsDirty()
-    }
-
-    this.hoveringEntities = this.hoverEntities()
-
-    if (this.state.keys.ctrl.curr) {
-      if (this.hoveringEntities.size > 0) {
-        this.canvas.style.cursor = "pointer"
-      } else {
-        this.canvas.style.cursor = "crosshair"
-      }
-    } else if (this.hoveringEntities.size > 0 || this.movingEntities.size > 0) {
-      this.canvas.style.cursor = "grab"
-    } else {
-      this.canvas.style.cursor = "auto"
-    }
-
-    // this.state.keys.shift.curr && this.state.keys.mouseDown.curr;
-    const guaranteeMovingCanvas =
-      this.state.keys.mouseDown.curr && this.state.keys.shift.curr
-    const isMovingCanvas =
+  get isMovingCanvas() {
+    return (
       this.movingEntities.size === 0 &&
-      ((this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0) ||
-        guaranteeMovingCanvas)
-
-    const mouseDownAction =
-      this.state.keys.mouseDown.curr && !this.state.keys.mouseDown.prev
-
-    const mouseUpAction =
-      this.state.keys.mouseUp.curr && !this.state.keys.mouseUp.prev
-
-    const startingToGrab = !guaranteeMovingCanvas && mouseDownAction
-
-    const stopGrabbing = !this.state.keys.mouseDown.curr
-
-    const addEntity =
-      this.state.keys.ctrl.curr &&
-      this.state.keys.mouseUp.curr &&
+      this.state.keys.mouseDown.curr &&
       this.hoveringEntities.size === 0
+    )
+  }
 
-    if (startingToGrab) {
-      if (
-        this.state.keys.ctrl.curr === false &&
-        this.selectedEntities.intersection(this.hoveringEntities).size === 0
-      ) {
-        this.selectedEntities.clear() // unselect when not ctrl click or when
-      }
-
-      const last = Array.from(this.hoveringEntities).pop()
-      if (last) {
-        this.selectedEntities.add(last)
-      }
-
-      this.movingEntities = new Set(this.selectedEntities)
-    } else if (stopGrabbing) {
-      this.movingEntities.clear()
-    }
-
-    if (isMovingCanvas) {
-      this.canvas.style.cursor = "move"
-      if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
-        const diff: Coors = [
-          -this.state.keys.mousePos.curr[0] + this.state.keys.mousePos.prev[0],
-          this.state.keys.mousePos.curr[1] - this.state.keys.mousePos.prev[1]
-        ]
-        const proposedPos: Coors = [
-          this.state.camera.position[0] + diff[0],
-          this.state.camera.position[1] + diff[1]
-        ]
-        if (proposedPos[0] < -200 || proposedPos[0] > 10_000) {
-          diff[0] = 0
-        }
-        if (proposedPos[1] < 0 || proposedPos[1] > 500) {
-          diff[1] = 0
-        }
-        incrementPosition(this.state.camera.position, diff)
-      }
-    } else if (this.movingEntities.size > 0) {
+  updateEntityMovement() {
+    if (this.movingEntities.size > 0) {
       if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
         const diff: Coors = [
           this.state.keys.mousePos.curr[0] - this.state.keys.mousePos.prev[0],
@@ -144,14 +63,90 @@ export class GameEdit {
               ? [diff[0], 0]
               : [...diff]
           incrementPosition(e.state.position.curr, d)
-          this.isDirty = true
         })
       }
-    } else if (addEntity) {
-      addEntityToState(this)
-      this.isDirty = true
+    }
+  }
+  updateCanvasMovement() {
+    if (!this.isMovingCanvas) return
+    if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
+      const diff: Coors = [
+        -this.state.keys.mousePos.curr[0] + this.state.keys.mousePos.prev[0],
+        this.state.keys.mousePos.curr[1] - this.state.keys.mousePos.prev[1]
+      ]
+      const proposedPos: Coors = [
+        this.state.camera.position[0] + diff[0],
+        this.state.camera.position[1] + diff[1]
+      ]
+      if (proposedPos[0] < -200 || proposedPos[0] > 10_000) {
+        diff[0] = 0
+      }
+      if (proposedPos[1] < 0 || proposedPos[1] > 500) {
+        diff[1] = 0
+      }
+      incrementPosition(this.state.camera.position, diff)
+    }
+  }
+
+  /** Step */
+  step(timeStamp: number) {
+    updateTime(this.state.time, timeStamp)
+    updateTimers(this.state.timers, this.state.time.deltaT)
+
+    this.updateSave()
+    this.updateEntitySelection()
+    this.updateEntityMovement()
+    this.updateMouseHover()
+    this.updateCanvasMovement()
+    // const guaranteeMovingCanvas =
+    //   this.state.keys.mouseDown.curr && this.state.keys.shift.curr
+
+    const justStartedDragSelecting =
+      this.state.keys.shift.curr &&
+      this.state.keys.mouseDown.prev === false &&
+      this.state.keys.mouseDown.curr === true
+
+    const isDragSelecting =
+      this.state.keys.shift.curr && this.state.keys.mouseDown.curr
+
+    if (isDragSelecting) {
+      this.dragSelection?.curr
+    } else if (justStartedDragSelecting && this.state.keys.mousePos.curr) {
+      this.dragSelection = toCurrAndPrev([...this.state.keys.mousePos.curr])
+    } else {
+      this.dragSelection = null
     }
 
+    const mouseDownAction =
+      this.state.keys.mouseDown.curr && !this.state.keys.mouseDown.prev
+
+    const startingToGrab = mouseDownAction && !isDragSelecting
+
+    const stopGrabbing = !this.state.keys.mouseDown.curr
+
+    if (startingToGrab) {
+      if (
+        this.state.keys.ctrl.curr === false &&
+        this.selectedEntities.intersection(this.hoveringEntities).size === 0
+      ) {
+        this.selectedEntities.clear() // unselect when not ctrl click
+      }
+
+      const last = Array.from(this.hoveringEntities).pop()
+      if (last) {
+        this.selectedEntities.add(last)
+      }
+
+      this.movingEntities = new Set(this.selectedEntities)
+    } else if (stopGrabbing) {
+      this.movingEntities.clear()
+    }
+
+    addEntityToState(this)
+    this.updateKeys()
+    this.handleStateCleanup()
+  }
+  handleStateCleanup() {
     if (this.state.entities.some((e) => e.state.dead)) {
       this.state.entities = this.state.entities.filter((e) => !e.state.dead)
     }
@@ -162,15 +157,8 @@ export class GameEdit {
       })
       this.state.keys.delete.curr = false
     }
-
-    Object.values(this.state.keys).forEach((o) => {
-      if (typeof o.curr === "boolean") {
-        updateCurrPrevBool(o)
-      } else {
-        updateCurrPrevDragState(o as any)
-      }
-    })
-
+    const mouseUpAction =
+      this.state.keys.mouseUp.curr && !this.state.keys.mouseUp.prev
     if (mouseUpAction) {
       // lock rounded into place.
       this.state.entities.forEach((e) => {
@@ -183,12 +171,11 @@ export class GameEdit {
         const newE = copyEntity(e)
         if (newE) {
           this.state.entities.push(newE)
+          this.selectedEntities.delete(e.id)
+          this.selectedEntities.add(newE.id)
         }
       })
       this.state.keys.copy.curr = false
-      if (this.currentlySelected.length > 0) {
-        this.selectedEntities.clear()
-      }
     }
 
     // Fix entities
@@ -204,23 +191,31 @@ export class GameEdit {
         ?.curr?.[0] ?? 4500
 
     // reconcile colors
+    const bc = window.addingEntity.baseColor
 
-    if (
-      window.addingEntity.baseColor &&
-      window.addingEntity.baseColor !== this.state.prevBaseColor
-    ) {
+    if (bc && bc !== this.state.prevBaseColor) {
       this.state.entities.forEach((e) => {
         if (e instanceof Platform) {
           if (e.state.color === this.state.prevBaseColor) {
-            e.state.color = window.addingEntity.baseColor!
+            e.state.color = bc
           }
         }
       })
-      this.state.prevBaseColor = window.addingEntity.baseColor
+      this.state.prevBaseColor = bc
     }
   }
 
-  hoverEntities(): Set<Id> {
+  updateKeys() {
+    Object.values(this.state.keys).forEach((o) => {
+      if (typeof o.curr === "boolean") {
+        updateCurrPrevBool(o)
+      } else {
+        updateCurrPrevDragState(o as any)
+      }
+    })
+  }
+
+  updateEntitySelection() {
     if (!this.state.keys.mousePos.curr) {
       return new Set()
     }
@@ -228,7 +223,7 @@ export class GameEdit {
       this.state.keys.mousePos.curr,
       this.state.camera
     )
-    return new Set(
+    this.hoveringEntities = new Set(
       this.state.entities
         .filter((e) => {
           const isX =
@@ -239,12 +234,34 @@ export class GameEdit {
             e.state.position.curr[1] + e.state.dimensions[1] > mouse[1]
           return isX && isY
         })
-        .map(this.toId)
+        .map(toId)
     )
   }
+  updateSave() {
+    if (this.state.timers.sinceLastSave.val > 500) {
+      this.state.timers.sinceLastSave.val = 0
+      this.setLevels(editStateToLevelInfo(this.state))
+    }
+  }
+  updateMouseHover() {
+    if (this.state.keys.ctrl.curr) {
+      if (this.hoveringEntities.size > 0) {
+        this.canvas.style.cursor = "pointer"
+      } else {
+        this.canvas.style.cursor = "crosshair"
+      }
+    } else if (this.hoveringEntities.size > 0 || this.movingEntities.size > 0) {
+      this.canvas.style.cursor = "grab"
+    } else {
+      this.canvas.style.cursor = "auto"
+    }
 
-  toId(entity: Entity) {
-    return entity.id
+    const isMovingCanvas =
+      // this.movingEntities.size === 0 &&
+      this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0
+    if (isMovingCanvas) {
+      this.canvas.style.cursor = "move"
+    }
   }
 
   fromId(entity: Id): Entity | undefined {
@@ -274,7 +291,6 @@ export class GameEdit {
         cxt.strokeStyle = "red"
         cxt.lineWidth = 2
 
-        // if (entity.typeId == "endGate") cxt.scale(2.52, 2.52)
         cxt.strokeRect(
           0,
           0,
@@ -291,11 +307,8 @@ export class GameEdit {
 
     cxt.restore()
   }
+}
 
-  setEventState<K extends keyof GameStateEditProps["keys"]>(
-    key: K,
-    value: GameStateEditProps["keys"][K]["curr"]
-  ) {
-    this.state.keys[key].curr = value
-  }
+function toId(entity: Entity) {
+  return entity.id
 }

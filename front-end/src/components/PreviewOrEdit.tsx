@@ -9,12 +9,10 @@ import {useNavigator} from "../hooks/UseNavigator"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {useAuthContext} from "../hooks/useAuth"
-import {getLevelDiff} from "../helpers"
 
 export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
   const {api} = useAuthContext()
-  const {editingLevel, setGameMode, setIsDirty, updateLevelMap} =
-    useLevelContext()
+  const {editingLevel, setGameMode, updateLevelMap} = useLevelContext()
   const {navigateTo} = useNavigator()
 
   return (
@@ -38,10 +36,8 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
           api.level.levelMapDetail(editingLevel._id).then((level) => {
             gameLoopEdit({
               level,
-              setIsDirty: () => setIsDirty(true),
               modifyLevel: (level: Partial<LevelMap>) => {
                 updateLevelMap(level)
-                setIsDirty(false)
               }
             })
           })

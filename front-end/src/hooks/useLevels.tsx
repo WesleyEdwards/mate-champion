@@ -1,19 +1,22 @@
-import {createContext, useContext, useEffect, useState} from "react"
+import {createContext, useContext, useEffect, useRef, useState} from "react"
 import {LevelInfo, LevelMap} from "../game/loopShared/models"
 import {Api} from "../api/Api"
 import {GameMode} from "./useAuth"
 import {User} from "../types"
 import {getLevelDiff, objectsAreDifferent} from "../helpers"
+import {isEqual} from "lodash"
 
 export const useLevels: (params: {
   api: Api | undefined
   user: User | undefined
 }) => LevelsContextType = ({api}) => {
   const [level, setLevel] = useState<EditingLevel>(null)
-  const [map, setMap] = useState<LevelMap | null>(null)
+
+  const dirtyMap = useRef<LevelMap | null>(null)
+  const [changeTrigger, setChangeTrigger] = useState(0)
 
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle")
-  const [isDirty, setIsDirty] = useState(false)
+  // const time = useRef(0)
 
   const handleSetEditing: LevelsContextType["setEditingLevel"] = async (id) => {
     if (!api) return
@@ -24,7 +27,6 @@ export const useLevels: (params: {
 
     setLevel("loading")
     api.level.detail(id).then(setLevel)
-    api.level.levelMapDetail(id).then(setMap)
   }
 
   const setGameMode = (mode: GameMode) => {
@@ -35,29 +37,46 @@ export const useLevels: (params: {
   }
 
   const updateLevel = async () => {
+    console.log("Save to db")
     if (!level || level === "loading" || !api) return
     const id = level._id
     const curr = await api.level.detail(id)
     if (currGameMode === "idle" && objectsAreDifferent(curr, level)) {
       setLevel(curr)
     }
-    if (!map) return
-    const currMap = await api.level.levelMapDetail(id)
-    if (objectsAreDifferent(currMap, map)) {
+    const map = dirtyMap.current
+    if (map) {
+      const currMap = await api.level.levelMapDetail(id)
       const diff = getLevelDiff(currMap, map)
-      api.level.modifyMap(map._id, diff).then(setMap)
+      await api.level.modifyMap(map._id, diff)
+      dirtyMap.current = null
     }
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      updateLevel()
-    }, 300)
-    return () => clearInterval(interval)
-  })
+    if (!dirtyMap.current) return
 
-  const updateLevelMap = (m: Partial<LevelMap>) => {
-    setMap((prev) => (prev ? {...prev, ...m} : null))
+    const t = setTimeout(() => {
+      updateLevel()
+    }, 5_000)
+
+    return () => {
+      console.log("Clear time out")
+      clearTimeout(t)
+    }
+  }, [changeTrigger])
+
+  const updateLevelMap = async (m: Partial<LevelMap>) => {
+    if (!api || !level) return
+    if (level === "loading") return
+
+    const d = dirtyMap.current ?? (await api.level.levelMapDetail(level._id))
+
+    if (objectsAreDifferent(d, {...d, ...m})) {
+      console.log("updating", {old: d, updated: {...d, ...m}})
+      dirtyMap.current = {...d, ...m}
+      setChangeTrigger(Date.now())
+    }
   }
 
   return {
@@ -66,8 +85,7 @@ export const useLevels: (params: {
     setGameMode,
     updateLevelMap,
     setEditingLevel: handleSetEditing,
-    isDirty,
-    setIsDirty
+    isDirty: dirtyMap !== null
   } satisfies LevelsContextType
 }
 
@@ -80,7 +98,6 @@ export type LevelsContextType = {
   gameMode: GameMode
   setGameMode: (show: GameMode) => void
   isDirty: boolean
-  setIsDirty: (d: boolean) => void
 }
 
 export const LevelsContext = createContext({} as LevelsContextType)

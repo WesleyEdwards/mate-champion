@@ -16,6 +16,13 @@ import {Ammo} from "../entities/Ammo"
 import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
 
 export const addEntityToState = (gs: GameEdit) => {
+  const shouldAdd =
+    gs.state.keys.ctrl.curr &&
+    gs.state.keys.mouseUp.curr &&
+    gs.hoveringEntities.size === 0 &&
+    gs.movingEntities.size === 0
+
+  if (!shouldAdd) return
   if (!gs.state.keys.mouseUp.curr) return
 
   const addable: Record<AddableEntity, Entity> = {
@@ -51,6 +58,14 @@ export const addEntityToState = (gs: GameEdit) => {
 }
 
 export const copyEntity = (e: Entity): Entity | undefined => {
+  if (
+    e.typeId === "endGate" ||
+    e.typeId === "player" ||
+    e.typeId === "floor" ||
+    e.typeId === "bullet"
+  ) {
+    return undefined
+  }
   const copyOfWithOffset = (coors: CurrAndPrev): Coors => {
     const correctForY = coors.curr[0] + 80 > MAX_CANVAS_HEIGHT ? -100 : 100
     return [coors.curr[0] + 100, coors.curr[1] + correctForY]
@@ -77,16 +92,6 @@ export const copyEntity = (e: Entity): Entity | undefined => {
         position: copyOfWithOffset(old.state.position)
       }),
     ammo: (old) => new Ammo(old.state.position.curr)
-  }
-
-  if (
-    // Shouldn't ever happen
-    e.typeId === "endGate" ||
-    e.typeId === "player" ||
-    e.typeId === "floor" ||
-    e.typeId === "bullet"
-  ) {
-    return undefined
   }
   return map[e.typeId](e as never)
 }

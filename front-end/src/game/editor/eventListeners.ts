@@ -1,4 +1,4 @@
-import {Camera} from "../entities/entityTypes"
+import {GameStateEditProps} from "./editHelpers"
 import {GameEdit} from "./GameEdit"
 
 export function addDevEventListeners(
@@ -7,19 +7,26 @@ export function addDevEventListeners(
 ) {
   abortController = new AbortController()
 
+  function set<K extends keyof GameStateEditProps["keys"]>(
+    key: K,
+    value: GameStateEditProps["keys"][K]["curr"]
+  ) {
+    contentCreator.state.keys[key].curr = value
+  }
+
   canvas.addEventListener(
     "mousedown",
     (e: MouseEvent) => {
       e.preventDefault()
-      contentCreator.setEventState("mouseDown", true)
-      contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY])
+      set("mouseDown", true)
+      set("mousePos", [e.offsetX, e.offsetY])
     },
     {signal: abortController.signal}
   )
   canvas.addEventListener(
     "mousemove",
     (e) => {
-      contentCreator.setEventState("mousePos", [e.offsetX, e.offsetY])
+      set("mousePos", [e.offsetX, e.offsetY])
     },
     {signal: abortController.signal}
   )
@@ -27,8 +34,8 @@ export function addDevEventListeners(
   window.addEventListener(
     "mouseup",
     (e) => {
-      contentCreator.setEventState("mouseDown", false)
-      contentCreator.setEventState("mouseUp", [e.offsetX, e.offsetY])
+      set("mouseDown", false)
+      set("mouseUp", [e.offsetX, e.offsetY])
     },
     {signal: abortController.signal}
   )
@@ -37,17 +44,17 @@ export function addDevEventListeners(
     "keydown",
     (e) => {
       if (e.code === "Delete") {
-        contentCreator.setEventState("delete", true)
+        set("delete", true)
       }
       if (e.code === "KeyD" && e.ctrlKey) {
         e.preventDefault()
-        contentCreator.setEventState("copy", true)
+        set("copy", true)
       }
       if (e.ctrlKey) {
-        contentCreator.setEventState("ctrl", true)
+        set("ctrl", true)
       }
       if (e.shiftKey) {
-        contentCreator.setEventState("shift", true)
+        set("shift", true)
       }
     },
     {signal: abortController.signal}
@@ -57,13 +64,13 @@ export function addDevEventListeners(
     "keyup",
     (e) => {
       if (e.code === "Delete") {
-        contentCreator.setEventState("delete", false)
+        set("delete", false)
       }
       if (e.ctrlKey === false) {
-        contentCreator.setEventState("ctrl", false)
+        set("ctrl", false)
       }
       if (e.shiftKey === false) {
-        contentCreator.setEventState("shift", false)
+        set("shift", false)
       }
     },
     {signal: abortController.signal}

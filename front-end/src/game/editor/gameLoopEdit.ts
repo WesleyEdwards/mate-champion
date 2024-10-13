@@ -5,13 +5,12 @@ import {GameEdit} from "./GameEdit"
 
 export function gameLoopEdit(params: {
   level: LevelMap
-  setIsDirty: () => void
   modifyLevel: (level: Partial<LevelMap>) => void
 }) {
-  const {level, modifyLevel, setIsDirty} = params
+  const {level, modifyLevel} = params
   const {canvas, context} = getCanvasContext()
 
-  const game = new GameEdit(level, setIsDirty, modifyLevel, canvas)
+  const game = new GameEdit(level, modifyLevel, canvas)
 
   function gameLoop(timeStamp: number) {
     if (window.stopLoop === true) {

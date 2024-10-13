@@ -132,9 +132,9 @@ export const modifyBuilder = <T extends HasId>(
 
     if (!isValid<T>(levelPartial)) return res.status(400).json(levelPartial)
 
-    if (id !== levelPartial._id) {
-      return res.status(400).json({error: "Id much match"})
-    }
+    // if (id !== levelPartial._id) {
+    //   return res.status(400).json({error: "Id must match"})
+    // }
 
     console.log("LEVEL PARTIAL IS", levelPartial)
 
