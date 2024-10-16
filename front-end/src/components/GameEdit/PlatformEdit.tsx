@@ -50,6 +50,7 @@ export const PlatformEditor: FC<{
         </Stack>
         <SizeControl
           title="Width"
+          min={20}
           onChange={(change) => {
             platform.state.dimensions[0] += change
             return editPlatform(platform)
@@ -59,6 +60,7 @@ export const PlatformEditor: FC<{
         <Divider />
         <SizeControl
           title="Height"
+          min={20}
           onChange={(change) => {
             platform.state.dimensions[1] += change
             return editPlatform(platform)

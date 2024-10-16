@@ -20,14 +20,14 @@ import {
 import {addDevEventListeners} from "./eventListeners"
 import {Groog} from "../entities/groog"
 import {Platform} from "../entities/platform"
-import {toCurrAndPrev} from "../helpers"
+import {areEntitiesTouching, areTouching1, toCurrAndPrev} from "../helpers"
 
 export class GameEdit {
   state: GameStateEditProps
   movingEntities: Set<Id> = new Set()
   selectedEntities: Set<Id> = new Set()
   hoveringEntities: Set<Id> = new Set()
-  dragSelection: CurrAndPrev | null = null
+  dragSelection: {init: Coors; dragPos: CurrAndPrev} | null = null
   champ: Champ = new Champ([400, 400])
 
   constructor(
@@ -44,9 +44,23 @@ export class GameEdit {
     return (
       this.movingEntities.size === 0 &&
       this.state.keys.mouseDown.curr &&
-      this.hoveringEntities.size === 0
+      this.hoveringEntities.size === 0 &&
+      !this.dragSelection
     )
   }
+
+  unselectMoving() {
+    this.movingEntities.clear()
+      for (const entity of this.state.entities) {
+        entity.state.position.curr = toRounded([...entity.state.position.curr])
+      }
+  }
+  // unselectAll() {
+  //   this.selectedEntities.clear()
+  //   for (const entity of this.state.entities) {
+  //     entity.state.position.curr = toRounded([...entity.state.position.curr])
+  //   }
+  // }
 
   updateEntityMovement() {
     if (this.movingEntities.size > 0) {
@@ -91,36 +105,22 @@ export class GameEdit {
   /** Step */
   step(timeStamp: number) {
     updateTime(this.state.time, timeStamp)
+
     updateTimers(this.state.timers, this.state.time.deltaT)
 
     this.updateSave()
     this.updateEntitySelection()
     this.updateEntityMovement()
     this.updateMouseHover()
+    this.updateDragSelect()
     this.updateCanvasMovement()
     // const guaranteeMovingCanvas =
     //   this.state.keys.mouseDown.curr && this.state.keys.shift.curr
 
-    const justStartedDragSelecting =
-      this.state.keys.shift.curr &&
-      this.state.keys.mouseDown.prev === false &&
-      this.state.keys.mouseDown.curr === true
-
-    const isDragSelecting =
-      this.state.keys.shift.curr && this.state.keys.mouseDown.curr
-
-    if (isDragSelecting) {
-      this.dragSelection?.curr
-    } else if (justStartedDragSelecting && this.state.keys.mousePos.curr) {
-      this.dragSelection = toCurrAndPrev([...this.state.keys.mousePos.curr])
-    } else {
-      this.dragSelection = null
-    }
-
     const mouseDownAction =
       this.state.keys.mouseDown.curr && !this.state.keys.mouseDown.prev
 
-    const startingToGrab = mouseDownAction && !isDragSelecting
+    const startingToGrab = mouseDownAction && !this.state.keys.shift.curr
 
     const stopGrabbing = !this.state.keys.mouseDown.curr
 
@@ -139,7 +139,8 @@ export class GameEdit {
 
       this.movingEntities = new Set(this.selectedEntities)
     } else if (stopGrabbing) {
-      this.movingEntities.clear()
+      this.unselectMoving()
+      
     }
 
     addEntityToState(this)
@@ -215,6 +216,56 @@ export class GameEdit {
     })
   }
 
+  updateDragSelect() {
+    const justStartedDragSelecting =
+      this.state.keys.shift.curr &&
+      this.state.keys.mouseDown.prev === false &&
+      this.state.keys.mouseDown.curr === true
+
+    if (!this.state.keys.mousePos.curr) {
+      return
+    }
+    const mp = withCamPosition(this.state.keys.mousePos.curr, this.state.camera)
+
+    if (justStartedDragSelecting) {
+      this.dragSelection = {init: [...mp], dragPos: toCurrAndPrev([...mp])}
+    }
+
+    if (this.state.keys.mouseUp.curr) {
+      this.dragSelection = null
+    }
+
+    if (this.dragSelection) {
+      const dragPos = this.dragSelection.dragPos
+      if (
+        dragPos.curr[0] !== dragPos.prev[0] ||
+        dragPos.curr[1] !== dragPos.prev[1]
+      ) {
+        this.selectedEntities.clear()
+        for (const entity of this.state.entities) {
+          if (
+            areEntitiesTouching(entity.state, {
+              position: {
+                curr: [
+                  Math.min(this.dragSelection.init[0], dragPos.curr[0]),
+                  Math.min(this.dragSelection.init[1], dragPos.curr[1])
+                ]
+              },
+              dimensions: [
+                Math.abs(dragPos.curr[0] - this.dragSelection.init[0]),
+                Math.abs(dragPos.curr[1] - this.dragSelection.init[1])
+              ]
+            })
+          ) {
+            this.selectedEntities.add(entity.id)
+          }
+        }
+      }
+      dragPos.prev = [...dragPos.curr]
+      dragPos.curr = [...mp]
+    }
+  }
+
   updateEntitySelection() {
     if (!this.state.keys.mousePos.curr) {
       return new Set()
@@ -237,6 +288,7 @@ export class GameEdit {
         .map(toId)
     )
   }
+
   updateSave() {
     if (this.state.timers.sinceLastSave.val > 500) {
       this.state.timers.sinceLastSave.val = 0
@@ -256,6 +308,7 @@ export class GameEdit {
       this.canvas.style.cursor = "auto"
     }
 
+    if (this.dragSelection) return
     const isMovingCanvas =
       // this.movingEntities.size === 0 &&
       this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0
@@ -300,6 +353,29 @@ export class GameEdit {
       }
       cxt.restore()
     }
+
+    if (this.dragSelection) {
+      cxt.save()
+      accountForPosition(toRounded(this.dragSelection.init), cxt)
+
+      const placement = [
+        0,
+        0,
+        this.dragSelection.dragPos.curr[0] - this.dragSelection.init[0],
+        this.dragSelection.dragPos.curr[1] - this.dragSelection.init[1]
+      ] as const
+
+      cxt.strokeStyle = "black"
+      cxt.lineWidth = 2
+      cxt.fillStyle = "#00000024"
+
+      cxt.strokeRect(...placement)
+      cxt.beginPath()
+      cxt.rect(...placement)
+      cxt.fill()
+      cxt.restore()
+    }
+
     cxt.save()
     accountForPosition([400, 400], cxt)
     this.champ.render(cxt)

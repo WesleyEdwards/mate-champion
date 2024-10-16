@@ -101,9 +101,10 @@ export const updateStats = (stats: GameStateProps["stats"]) => {
   stats.ammo.prev = stats.ammo.curr
 }
 
+type PosAndDim = {position: {curr: Coors}; dimensions: Coors}
 export const areEntitiesTouching = (
-  rect1: Entity["state"],
-  rect2: Entity["state"]
+  rect1: PosAndDim,
+  rect2: PosAndDim
 ): boolean =>
   rect1.position.curr[0] < rect2.position.curr[0] + rect2.dimensions[0] &&
   rect1.position.curr[0] + rect1.dimensions[0] > rect2.position.curr[0] &&

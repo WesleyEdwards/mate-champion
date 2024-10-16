@@ -26,6 +26,9 @@ export const AddingEntity = ({
     <Card style={{padding: "12px"}}>
       <Stack>
         <Stack direction="row" justifyContent="space-between">
+          <Typography sx={{mt: "4px"}} level="h4">
+            Add:
+          </Typography>
           <Stack>
             <Select
               sx={{mb: "5px"}}
@@ -81,7 +84,7 @@ export const AddingEntity = ({
               <ColorPicker
                 color={edit.color || "springgreen"}
                 setColor={(color) => {
-                  console.log("Setting color!");
+                  console.log("Setting color!")
                   handleSetEditingItem({baseColor: color})
                 }}
                 buttonLabel="Color"

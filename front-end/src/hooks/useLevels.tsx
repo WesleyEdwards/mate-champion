@@ -16,7 +16,7 @@ export const useLevels: (params: {
   const [changeTrigger, setChangeTrigger] = useState(0)
 
   const [currGameMode, setCurrGameMode] = useState<GameMode>("idle")
-  // const time = useRef(0)
+  const [isDirty, setIsDirty] = useState<boolean>(false)
 
   const handleSetEditing: LevelsContextType["setEditingLevel"] = async (id) => {
     if (!api) return
@@ -37,7 +37,6 @@ export const useLevels: (params: {
   }
 
   const updateLevel = async () => {
-    console.log("Save to db")
     if (!level || level === "loading" || !api) return
     const id = level._id
     const curr = await api.level.detail(id)
@@ -51,17 +50,17 @@ export const useLevels: (params: {
       await api.level.modifyMap(map._id, diff)
       dirtyMap.current = null
     }
+    setIsDirty(false)
   }
 
   useEffect(() => {
     if (!dirtyMap.current) return
-
+    setIsDirty(true)
     const t = setTimeout(() => {
       updateLevel()
     }, 5_000)
 
     return () => {
-      console.log("Clear time out")
       clearTimeout(t)
     }
   }, [changeTrigger])
@@ -73,7 +72,6 @@ export const useLevels: (params: {
     const d = dirtyMap.current ?? (await api.level.levelMapDetail(level._id))
 
     if (objectsAreDifferent(d, {...d, ...m})) {
-      console.log("updating", {old: d, updated: {...d, ...m}})
       dirtyMap.current = {...d, ...m}
       setChangeTrigger(Date.now())
     }
@@ -85,7 +83,7 @@ export const useLevels: (params: {
     setGameMode,
     updateLevelMap,
     setEditingLevel: handleSetEditing,
-    isDirty: dirtyMap !== null
+    isDirty
   } satisfies LevelsContextType
 }
 
