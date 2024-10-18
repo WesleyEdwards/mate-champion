@@ -1,14 +1,67 @@
 import {Remove, Add} from "@mui/icons-material"
-import {Stack, Typography, IconButton, Slider} from "@mui/joy"
-import {FC} from "react"
+import {
+  Stack,
+  Typography,
+  IconButton,
+  Slider,
+  Input,
+  FormControl,
+  FormLabel
+} from "@mui/joy"
+import {FC, forwardRef, useEffect, useState} from "react"
+import {NumericFormat, NumericFormatProps} from "react-number-format"
+import {toRounded} from "../../game/editor/editHelpers"
 
+const NumericFormatAdapter = forwardRef<
+  NumericFormatProps,
+  {
+    onChange: (event: {target: {name: string; value: string}}) => void
+    name: string
+  }
+>(function NumericFormatAdapter(props, ref) {
+  const {onChange, ...other} = props
+
+  return (
+    <NumericFormat
+      {...other}
+      style={{width: "5rem"}}
+      getInputRef={ref}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value
+          }
+        })
+      }}
+      thousandSeparator
+      valueIsNumericString
+    />
+  )
+})
 export const SizeControl: FC<{
   title: string
   value: number
-  onChange: (value: number) => void
+  setValue: (value: number) => void
   min?: number
   incrementBy?: number
-}> = ({title, value, onChange, incrementBy = 10, min = 0}) => {
+}> = ({title, setValue, value, incrementBy = 10, min = 0}) => {
+  const [vString, setVString] = useState(value.toString())
+
+  useEffect(() => {
+    if (vString === "") return
+
+    const v = +vString
+    if (isNaN(v)) {
+      return
+    }
+
+    const roundTo = 10
+    const rounded = Math.ceil(v / roundTo) * roundTo
+
+    setValue(rounded)
+  }, [vString])
+
   return (
     <Stack>
       <Typography level="body-sm">{title}</Typography>
@@ -23,13 +76,27 @@ export const SizeControl: FC<{
           disabled={value <= 0}
           onClick={() => {
             if (value - incrementBy < min) return -value
-            onChange(Math.max(-incrementBy))
+            setValue(value - incrementBy)
           }}
         >
           <Remove />
         </IconButton>
-        <Typography>{value}</Typography>
-        <IconButton onClick={() => onChange(incrementBy)}>
+
+        <FormControl>
+          <Input
+            value={vString}
+            onChange={(event) => {
+              setVString(event.target.value)
+            }}
+            placeholder="title"
+            slotProps={{
+              input: {
+                component: NumericFormatAdapter
+              }
+            }}
+          />
+        </FormControl>
+        <IconButton onClick={() => setValue(value + incrementBy)}>
           <Add />
         </IconButton>
       </Stack>

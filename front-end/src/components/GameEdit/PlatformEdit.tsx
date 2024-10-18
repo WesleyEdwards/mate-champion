@@ -51,8 +51,8 @@ export const PlatformEditor: FC<{
         <SizeControl
           title="Width"
           min={20}
-          onChange={(change) => {
-            platform.state.dimensions[0] += change
+          setValue={(change) => {
+            platform.state.dimensions[0] = change
             return editPlatform(platform)
           }}
           value={platform.state.dimensions[0]}
@@ -61,8 +61,8 @@ export const PlatformEditor: FC<{
         <SizeControl
           title="Height"
           min={20}
-          onChange={(change) => {
-            platform.state.dimensions[1] += change
+          setValue={(change) => {
+            platform.state.dimensions[1] = change
             return editPlatform(platform)
           }}
           value={platform.state.dimensions[1]}

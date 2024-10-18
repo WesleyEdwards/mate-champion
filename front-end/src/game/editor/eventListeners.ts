@@ -31,6 +31,14 @@ export function addDevEventListeners(
     {signal: abortController.signal}
   )
 
+  canvas.addEventListener(
+    "mouseleave",
+    () => {
+      set("mousePos", null)
+    },
+    {signal: abortController.signal}
+  )
+
   window.addEventListener(
     "mouseup",
     (e) => {

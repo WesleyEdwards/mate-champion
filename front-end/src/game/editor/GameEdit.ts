@@ -51,16 +51,10 @@ export class GameEdit {
 
   unselectMoving() {
     this.movingEntities.clear()
-      for (const entity of this.state.entities) {
-        entity.state.position.curr = toRounded([...entity.state.position.curr])
-      }
+    for (const entity of this.state.entities) {
+      entity.state.position.curr = toRounded([...entity.state.position.curr])
+    }
   }
-  // unselectAll() {
-  //   this.selectedEntities.clear()
-  //   for (const entity of this.state.entities) {
-  //     entity.state.position.curr = toRounded([...entity.state.position.curr])
-  //   }
-  // }
 
   updateEntityMovement() {
     if (this.movingEntities.size > 0) {
@@ -140,7 +134,6 @@ export class GameEdit {
       this.movingEntities = new Set(this.selectedEntities)
     } else if (stopGrabbing) {
       this.unselectMoving()
-      
     }
 
     addEntityToState(this)
@@ -152,7 +145,7 @@ export class GameEdit {
       this.state.entities = this.state.entities.filter((e) => !e.state.dead)
     }
 
-    if (this.state.keys.delete.curr) {
+    if (this.state.keys.delete.curr && this.state.keys.mousePos.curr) {
       this.state.entities = this.state.entities.filter((e) => {
         return !this.selectedEntities.has(e.id)
       })

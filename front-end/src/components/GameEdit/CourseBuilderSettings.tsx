@@ -3,11 +3,12 @@ import {useState, useEffect, FC} from "react"
 import {Entity, EntityType} from "../../game/entities/entityTypes"
 import {useLevelContext} from "../../hooks/useLevels"
 import {AddingEntity} from "./ItemTypeEdit"
-import {Platform} from "../../game/entities/platform"
+import {Floor, Platform} from "../../game/entities/platform"
 import {PlatformEditor} from "./PlatformEdit"
 import {scrollbarProps} from "../LevelEditorHome"
 import {GroogEdit} from "./GroogEdit"
 import {Groog} from "../../game/entities/groog"
+import {FloorEditor} from "./FloorEdit"
 
 export type EditableEntity = Exclude<EntityType, "player" | "bullet">
 
@@ -31,7 +32,7 @@ export const CourseBuilderSettings = () => {
   const updateEditing = () => {
     if (
       adding.type !== window.addingEntity.type ||
-      adding.color !== window.addingEntity.baseColor || 
+      adding.color !== window.addingEntity.baseColor ||
       adding.color !== window.addingEntity.color
     ) {
       setAdding({...window.addingEntity})
@@ -92,6 +93,17 @@ export const EditingEntities: FC<{
               key={entity.id}
               groog={entity as Groog}
               editGroog={(p) => {
+                setEdit((prev) => prev.map((e) => (e.id === p.id ? p : e)))
+              }}
+            />
+          )
+        }
+        if (entity.typeId === "floor") {
+          return (
+            <FloorEditor
+              key={entity.id}
+              floor={entity as Floor}
+              editFloor={(p) => {
                 setEdit((prev) => prev.map((e) => (e.id === p.id ? p : e)))
               }}
             />
