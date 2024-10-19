@@ -1,5 +1,6 @@
 import {createContext, useContext, useEffect, useState} from "react"
 import {MCScreen} from "../components/GameEntry"
+import {useLevelContext} from "./useLevels"
 
 type NavigatorContextType = {
   navigateTo: (screen: MCScreen) => void
@@ -14,13 +15,21 @@ const NavigatorContext = createContext<NavigatorContextType>(
 
 export const NavigatorProvider = (props: {children: React.ReactNode}) => {
   const [screenStack, setScreenStack] = useState<MCScreen[]>(["home"])
+  const {editingLevel, setEditingLevel} = useLevelContext()
 
   const navigateTo = (screen: MCScreen) => {
     setScreenStack([...screenStack, screen])
   }
 
   const goBack = () => {
-    setScreenStack(screenStack.slice(0, -1))
+    const back = screenStack.slice(0, -1)
+    if (
+      back.at(back.length - 1) !== "editorDetail" &&
+      back.at(back.length - 1) !== "game"
+    ) {
+      setEditingLevel(null)
+    }
+    setScreenStack(back)
   }
 
   return (

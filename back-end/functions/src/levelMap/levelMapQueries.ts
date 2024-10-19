@@ -27,7 +27,8 @@ export const modifyLevelMap: ReqBuilder =
     const condition =
       jwtBody?.userType === "Admin"
         ? {_id: {equal: params.id}}
-        : {and: [{_id: {equal: params.id}, owner: jwtBody?.userId}]}
+        : {and: [{_id: {equal: params.id}, owner: {equal: jwtBody?.userId}}]}
+    console.log(condition)
     const level = await client.level.findOne(condition)
     if (!level) return res.status(404).json("Not found")
     const levelMapPartial = checkPartialValidation("levelMap", {

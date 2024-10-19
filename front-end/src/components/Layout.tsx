@@ -4,9 +4,11 @@ import {LevelCreator} from "./LevelCreator"
 import {PauseModalProvider} from "../hooks/PauseModalContext"
 import {useLevelContext} from "../hooks/useLevels"
 import {NavigatorProvider} from "../hooks/UseNavigator"
+import {useAuthContext} from "../hooks/useAuth"
 
 export const Layout = () => {
-  const {gameMode} = useLevelContext()
+  const {editingLevel} = useLevelContext()
+  const {user} = useAuthContext()
 
   return (
     <NavigatorProvider>
@@ -20,7 +22,9 @@ export const Layout = () => {
           <Sheet variant="outlined" sx={{p: 2, m: 2, borderRadius: 10}}>
             <GameEntry />
           </Sheet>
-          {(gameMode === "edit" || gameMode === "test") && <LevelCreator />}
+          {editingLevel !== "loading" && // Visible if owner, or if not logged in And editing a level
+            editingLevel &&
+            (editingLevel?.owner === user?._id || !user) && <LevelCreator />}
         </Stack>
       </PauseModalProvider>
     </NavigatorProvider>
