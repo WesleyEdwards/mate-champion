@@ -58,6 +58,7 @@ export class LocalApi implements Api {
       this.local.myMaps.add({
         _id: level._id,
         endPosition: 4500,
+        champInitPos: [400, 400],
         packages: [],
         opponents: {grog: []},
         floors: [{x: -500, width: 7000, color: "green"}],

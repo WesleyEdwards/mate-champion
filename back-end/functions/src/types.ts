@@ -47,6 +47,7 @@ export const levelSchema = z
 // this will have the same _id as the associated level
 export const levelMapSchema = z
   .object({
+    champInitPos: coors.default([400, 400]),
     packages: coors.array().default([]),
     endPosition: z.number().default(4500),
     opponents: z
@@ -84,12 +85,12 @@ export type UserType = z.infer<typeof userTypeSchema>
 export type User = z.infer<typeof userSchema>
 export type Score = z.infer<typeof scoreSchema>
 export type LevelInfo = {
-  owner: string;
-  public: boolean;
-  name: string;
-  description: string | null;
-  creatorName: string;
-  _id: string;
+  owner: string
+  public: boolean
+  name: string
+  description: string | null
+  creatorName: string
+  _id: string
 }
 export type LevelMap = z.infer<typeof levelMapSchema>
 

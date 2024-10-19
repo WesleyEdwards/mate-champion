@@ -1,13 +1,14 @@
 import {Db, Collection} from "mongodb"
 import {z} from "zod"
-import {baseObjectSchema, coordinates, coors} from "../types"
+import {baseObjectSchema, coors} from "../types"
 
 type MigrationFun = (db: Db) => Promise<unknown>
 
 export async function runMigrations(db: Db): Promise<unknown> {
-  await migrationFun("addLevelMap", db, migrationAddLevelMap)
-  await migrationFun("levelInfoFields2", db, migrationLevelInfoFields)
-  await migrationFun("migrateLevelCoors1", db, migrateLevels)
+  // await migrationFun("addLevelMap", db, migrationAddLevelMap)
+  // await migrationFun("levelInfoFields2", db, migrationLevelInfoFields)
+  // await migrationFun("migrateLevelCoors1", db, migrateLevels)
+  await migrationFun("addPlayerInitPos", db, addPlayerInitPos)
   return true
 }
 
@@ -33,76 +34,7 @@ const migrationFun = async (
   return
 }
 
-const migrationAddLevelMap: MigrationFun = async (db) => {
-  const levelMapCollection = db.collection("levelMap")
-  const levelCollection = db.collection("level")
-
-  const allLevels = await levelCollection.find({}).toArray()
-  for (const level of allLevels) {
-    const {packages, endPosition, opponents, platforms, floors, _id} = level
-    const newLevel = {packages, endPosition, opponents, platforms, floors, _id}
-    await levelMapCollection.insertOne(newLevel)
-  }
-}
-
-const migrationLevelInfoFields: MigrationFun = async (db) => {
-  const levelCollection = db.collection("level")
-
-  const allLevels = await levelCollection.find({}).toArray()
-
-  for (const level of allLevels) {
-    await levelCollection.updateOne(
-      {_id: level._id},
-      {
-        $unset: {
-          packages: null,
-          endPosition: null,
-          opponents: null,
-          platforms: null,
-          floors: null
-        }
-      }
-    )
-  }
-}
-
-const oldLevelMapSchema = z
-  .object({
-    packages: coordinates.array().default([]),
-    endPosition: z.number().default(4500),
-    opponents: z
-      .object({
-        grog: z
-          .object({
-            initPos: coors,
-            moveSpeed: z.number(),
-            jumpOften: z.boolean().optional().default(false)
-          })
-          .array()
-      })
-      .default({grog: []}),
-    platforms: z
-      .object({
-        x: z.number(),
-        y: z.number(),
-        width: z.number(),
-        height: z.number(),
-        color: z.string()
-      })
-      .array()
-      .default([]),
-    floors: z
-      .object({
-        x: z.number(),
-        width: z.number(),
-        color: z.string()
-      })
-      .array()
-      .default([])
-  })
-  .merge(baseObjectSchema)
-
-const newLevelMapSchema = z
+const oldLevelMap = z
   .object({
     packages: coors.array().default([]),
     endPosition: z.number().default(4500),
@@ -117,11 +49,12 @@ const newLevelMapSchema = z
           .array()
       })
       .default({grog: []}),
+    platformColor: z.string().default("springgreen"),
     platforms: z
       .object({
         dimensions: coors,
         position: coors,
-        color: z.string()
+        color: z.string().nullable().default(null)
       })
       .array()
       .default([]),
@@ -136,36 +69,96 @@ const newLevelMapSchema = z
   })
   .merge(baseObjectSchema)
 
-type OldLevelMap = z.infer<typeof oldLevelMapSchema>
-type NewLevelMap = z.infer<typeof newLevelMapSchema>
+const newLevelMap = z
+  .object({
+    champInitPos: coors.default([400, 400]),
+    packages: coors.array().default([]),
+    endPosition: z.number().default(4500),
+    opponents: z
+      .object({
+        grog: z
+          .object({
+            position: coors,
+            moveSpeed: z.number(),
+            jumpOften: z.boolean().optional().default(false)
+          })
+          .array()
+      })
+      .default({grog: []}),
+    platformColor: z.string().default("springgreen"),
+    platforms: z
+      .object({
+        dimensions: coors,
+        position: coors,
+        color: z.string().nullable().default(null)
+      })
+      .array()
+      .default([]),
+    floors: z
+      .object({
+        x: z.number(),
+        width: z.number(),
+        color: z.string()
+      })
+      .array()
+      .default([])
+  })
+  .merge(baseObjectSchema)
+type OldLevelMap = z.infer<typeof oldLevelMap>
+type NewLevelMap = z.infer<typeof newLevelMap>
 
-const migrateLevels: MigrationFun = async (db) => {
+const addPlayerInitPos: MigrationFun = async (db) => {
+  console.log("About to begin")
   const levelCollection = db.collection("levelMap")
+  console.log("levelColl")
 
   const allLevels = await levelCollection.find({}).toArray()
 
+  console.log("all levels", allLevels.length)
   for (const levelRaw of allLevels) {
     const level: OldLevelMap = levelRaw as any
+    console.log("Fixing ", levelRaw._id)
     await levelCollection.updateOne(
       {_id: level._id as any},
       {
         $set: {
-          packages: level.packages.map((o) => [o.x, o.y]),
-          platforms: level.platforms.map((p) => {
-            return {
-              color: p.color,
-              dimensions: [p.width, p.height],
-              position: [p.x, p.y]
-            }
-          }),
-          opponents: {
-            grog: level.opponents.grog.map((old) => {
-              const {initPos, ...rest} = old
-              return {...rest, position: initPos}
-            })
-          }
+          champInitPos: [400, 400]
         } satisfies Partial<NewLevelMap>
       }
     )
   }
 }
+
+// type OldLevelMap = z.infer<any>
+// type NewLevelMap = z.infer<any>
+
+// const migrateLevels: MigrationFun = async (db) => {
+//   const levelCollection = db.collection("levelMap")
+
+//   const allLevels = await levelCollection.find({}).toArray()
+
+//   for (const levelRaw of allLevels) {
+//     const level: OldLevelMap = levelRaw as any
+//     await levelCollection.updateOne(
+//       {_id: level._id as any},
+//       {
+//         $set: {
+//           packages: level.packages.map((o) => [o.x, o.y]),
+//           platforms: level.platforms.map((p) => {
+//             return {
+//               color: p.color,
+//               dimensions: [p.width, p.height],
+//               position: [p.x, p.y]
+//             }
+//           }),
+//           opponents: {
+//             grog: level.opponents.grog.map((old) => {
+//               const {initPos, ...rest} = old
+//               return {...rest, position: initPos}
+//             })
+//           }
+//         } satisfies Partial<NewLevelMap>
+//       }
+//     )
+//   }
+// }

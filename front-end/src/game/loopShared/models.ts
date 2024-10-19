@@ -17,6 +17,7 @@ export type Keys = {
 export type LevelMap = {
   _id: string
   endPosition: number
+  champInitPos: Coors
   packages: Coors[]
   opponents: {
     grog: {

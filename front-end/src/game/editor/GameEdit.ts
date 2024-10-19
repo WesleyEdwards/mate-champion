@@ -28,7 +28,6 @@ export class GameEdit {
   selectedEntities: Set<Id> = new Set()
   hoveringEntities: Set<Id> = new Set()
   dragSelection: {init: Coors; dragPos: CurrAndPrev} | null = null
-  champ: Champ = new Champ([400, 400])
 
   constructor(
     currentLevel: LevelMap,
@@ -368,11 +367,6 @@ export class GameEdit {
       cxt.fill()
       cxt.restore()
     }
-
-    cxt.save()
-    accountForPosition([400, 400], cxt)
-    this.champ.render(cxt)
-    cxt.restore()
 
     cxt.restore()
   }

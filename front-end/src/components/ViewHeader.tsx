@@ -165,7 +165,19 @@ const BackButton = () => {
 }
 
 export const PlayHeader: FC = () => {
-  return null
+  return (
+    <Stack direction={"row"} height="64px" alignItems={"center"}>
+      <BackButton />
+      <Typography
+        sx={{
+          marginInline: "auto"
+        }}
+        level="h1"
+      >
+        Mate Champion🧉
+      </Typography>
+    </Stack>
+  )
 }
 
 export const TestHeader: FC = () => {

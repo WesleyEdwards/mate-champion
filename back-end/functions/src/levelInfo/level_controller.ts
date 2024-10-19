@@ -40,6 +40,7 @@ const levelBaseEndpoints = (db: DbClient) =>
       },
       postCreate: async (level) => {
         await db.levelMap.insertOne({
+          champInitPos: [400, 400],
           _id: level._id,
           endPosition: 4500,
           packages: [],

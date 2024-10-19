@@ -154,41 +154,41 @@ export const updateCurrPrevDragState = (obj: {
   }
 }
 
-export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => {
-  return {
-    entities: levelToEntities({...level}),
-    prevBaseColor: level.platformColor,
-    camera: {
-      time: {
-        idleTime: emptyTime("up")
-      },
-      position: [0, 0],
-      velocity: [0, 0]
-    },
+export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
+  entities: levelToEntities({...level}),
+  prevBaseColor: level.platformColor,
+  camera: {
     time: {
-      deltaT: 0,
-      prevStamp: performance.now()
+      idleTime: emptyTime("up")
     },
-    timers: {
-      sinceLastSave: emptyTime("up")
-    },
-    keys: {
-      shift: {prev: false, curr: false},
-      ctrl: {prev: false, curr: false},
-      delete: {prev: false, curr: false},
-      copy: {prev: false, curr: false},
-      mouseDown: {prev: false, curr: false},
-      mouseUp: {prev: null, curr: null},
-      mousePos: {prev: null, curr: null}
-    },
-    endPosition: level.endPosition
-  }
-}
+    position: [0, 0],
+    velocity: [0, 0]
+  },
+  time: {
+    deltaT: 0,
+    prevStamp: performance.now()
+  },
+  timers: {
+    sinceLastSave: emptyTime("up")
+  },
+  keys: {
+    shift: {prev: false, curr: false},
+    ctrl: {prev: false, curr: false},
+    delete: {prev: false, curr: false},
+    copy: {prev: false, curr: false},
+    mouseDown: {prev: false, curr: false},
+    mouseUp: {prev: null, curr: null},
+    mousePos: {prev: null, curr: null}
+  },
+  endPosition: level.endPosition
+})
 
 export const editStateToLevelInfo = (
   gs: GameStateEditProps
 ): Partial<LevelMap> => ({
   endPosition: gs.endPosition,
+  champInitPos: gs.entities.find((e) => e.typeId === "player")?.state?.position
+    ?.curr ?? [400, 400],
   floors: gs.entities
     .filter((e) => e.typeId === "floor")
     .map((f) => ({

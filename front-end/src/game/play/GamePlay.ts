@@ -107,7 +107,6 @@ export class GamePlay {
     this.gridHash.dropAll()
     this.state.entities.length = 0
 
-    this.addEntity(new Champ([400, 400]))
     this.addEntity(new EndGate([this.currentLevel.endPosition, 0]))
     for (const entity of levelToEntities(this.currentLevel)) {
       this.addEntity(entity)

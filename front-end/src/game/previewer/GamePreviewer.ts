@@ -65,8 +65,6 @@ export class GamePreviewer {
     this.gridHash.dropAll()
     this.state.entities.length = 0
 
-    this.addEntity(new Champ([400, 400]))
-    this.addEntity(new EndGate([this.level.endPosition, 0]))
     for (const entity of levelToEntities(this.level)) {
       this.addEntity(entity)
     }
