@@ -5,7 +5,7 @@ export function addDevEventListeners(
   contentCreator: GameEdit,
   canvas: HTMLCanvasElement
 ) {
-  abortController = new AbortController()
+  resetAbortController()
 
   function set<K extends keyof GameStateEditProps["keys"]>(
     key: K,
@@ -89,3 +89,7 @@ export const resetAbortController = () => {
   abortController = new AbortController()
 }
 export let abortController: AbortController = new AbortController()
+export let abortGame = () => {
+  window.stopLoop = true
+  abortController.abort()
+}

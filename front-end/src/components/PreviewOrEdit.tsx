@@ -25,7 +25,6 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
         onClick={() => {
           modifyStats({...emptyStats})
           navigateTo("edit")
-          window.stopLoop = false
 
           if (editingLevel === null || editingLevel === "loading") {
             return console.error("Invalid state")
@@ -51,7 +50,6 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
         onClick={() => {
           modifyStats({...emptyStats})
           navigateTo("test")
-          window.stopLoop = false
 
           if (editingLevel === null || editingLevel === "loading") {
             console.error("Invalid state")

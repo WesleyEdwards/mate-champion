@@ -48,7 +48,6 @@ export const PlayScreen: FC<{
         modifyStats({...emptyStats})
         setScreen("play")
 
-        window.stopLoop = false
         playLoop({
           setUI: {
             modifyStats,

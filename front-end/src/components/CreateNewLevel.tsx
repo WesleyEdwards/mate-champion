@@ -11,8 +11,6 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
   const {setEditingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
 
-  const [creating, setCreating] = useState(false)
-
   const [makingNew, setMakingNew] = useState<string>()
 
   const createLevel = async (name: string) => {
@@ -23,7 +21,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
       description: null,
       creatorName: user?.name ?? "",
       public: false,
-      name: name,
+      name: name
     })
     setEditingLevel(createdLevel._id)
   }
@@ -53,9 +51,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
         open={makingNew !== undefined}
         onClose={() => setMakingNew(undefined)}
         onConfirm={() => {
-          setCreating(true)
           createLevel(makingNew ?? "").then(() => {
-            setCreating(false)
             navigateTo("editorDetail")
           })
         }}

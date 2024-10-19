@@ -22,11 +22,11 @@ import {FC, useState} from "react"
 import {useLevelContext} from "../hooks/useLevels"
 import {CreateNewLevel} from "./CreateNewLevel"
 import {useNavigator} from "../hooks/UseNavigator"
-import {abortController} from "../game/editor/eventListeners"
-import {useAuth, useAuthContext} from "../hooks/useAuth"
+import {useAuthContext} from "../hooks/useAuth"
 import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
 import {LevelMap} from "../game/loopShared/models"
+import {abortGame} from "../game/editor/eventListeners"
 
 export const ViewHeaderSubScreen: FC<{
   title: string
@@ -93,8 +93,7 @@ export const EditLevelDetailHeader: FC = () => {
           <IconButton
             onClick={() => {
               goBack()
-              setEditingLevel(null)
-              abortController.abort()
+              abortGame()
             }}
           >
             <ArrowBack />
@@ -156,8 +155,7 @@ const BackButton = () => {
     <IconButton
       sx={{display: "absolute"}}
       onClick={() => {
-        window.stopLoop = true
-        abortController.abort()
+        abortGame()
         goBack()
       }}
     >
@@ -200,8 +198,7 @@ export const TestHeader: FC = () => {
           onClick={() => {
             if (!editingLevel) return
 
-            window.stopLoop = true
-            abortController.abort()
+            abortGame()
             navigateTo("edit", true)
 
             api.level.levelMapDetail(editingLevel._id).then((level) => {
@@ -223,7 +220,7 @@ export const TestHeader: FC = () => {
   )
 }
 export const EditHeader: FC = () => {
-  const {editingLevel, isDirty, saveIfDirty, updateLevelMap} = useLevelContext()
+  const {editingLevel, isDirty, saveIfDirty} = useLevelContext()
   const {api} = useAuthContext()
   const {navigateTo} = useNavigator()
 
@@ -254,8 +251,7 @@ export const EditHeader: FC = () => {
           endDecorator={<PlayArrow />}
           onClick={() => {
             if (!editingLevel) return
-            window.stopLoop = true
-            abortController.abort()
+            abortGame()
             saveIfDirty().then(() => {
               navigateTo("test", true)
 

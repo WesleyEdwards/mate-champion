@@ -14,6 +14,7 @@ export const updateCameraWithPlayer = (cam: Camera, champ: ChampState) => {
   }
 
   if (cam.time.idleTime.val > 3000) {
+    cam.velocity[1] = 0
     return
   }
 
@@ -28,7 +29,6 @@ export const updateCameraWithPlayer = (cam: Camera, champ: ChampState) => {
 
   const isBelow = cam.position[1] <= 0 && diffY > 0
 
-  // window.debounceLog(cam.position);
   if (isBelow) {
     cam.position[1] = 0
     cam.velocity[1] = 0

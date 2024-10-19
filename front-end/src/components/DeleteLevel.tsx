@@ -9,8 +9,8 @@ import {
 } from "@mui/joy"
 import {FC, useState} from "react"
 import {Delete} from "@mui/icons-material"
-import {useLevelContext} from "../hooks/useLevels"
 import {useAuthContext} from "../hooks/useAuth"
+import { useNavigator } from "../hooks/UseNavigator"
 
 export const DeleteLevel: FC<{
   name: string
@@ -18,7 +18,7 @@ export const DeleteLevel: FC<{
   showWordDelete?: boolean
 }> = ({name, id, showWordDelete}) => {
   const [deleting, setDeleting] = useState(false)
-  const {setEditingLevel} = useLevelContext()
+  const {goBack} = useNavigator()
   const {api} = useAuthContext()
   return (
     <>
@@ -56,8 +56,8 @@ export const DeleteLevel: FC<{
               onClick={() => {
                 api.level.delete(id).then(() => {
                   setDeleting(false)
+                  goBack()
                 })
-                setEditingLevel(null)
               }}
             >
               Delete

@@ -15,7 +15,7 @@ const NavigatorContext = createContext<NavigatorContextType>(
 
 export const NavigatorProvider = (props: {children: React.ReactNode}) => {
   const [screenStack, setScreenStack] = useState<MCScreen[]>(["home"])
-  const {editingLevel, setEditingLevel} = useLevelContext()
+  const {setEditingLevel} = useLevelContext()
 
   const navigateTo: NavigatorContextType["navigateTo"] = (screen, replace) => {
     if (replace) {

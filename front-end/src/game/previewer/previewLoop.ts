@@ -21,6 +21,7 @@ export function enterGameLoopPreview(level: LevelMap) {
   }
 
   function startGame() {
+    window.stopLoop = false
     displayCanvas(true, canvas)
     requestAnimationFrame(gameLoop)
   }
