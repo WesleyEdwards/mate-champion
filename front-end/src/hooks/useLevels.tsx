@@ -37,6 +37,7 @@ export const useLevels: (params: {
   }
 
   const updateLevel = async () => {
+    setIsDirty(false)
     if (!level || level === "loading" || !api) return
     const id = level._id
     const curr = await api.level.detail(id)
@@ -50,7 +51,6 @@ export const useLevels: (params: {
       await api.level.modifyMap(map._id, diff)
       dirtyMap.current = null
     }
-    setIsDirty(false)
   }
 
   useEffect(() => {
@@ -82,6 +82,7 @@ export const useLevels: (params: {
     gameMode: currGameMode,
     setGameMode,
     updateLevelMap,
+    saveIfDirty: updateLevel,
     setEditingLevel: handleSetEditing,
     isDirty
   } satisfies LevelsContextType
@@ -92,6 +93,7 @@ export type EditingLevel = LevelInfo | null | "loading"
 export type LevelsContextType = {
   setEditingLevel: (editing: string | null) => void
   updateLevelMap: (m: Partial<LevelMap>) => void
+  saveIfDirty: () => void
   editingLevel: EditingLevel
   gameMode: GameMode
   setGameMode: (show: GameMode) => void

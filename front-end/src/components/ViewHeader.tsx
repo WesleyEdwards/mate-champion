@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   IconButton,
   Input,
@@ -145,7 +146,8 @@ export const EditLevelDetailHeader: FC = () => {
 }
 
 export const PlayingHeader: FC = () => {
-  const {editingLevel, gameMode, setGameMode, isDirty} = useLevelContext()
+  const {editingLevel, gameMode, setGameMode, isDirty, saveIfDirty} =
+    useLevelContext()
   const {goBack} = useNavigator()
 
   if (gameMode === "play") return null
@@ -204,8 +206,11 @@ export const PlayingHeader: FC = () => {
         alignItems={"center"}
         width="2rem"
         mr="1rem"
-        sx={{opacity: 0.3, mb: "10px", position: "relative", right: "2rem"}}
+        sx={{mb: "10px", position: "relative", right: "4rem"}}
       >
+        {gameMode === "edit" && isDirty && (
+          <Button onClick={saveIfDirty}>Save</Button>
+        )}
         {(() => {
           if (gameMode !== "edit") {
             return null
@@ -213,8 +218,8 @@ export const PlayingHeader: FC = () => {
           if (isDirty) {
             return (
               <>
-                <Sync />
-                <Typography level="body-lg" variant="plain">
+                <Sync sx={{opacity: 0.3}} />
+                <Typography level="body-lg" variant="plain" sx={{opacity: 0.3}}>
                   Saving...
                 </Typography>
               </>
@@ -222,10 +227,10 @@ export const PlayingHeader: FC = () => {
           }
           return (
             <>
-              <Typography level="body-lg" variant="plain">
+              <Typography level="body-lg" variant="plain" sx={{opacity: 0.3}}>
                 Saved
               </Typography>
-              <CheckCircle />
+              <CheckCircle sx={{opacity: 0.3}} />
             </>
           )
         })()}

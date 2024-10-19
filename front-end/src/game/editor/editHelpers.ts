@@ -18,6 +18,7 @@ import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
 export const addEntityToState = (gs: GameEdit) => {
   const shouldAdd =
     gs.state.keys.ctrl.curr &&
+    gs.state.keys.mousePos.curr &&
     gs.state.keys.mouseUp.curr &&
     gs.hoveringEntities.size === 0 &&
     gs.movingEntities.size === 0
