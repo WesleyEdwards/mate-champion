@@ -7,6 +7,7 @@ import {FC} from "react"
 import {capitalize} from "lodash"
 import {ColorPicker} from "./ColorPicker"
 import {useLevelContext} from "../../hooks/useLevels"
+import { useNavigator } from "../../hooks/UseNavigator"
 
 export const AddingEntity = ({
   edit,
@@ -15,7 +16,7 @@ export const AddingEntity = ({
   edit: Adding
   setEdit: React.Dispatch<React.SetStateAction<Adding>>
 }) => {
-  const {gameMode} = useLevelContext()
+  const {currentScreen} = useNavigator()
   const handleSetEditingItem = (params: Partial<Adding>) => {
     window.addingEntity = {...window.addingEntity, ...params}
     setEdit((prev) => ({...prev, ...params}))
@@ -25,7 +26,7 @@ export const AddingEntity = ({
 
   const Render = entityFC[edit.type]
 
-  const disabled = gameMode === "test"
+  const disabled = currentScreen === "test"
   return (
     <Card style={{padding: "12px"}}>
       <Stack>

@@ -14,7 +14,6 @@ export const useLevels: (params: {
   const dirtyMap = useRef<LevelMap | null>(null)
   const [changeTrigger, setChangeTrigger] = useState(0)
 
-  const [currGameMode, setCurrGameMode] = useState<GameMode>("idle")
   const [isDirty, setIsDirty] = useState<boolean>(false)
 
   const handleSetEditing: LevelsContextType["setEditingLevel"] = async (id) => {
@@ -28,19 +27,12 @@ export const useLevels: (params: {
     api.level.detail(id).then(setLevel)
   }
 
-  const setGameMode = (mode: GameMode) => {
-    if (mode === "idle") {
-      window.stopLoop = true
-    }
-    setCurrGameMode(mode)
-  }
-
   const updateLevel = async () => {
     setIsDirty(false)
     if (!level || level === "loading" || !api) return
     const id = level._id
     const curr = await api.level.detail(id)
-    if (currGameMode === "idle" && objectsAreDifferent(curr, level)) {
+    if (objectsAreDifferent(curr, level)) {
       setLevel(curr)
     }
     const map = dirtyMap.current
@@ -78,8 +70,6 @@ export const useLevels: (params: {
 
   return {
     editingLevel: level,
-    gameMode: currGameMode,
-    setGameMode,
     updateLevelMap,
     saveIfDirty: updateLevel,
     setEditingLevel: handleSetEditing,
@@ -94,8 +84,6 @@ export type LevelsContextType = {
   updateLevelMap: (m: Partial<LevelMap>) => void
   saveIfDirty: () => Promise<unknown>
   editingLevel: EditingLevel
-  gameMode: GameMode
-  setGameMode: (show: GameMode) => void
   isDirty: boolean
 }
 

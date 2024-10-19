@@ -12,7 +12,7 @@ import {useAuthContext} from "../hooks/useAuth"
 
 export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
   const {api} = useAuthContext()
-  const {editingLevel, setGameMode, updateLevelMap} = useLevelContext()
+  const {editingLevel, updateLevelMap} = useLevelContext()
   const {navigateTo} = useNavigator()
 
   return (
@@ -24,10 +24,8 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
         endDecorator={<Construction />}
         onClick={() => {
           modifyStats({...emptyStats})
-          navigateTo("game")
+          navigateTo("edit")
           window.stopLoop = false
-
-          setGameMode("edit")
 
           if (editingLevel === null || editingLevel === "loading") {
             return console.error("Invalid state")
@@ -52,10 +50,9 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
         fullWidth
         onClick={() => {
           modifyStats({...emptyStats})
-          navigateTo("game")
+          navigateTo("test")
           window.stopLoop = false
 
-          setGameMode("test")
           if (editingLevel === null || editingLevel === "loading") {
             console.error("Invalid state")
             return

@@ -3,7 +3,7 @@ import {MCScreen} from "../components/GameEntry"
 import {useLevelContext} from "./useLevels"
 
 type NavigatorContextType = {
-  navigateTo: (screen: MCScreen) => void
+  navigateTo: (screen: MCScreen, replace?: boolean) => void
   goBack: () => void
   resetStack: () => void
   currentScreen: MCScreen
@@ -17,15 +17,21 @@ export const NavigatorProvider = (props: {children: React.ReactNode}) => {
   const [screenStack, setScreenStack] = useState<MCScreen[]>(["home"])
   const {editingLevel, setEditingLevel} = useLevelContext()
 
-  const navigateTo = (screen: MCScreen) => {
-    setScreenStack([...screenStack, screen])
+  const navigateTo: NavigatorContextType["navigateTo"] = (screen, replace) => {
+    if (replace) {
+      setScreenStack([...screenStack.slice(0, -1), screen])
+    } else {
+      setScreenStack([...screenStack, screen])
+    }
   }
 
   const goBack = () => {
     const back = screenStack.slice(0, -1)
+    const newScreen = back.at(back.length - 1)
     if (
-      back.at(back.length - 1) !== "editorDetail" &&
-      back.at(back.length - 1) !== "game"
+      newScreen !== "editorDetail" &&
+      newScreen !== "test" &&
+      newScreen !== "edit"
     ) {
       setEditingLevel(null)
     }

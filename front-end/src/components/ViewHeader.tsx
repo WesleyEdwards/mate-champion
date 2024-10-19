@@ -151,7 +151,6 @@ export const EditLevelDetailHeader: FC = () => {
 }
 
 const BackButton = () => {
-  const {setGameMode} = useLevelContext()
   const {goBack} = useNavigator()
   return (
     <IconButton
@@ -159,7 +158,6 @@ const BackButton = () => {
       onClick={() => {
         window.stopLoop = true
         abortController.abort()
-        setGameMode("idle")
         goBack()
       }}
     >
@@ -167,41 +165,35 @@ const BackButton = () => {
     </IconButton>
   )
 }
-export const PlayingHeader: FC = () => {
-  const {
-    editingLevel,
-    gameMode,
-    setGameMode,
-    isDirty,
-    saveIfDirty,
-    updateLevelMap
-  } = useLevelContext()
-  const {api} = useAuthContext()
 
-  if (gameMode === "play") return null
+export const PlayHeader: FC = () => {
+  return null
+}
+
+export const TestHeader: FC = () => {
+  const {editingLevel, updateLevelMap} = useLevelContext()
+  const {api, user} = useAuthContext()
+  const {navigateTo} = useNavigator()
 
   if (editingLevel === "loading") {
     return <Skeleton height="40px" variant="rectangular" />
   }
 
-  if (gameMode === "idle") {
-    return <BackButton />
-  }
-  if (gameMode === "test") {
-    return (
-      <Stack direction={"row"} height="64px" alignItems={"center"} gap="1rem">
-        <BackButton />
-        <Typography
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }}
-          level="h1"
-        >
-          Testing {editingLevel?.name}
-        </Typography>
-        <div style={{flex: 1}}></div>
+  return (
+    <Stack direction={"row"} height="64px" alignItems={"center"} gap="1rem">
+      <BackButton />
+      <Typography
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis"
+        }}
+        level="h1"
+      >
+        Testing {editingLevel?.name}
+      </Typography>
+      <div style={{flex: 1}}></div>
+      {(editingLevel?.owner === user?._id || !user) && (
         <Button
           variant="outlined"
           endDecorator={<Construction />}
@@ -210,7 +202,7 @@ export const PlayingHeader: FC = () => {
 
             window.stopLoop = true
             abortController.abort()
-            setGameMode("edit")
+            navigateTo("edit", true)
 
             api.level.levelMapDetail(editingLevel._id).then((level) => {
               setTimeout(() => {
@@ -226,8 +218,17 @@ export const PlayingHeader: FC = () => {
         >
           Edit
         </Button>
-      </Stack>
-    )
+      )}
+    </Stack>
+  )
+}
+export const EditHeader: FC = () => {
+  const {editingLevel, isDirty, saveIfDirty, updateLevelMap} = useLevelContext()
+  const {api} = useAuthContext()
+  const {navigateTo} = useNavigator()
+
+  if (editingLevel === "loading") {
+    return <Skeleton height="40px" variant="rectangular" />
   }
 
   return (
@@ -256,7 +257,7 @@ export const PlayingHeader: FC = () => {
             window.stopLoop = true
             abortController.abort()
             saveIfDirty().then(() => {
-              setGameMode("test")
+              navigateTo("test", true)
 
               setTimeout(() => {
                 // To ensure that the game loop was ended

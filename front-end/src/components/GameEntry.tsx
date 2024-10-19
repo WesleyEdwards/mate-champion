@@ -12,9 +12,11 @@ import {PersonalHighScore} from "./PersonalHighScore"
 import {EditLevelDetail} from "./EditLevelDetail"
 import {HomeScreen} from "./HomeScreen"
 import {
+  EditHeader,
   EditLevelDetailHeader,
   LevelsHeader,
-  PlayingHeader,
+  PlayHeader,
+  TestHeader,
   ViewHeaderSubScreen
 } from "./ViewHeader"
 import {LevelEditorHome} from "./LevelEditorHome"
@@ -23,7 +25,9 @@ import {useLevelContext} from "../hooks/useLevels"
 import {PlayStats} from "../game/loopShared/models"
 
 export type MCScreen =
-  | "game"
+  | "play"
+  | "edit"
+  | "test"
   | "home"
   | "highScores"
   | "personalHigh"
@@ -43,9 +47,14 @@ export interface ScreenProps {
 export const GameEntry: FC = () => {
   const [stats, setStats] = useState<PlayStats>(emptyStats)
   const {currentScreen} = useNavigator()
-  const {gameMode} = useLevelContext()
 
-  const playing = useMemo(() => currentScreen === "game", [currentScreen])
+  const playing = useMemo(
+    () =>
+      currentScreen === "play" ||
+      currentScreen === "edit" ||
+      currentScreen === "test",
+    [currentScreen]
+  )
 
   const modifyStats = (newStats: Partial<PlayStats>) =>
     setStats((prev) => ({...prev, ...newStats}))
@@ -73,7 +82,7 @@ export const GameEntry: FC = () => {
           id="canvas"
         ></canvas>
 
-        {playing && gameMode === "play" && <StatsDiv stats={stats} />}
+        {currentScreen === "play" && <StatsDiv stats={stats} />}
       </Stack>
     </>
   )
@@ -81,7 +90,9 @@ export const GameEntry: FC = () => {
 
 const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
   const map: Record<MCScreen, FC<ScreenProps>> = {
-    game: () => null,
+    play: () => null,
+    edit: () => null,
+    test: () => null,
     home: HomeScreen,
     levelEditor: LevelEditorHome,
     highScores: HighScores,
@@ -98,7 +109,9 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
 
 const getSubViewHeader = (screen: MCScreen): JSX.Element => {
   const subHeaders: Record<MCScreen, JSX.Element> = {
-    game: <PlayingHeader />,
+    play: <PlayHeader />,
+    edit: <EditHeader />,
+    test: <TestHeader />,
     home: <></>,
     levelEditor: <LevelsHeader />,
     highScores: <ViewHeaderSubScreen title="High Scores" />,

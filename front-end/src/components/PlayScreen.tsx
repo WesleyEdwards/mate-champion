@@ -16,7 +16,6 @@ export const PlayScreen: FC<{
   setScreen: (screen: MCScreen) => void
 }> = ({modifyStats, setScreen, screen}) => {
   const {user, api, modifyUser} = useAuthContext()
-  const {setGameMode} = useLevelContext()
 
   const {setModal} = usePauseModalContext()
 
@@ -47,9 +46,7 @@ export const PlayScreen: FC<{
       sx={{width: "11rem", mb: "2rem"}}
       onClick={() => {
         modifyStats({...emptyStats})
-        setScreen("game")
-
-        setGameMode("play")
+        setScreen("play")
 
         window.stopLoop = false
         playLoop({

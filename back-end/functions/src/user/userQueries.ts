@@ -24,7 +24,7 @@ const sendUserBody = (user: User, self: JWTBody | undefined) => {
   return userWithoutPassword
 }
 
-export const createUser: ReqBuilder =
+export const createUser: ReqBuilder<{password: string}> =
   (client) =>
   async ({body}, res) => {
     const passwordHash = await bcrypt.hash(body.password, 10)
@@ -35,7 +35,7 @@ export const createUser: ReqBuilder =
       email: {equal: userBody.email ?? ""}
     })
 
-    console.log("Emial", emailExists)
+    console.log("Email", emailExists)
     if (isValid(emailExists)) {
       return res.status(400).json({error: "Email already exists"})
     }
@@ -61,7 +61,7 @@ export const createUser: ReqBuilder =
     })
   }
 
-export const loginUser: ReqBuilder =
+export const loginUser: ReqBuilder<{email: string; password: string}> =
   (client) =>
   async ({body}, res) => {
     const loginBody = {
@@ -73,8 +73,12 @@ export const loginUser: ReqBuilder =
       res.status(404).json({message: "Invalid credentials"})
       return
     }
-    const userWithEmail = await client.user.findOne({email: loginBody.email})
-    const userWithName = await client.user.findOne({name: loginBody.email})
+    const userWithEmail = await client.user.findOne({
+      email: {equal: loginBody.email}
+    })
+    const userWithName = await client.user.findOne({
+      name: {equal: loginBody.email}
+    })
     const user = userWithEmail ?? userWithName
 
     if (!isValid<User>(user)) {

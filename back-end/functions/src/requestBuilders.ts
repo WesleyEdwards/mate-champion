@@ -1,6 +1,6 @@
 import {JWTBody, AuthReqHandler} from "./auth/authTypes"
 import {Route} from "./auth/controller"
-import {BasicEndpoints, HasId, Condition} from "./DbClient"
+import {BasicEndpoints, HasId, Condition, Modification} from "./DbClient"
 import {isParseError, isValid} from "./request_body"
 import {LevelInfo} from "./types"
 
@@ -37,21 +37,18 @@ const getBuilder = <T extends HasId>(
     if (isParseError(item)) return res.status(404).json(item)
 
     return res.json(item)
-  }) satisfies AuthReqHandler
+  }) satisfies AuthReqHandler<{}>
 })
 
-type CreateInfo<T extends HasId> = Skippable & {
+type CreateInfo<T extends HasId, B = {}> = Skippable & {
   perms?: (jwt: JWTBody | undefined) => boolean
-  validate: (
-    body: unknown,
-    jwtBody: JWTBody | undefined
-  ) => Promise<T | {error: any}>
+  validate: (body: B, jwtBody: JWTBody | undefined) => Promise<T | {error: any}>
   postCreate?: (item: T) => Promise<unknown>
   preResponseFilter?: (items: T) => T
 }
 
-const createBuilder = <T extends HasId>(
-  info: CreateInfo<T>,
+const createBuilder = <T extends HasId, B = {}>(
+  info: CreateInfo<T, B>,
   endpoint: BasicEndpoints<T>
 ): Route => ({
   path: "/insert",
@@ -77,7 +74,7 @@ const createBuilder = <T extends HasId>(
     await info.postCreate?.(level)
 
     return res.json(level)
-  }) satisfies AuthReqHandler
+  }) satisfies AuthReqHandler<B>
 })
 
 type QueryInfo<T extends HasId> = Skippable & {
@@ -85,7 +82,7 @@ type QueryInfo<T extends HasId> = Skippable & {
   preResponseFilter?: (items: T[]) => T[]
 }
 
-const queryBuilder = <T extends HasId>(
+const queryBuilder = <T extends HasId, B extends Condition<T>>(
   info: QueryInfo<T>,
   endpoint: BasicEndpoints<T>
 ): Route => ({
@@ -93,13 +90,13 @@ const queryBuilder = <T extends HasId>(
   method: "post",
   skipAuth: info.skipAuth,
   endpointBuilder: (async (req, res) => {
-    const query = info.perms?.(req.jwtBody) ?? {}
+    const query = info.perms?.(req.jwtBody) ?? {always: true}
 
     const fullQuery: Condition<T> = {and: [req.body, query]}
 
     const items = await endpoint.findMany(fullQuery)
     return res.json(items)
-  }) satisfies AuthReqHandler
+  }) satisfies AuthReqHandler<B>
 })
 
 type ModifyInfo<T extends HasId> = Skippable & {
@@ -111,7 +108,7 @@ type ModifyInfo<T extends HasId> = Skippable & {
   preResponseFilter?: (items: T) => T
 }
 
-export const modifyBuilder = <T extends HasId>(
+export const modifyBuilder = <T extends HasId, B extends Modification<T>>(
   info: ModifyInfo<T>,
   endpoint: BasicEndpoints<T>
 ): Route => ({
@@ -132,16 +129,10 @@ export const modifyBuilder = <T extends HasId>(
 
     if (!isValid<T>(levelPartial)) return res.status(400).json(levelPartial)
 
-    // if (id !== levelPartial._id) {
-    //   return res.status(400).json({error: "Id must match"})
-    // }
-
-    console.log("LEVEL PARTIAL IS", levelPartial)
-
     const updatedLevel = await endpoint.updateOne(id, levelPartial)
 
     return res.json(updatedLevel)
-  }) satisfies AuthReqHandler
+  }) satisfies AuthReqHandler<B>
 })
 
 type DeleteInfo<T extends HasId> = Skippable & {
@@ -162,7 +153,7 @@ export const deleteBuilder = <T extends HasId>(
     const deleted = await endpoint.deleteOne(req.params.id, condition)
     await info.postDelete?.(deleted)
     return res.json(deleted._id)
-  }) satisfies AuthReqHandler
+  }) satisfies AuthReqHandler<{}>
 })
 
 export type BuildEndpoints1<T extends HasId> = {

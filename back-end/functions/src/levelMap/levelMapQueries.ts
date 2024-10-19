@@ -1,4 +1,5 @@
 import {ReqBuilder} from "../auth/authTypes"
+import {Condition} from "../DbClient"
 import {checkPartialValidation, isParseError, isValid} from "../request_body"
 import {LevelInfo} from "../types"
 
@@ -24,13 +25,19 @@ export const getLevelMap: ReqBuilder =
 export const modifyLevelMap: ReqBuilder =
   (client) =>
   async ({params, body, jwtBody}, res) => {
-    const condition =
+    const condition: Condition<LevelInfo> =
       jwtBody?.userType === "Admin"
         ? {_id: {equal: params.id}}
-        : {and: [{_id: {equal: params.id}, owner: {equal: jwtBody?.userId}}]}
-    console.log(condition)
+        : {
+            and: [
+              {_id: {equal: params.id}},
+              {owner: {equal: jwtBody?.userId ?? ""}}
+            ]
+          }
     const level = await client.level.findOne(condition)
-    if (!level) return res.status(404).json("Not found")
+    if (isParseError(level)) {
+      return res.status(404).json("Level map not found")
+    }
     const levelMapPartial = checkPartialValidation("levelMap", {
       ...body,
       level: params.id

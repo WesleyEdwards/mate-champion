@@ -4,7 +4,7 @@ import {DbClient} from "../DbClient"
 import jwt from "jsonwebtoken"
 import {AuthReqHandler, JWTBody} from "./authTypes"
 
-export const authenticationMiddleware: AuthReqHandler = async (
+export const authenticationMiddleware: AuthReqHandler<any> = async (
   req,
   res,
   next

@@ -22,9 +22,7 @@ export const Layout = () => {
           <Sheet variant="outlined" sx={{p: 2, m: 2, borderRadius: 10}}>
             <GameEntry />
           </Sheet>
-          {editingLevel !== "loading" && // Visible if owner, or if not logged in And editing a level
-            editingLevel &&
-            (editingLevel?.owner === user?._id || !user) && <LevelCreator />}
+          <LevelCreator />
         </Stack>
       </PauseModalProvider>
     </NavigatorProvider>

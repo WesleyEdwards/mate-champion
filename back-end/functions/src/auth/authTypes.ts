@@ -7,14 +7,14 @@ export type JWTBody = {
   userType: UserType
 }
 
-export type RequestWithJWTBody = Request & {
+export type RequestWithJWTBody<Body> = Request<any, any, Body> & {
   jwtBody?: JWTBody
 }
 
-export type AuthReqHandler = (
-  req: RequestWithJWTBody,
+export type AuthReqHandler<Body> = (
+  req: RequestWithJWTBody<Body>,
   res: Response,
   next: NextFunction
 ) => void
 
-export type ReqBuilder = (client: DbClient) => AuthReqHandler
+export type ReqBuilder<Body = {}> = (client: DbClient) => AuthReqHandler<Body>

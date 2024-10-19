@@ -21,7 +21,6 @@ type PauseModalContextType = {
 const PauseModalContext = createContext({} as PauseModalContextType)
 
 export const PauseModalProvider = (props: {children: React.ReactNode}) => {
-  const {setGameMode} = useLevelContext()
   const {navigateTo} = useNavigator()
   const [open, setOpen] = useState<ModalOption | null>(null)
 
@@ -51,7 +50,6 @@ export const PauseModalProvider = (props: {children: React.ReactNode}) => {
               </Button>
               <Button
                 onClick={() => {
-                  setGameMode("idle")
                   navigateTo("home")
                   setOpen(null)
                 }}

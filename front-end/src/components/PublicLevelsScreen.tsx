@@ -12,15 +12,14 @@ import {SignInButton} from "./SignInButton"
 
 export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
   const {api, user} = useAuthContext()
-  const {setGameMode, setEditingLevel} = useLevelContext()
+  const {setEditingLevel} = useLevelContext()
   const {navigateTo} = useNavigator()
   const [levels, setLevels] = useState<LevelInfo[]>()
 
   const handleEnterGamePlay = async (levelId: string) => {
     const fullLevel = await api.level.levelMapDetail(levelId)
 
-    navigateTo("game")
-    setGameMode("test")
+    navigateTo("test")
 
     setEditingLevel(fullLevel._id)
     enterGameLoopPreview(fullLevel)

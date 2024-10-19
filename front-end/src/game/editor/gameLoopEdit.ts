@@ -32,6 +32,7 @@ export function gameLoopEdit(params: {
   }
 
   function startGame() {
+    window.stopLoop = false
     displayCanvas(true, canvas)
     requestAnimationFrame(gameLoop)
   }
