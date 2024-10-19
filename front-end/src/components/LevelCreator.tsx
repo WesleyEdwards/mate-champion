@@ -9,17 +9,12 @@ export const LevelCreator: FC = () => {
 
   const {setModal} = usePauseModalContext()
 
-  if (gameMode !== "edit") {
-    return null
-  }
-
   return (
-    <Stack m={2} justifyContent="flex-start" height="748px" width="300px">
-      <CourseBuilderSettings />
+    <Stack justifyContent="flex-start" height="748px" width="300px">
       <Button
         color="neutral"
-        variant="plain"
-        sx={{marginTop: "auto"}}
+        variant="outlined"
+        sx={{mb: "1rem", mt: "2rem"}}
         onClick={(e) => {
           if (
             "pointerType" in e.nativeEvent &&
@@ -32,6 +27,7 @@ export const LevelCreator: FC = () => {
       >
         Help
       </Button>
+      <CourseBuilderSettings />
     </Stack>
   )
 }

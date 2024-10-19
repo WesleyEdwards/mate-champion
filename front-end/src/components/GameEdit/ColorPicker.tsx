@@ -13,17 +13,20 @@ import {HexColorPicker} from "react-colorful"
 export const ColorPicker = ({
   color,
   setColor,
-  buttonLabel
+  buttonLabel,
+  disabled
 }: {
   color: string
   setColor: (c: string) => void
   buttonLabel: string
+  disabled: boolean
 }) => {
   const [open, setOpen] = useState(false)
   const [dirty, setDirty] = useState(color)
   return (
     <>
       <Button
+        disabled={disabled}
         variant="outlined"
         onClick={() => setOpen(true)}
         endDecorator={<Edit />}

@@ -20,7 +20,7 @@ export const Layout = () => {
           <Sheet variant="outlined" sx={{p: 2, m: 2, borderRadius: 10}}>
             <GameEntry />
           </Sheet>
-          {gameMode === "edit" && <LevelCreator />}
+          {(gameMode === "edit" || gameMode === "test") && <LevelCreator />}
         </Stack>
       </PauseModalProvider>
     </NavigatorProvider>

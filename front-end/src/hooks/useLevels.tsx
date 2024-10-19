@@ -4,7 +4,6 @@ import {Api} from "../api/Api"
 import {GameMode} from "./useAuth"
 import {User} from "../types"
 import {getLevelDiff, objectsAreDifferent} from "../helpers"
-import {isEqual} from "lodash"
 
 export const useLevels: (params: {
   api: Api | undefined
@@ -93,7 +92,7 @@ export type EditingLevel = LevelInfo | null | "loading"
 export type LevelsContextType = {
   setEditingLevel: (editing: string | null) => void
   updateLevelMap: (m: Partial<LevelMap>) => void
-  saveIfDirty: () => void
+  saveIfDirty: () => Promise<unknown>
   editingLevel: EditingLevel
   gameMode: GameMode
   setGameMode: (show: GameMode) => void

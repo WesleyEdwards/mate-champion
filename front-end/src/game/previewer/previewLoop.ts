@@ -8,7 +8,7 @@ export function enterGameLoopPreview(level: LevelMap) {
   const game = new GamePreviewer(level)
 
   function gameLoop(timeStamp: number) {
-    window.mateSettings.collisionBoxesVisible = true
+    window.debounceLog("game loop preview")
     if (window.stopLoop === true) {
       window.stopLoop = false
       return

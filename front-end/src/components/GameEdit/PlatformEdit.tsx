@@ -40,6 +40,7 @@ export const PlatformEditor: FC<{
             Color: <b>{platform.state.color}</b>
           </Typography>
           <ColorPicker
+            disabled={false}
             color={platform.state.color}
             setColor={(newColor) => {
               platform.state.color = newColor

@@ -6,6 +6,7 @@ import platformImg from "../../assets/platform.png"
 import {FC} from "react"
 import {capitalize} from "lodash"
 import {ColorPicker} from "./ColorPicker"
+import {useLevelContext} from "../../hooks/useLevels"
 
 export const AddingEntity = ({
   edit,
@@ -14,6 +15,7 @@ export const AddingEntity = ({
   edit: Adding
   setEdit: React.Dispatch<React.SetStateAction<Adding>>
 }) => {
+  const {gameMode} = useLevelContext()
   const handleSetEditingItem = (params: Partial<Adding>) => {
     window.addingEntity = {...window.addingEntity, ...params}
     setEdit((prev) => ({...prev, ...params}))
@@ -22,6 +24,8 @@ export const AddingEntity = ({
   if (!edit.type) return null
 
   const Render = entityFC[edit.type]
+
+  const disabled = gameMode === "test"
   return (
     <Card style={{padding: "12px"}}>
       <Stack>
@@ -31,6 +35,7 @@ export const AddingEntity = ({
           </Typography>
           <Stack>
             <Select
+              disabled={disabled}
               sx={{mb: "5px"}}
               defaultValue={"platform" as const}
               value={edit.type}
@@ -82,6 +87,7 @@ export const AddingEntity = ({
           {edit.type === "platform" && (
             <Stack margin="1rem" direction={"row"}>
               <ColorPicker
+                disabled={disabled}
                 color={edit.color || "springgreen"}
                 setColor={(color) => {
                   console.log("Setting color!")

@@ -12,7 +12,9 @@ import {
   ArrowBack,
   Check,
   CheckCircle,
+  Construction,
   Edit,
+  PlayArrow,
   Sync,
   Undo
 } from "@mui/icons-material"
@@ -21,7 +23,10 @@ import {useLevelContext} from "../hooks/useLevels"
 import {CreateNewLevel} from "./CreateNewLevel"
 import {useNavigator} from "../hooks/UseNavigator"
 import {abortController} from "../game/editor/eventListeners"
-import {useAuthContext} from "../hooks/useAuth"
+import {useAuth, useAuthContext} from "../hooks/useAuth"
+import {enterGameLoopPreview} from "../game/previewer/previewLoop"
+import {gameLoopEdit} from "../game/editor/gameLoopEdit"
+import {LevelMap} from "../game/loopShared/models"
 
 export const ViewHeaderSubScreen: FC<{
   title: string
@@ -128,9 +133,9 @@ export const EditLevelDetailHeader: FC = () => {
           <Tooltip title="Save">
             <IconButton
               onClick={() => {
-                api.level.modify(editingLevel._id, {
-                  name: editingName
-                })
+                api.level
+                  .modify(editingLevel._id, {name: editingName})
+                  .then(() => setEditingLevel(editingLevel._id))
                 setEditingName(undefined)
               }}
             >
@@ -145,10 +150,33 @@ export const EditLevelDetailHeader: FC = () => {
   )
 }
 
-export const PlayingHeader: FC = () => {
-  const {editingLevel, gameMode, setGameMode, isDirty, saveIfDirty} =
-    useLevelContext()
+const BackButton = () => {
+  const {setGameMode} = useLevelContext()
   const {goBack} = useNavigator()
+  return (
+    <IconButton
+      sx={{display: "absolute"}}
+      onClick={() => {
+        window.stopLoop = true
+        abortController.abort()
+        setGameMode("idle")
+        goBack()
+      }}
+    >
+      <ArrowBack />
+    </IconButton>
+  )
+}
+export const PlayingHeader: FC = () => {
+  const {
+    editingLevel,
+    gameMode,
+    setGameMode,
+    isDirty,
+    saveIfDirty,
+    updateLevelMap
+  } = useLevelContext()
+  const {api} = useAuthContext()
 
   if (gameMode === "play") return null
 
@@ -156,84 +184,125 @@ export const PlayingHeader: FC = () => {
     return <Skeleton height="40px" variant="rectangular" />
   }
 
-  return (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      width="100%"
-    >
-      <IconButton
-        onClick={() => {
-          abortController.abort()
-          setGameMode("idle")
-          goBack()
-        }}
-      >
-        <ArrowBack />
-      </IconButton>
+  if (gameMode === "idle") {
+    return <BackButton />
+  }
+  if (gameMode === "test") {
+    return (
+      <Stack direction={"row"} height="64px" alignItems={"center"} gap="1rem">
+        <BackButton />
+        <Typography
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+          level="h1"
+        >
+          Testing {editingLevel?.name}
+        </Typography>
+        <div style={{flex: 1}}></div>
+        <Button
+          variant="outlined"
+          endDecorator={<Construction />}
+          onClick={() => {
+            if (!editingLevel) return
 
-      {gameMode === "edit" && (
-        <Typography
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: "700px"
+            window.stopLoop = true
+            abortController.abort()
+            setGameMode("edit")
+
+            api.level.levelMapDetail(editingLevel._id).then((level) => {
+              setTimeout(() => {
+                gameLoopEdit({
+                  level,
+                  modifyLevel: (level: Partial<LevelMap>) => {
+                    updateLevelMap(level)
+                  }
+                })
+              }, 100)
+            })
           }}
-          level="h1"
         >
-          Editing {editingLevel?.name}
-        </Typography>
-      )}
-      {gameMode === "test" && (
-        <Typography
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: "700px"
-          }}
-          level="h1"
-        >
-          {editingLevel?.name}
-        </Typography>
-      )}
-      <Stack
-        direction={"row"}
-        gap="5px"
-        justifyContent={"center"}
-        alignItems={"center"}
-        width="2rem"
-        mr="1rem"
-        sx={{mb: "10px", position: "relative", right: "4rem"}}
+          Edit
+        </Button>
+      </Stack>
+    )
+  }
+
+  return (
+    <Stack direction="row" gap="1rem" alignItems={"center"}>
+      <BackButton />
+
+      <Typography
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis"
+        }}
+        level="h1"
       >
-        {gameMode === "edit" && isDirty && (
-          <Button onClick={saveIfDirty}>Save</Button>
-        )}
-        {(() => {
-          if (gameMode !== "edit") {
-            return null
-          }
-          if (isDirty) {
-            return (
+        Editing {editingLevel?.name}
+      </Typography>
+
+      <div style={{flex: 1}}></div>
+      <Stack direction="row" gap="5px" alignItems={"start"}>
+        <Button
+          sx={{width: "8rem"}}
+          variant="outlined"
+          endDecorator={<PlayArrow />}
+          onClick={() => {
+            if (!editingLevel) return
+            window.stopLoop = true
+            abortController.abort()
+            saveIfDirty().then(() => {
+              setGameMode("test")
+
+              setTimeout(() => {
+                // To ensure that the game loop was ended
+                api.level
+                  .levelMapDetail(editingLevel._id)
+                  .then(enterGameLoopPreview)
+              }, 100)
+            })
+          }}
+        >
+          Preview
+        </Button>
+        <Stack>
+          <Button
+            sx={{width: "8rem"}}
+            disabled={!isDirty}
+            onClick={saveIfDirty}
+          >
+            Save
+          </Button>
+          <Stack
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              m: "2px",
+              gap: "5px",
+              justifyContent: "flex-end"
+            }}
+          >
+            {isDirty ? (
               <>
-                <Sync sx={{opacity: 0.3}} />
-                <Typography level="body-lg" variant="plain" sx={{opacity: 0.3}}>
+                <Typography level="body-sm" variant="plain" sx={{opacity: 0.3}}>
                   Saving...
                 </Typography>
+                <Sync sx={{opacity: 0.3}} />
               </>
-            )
-          }
-          return (
-            <>
-              <Typography level="body-lg" variant="plain" sx={{opacity: 0.3}}>
-                Saved
-              </Typography>
-              <CheckCircle sx={{opacity: 0.3}} />
-            </>
-          )
-        })()}
+            ) : (
+              <>
+                <Typography level="body-sm" variant="plain" sx={{opacity: 0.3}}>
+                  Saved
+                </Typography>
+                <CheckCircle sx={{opacity: 0.3}} />
+              </>
+            )}
+          </Stack>
+        </Stack>
       </Stack>
     </Stack>
   )
