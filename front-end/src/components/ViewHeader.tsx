@@ -27,8 +27,9 @@ import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
 import {LevelMap} from "../game/loopShared/models"
 import {abortGame} from "../game/editor/eventListeners"
+import {MCScreen} from "./GameEntry"
 
-export const ViewHeaderSubScreen: FC<{
+const ViewHeaderSubScreen: FC<{
   title: string
 }> = ({title}) => {
   const {goBack} = useNavigator()
@@ -46,7 +47,7 @@ export const ViewHeaderSubScreen: FC<{
   )
 }
 
-export const LevelsHeader: FC = () => {
+const LevelsHeader: FC = () => {
   const {goBack} = useNavigator()
   return (
     <Stack width="100%" gap="0.75rem" mb="1rem">
@@ -62,15 +63,7 @@ export const LevelsHeader: FC = () => {
   )
 }
 
-export const ViewHeaderMainScreen: FC<{title: string}> = ({title}) => {
-  return (
-    <Stack alignItems="center" width="100%">
-      <Typography level="h2">{title}</Typography>
-    </Stack>
-  )
-}
-
-export const EditLevelDetailHeader: FC = () => {
+const EditLevelDetailHeader: FC = () => {
   const {goBack} = useNavigator()
   const [editingName, setEditingName] = useState<string>()
   const {api} = useAuthContext()
@@ -164,7 +157,7 @@ const BackButton = () => {
   )
 }
 
-export const PlayHeader: FC = () => {
+const PlayHeader: FC = () => {
   return (
     <Stack direction={"row"} height="64px" alignItems={"center"}>
       <BackButton />
@@ -180,7 +173,30 @@ export const PlayHeader: FC = () => {
   )
 }
 
-export const TestHeader: FC = () => {
+const PreviewHeader: FC = () => {
+  const {editingLevel} = useLevelContext()
+
+  if (editingLevel === "loading") {
+    return <Skeleton height="40px" variant="rectangular" />
+  }
+
+  return (
+    <Stack direction={"row"} height="64px" alignItems={"center"} gap="1rem">
+      <BackButton />
+      <Typography
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis"
+        }}
+        level="h1"
+      >
+        {editingLevel?.name}
+      </Typography>
+    </Stack>
+  )
+}
+const TestHeader: FC = () => {
   const {editingLevel, updateLevelMap} = useLevelContext()
   const {api, user} = useAuthContext()
   const {navigateTo} = useNavigator()
@@ -203,35 +219,33 @@ export const TestHeader: FC = () => {
         Testing {editingLevel?.name}
       </Typography>
       <div style={{flex: 1}}></div>
-      {(editingLevel?.owner === user?._id || !user) && (
-        <Button
-          variant="outlined"
-          endDecorator={<Construction />}
-          onClick={() => {
-            if (!editingLevel) return
+      <Button
+        variant="outlined"
+        endDecorator={<Construction />}
+        onClick={() => {
+          if (!editingLevel) return
 
-            abortGame()
-            navigateTo("edit", true)
+          abortGame()
+          navigateTo("edit", true)
 
-            api.level.levelMapDetail(editingLevel._id).then((level) => {
-              setTimeout(() => {
-                gameLoopEdit({
-                  level,
-                  modifyLevel: (level: Partial<LevelMap>) => {
-                    updateLevelMap(level)
-                  }
-                })
-              }, 100)
-            })
-          }}
-        >
-          Edit
-        </Button>
-      )}
+          api.level.levelMapDetail(editingLevel._id).then((level) => {
+            setTimeout(() => {
+              gameLoopEdit({
+                level,
+                modifyLevel: (level: Partial<LevelMap>) => {
+                  updateLevelMap(level)
+                }
+              })
+            }, 100)
+          })
+        }}
+      >
+        Edit
+      </Button>
     </Stack>
   )
 }
-export const EditHeader: FC = () => {
+const EditHeader: FC = () => {
   const {editingLevel, isDirty, saveIfDirty} = useLevelContext()
   const {api} = useAuthContext()
   const {navigateTo} = useNavigator()
@@ -315,4 +329,21 @@ export const EditHeader: FC = () => {
       </Stack>
     </Stack>
   )
+}
+
+export const subHeaders: Record<MCScreen, JSX.Element> = {
+  play: <PlayHeader />,
+  edit: <EditHeader />,
+  test: <TestHeader />,
+  preview: <PreviewHeader />,
+  home: <></>,
+  levelEditor: <LevelsHeader />,
+  highScores: <ViewHeaderSubScreen title="High Scores" />,
+  personalHigh: <ViewHeaderSubScreen title="Personal High" />,
+  controls: <ViewHeaderSubScreen title="Controls" />,
+  login: <ViewHeaderSubScreen title="Login" />,
+  createAccount: <ViewHeaderSubScreen title="Create Account" />,
+  profile: <ViewHeaderSubScreen title="Profile" />,
+  settings: <ViewHeaderSubScreen title="Settings" />,
+  editorDetail: <EditLevelDetailHeader />
 }

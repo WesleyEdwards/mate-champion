@@ -19,7 +19,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
   const handleEnterGamePlay = async (levelId: string) => {
     const fullLevel = await api.level.levelMapDetail(levelId)
 
-    navigateTo("test")
+    navigateTo("preview")
 
     setEditingLevel(fullLevel._id)
     enterGameLoopPreview(fullLevel)

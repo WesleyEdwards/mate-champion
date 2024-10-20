@@ -31,7 +31,8 @@ export const NavigatorProvider = (props: {children: React.ReactNode}) => {
     if (
       newScreen !== "editorDetail" &&
       newScreen !== "test" &&
-      newScreen !== "edit"
+      newScreen !== "edit" &&
+      newScreen !== "preview"
     ) {
       setEditingLevel(null)
     }

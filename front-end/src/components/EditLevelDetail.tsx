@@ -6,8 +6,7 @@ import {
   FormHelperText,
   Skeleton,
   Stack,
-  Textarea,
-  Typography
+  Textarea
 } from "@mui/joy"
 import {FC, useEffect, useState} from "react"
 import {ScreenProps} from "./GameEntry"
@@ -15,15 +14,16 @@ import {DeleteLevel} from "./DeleteLevel"
 import {useLevelContext} from "../hooks/useLevels"
 import {useNavigator} from "../hooks/UseNavigator"
 import {VisibilityIcon} from "./MyLevels"
-import {PreviewOrEdit} from "./PreviewOrEdit"
 import {useAuthContext} from "../hooks/useAuth"
 import {MCModal} from "./MCModal"
-import {CreateAccount} from "./CreateAccount"
 import {SignInButton} from "./SignInButton"
+import {Construction} from "@mui/icons-material"
+import {gameLoopEdit} from "../game/editor/gameLoopEdit"
+import {LevelMap} from "../game/loopShared/models"
 
-export const EditLevelDetail: FC<ScreenProps> = (props) => {
+export const EditLevelDetail: FC = () => {
   const {api, user} = useAuthContext()
-  const {editingLevel} = useLevelContext()
+  const {editingLevel, updateLevelMap} = useLevelContext()
   const {navigateTo} = useNavigator()
 
   const [saving, setSaving] = useState(false)
@@ -74,7 +74,26 @@ export const EditLevelDetail: FC<ScreenProps> = (props) => {
         sx={{flexGrow: 1}}
       />
 
-      <PreviewOrEdit {...props} />
+      <Button
+        size="lg"
+        fullWidth
+        variant="outlined"
+        endDecorator={<Construction />}
+        onClick={() => {
+          navigateTo("edit")
+
+          api.level.levelMapDetail(editingLevel._id).then((level) => {
+            gameLoopEdit({
+              level,
+              modifyLevel: (level: Partial<LevelMap>) => {
+                updateLevelMap(level)
+              }
+            })
+          })
+        }}
+      >
+        Edit
+      </Button>
 
       <FormControl>
         {user ? (

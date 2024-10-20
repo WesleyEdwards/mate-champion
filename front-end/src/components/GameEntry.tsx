@@ -11,23 +11,16 @@ import {CreateAccount} from "./CreateAccount"
 import {PersonalHighScore} from "./PersonalHighScore"
 import {EditLevelDetail} from "./EditLevelDetail"
 import {HomeScreen} from "./HomeScreen"
-import {
-  EditHeader,
-  EditLevelDetailHeader,
-  LevelsHeader,
-  PlayHeader,
-  TestHeader,
-  ViewHeaderSubScreen
-} from "./ViewHeader"
+import {subHeaders} from "./ViewHeader"
 import {LevelEditorHome} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
-import {useLevelContext} from "../hooks/useLevels"
 import {PlayStats} from "../game/loopShared/models"
 
 export type MCScreen =
   | "play"
   | "edit"
   | "test"
+  | "preview"
   | "home"
   | "highScores"
   | "personalHigh"
@@ -60,7 +53,7 @@ export const GameEntry: FC = () => {
     setStats((prev) => ({...prev, ...newStats}))
 
   const ScreenViewHeader: JSX.Element = useMemo(
-    () => getSubViewHeader(currentScreen),
+    () => subHeaders[currentScreen],
     [currentScreen]
   )
 
@@ -93,6 +86,7 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
     play: () => null,
     edit: () => null,
     test: () => null,
+    preview: () => null,
     home: HomeScreen,
     levelEditor: LevelEditorHome,
     highScores: HighScores,
@@ -105,25 +99,6 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
     editorDetail: EditLevelDetail
   }
   return map[screen]
-}
-
-const getSubViewHeader = (screen: MCScreen): JSX.Element => {
-  const subHeaders: Record<MCScreen, JSX.Element> = {
-    play: <PlayHeader />,
-    edit: <EditHeader />,
-    test: <TestHeader />,
-    home: <></>,
-    levelEditor: <LevelsHeader />,
-    highScores: <ViewHeaderSubScreen title="High Scores" />,
-    personalHigh: <ViewHeaderSubScreen title="Personal High" />,
-    controls: <ViewHeaderSubScreen title="Controls" />,
-    login: <ViewHeaderSubScreen title="Login" />,
-    createAccount: <ViewHeaderSubScreen title="Create Account" />,
-    profile: <ViewHeaderSubScreen title="Profile" />,
-    settings: <ViewHeaderSubScreen title="Settings" />,
-    editorDetail: <EditLevelDetailHeader />
-  }
-  return subHeaders[screen]
 }
 
 export const PageStack: FC<{children: ReactNode}> = ({children}) => {
