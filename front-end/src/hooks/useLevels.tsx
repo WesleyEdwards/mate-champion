@@ -9,7 +9,7 @@ export const useLevels: (params: {
   api: Api | undefined
   user: User | undefined
 }) => LevelsContextType = ({api}) => {
-  const [level, setLevel] = useState<EditingLevel>(null)
+  const [level, setLevel] = useState<LevelInfo | null | "loading">(null)
 
   const dirtyMap = useRef<LevelMap | null>(null)
   const [changeTrigger, setChangeTrigger] = useState(0)
@@ -67,23 +67,27 @@ export const useLevels: (params: {
       setChangeTrigger(Date.now())
     }
   }
+  const updateEditingLevel = (e: Partial<LevelInfo>) => {
+    setLevel((prev) => prev !== "loading" && prev ? ({...prev, ...e}): prev)
+  }
 
   return {
     editingLevel: level,
     updateLevelMap,
     saveIfDirty: updateLevel,
+    updateEditingLevel,
     setEditingLevel: handleSetEditing,
     isDirty
   } satisfies LevelsContextType
 }
 
-export type EditingLevel = LevelInfo | null | "loading"
 
 export type LevelsContextType = {
   setEditingLevel: (editing: string | null) => void
+  updateEditingLevel: (m: Partial<LevelInfo>) => void
   updateLevelMap: (m: Partial<LevelMap>) => void
   saveIfDirty: () => Promise<unknown>
-  editingLevel: EditingLevel
+  editingLevel: LevelInfo | null | "loading"
   isDirty: boolean
 }
 

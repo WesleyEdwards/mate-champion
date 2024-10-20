@@ -28,6 +28,7 @@ import {gameLoopEdit} from "../game/editor/gameLoopEdit"
 import {LevelMap} from "../game/loopShared/models"
 import {abortGame} from "../game/editor/eventListeners"
 import {MCScreen} from "./GameEntry"
+import {useToast} from "../hooks/Toaster"
 
 const ViewHeaderSubScreen: FC<{
   title: string
@@ -67,7 +68,8 @@ const EditLevelDetailHeader: FC = () => {
   const {goBack} = useNavigator()
   const [editingName, setEditingName] = useState<string>()
   const {api} = useAuthContext()
-  const {editingLevel, setEditingLevel} = useLevelContext()
+  const {editingLevel, updateEditingLevel} = useLevelContext()
+  const toast = useToast()
 
   if (editingLevel === "loading" || editingLevel === null) {
     return <Skeleton height="40px" variant="rectangular" />
@@ -125,9 +127,9 @@ const EditLevelDetailHeader: FC = () => {
           <Tooltip title="Save">
             <IconButton
               onClick={() => {
-                api.level
-                  .modify(editingLevel._id, {name: editingName})
-                  .then(() => setEditingLevel(editingLevel._id))
+                api.level.modify(editingLevel._id, {name: editingName})
+                toast({message: "Name successfully changed"})
+                updateEditingLevel({name: editingName})
                 setEditingName(undefined)
               }}
             >

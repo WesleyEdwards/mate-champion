@@ -12,6 +12,7 @@ import {Layout} from "./components/Layout"
 import {initializeTextures} from "./gameAssets/textures"
 import {Adding} from "./components/GameEdit/CourseBuilderSettings"
 import {Entity} from "./game/entities/entityTypes"
+import {ToastProvider} from "./hooks/Toaster"
 
 declare global {
   interface Window {
@@ -59,11 +60,13 @@ function App() {
     <CssVarsProvider defaultMode="dark" theme={theme}>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <AuthContext.Provider value={authInfo}>
-          <LevelsContext.Provider value={levelManager}>
-            <Layout />
-          </LevelsContext.Provider>
-        </AuthContext.Provider>
+        <ToastProvider>
+          <AuthContext.Provider value={authInfo}>
+            <LevelsContext.Provider value={levelManager}>
+              <Layout />
+            </LevelsContext.Provider>
+          </AuthContext.Provider>
+        </ToastProvider>
       </ThemeProvider>
     </CssVarsProvider>
   )

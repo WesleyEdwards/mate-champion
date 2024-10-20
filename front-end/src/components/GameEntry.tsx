@@ -45,6 +45,7 @@ export const GameEntry: FC = () => {
     () =>
       currentScreen === "play" ||
       currentScreen === "edit" ||
+      currentScreen === "preview" ||
       currentScreen === "test",
     [currentScreen]
   )

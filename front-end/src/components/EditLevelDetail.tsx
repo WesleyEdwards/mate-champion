@@ -9,7 +9,6 @@ import {
   Textarea
 } from "@mui/joy"
 import {FC, useEffect, useState} from "react"
-import {ScreenProps} from "./GameEntry"
 import {DeleteLevel} from "./DeleteLevel"
 import {useLevelContext} from "../hooks/useLevels"
 import {useNavigator} from "../hooks/UseNavigator"
@@ -20,27 +19,13 @@ import {SignInButton} from "./SignInButton"
 import {Construction} from "@mui/icons-material"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
 import {LevelMap} from "../game/loopShared/models"
+import {useToast} from "../hooks/Toaster"
 
 export const EditLevelDetail: FC = () => {
   const {api, user} = useAuthContext()
-  const {editingLevel, updateLevelMap} = useLevelContext()
+  const {editingLevel, updateEditingLevel, updateLevelMap} = useLevelContext()
   const {navigateTo} = useNavigator()
-
-  const [saving, setSaving] = useState(false)
-
-  const [levelForm, setLevelForm] = useState<{
-    public: boolean
-    description: string
-  }>({public: true, description: ""})
-
-  useEffect(() => {
-    if (editingLevel && editingLevel !== "loading") {
-      setLevelForm({
-        public: editingLevel.public,
-        description: editingLevel.description ?? ""
-      })
-    }
-  }, [editingLevel])
+  const toast = useToast()
 
   if (editingLevel === "loading") {
     return (
@@ -63,8 +48,8 @@ export const EditLevelDetail: FC = () => {
   }
 
   return (
-    <Stack gap="2rem" width="100%" flexGrow={1}>
-      <Textarea
+    <Stack gap="4rem">
+      {/* <Textarea
         value={levelForm.description ?? ""}
         placeholder="Description"
         minRows={2}
@@ -72,12 +57,17 @@ export const EditLevelDetail: FC = () => {
           setLevelForm((prev) => ({...prev, description: e.target.value}))
         }}
         sx={{flexGrow: 1}}
-      />
+      /> */}
 
       <Button
         size="lg"
         fullWidth
-        variant="outlined"
+        sx={{
+          backgroundColor: "#0b6bcb",
+          "&:hover": {
+            backgroundColor: "#084989"
+          }
+        }}
         endDecorator={<Construction />}
         onClick={() => {
           navigateTo("edit")
@@ -99,38 +89,28 @@ export const EditLevelDetail: FC = () => {
         {user ? (
           <Checkbox
             label="Public"
-            checked={levelForm.public}
+            checked={editingLevel.public}
+            sx={{alignSelf: "start"}}
             onChange={(e) => {
-              setLevelForm((prev) => ({...prev, public: e.target.checked}))
+              const p = e.target.checked
+              updateEditingLevel({public: p})
+              api.level.modify(editingLevel._id, {public: p}).then(() => {
+                toast({
+                  message: `This level is now ${p ? "public" : "private"}`
+                })
+              })
             }}
           />
         ) : (
           <FakePublicOption />
         )}
         <FormHelperText>
-          <VisibilityIcon publicLevel={levelForm.public} />
-          {levelForm.public
+          <VisibilityIcon publicLevel={editingLevel.public} />
+          {editingLevel.public
             ? "Anyone can see this level"
             : "Only you can see this level"}
         </FormHelperText>
       </FormControl>
-
-      <Button
-        sx={{alignSelf: "flex-end"}}
-        onClick={() => {
-          setSaving(true)
-          api.level
-            .modify(editingLevel._id, levelForm)
-            .then(() => setSaving(false))
-        }}
-        disabled={
-          levelForm.description === (editingLevel.description ?? "") &&
-          levelForm.public === editingLevel.public
-        }
-        loading={saving}
-      >
-        Save
-      </Button>
 
       <Divider />
 

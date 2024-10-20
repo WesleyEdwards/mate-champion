@@ -20,7 +20,6 @@ export const LevelCreator: FC = () => {
   if (user && user._id !== editingLevel.owner) {
     return null
   }
-  if (currentScreen === "test") return null
 
   return (
     <Stack justifyContent="flex-start" height="748px" width="300px">
