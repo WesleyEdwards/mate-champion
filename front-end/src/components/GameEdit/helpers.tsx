@@ -76,7 +76,7 @@ export const SizeControl: FC<{
           disabled={value <= 0}
           onClick={() => {
             if (value - incrementBy < min) return -value
-            setVString((value + incrementBy).toString())
+            setVString((value - incrementBy).toString())
             setValue(value - incrementBy)
           }}
         >
