@@ -16,10 +16,11 @@ export const LevelCreator: FC = () => {
     return null
   }
   if (editingLevel === "loading") return null
-
-  if (editingLevel && editingLevel.owner !== user?._id) {
+  if (!editingLevel) return null
+  if (user && user._id !== editingLevel.owner) {
     return null
   }
+  if (currentScreen === "test") return null
 
   return (
     <Stack justifyContent="flex-start" height="748px" width="300px">

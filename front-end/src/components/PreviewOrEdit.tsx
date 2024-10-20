@@ -42,24 +42,6 @@ export const PreviewOrEdit: FC<ScreenProps> = ({modifyStats}) => {
       >
         Edit
       </Button>
-      <Button
-        size="lg"
-        variant="outlined"
-        endDecorator={<PlayArrow />}
-        fullWidth
-        onClick={() => {
-          modifyStats({...emptyStats})
-          navigateTo("test")
-
-          if (editingLevel === null || editingLevel === "loading") {
-            console.error("Invalid state")
-            return
-          }
-          api.level.levelMapDetail(editingLevel._id).then(enterGameLoopPreview)
-        }}
-      >
-        Preview
-      </Button>
     </Stack>
   )
 }

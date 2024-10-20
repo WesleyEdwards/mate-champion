@@ -76,6 +76,7 @@ export const SizeControl: FC<{
           disabled={value <= 0}
           onClick={() => {
             if (value - incrementBy < min) return -value
+            setVString((value + incrementBy).toString())
             setValue(value - incrementBy)
           }}
         >
@@ -96,7 +97,12 @@ export const SizeControl: FC<{
             }}
           />
         </FormControl>
-        <IconButton onClick={() => setValue(value + incrementBy)}>
+        <IconButton
+          onClick={() => {
+            setVString((value + incrementBy).toString())
+            return setValue(value + incrementBy)
+          }}
+        >
           <Add />
         </IconButton>
       </Stack>
