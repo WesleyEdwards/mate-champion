@@ -44,7 +44,7 @@ const levelBaseEndpoints = (db: DbClient) =>
           _id: level._id,
           endPosition: 4500,
           packages: [],
-          opponents: {grog: []},
+          groog: [],
           platformColor: "springgreen",
           floors: [{x: -500, width: 7000, color: "green"}],
           platforms: []

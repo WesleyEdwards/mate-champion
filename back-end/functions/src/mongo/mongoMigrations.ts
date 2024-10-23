@@ -1,14 +1,17 @@
 import {Db, Collection} from "mongodb"
 import {z} from "zod"
 import {baseObjectSchema, coors} from "../types"
+import {groogJumpFrequency, groogJumpFrequencyCleanup} from "./migrations/groogJumpFrequency"
 
-type MigrationFun = (db: Db) => Promise<unknown>
+export type MigrationFun = (db: Db) => Promise<unknown>
 
 export async function runMigrations(db: Db): Promise<unknown> {
   // await migrationFun("addLevelMap", db, migrationAddLevelMap)
   // await migrationFun("levelInfoFields2", db, migrationLevelInfoFields)
   // await migrationFun("migrateLevelCoors1", db, migrateLevels)
   await migrationFun("addPlayerInitPos", db, addPlayerInitPos)
+  await migrationFun("groogJumpFrequency", db, groogJumpFrequency)
+  await migrationFun("groogJumpFrequencyCleanup", db, groogJumpFrequencyCleanup)
   return true
 }
 
@@ -24,14 +27,14 @@ const migrationFun = async (
     return
   }
   console.log(`Running migration ${name}`)
-  const result = await fun(db)
-  if (result) {
+  try {
+    await fun(db)
     await migrationCollection.insertOne({name})
     console.log(`Migration ${name} completed`)
-    return
+  } catch (e) {
+    console.log(`Migration ${name} failed`, e)
   }
-  console.log(`Migration ${name} failed`)
-  return
+  return true
 }
 
 const oldLevelMap = z

@@ -50,8 +50,19 @@ export const GroogEdit: FC<{
             return editGroog(groog)
           }}
           value={Math.abs(Math.floor(groog.state.velocity[0] * 100))}
-          incrementBy={1}
-          min={3}
+          incrementBy={5}
+          min={0}
+          max={100}
+        />
+        <MCSlider
+          title="Jump Frequency"
+          setValue={(value) => {
+            console.log(value)
+            return editGroog(groog)
+          }}
+          value={Math.abs(Math.floor(groog.state.timeBetweenJump))}
+          incrementBy={5}
+          min={0}
           max={100}
         />
       </CardContent>

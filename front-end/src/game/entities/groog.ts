@@ -16,17 +16,20 @@ import {
 import {Champ} from "./champ"
 import {CurrAndPrev, Coors, Entity} from "./entityTypes"
 import {GRAVITY} from "../loopShared/constants"
+import {GroogInfo} from "../loopShared/models"
 
 export type GroogState = {
   position: CurrAndPrev
   velocity: Coors
   dimensions: Coors
   dead: boolean
-  timeUntilTurn: number
+  timeBetweenTurn: number
+  timeBetweenJump: number
   timers: {
     sprite: TimerUp
     dyingTimer: TimerDown
     turnX: TimerUp
+    jump: TimerUp
   }
   render: {
     curr: GroogAssetDes
@@ -39,17 +42,20 @@ export class Groog implements Entity {
   typeId = "groog" as const
   state: GroogState
   modifyStatsOnDeath = {score: 10}
-  constructor(position: Coors, velocity: Coors) {
+  constructor(g: GroogInfo) {
     this.state = {
-      position: toCurrAndPrev(position),
-      velocity,
-      timeUntilTurn: 3000,
+      position: toCurrAndPrev([...g.position]),
+      velocity: [g.moveSpeed, 0],
+      timeBetweenTurn: g.timeBetweenTurn ?? 3000,
+      timeBetweenJump: 2000,
+      // timeBetweenJump: g.timeBetweenJump ?? 3000,
       dimensions: [...groogConst.dimensions],
       dead: false,
       timers: {
         sprite: emptyTime("up"),
         dyingTimer: emptyTime("down"),
-        turnX: emptyTime("up")
+        turnX: emptyTime("up"),
+        jump: emptyTime("up")
       },
       render: {
         curr: "walk"
@@ -69,13 +75,19 @@ export class Groog implements Entity {
     }
     if (
       this.state.render.curr !== "die" &&
-      this.state.timers.turnX.val > this.state.timeUntilTurn
+      this.state.timers.turnX.val > this.state.timeBetweenTurn
     ) {
       this.state.timers.turnX.val = 0
       processGroogActionRaw(this.state, {
         name: "setFacingX",
         dir: this.state.velocity[0] > 0 ? "left" : "right"
       })
+    }
+    if (this.state.timers.jump.val > this.state.timeBetweenJump) {
+      console.log("Jump")
+      this.state.timers.jump.val = 0
+      processGroogActionRaw(this.state, {name: "jump"})
+      console.log(this.state.velocity)
     }
 
     this.state.velocity[1] += GRAVITY * deltaT

@@ -20,7 +20,6 @@ export function playLoop(params: PlayLoopParams) {
   const game = new GamePlay(params)
 
   function gameLoop(timeStamp: number) {
-    window.mateSettings.collisionBoxesVisible = true
     if (window.stopLoop === true) {
       window.stopLoop = false
       return
@@ -43,7 +42,9 @@ export function playLoop(params: PlayLoopParams) {
   }
 
   function startGame() {
+    window.stopLoop = false
     displayCanvas(true, canvas)
+
     requestAnimationFrame(gameLoop)
   }
 

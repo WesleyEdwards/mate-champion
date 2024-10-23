@@ -3,9 +3,7 @@
     "_id": "19af854a-3b5b-4100-b1d7-2513359dd00b",
     "endPosition": 4500,
     "packages": [],
-    "opponents": {
-      "grog": []
-    },
+    "groog": [],
     "floors": [
       {
         "x": -500,

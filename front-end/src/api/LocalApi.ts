@@ -60,7 +60,7 @@ export class LocalApi implements Api {
         endPosition: 4500,
         champInitPos: [400, 400],
         packages: [],
-        opponents: {grog: []},
+        groog: [],
         floors: [{x: -500, width: 7000, color: "green"}],
         platformColor: "springgreen",
         platforms: []

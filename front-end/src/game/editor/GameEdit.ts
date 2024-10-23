@@ -37,6 +37,9 @@ export class GameEdit {
     window.addingEntity.baseColor = currentLevel.platformColor
     this.state = levelInfoToEditState(currentLevel)
     addDevEventListeners(this, canvas)
+    const initCoors = JSON.parse(localStorage.getItem("edit-coors") ?? "[0,0]")
+    console.log(initCoors)
+    this.state.camera.position = initCoors
   }
 
   get isMovingCanvas() {
@@ -285,6 +288,10 @@ export class GameEdit {
     if (this.state.timers.sinceLastSave.val > 500) {
       this.state.timers.sinceLastSave.val = 0
       this.setLevels(editStateToLevelInfo(this.state))
+      localStorage.setItem(
+        "edit-coors",
+        JSON.stringify(this.state.camera.position)
+      )
     }
   }
   updateMouseHover() {

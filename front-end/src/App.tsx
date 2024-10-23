@@ -18,11 +18,6 @@ declare global {
   interface Window {
     stopLoop: boolean
     pause: boolean
-    mateSettings: {
-      showDevStats: boolean
-      collisionBoxesVisible: boolean
-      cameraLines: boolean
-    }
     editingEntities: Entity[]
     addingEntity: Adding
     debounceLog: (...args: any[]) => void
@@ -44,11 +39,6 @@ function debounceLog(...args: any[]) {
 window.addingEntity = {type: "platform", color: undefined, baseColor: undefined}
 window.debounceLog = debounceLog
 window.editingEntities = []
-window.mateSettings = {
-  showDevStats: false,
-  collisionBoxesVisible: false,
-  cameraLines: false
-}
 
 const theme: Theme = extendTheme(mateTheme)
 

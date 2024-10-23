@@ -34,6 +34,7 @@ export const NavigatorProvider = (props: {children: React.ReactNode}) => {
       newScreen !== "edit" &&
       newScreen !== "preview"
     ) {
+      localStorage.setItem("edit-coors", "[0,0]")
       setEditingLevel(null)
     }
     setScreenStack(back)

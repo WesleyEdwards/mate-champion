@@ -24,7 +24,7 @@ const NumericFormatAdapter = forwardRef<
   return (
     <NumericFormat
       {...other}
-      style={{width: "5rem"}}
+      style={{maxWidth: "4rem"}}
       getInputRef={ref}
       onValueChange={(values) => {
         onChange({
@@ -46,22 +46,6 @@ export const SizeControl: FC<{
   min?: number
   incrementBy?: number
 }> = ({title, setValue, value, incrementBy = 10, min = 0}) => {
-  const [vString, setVString] = useState(value.toString())
-
-  useEffect(() => {
-    if (vString === "") return
-
-    const v = +vString
-    if (isNaN(v)) {
-      return
-    }
-
-    const roundTo = 10
-    const rounded = Math.ceil(v / roundTo) * roundTo
-
-    setValue(rounded)
-  }, [vString])
-
   return (
     <Stack>
       <Typography level="body-sm">{title}</Typography>
@@ -76,30 +60,15 @@ export const SizeControl: FC<{
           disabled={value <= 0}
           onClick={() => {
             if (value - incrementBy < min) return -value
-            setVString((value - incrementBy).toString())
             setValue(value - incrementBy)
           }}
         >
           <Remove />
         </IconButton>
+        <NumberInput num={value} setNum={setValue} />
 
-        <FormControl>
-          <Input
-            value={vString}
-            onChange={(event) => {
-              setVString(event.target.value)
-            }}
-            placeholder="title"
-            slotProps={{
-              input: {
-                component: NumericFormatAdapter
-              }
-            }}
-          />
-        </FormControl>
         <IconButton
           onClick={() => {
-            setVString((value + incrementBy).toString())
             return setValue(value + incrementBy)
           }}
         >
@@ -110,6 +79,53 @@ export const SizeControl: FC<{
   )
 }
 
+const NumberInput = ({
+  num,
+  setNum
+}: {
+  num: number
+  setNum: (n: number) => void
+}) => {
+  const [vString, setVString] = useState(num.toString())
+
+  useEffect(() => {
+    if (vString === "") return
+
+    const v = +vString
+    if (isNaN(v)) {
+      return
+    }
+
+    const roundTo = 10
+    const rounded = Math.ceil(v / roundTo) * roundTo
+    setNum(rounded)
+  }, [vString])
+
+  useEffect(() => {
+    if (num === +vString) {
+      console.log("num",num)
+      return
+    }
+    setVString(num.toString())
+  }, [num])
+
+  return (
+    <FormControl>
+      <Input
+        value={vString}
+        onChange={(event) => {
+          setVString(event.target.value)
+        }}
+        slotProps={{
+          input: {
+            component: NumericFormatAdapter
+          }
+        }}
+      />
+    </FormControl>
+  )
+}
+
 export const MCSlider: FC<{
   title: string
   value: number
@@ -117,7 +133,7 @@ export const MCSlider: FC<{
   min: number
   max: number
   incrementBy?: number
-}> = ({title, value, setValue: onChange, min, max}) => {
+}> = ({title, value, setValue: onChange, min, max, incrementBy}) => {
   return (
     <Stack>
       <Typography level="body-sm">{title}</Typography>
@@ -140,7 +156,7 @@ export const MCSlider: FC<{
               onChange(v)
             }
           }}
-          step={1}
+          step={incrementBy ?? 1}
           marks
           min={min}
           max={max}

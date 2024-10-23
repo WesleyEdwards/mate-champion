@@ -50,17 +50,15 @@ export const levelMapSchema = z
     champInitPos: coors.default([400, 400]),
     packages: coors.array().default([]),
     endPosition: z.number().default(4500),
-    opponents: z
+    groog: z
       .object({
-        grog: z
-          .object({
-            position: coors,
-            moveSpeed: z.number(),
-            jumpOften: z.boolean().optional().default(false)
-          })
-          .array()
+        position: coors,
+        moveSpeed: z.number(),
+        timeBetweenJump: z.number().optional().default(2000),
+        timeBetweenTurn: z.number().optional().default(3000)
       })
-      .default({grog: []}),
+      .array()
+      .default([]),
     platformColor: z.string().default("springgreen"),
     platforms: z
       .object({

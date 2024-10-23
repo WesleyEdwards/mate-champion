@@ -55,8 +55,8 @@ export const levelToEntities = (level: LevelMap): Entity[] => {
     entities.push(new Floor({color: f.color, startX: f.x, width: f.width}))
   })
 
-  level.opponents.grog.forEach((g) => {
-    entities.push(new Groog([...g.position], [g.moveSpeed, 0]))
+  level.groog.forEach((g) => {
+    entities.push(new Groog(g))
   })
 
   level.packages.forEach((p) => {

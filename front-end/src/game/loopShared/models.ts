@@ -14,18 +14,19 @@ export type Keys = {
   mostRecentX: "left" | "right"
 }
 
+export type GroogInfo = {
+  position: Coors
+  moveSpeed: number
+  timeBetweenJump: number
+  timeBetweenTurn: number
+}
+
 export type LevelMap = {
   _id: string
   endPosition: number
   champInitPos: Coors
   packages: Coors[]
-  opponents: {
-    grog: {
-      position: Coors
-      moveSpeed: number
-      jumpOften?: boolean
-    }[]
-  }
+  groog: GroogInfo[]
   platformColor: string
   platforms: {
     dimensions: Coors

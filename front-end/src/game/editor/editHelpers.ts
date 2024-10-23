@@ -27,7 +27,12 @@ export const addEntityToState = (gs: GameEdit) => {
   if (!gs.state.keys.mouseUp.curr) return
 
   const addable: Record<AddableEntity, Entity> = {
-    groog: new Groog([0, 0], [0.3, 0]),
+    groog: new Groog({
+      moveSpeed: 0.3,
+      position: [0, 0],
+      timeBetweenJump: 2000,
+      timeBetweenTurn: 3000
+    }),
     floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
     platform: new Platform({
       color: window.addingEntity.baseColor ?? "springgreen",
@@ -76,10 +81,12 @@ export const copyEntity = (e: Entity): Entity | undefined => {
     [K in AddableEntity]: (old: EntityOfType[K]) => EntityOfType[K]
   } = {
     groog: (old) =>
-      new Groog(copyOfWithOffset(old.state.position), [
-        old.state.velocity[0],
-        old.state.velocity[1]
-      ]),
+      new Groog({
+        moveSpeed: old.state.velocity[0],
+        position: copyOfWithOffset(old.state.position),
+        timeBetweenJump: 2000,
+        timeBetweenTurn: 3000
+      }),
     floor: (old) =>
       new Floor({
         color: old.state.color,
@@ -204,15 +211,14 @@ export const editStateToLevelInfo = (
       dimensions: [...f.state.dimensions],
       color: (f as Platform).state.color
     })),
-  opponents: {
-    grog: gs.entities
-      .filter((e) => e.typeId === "groog")
-      .map((g) => ({
-        position: [...g.state.position.curr],
-        moveSpeed: (g as Groog).state.velocity[0],
-        jumpOften: false
-      }))
-  },
+  groog: gs.entities
+    .filter((e) => e.typeId === "groog")
+    .map((g) => ({
+      position: [...g.state.position.curr],
+      moveSpeed: (g as Groog).state.velocity[0],
+      timeBetweenJump: (g as Groog).state.timeBetweenJump,
+      timeBetweenTurn: (g as Groog).state.timeBetweenTurn,
+    })),
   packages: gs.entities
     .filter((e) => e.typeId === "ammo")
     .map((p) => [...p.state.position.curr])

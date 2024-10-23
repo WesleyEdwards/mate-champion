@@ -1,4 +1,5 @@
 import {arraysAreSame} from "../../components/GameEdit/CourseBuilderSettings"
+import {Coors} from "../entities/entityTypes"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
 import {LevelMap} from "../loopShared/models"
 import {GameEdit} from "./GameEdit"

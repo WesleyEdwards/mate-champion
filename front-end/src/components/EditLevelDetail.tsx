@@ -130,6 +130,7 @@ const FakePublicOption = () => {
       <Checkbox
         label="Public"
         checked={false}
+        sx={{alignSelf: "start"}}
         onChange={() => {
           setOpen(true)
         }}

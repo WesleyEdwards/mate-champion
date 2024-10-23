@@ -77,12 +77,6 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Input
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
         <Stack direction="row" alignItems={"center"} gap="12px">
           <Input
             sx={{flexGrow: "1"}}
@@ -94,6 +88,12 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
             <InfoOutlined />
           </Tooltip>
         </Stack>
+        <Input
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         {error && <Alert color="danger">{error}</Alert>}
         <Button
           disabled={[name, password, email].some((v) => !v)}
