@@ -11,7 +11,7 @@ import {levelToEntities, toCurrAndPrev} from "../helpers"
 import {Floor, floorConst, Platform} from "../entities/platform"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {GameEdit} from "./GameEdit"
-import {Groog} from "../entities/groog"
+import {Groog, groogConst} from "../entities/groog"
 import {Ammo} from "../entities/Ammo"
 import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
 
@@ -84,8 +84,8 @@ export const copyEntity = (e: Entity): Entity | undefined => {
       new Groog({
         moveSpeed: old.state.velocity[0],
         position: copyOfWithOffset(old.state.position),
-        timeBetweenJump: 2000,
-        timeBetweenTurn: 3000
+        timeBetweenJump: old.state.timeBetweenJump,
+        timeBetweenTurn: old.state.timeBetweenTurn
       }),
     floor: (old) =>
       new Floor({

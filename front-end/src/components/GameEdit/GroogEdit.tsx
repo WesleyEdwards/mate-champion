@@ -1,8 +1,8 @@
 import {Card, CardContent, Select, Stack, Option, Typography} from "@mui/joy"
 import {FC} from "react"
 import {entityFC} from "./ItemTypeEdit"
-import {Groog} from "../../game/entities/groog"
-import {MCSlider, SizeControl} from "./helpers"
+import {Groog, groogConst} from "../../game/entities/groog"
+import {MCSlider, NumberInput, SizeControl} from "./helpers"
 
 export const GroogEdit: FC<{
   groog: Groog
@@ -54,17 +54,36 @@ export const GroogEdit: FC<{
           min={0}
           max={100}
         />
-        <MCSlider
-          title="Jump Frequency"
-          setValue={(value) => {
-            console.log(value)
-            return editGroog(groog)
-          }}
-          value={Math.abs(Math.floor(groog.state.timeBetweenJump))}
-          incrementBy={5}
-          min={0}
-          max={100}
-        />
+
+        <Stack direction="row" alignItems="center" gap="10px">
+          <Typography>Jump every:</Typography>
+          <NumberInput
+            roundTo={0.25}
+            num={groog.state.timeBetweenJump / 1000}
+            setNum={(n) => {
+              groog.state.timeBetweenJump = n * 1000
+              return editGroog(groog)
+            }}
+          />
+          <Typography>s</Typography>
+        </Stack>
+        <Stack direction="row" alignItems="center" gap="10px">
+          <Typography>Turn every:</Typography>
+          <NumberInput
+            roundTo={0.25}
+            num={
+              groog.state.timeBetweenTurn === groogConst.minJumpFrequency
+                ? 0
+                : groog.state.timeBetweenTurn / 1000
+            }
+            setNum={(n) => {
+              const actual = n === 0 ? groogConst.minJumpFrequency / 1000 : n
+              groog.state.timeBetweenTurn = actual * 1000
+              return editGroog(groog)
+            }}
+          />
+          <Typography>s</Typography>
+        </Stack>
       </CardContent>
     </Card>
   )

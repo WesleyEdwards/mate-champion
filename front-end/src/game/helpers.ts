@@ -113,25 +113,30 @@ export const areEntitiesTouching = (
   rect1.position.curr[1] < rect2.position.curr[1] + rect2.dimensions[1] &&
   rect1.position.curr[1] + rect1.dimensions[1] > rect2.position.curr[1]
 
-function notInlineX(entity: Entity, floor: Entity): boolean {
+function inlineX(entity: Entity, floor: Entity): boolean {
   const width = entity.state.dimensions[0]
   const posX = entity.state.position.curr[0]
   return (
-    posX + width < floor.state.position.curr[0] ||
-    posX > floor.state.position.curr[0] + floor.state.dimensions[0]
+    !(posX + width < floor.state.position.curr[0]) &&
+    !(posX > floor.state.position.curr[0] + floor.state.dimensions[0])
   )
 }
 
-function notInlineY(entity: Entity, floor: Entity): boolean {
+function inlineY(entity: Entity, floor: Entity): boolean {
   const height = entity.state.dimensions[1]
   const posY = entity.state.position.curr[1]
   return (
-    posY + height < floor.state.position.curr[1] ||
-    posY > floor.state.position.curr[1] + floor.state.dimensions[1]
+    !(posY + height < floor.state.position.curr[1]) &&
+    !(posY > floor.state.position.curr[1] + floor.state.dimensions[1])
   )
 }
 
-type CollInfo = {x: number | null; bottom: number | null; top: number | null}
+type CollInfo = {
+  x: number | null
+  bottom: number | null
+  top: number | null
+  inline: [boolean, boolean]
+}
 /**
  * @param entity The entity that may collide with the floor
  * @param floor Floor to check
@@ -141,19 +146,25 @@ export function calcPlatEntityCollision(
   entity: Entity,
   floor: Entity
 ): CollInfo {
-  let coors: CollInfo = {x: null, bottom: null, top: null}
-
-  if (!notInlineX(entity, floor)) {
-    coors.top = calcPlatEntityCollisionTop(entity, floor)
-    coors.bottom = calcPlatEntityCollisionBottom(entity, floor)
+  let info: CollInfo = {
+    x: null,
+    bottom: null,
+    top: null,
+    inline: [false, false]
   }
 
-  if (!notInlineY(entity, floor)) {
+  info.inline = [inlineX(entity, floor), inlineY(entity, floor)]
+  if (info.inline[0]) {
+    info.top = calcPlatEntityCollisionTop(entity, floor)
+    info.bottom = calcPlatEntityCollisionBottom(entity, floor)
+  }
+
+  if (info.inline[1]) {
     const left = entityIsLeftOfFloor(entity, floor)
     const right = entityIsRightOfFloor(entity, floor)
-    coors.x = left ?? right
+    info.x = left ?? right
   }
-  return coors
+  return info
 }
 function calcPlatEntityCollisionTop(
   entity: Entity,
@@ -183,7 +194,7 @@ function entityIsLeftOfFloor(entity: Entity, floor: Entity): number | null {
   const eWidth = entity.state.dimensions[0]
 
   const previous = entity.state.position.prev[0] + eWidth
-  const recent = entity.state.position.curr[0] + eWidth
+  const recent = rightPos(entity)
   const fPos = floor.state.position.curr[0]
 
   if (recent >= fPos && previous <= fPos) {
@@ -195,10 +206,18 @@ function entityIsLeftOfFloor(entity: Entity, floor: Entity): number | null {
 function entityIsRightOfFloor(entity: Entity, floor: Entity): number | null {
   const previous = entity.state.position.prev[0]
   const recent = entity.state.position.curr[0]
-  const fPos = floor.state.position.curr[0] + floor.state.dimensions[0]
+  const fPos = rightPos(floor)
 
   if (recent <= fPos && previous >= fPos) {
     return fPos
   }
   return null
+}
+
+export function rightPos(entity: Entity) {
+  return entity.state.position.curr[0] + entity.state.dimensions[0]
+}
+
+export function leftPos(entity: Entity) {
+  return entity.state.position.curr[0]
 }

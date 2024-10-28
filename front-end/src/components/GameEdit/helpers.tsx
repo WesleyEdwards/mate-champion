@@ -10,7 +10,6 @@ import {
 } from "@mui/joy"
 import {FC, forwardRef, useEffect, useState} from "react"
 import {NumericFormat, NumericFormatProps} from "react-number-format"
-import {toRounded} from "../../game/editor/editHelpers"
 
 const NumericFormatAdapter = forwardRef<
   NumericFormatProps,
@@ -65,7 +64,7 @@ export const SizeControl: FC<{
         >
           <Remove />
         </IconButton>
-        <NumberInput num={value} setNum={setValue} />
+        <NumberInput roundTo={10} num={value} setNum={setValue} />
 
         <IconButton
           onClick={() => {
@@ -79,12 +78,14 @@ export const SizeControl: FC<{
   )
 }
 
-const NumberInput = ({
+export const NumberInput = ({
   num,
-  setNum
+  setNum,
+  roundTo
 }: {
   num: number
   setNum: (n: number) => void
+  roundTo: number
 }) => {
   const [vString, setVString] = useState(num.toString())
 
@@ -96,16 +97,15 @@ const NumberInput = ({
       return
     }
 
-    const roundTo = 10
     const rounded = Math.ceil(v / roundTo) * roundTo
     setNum(rounded)
   }, [vString])
 
   useEffect(() => {
     if (num === +vString) {
-      console.log("num",num)
       return
     }
+
     setVString(num.toString())
   }, [num])
 

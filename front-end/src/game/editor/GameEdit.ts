@@ -1,5 +1,4 @@
 import {LevelMap} from "../loopShared/models"
-import {Champ} from "../entities/champ"
 import {Coors, CurrAndPrev, Entity, Id} from "../entities/entityTypes"
 import {renderBg} from "../render/background"
 import {accountForPosition} from "../render/helpers"

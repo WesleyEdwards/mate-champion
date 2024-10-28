@@ -14,7 +14,7 @@ export function gameLoopEdit(params: {
   const game = new GameEdit(level, modifyLevel, canvas)
 
   function gameLoop(timeStamp: number) {
-    window.debounceLog("game loop edit")
+    // window.debounceLog("game loop edit")
     if (window.stopLoop === true) {
       window.stopLoop = false
       return
