@@ -1,4 +1,13 @@
-import {Card, CardContent, Select, Stack, Option, Typography} from "@mui/joy"
+import {
+  Card,
+  CardContent,
+  Select,
+  Stack,
+  Option,
+  Typography,
+  FormControl,
+  Checkbox
+} from "@mui/joy"
 import {FC} from "react"
 import {entityFC} from "./ItemTypeEdit"
 import {Groog, groogConst} from "../../game/entities/groog"
@@ -59,6 +68,9 @@ export const GroogEdit: FC<{
           <Typography>Jump every:</Typography>
           <NumberInput
             roundTo={0.25}
+            disabled={
+              groog.state.timeBetweenJump === groogConst.noJumpFrequency
+            }
             num={groog.state.timeBetweenJump / 1000}
             setNum={(n) => {
               groog.state.timeBetweenJump = n * 1000
@@ -67,14 +79,32 @@ export const GroogEdit: FC<{
           />
           <Typography>s</Typography>
         </Stack>
+        <FormControl>
+          <Checkbox
+            label="Don't jump"
+            checked={groog.state.timeBetweenJump === groogConst.noJumpFrequency}
+            sx={{alignSelf: "end", m: 1}}
+            onChange={(e) => {
+              const p = e.target.checked
+              if (p) {
+                groog.state.timeBetweenJump = groogConst.noJumpFrequency
+              } else {
+                groog.state.timeBetweenJump = 3000
+              }
+              return editGroog(groog)
+            }}
+          />
+        </FormControl>
         <Stack direction="row" alignItems="center" gap="10px">
           <Typography>Turn every:</Typography>
           <NumberInput
             roundTo={0.25}
             num={
-              groog.state.timeBetweenTurn === groogConst.minJumpFrequency
+              groog.state.timeBetweenTurn === groogConst.noJumpFrequency
                 ? 0
-                : groog.state.timeBetweenTurn / 1000
+                : groog.state.timeBetweenTurn === groogConst.minJumpFrequency
+                  ? 0
+                  : groog.state.timeBetweenTurn / 1000
             }
             setNum={(n) => {
               const actual = n === 0 ? groogConst.minJumpFrequency / 1000 : n

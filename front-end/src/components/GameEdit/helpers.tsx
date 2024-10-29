@@ -81,11 +81,13 @@ export const SizeControl: FC<{
 export const NumberInput = ({
   num,
   setNum,
-  roundTo
+  roundTo,
+  disabled = false
 }: {
   num: number
   setNum: (n: number) => void
   roundTo: number
+  disabled?: boolean
 }) => {
   const [vString, setVString] = useState(num.toString())
 
@@ -112,6 +114,7 @@ export const NumberInput = ({
   return (
     <FormControl>
       <Input
+      disabled={disabled}
         value={vString}
         onChange={(event) => {
           setVString(event.target.value)

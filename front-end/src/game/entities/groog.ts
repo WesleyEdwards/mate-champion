@@ -154,7 +154,8 @@ export const groogConst = {
   pointsGainByKilling: 10,
   jumpSpeed: -1.2,
   dieTimer: 500,
-  minJumpFrequency: 820
+  minJumpFrequency: 820,
+  noJumpFrequency: 100_000_000
 } as const
 
 export type GroogAssetDes = "walk" | "die" | "rising" | "falling"
