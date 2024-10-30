@@ -3,6 +3,7 @@ import {Coors} from "../entities/entityTypes"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
 import {LevelMap} from "../loopShared/models"
 import {GameEdit} from "./GameEdit"
+import {RenderMixin} from "./mixins/RenderMixin"
 
 export function gameLoopEdit(params: {
   level: LevelMap
@@ -11,7 +12,7 @@ export function gameLoopEdit(params: {
   const {level, modifyLevel} = params
   const {canvas, context} = getCanvasContext()
 
-  const game = new GameEdit(level, modifyLevel, canvas)
+  const game: GameEdit = new GameEdit(level, modifyLevel, canvas)
 
   function gameLoop(timeStamp: number) {
     // window.debounceLog("game loop edit")
