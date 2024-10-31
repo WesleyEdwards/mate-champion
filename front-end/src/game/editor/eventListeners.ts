@@ -2,7 +2,7 @@ import {GameStateEditProps} from "./editHelpers"
 import {GameEdit} from "./GameEdit"
 
 export function addDevEventListeners(
-  contentCreator: GameEdit,
+  contentCreator: GameStateEditProps,
   canvas: HTMLCanvasElement
 ) {
   resetAbortController()
@@ -11,7 +11,7 @@ export function addDevEventListeners(
     key: K,
     value: GameStateEditProps["keys"][K]["curr"]
   ) {
-    contentCreator.state.keys[key].curr = value
+    contentCreator.keys[key].curr = value
   }
 
   canvas.addEventListener(
@@ -51,19 +51,13 @@ export function addDevEventListeners(
   window.addEventListener(
     "keydown",
     (e) => {
-      if (e.code === "Delete") {
-        set("delete", true)
-      }
       if (e.code === "KeyD" && e.ctrlKey) {
         e.preventDefault()
         set("copy", true)
       }
-      if (e.ctrlKey) {
-        set("ctrl", true)
-      }
-      if (e.shiftKey) {
-        set("shift", true)
-      }
+      if (e.code === "Delete") set("delete", true)
+      if (e.ctrlKey) set("ctrl", true)
+      if (e.shiftKey) set("shift", true)
     },
     {signal: abortController.signal}
   )
@@ -71,15 +65,9 @@ export function addDevEventListeners(
   window.addEventListener(
     "keyup",
     (e) => {
-      if (e.code === "Delete") {
-        set("delete", false)
-      }
-      if (e.ctrlKey === false) {
-        set("ctrl", false)
-      }
-      if (e.shiftKey === false) {
-        set("shift", false)
-      }
+      if (e.code === "Delete") set("delete", false)
+      if (e.ctrlKey === false) set("ctrl", false)
+      if (e.shiftKey === false) set("shift", false)
     },
     {signal: abortController.signal}
   )

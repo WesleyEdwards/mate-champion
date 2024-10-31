@@ -7,61 +7,12 @@ import {
   Entity,
   EntityOfType
 } from "../entities/entityTypes"
-import {levelToEntities, toCurrAndPrev} from "../helpers"
-import {Floor, floorConst, Platform} from "../entities/platform"
+import {levelToEntities} from "../helpers"
+import {Floor, Platform} from "../entities/platform"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
-import {GameEdit} from "./GameEdit"
-import {Groog, groogConst} from "../entities/groog"
+import {Groog} from "../entities/groog"
 import {Ammo} from "../entities/Ammo"
 import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
-
-export const addEntityToState = (gs: GameEdit) => {
-  const shouldAdd =
-    gs.state.keys.ctrl.curr &&
-    gs.state.keys.mousePos.curr &&
-    gs.state.keys.mouseUp.curr &&
-    gs.hoveringEntities.size === 0 &&
-    gs.movingEntities.size === 0
-
-  if (!shouldAdd) return
-  if (!gs.state.keys.mouseUp.curr) return
-
-  const addable: Record<AddableEntity, Entity> = {
-    groog: new Groog({
-      moveSpeed: 0.3,
-      position: [0, 0],
-      timeBetweenJump: 2000,
-      timeBetweenTurn: 3000
-    }),
-    floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
-    platform: new Platform({
-      color: window.addingEntity.baseColor ?? "springgreen",
-      position: [0, 0],
-      dimensions: [300, platformConst.defaultHeight]
-    }),
-    ammo: new Ammo([0, 0])
-  }
-
-  const toAdd = window.addingEntity.type ?? "platform"
-
-  const entity = addable[toAdd]
-  const pos = gs.state.keys.mouseUp.curr
-
-  const center: Coors = [
-    pos[0] - entity.state.dimensions[0] / 2,
-    pos[1] - entity.state.dimensions[1] / 2
-  ]
-
-  entity.state.position = toCurrAndPrev(
-    withCamPosition(center, gs.state.camera)
-  )
-
-  if (entity.typeId === "floor") {
-    // Should probably do this higher up in the fun, but this works for now
-    entity.state.position.curr[1] = floorConst.floorY
-  }
-  gs.state.entities.push(entity)
-}
 
 export const copyEntity = (e: Entity): Entity | undefined => {
   if (
@@ -104,13 +55,6 @@ export const copyEntity = (e: Entity): Entity | undefined => {
   return map[e.typeId](e as never)
 }
 
-export const toRounded = (pos: Coors): Coors => {
-  const roundTo = 10
-  const valX = Math.ceil(pos[0] / roundTo) * roundTo
-  const valY = Math.ceil(pos[1] / roundTo) * roundTo
-  return [valX, valY]
-}
-
 export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[0] += increment[0]
   curr[1] += increment[1]
@@ -146,21 +90,6 @@ export type GameStateEditProps = {
   }
 }
 
-export const updateCurrPrevBool = (obj: {curr: boolean; prev: boolean}) => {
-  obj.prev = obj.curr
-}
-
-export const updateCurrPrevDragState = (obj: {
-  curr: Coors | null
-  prev: Coors | null
-}) => {
-  if (obj.curr === null) {
-    obj.prev = obj.curr
-  } else {
-    obj.prev = [...obj.curr]
-  }
-}
-
 export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
   entities: levelToEntities({...level}),
   prevBaseColor: level.platformColor,
@@ -188,38 +117,4 @@ export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
     mousePos: {prev: null, curr: null}
   },
   endPosition: level.endPosition
-})
-
-export const editStateToLevelInfo = (
-  gs: GameStateEditProps
-): Partial<LevelMap> => ({
-  endPosition: gs.endPosition,
-  champInitPos: gs.entities.find((e) => e.typeId === "player")?.state?.position
-    ?.curr ?? [400, 400],
-  floors: gs.entities
-    .filter((e) => e.typeId === "floor")
-    .map((f) => ({
-      x: f.state.position.curr[0],
-      width: f.state.dimensions[0],
-      color: (f as Floor).state.color
-    })),
-  platformColor: gs.prevBaseColor,
-  platforms: gs.entities
-    .filter((e) => e.typeId === "platform")
-    .map((f) => ({
-      position: [...f.state.position.curr],
-      dimensions: [...f.state.dimensions],
-      color: (f as Platform).state.color
-    })),
-  groog: gs.entities
-    .filter((e) => e.typeId === "groog")
-    .map((g) => ({
-      position: [...g.state.position.curr],
-      moveSpeed: (g as Groog).state.velocity[0],
-      timeBetweenJump: (g as Groog).state.timeBetweenJump,
-      timeBetweenTurn: (g as Groog).state.timeBetweenTurn,
-    })),
-  packages: gs.entities
-    .filter((e) => e.typeId === "ammo")
-    .map((p) => [...p.state.position.curr])
 })

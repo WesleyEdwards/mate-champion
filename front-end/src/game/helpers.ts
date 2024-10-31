@@ -221,3 +221,11 @@ export function rightPos(entity: Entity) {
 export function leftPos(entity: Entity) {
   return entity.state.position.curr[0]
 }
+
+export function bottomPos(entity: Entity) {
+  return entity.state.position.curr[1] + entity.state.dimensions[1]
+}
+
+export function topPos(entity: Entity) {
+  return entity.state.position.curr[1]
+}
