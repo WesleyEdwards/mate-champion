@@ -13,19 +13,14 @@ export function RenderMixin<T extends BaseThing>(Base: T) {
 
       for (const entity of this.state.entities) {
         cxt.save()
-        accountForPosition(this.toRounded(entity.state.position.curr), cxt)
+        accountForPosition(this.toRounded(entity.position.curr), cxt)
         entity.render(cxt)
 
         if (this.selectedEntities.has(entity.id)) {
           cxt.strokeStyle = "red"
           cxt.lineWidth = 2
 
-          cxt.strokeRect(
-            0,
-            0,
-            entity.state.dimensions[0],
-            entity.state.dimensions[1]
-          )
+          cxt.strokeRect(0, 0, entity.width, entity.height)
         }
         cxt.restore()
       }

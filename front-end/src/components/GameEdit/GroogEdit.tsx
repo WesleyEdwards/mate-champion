@@ -19,7 +19,7 @@ export const GroogEdit: FC<{
 }> = ({groog, editGroog}) => {
   const Renderer = entityFC["groog"]
 
-  const facing = groog.state.velocity[0] > 0 ? "right" : "left"
+  const facing = groog.velocity[0] > 0 ? "right" : "left"
 
   return (
     <Card>
@@ -37,11 +37,11 @@ export const GroogEdit: FC<{
           <Select
             defaultValue={facing}
             onChange={(e, value) => {
-              const abs = Math.abs(groog.state.velocity[0])
+              const abs = Math.abs(groog.velocity[0])
               if (value === "left") {
-                groog.state.velocity[0] = -abs
+                groog.velocity[0] = -abs
               } else {
-                groog.state.velocity[0] = abs
+                groog.velocity[0] = abs
               }
               editGroog(groog)
             }}
@@ -54,11 +54,11 @@ export const GroogEdit: FC<{
         <MCSlider
           title="Speed"
           setValue={(value) => {
-            const accountForDir = groog.state.velocity[0] > 0 ? value : -value
-            groog.state.velocity[0] = accountForDir / 100
+            const accountForDir = groog.velocity[0] > 0 ? value : -value
+            groog.velocity[0] = accountForDir / 100
             return editGroog(groog)
           }}
-          value={Math.abs(Math.floor(groog.state.velocity[0] * 100))}
+          value={Math.abs(Math.floor(groog.velocity[0] * 100))}
           incrementBy={5}
           min={0}
           max={100}

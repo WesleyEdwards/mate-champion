@@ -1,5 +1,5 @@
 import {cameraConst} from "../loopShared/constants"
-import {ChampState} from "../entities/champ"
+import {Champ, ChampState} from "../entities/champ"
 import {Camera} from "../entities/entityTypes"
 import {updateTimers, updateWithTime} from "./timeHelpers"
 
@@ -8,7 +8,7 @@ export const updateCamera = (cam: Camera, deltaT: number) => {
   updateWithTime(cam.position, cam.velocity, deltaT)
 }
 
-export const updateCameraWithPlayer = (cam: Camera, champ: ChampState) => {
+export const updateCameraWithPlayer = (cam: Camera, champ: Champ) => {
   if (champ.velocity[0] !== 0 || champ.velocity[1] !== 0) {
     cam.time.idleTime.val = 0
   }
@@ -19,7 +19,7 @@ export const updateCameraWithPlayer = (cam: Camera, champ: ChampState) => {
   }
 
   // Update X
-  const playerDistFromWall = champ.position.curr[0] - cam.position[0]
+  const playerDistFromWall = champ.posLeft - cam.position[0]
   const diffX = playerDistFromWall - cameraConst.idealDistFromLeftWall
   cam.velocity[0] = diffX * 0.02
 

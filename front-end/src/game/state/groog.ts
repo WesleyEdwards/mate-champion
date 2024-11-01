@@ -1,5 +1,5 @@
 import {GRAVITY} from "../loopShared/constants"
-import {GroogState, groogConst} from "../entities/groog"
+import {Groog, GroogState, groogConst} from "../entities/groog"
 import {ActionMap, UpdateFun} from "./helpers"
 
 type GroogDirX = "left" | "right"
@@ -11,12 +11,12 @@ export type GroogAction =
   | {name: "setY"; y: number; onEntity?: boolean}
   | {name: "setX"; x: number}
 
-const processActionMap: ActionMap<GroogAction, GroogState> = {
+const processActionMap: ActionMap<GroogAction, Groog> = {
   die: (g, _) => {
-    if (g.render.curr === "die") return
-    g.render.curr = "die"
-    g.timers.dyingTimer.val = groogConst.dieTimer
-    g.timers.sprite.val = 0
+    if (g.state.render.curr === "die") return
+    g.state.render.curr = "die"
+    g.state.timers.dyingTimer.val = groogConst.dieTimer
+    g.state.timers.sprite.val = 0
   },
   jump: (g, _) => {
     g.velocity[1] = groogConst.jumpSpeed
@@ -37,14 +37,14 @@ const processActionMap: ActionMap<GroogAction, GroogState> = {
   }
 }
 
-export const processGroogActionRaw = (g: GroogState, act: GroogAction) => {
+export const processGroogActionRaw = (g: Groog, act: GroogAction) => {
   processActionMap[act.name](g, act as never)
 }
 
-export const processGroogActions = (groog: GroogState) => {
-  for (const act of groog.queueActions) {
+export const processGroogActions = (groog: Groog) => {
+  for (const act of groog.state.queueActions) {
     processGroogActionRaw(groog, act)
   }
 
-  groog.queueActions = []
+  groog.state.queueActions = []
 }

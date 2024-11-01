@@ -12,11 +12,6 @@ export function emptyTime(count: "up" | "down"): Timer {
   return {count: count, val: 0}
 }
 
-const updateCurr = (currAndPrev: CurrAndPrev) => {
-  currAndPrev.prev[0] = currAndPrev.curr[0]
-  currAndPrev.prev[1] = currAndPrev.curr[1]
-}
-
 /**
  * Updates the position based on the velocity
  * @param pos
@@ -39,7 +34,8 @@ export const updatePosAndVel = (
   vel: Coors,
   deltaT: number
 ) => {
-  updateCurr(pos)
+  pos.prev[0] = pos.curr[0]
+  pos.prev[1] = pos.curr[1]
   updateWithTime(pos.curr, vel, deltaT)
 }
 

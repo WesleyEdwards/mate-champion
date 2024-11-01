@@ -26,32 +26,14 @@ export const reconcileActions = (gs: GameStateProps) => {
                 shot.initPos[1] - mBulletConst.dimensions[1] / 2
               ]
 
-          gs.entities.push(
-            new Bullet({
-              timers: {
-                timeAlive: emptyTime("up")
-              },
-              position: toCurrAndPrev(actualPos),
-              velocity: {curr: shot.velocity, prev: shot.velocity},
-              dead: false,
-              initPos: {...actualPos},
-              dimensions: [
-                mBulletConst.dimensions[0],
-                mBulletConst.dimensions[1]
-              ],
-              drawDimensions: [
-                mBulletConst.drawDimensions[0],
-                mBulletConst.drawDimensions[1]
-              ]
-            })
-          )
+          gs.entities.push(new Bullet(actualPos, shot.velocity))
         }
       }
       entity.state.publishQueue = entity.state.publishQueue.filter(
         (p) => p.name !== "shoot"
       )
 
-      updateCameraWithPlayer(gs.camera, entity.state)
+      updateCameraWithPlayer(gs.camera, entity)
       updateKeys(gs.keys, entity.state)
     }
   }

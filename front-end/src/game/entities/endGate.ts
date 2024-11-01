@@ -1,7 +1,7 @@
-import {createId} from "../loopShared/utils"
 import {Textures} from "../../gameAssets/textures"
 import {toCurrAndPrev} from "../helpers"
-import {CurrAndPrev, Coors, Entity} from "./entityTypes"
+import {BaseEntity, Entity} from "./Entity"
+import {CurrAndPrev, Coors} from "./entityTypes"
 
 type EndGateState = {
   position: CurrAndPrev
@@ -9,20 +9,12 @@ type EndGateState = {
   dead: boolean
 }
 
-export class EndGate implements Entity {
-  id = createId("endGate")
-  typeId = "endGate" as const
-  state: EndGateState
-
-  constructor(pos: Coors) {
-    this.state = {
-      position: toCurrAndPrev(pos),
-      dimensions: [200, 800],
-      dead: false
-    }
+export class EndGate extends BaseEntity {
+  constructor(position: Coors) {
+    super({typeId: "endGate", position, dimensions: [200, 800]})
   }
 
-  step: Entity["step"] = (deltaT) => {}
+  step: Entity["step"] = () => {}
 
   render: Entity["render"] = (cxt) => {
     cxt.drawImage(

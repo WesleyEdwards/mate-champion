@@ -1,71 +1,57 @@
-import {createId} from "../loopShared/utils"
 import {Textures} from "../../gameAssets/textures"
-import {Coors, CurrAndPrev, Entity} from "./entityTypes"
-import {toCurrAndPrev} from "../helpers"
+import {BaseEntity, Entity} from "./Entity"
+import {Coors} from "./entityTypes"
 
 export const floorConst = {
   floorY: 530,
   floorHeight: 60
 } as const
 
-export type PlatformState = {
+export class Platform extends BaseEntity {
   color: string
-  position: CurrAndPrev
-  dead: boolean
-  dimensions: Coors
-}
-
-export class Platform implements Entity {
-  id = createId("platform")
-  typeId = "platform" as const
-  state: PlatformState
-
   constructor(params: {color: string; position: Coors; dimensions: Coors}) {
-    this.state = {
-      color: params.color,
-      dimensions: params.dimensions,
-      position: toCurrAndPrev(params.position),
-      dead: false
-    }
+    super({
+      typeId: "platform",
+      position: params.position,
+      dimensions: params.dimensions
+    })
+    this.color = params.color
   }
 
   step: Entity["step"] = (deltaT) => {}
 
   render: Entity["render"] = (cxt) => {
-    cxt.fillStyle = this.state.color
+    cxt.fillStyle = this.color
     cxt.strokeStyle = "black"
     cxt.lineWidth = 4
 
     const reduceSize = 2
 
-    cxt.fillRect(0, 0, this.state.dimensions[0], this.state.dimensions[1])
+    cxt.fillRect(0, 0, this.width, this.height)
     cxt.strokeRect(
       reduceSize,
       reduceSize,
-      this.state.dimensions[0] - reduceSize * 2,
-      this.state.dimensions[1] - reduceSize * 2
+      this.width - reduceSize * 2,
+      this.height - reduceSize * 2
     )
   }
 }
 
-export class Floor implements Entity {
-  id = createId("floor")
-  typeId = "floor" as const
-  state: PlatformState
-
+export class Floor extends BaseEntity {
+  color: string
   constructor(params: {color: string; startX: number; width: number}) {
-    this.state = {
-      color: params.color,
-      dimensions: [params.width, floorConst.floorHeight],
-      position: toCurrAndPrev([params.startX, floorConst.floorY]),
-      dead: false
-    }
+    super({
+      typeId: "floor",
+      position: [params.startX, floorConst.floorY],
+      dimensions: [params.width, floorConst.floorHeight]
+    })
+    this.color = params.color
   }
   step: Entity["step"] = (deltaT) => {}
 
   render: Entity["render"] = (cxt) => {
     const img = Textures().platform
-    const blocksNeeded = Math.ceil(this.state.dimensions[0] / img.width)
+    const blocksNeeded = Math.ceil(this.dimensions[0] / img.width)
     for (let i = 0; i < blocksNeeded; i++) {
       cxt.drawImage(
         img,

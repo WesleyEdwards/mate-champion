@@ -1,18 +1,13 @@
 import {MAX_CANVAS_HEIGHT, platformConst} from "../loopShared/constants"
 import {LevelMap} from "../loopShared/models"
-import {
-  Camera,
-  Coors,
-  CurrAndPrev,
-  Entity,
-  EntityOfType
-} from "../entities/entityTypes"
+import {Camera, Coors, CurrAndPrev, EntityOfType} from "../entities/entityTypes"
 import {levelToEntities} from "../helpers"
 import {Floor, Platform} from "../entities/platform"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {Groog} from "../entities/groog"
 import {Ammo} from "../entities/Ammo"
 import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
+import {Entity} from "../entities/Entity"
 
 export const copyEntity = (e: Entity): Entity | undefined => {
   if (
@@ -33,24 +28,24 @@ export const copyEntity = (e: Entity): Entity | undefined => {
   } = {
     groog: (old) =>
       new Groog({
-        moveSpeed: old.state.velocity[0],
-        position: copyOfWithOffset(old.state.position),
+        moveSpeed: old.velocity[0],
+        position: copyOfWithOffset(old.position),
         timeBetweenJump: old.state.timeBetweenJump,
         timeBetweenTurn: old.state.timeBetweenTurn
       }),
     floor: (old) =>
       new Floor({
-        color: old.state.color,
-        startX: old.state.position.curr[0],
-        width: old.state.dimensions[0]
+        color: old.color,
+        startX: old.posLeft,
+        width: old.width
       }),
     platform: (old) =>
       new Platform({
-        color: old.state.color,
-        dimensions: [old.state.dimensions[0], old.state.dimensions[1]],
-        position: copyOfWithOffset(old.state.position)
+        color: old.color,
+        dimensions: [old.width, old.height],
+        position: copyOfWithOffset(old.position)
       }),
-    ammo: (old) => new Ammo(old.state.position.curr)
+    ammo: (old) => new Ammo(old.position.curr)
   }
   return map[e.typeId](e as never)
 }

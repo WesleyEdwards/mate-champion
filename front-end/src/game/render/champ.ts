@@ -1,19 +1,19 @@
 import {Textures} from "../../gameAssets/textures"
-import {ChampState, ChampAssetDes, champConst} from "../entities/champ"
+import {ChampAssetDes, champConst, Champ} from "../entities/champ"
 import {SpriteAssetInfo} from "./helpers"
 
-export const renderPlayer = (p: ChampState, cxt: CanvasRenderingContext2D) => {
-  const asset = champAssets[p.render.curr]
+export const renderPlayer = (p: Champ, cxt: CanvasRenderingContext2D) => {
+  const asset = champAssets[p.state.render.curr]
 
   if (!asset) return
 
   const w = champConst.render.imageWidth
 
   const whichSprite =
-    Math.floor(p.timers.sprite.val / asset.cycleTime()) % asset.imgCount
+    Math.floor(p.state.timers.sprite.val / asset.cycleTime()) % asset.imgCount
 
-  if (p.facing.x === "left") {
-    cxt.translate(p.dimensions[0], 0)
+  if (p.state.facing.x === "left") {
+    cxt.translate(p.width, 0)
     cxt.scale(-1, 1)
   }
 
@@ -28,8 +28,8 @@ export const renderPlayer = (p: ChampState, cxt: CanvasRenderingContext2D) => {
     0,
     w,
     asset.image().height,
-    -drawImageWidth / 2 + p.dimensions[0] / 2,
-    -(drawImageHeight - p.dimensions[1]),
+    -drawImageWidth / 2 + p.width / 2,
+    -(drawImageHeight - p.height),
     drawImageWidth,
     drawImageHeight
   )

@@ -1,10 +1,8 @@
 import {Coors} from "../../entities/entityTypes"
 import {areEntitiesTouching, toCurrAndPrev} from "../../helpers"
-import { LevelMap } from "../../loopShared/models"
+import {LevelMap} from "../../loopShared/models"
 import {incrementPosition, withCamPosition} from "../editHelpers"
 import {BaseThing, GameEdit} from "../GameEdit"
-
-
 
 export function InputMixin<T extends BaseThing>(Base: T) {
   return class InputMixin extends Base {
@@ -64,7 +62,7 @@ export function InputMixin<T extends BaseThing>(Base: T) {
           this.selectedEntities.clear()
           for (const entity of this.state.entities) {
             if (
-              areEntitiesTouching(entity.state, {
+              areEntitiesTouching(entity, {
                 position: {
                   curr: [
                     Math.min(this.dragSelection.init[0], dragPos.curr[0]),

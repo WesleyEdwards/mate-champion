@@ -11,18 +11,13 @@ import {
   updatePosAndVel
 } from "../state/timeHelpers"
 import {Ammo} from "./Ammo"
-import {CurrAndPrev, Coors, Entity} from "./entityTypes"
+import {BaseEntity, Entity} from "./Entity"
+import {Coors} from "./entityTypes"
 import {Groog} from "./groog"
+import {WithVelocity} from "./VelocityMixin"
 
 export type ChampState = {
-  position: CurrAndPrev
-  velocity: Coors
-  dimensions: Coors
-  dead: boolean
-  facing: {
-    x: ChampDirectionX
-    y: ChampDirectionY
-  }
+  facing: {x: ChampDirectionX; y: ChampDirectionY}
   jump: {
     jumps: number
     isJumping: boolean
@@ -56,10 +51,7 @@ type DirY = "hor" | "up"
 export type ChampDescription = `${DirY}-${PlayerAction}-${"walk" | "none"}`
 
 export const champConst = {
-  widthHeight: {
-    x: 64,
-    y: 64
-  },
+  widthHeight: [64, 64],
   moveSpeed: 0.5,
   jumpSpeed: -0.85,
   melee: {
@@ -82,23 +74,13 @@ export const champConst = {
 export type ChampDirectionY = "up" | "down" | "hor"
 export type ChampDirectionX = "left" | "right"
 
-export class Champ implements Entity {
-  id = "player"
-  typeId = "player" as const
+export class Champ extends WithVelocity(BaseEntity) {
   state: ChampState
-  modifyStatsOnDeath = {
-    lives: -1
-  }
+  modifyStatsOnDeath = {lives: -1}
   constructor(position: Coors) {
+    super({dimensions: [...champConst.widthHeight], position, typeId: "player"})
     this.state = {
-      position: toCurrAndPrev(position),
-      dimensions: [champConst.widthHeight.x, champConst.widthHeight.y],
-      facing: {
-        x: "right",
-        y: "hor"
-      },
-
-      dead: false,
+      facing: {x: "right", y: "hor"},
       gravityFactor: null,
       jump: {jumps: 0, isJumping: false},
       action: null,
@@ -108,7 +90,6 @@ export class Champ implements Entity {
       },
       acceptQueue: [],
       publishQueue: [],
-      velocity: [0, 0],
       timers: {
         sprite: emptyTime("up"),
         coyote: emptyTime("up"),
@@ -120,23 +101,23 @@ export class Champ implements Entity {
 
   step: Entity["step"] = (deltaT) => {
     updateTimers(this.state.timers, deltaT)
-    updatePosAndVel(this.state.position, this.state.velocity, deltaT)
-    updatePlayer(this.state, deltaT)
+    this.move(deltaT)
+    updatePlayer(this, deltaT)
   }
 
   render: Entity["render"] = (cxt) => {
-    renderPlayer(this.state, cxt)
+    renderPlayer(this, cxt)
   }
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const entity of entities) {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
         const {x, bottom, top} = calcPlatEntityCollision(this, entity)
-        if (x !== null) processChampActionRaw(this.state, {name: "setX", x})
+        if (x !== null) processChampActionRaw(this, {name: "setX", x})
         if (bottom !== null)
-          processChampActionRaw(this.state, {name: "setY", y: bottom})
+          processChampActionRaw(this, {name: "setY", y: bottom})
         if (top !== null)
-          processChampActionRaw(this.state, {
+          processChampActionRaw(this, {
             name: "setY",
             y: top,
             onEntity: true
@@ -161,11 +142,8 @@ export class Champ implements Entity {
 
           if (
             areTouching1(
-              [
-                this.state.position.curr[0] + meleePosX,
-                this.state.position.curr[1] + meleePosY
-              ],
-              entity.state.position.curr,
+              [this.posLeft + meleePosX, this.position.curr[1] + meleePosY],
+              entity.position.curr,
               champConst.melee.reach / 2
             )
           ) {
@@ -174,14 +152,8 @@ export class Champ implements Entity {
         }
       }
       if (entity instanceof Ammo) {
-        if (
-          areTouching1(
-            this.state.position.curr,
-            entity.state.position.curr,
-            100
-          )
-        ) {
-          entity.state.dead = true
+        if (areTouching1(this.position.curr, entity.position.curr, 100)) {
+          entity.dead = true
         }
       }
     }

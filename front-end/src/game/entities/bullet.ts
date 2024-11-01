@@ -1,20 +1,11 @@
-import {createId} from "../loopShared/utils"
 import {Textures} from "../../gameAssets/textures"
 import {areEntitiesTouching} from "../helpers"
 import {distBetween} from "../state/helpers"
-import {TimerUp, updatePosAndVel} from "../state/timeHelpers"
-import {Coors, CurrAndPrev, Entity} from "./entityTypes"
+import {emptyTime, TimerUp, updatePosAndVel} from "../state/timeHelpers"
+import {Coors, CurrAndPrev} from "./entityTypes"
 import {Groog} from "./groog"
-
-export type MBulletState = {
-  timers: {timeAlive: TimerUp}
-  position: CurrAndPrev
-  velocity: CurrAndPrev
-  dead: boolean
-  initPos: Coors
-  dimensions: Coors
-  drawDimensions: Coors // rendering is weird with vert
-}
+import {BaseEntity, Entity} from "./Entity"
+import {WithVelocity} from "./VelocityMixin"
 
 export const mBulletConst = {
   dimensions: [24, 24],
@@ -24,46 +15,51 @@ export const mBulletConst = {
   distFromOppHit: 40
 } as const
 
-export class Bullet implements Entity {
-  id = createId("bullet")
-  typeId = "bullet" as const
-  state: MBulletState
+export class Bullet extends WithVelocity(BaseEntity) {
+  // state: MBulletState
+  timers: {timeAlive: TimerUp} = {timeAlive: emptyTime("up")}
+  initPos: Coors
 
-  constructor(s: MBulletState) {
-    this.state = s
+  constructor(position: Coors, velocity: Coors) {
+    super({
+      typeId: "bullet",
+      position: position,
+      dimensions: [mBulletConst.dimensions[0], mBulletConst.dimensions[1]]
+    })
+    this.velocity = velocity
+    this.initPos = [...position]
   }
 
   step: Entity["step"] = (deltaT) => {
-    updatePosAndVel(this.state.position, this.state.velocity.curr, deltaT)
+    updatePosAndVel(this.position, this.velocity, deltaT)
     if (
-      distBetween(this.state.initPos, this.state.position.curr) >
-      mBulletConst.distUntilDud
+      distBetween(this.initPos, this.position.curr) > mBulletConst.distUntilDud
     ) {
-      this.state.dead = true
+      this.dead = true
     }
   }
 
   render: Entity["render"] = (cxt) => {
-    cxt.translate(this.state.dimensions[0] / 2, this.state.dimensions[1] / 2)
+    cxt.translate(this.width / 2, this.height / 2)
 
     cxt.rotate(
       (() => {
-        if (this.state.velocity.curr[0] > 0) return 0
-        if (this.state.velocity.curr[0] < 0) return Math.PI
+        if (this.velocity[0] > 0) return 0
+        if (this.velocity[0] < 0) return Math.PI
         return (Math.PI / 2) * 3
       })()
     )
-    cxt.translate(-this.state.dimensions[0] / 2, -this.state.dimensions[1] / 2)
+    cxt.translate(-this.width / 2, -this.height / 2)
 
     const spritesInRow = 4
     const whichSprite =
-      Math.round(this.state.timers.timeAlive.val / 10) % spritesInRow
+      Math.round(this.timers.timeAlive.val / 10) % spritesInRow
 
     const imgWidth = 28
 
     // Rotate to draw
-    const w = this.state.drawDimensions[0]
-    const h = this.state.drawDimensions[1]
+    const w = mBulletConst.drawDimensions[0]
+    const h = mBulletConst.drawDimensions[1]
 
     cxt.drawImage(
       Textures().bullet,
@@ -82,9 +78,9 @@ export class Bullet implements Entity {
     for (const e of entities) {
       if (e instanceof Groog) {
         if (e.state.render.curr === "die") continue
-        if (areEntitiesTouching(this.state, e.state)) {
+        if (areEntitiesTouching(this, e)) {
           e.state.queueActions.push({name: "die"})
-          this.state.dead = true
+          this.dead = true
         }
       }
     }

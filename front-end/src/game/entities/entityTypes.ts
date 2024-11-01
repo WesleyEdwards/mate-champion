@@ -4,6 +4,7 @@ import {Ammo} from "./Ammo"
 import {Bullet} from "./bullet"
 import {Champ} from "./champ"
 import {EndGate} from "./endGate"
+import {Entity} from "./Entity"
 import {Groog} from "./groog"
 import {Floor, Platform} from "./platform"
 
@@ -46,19 +47,8 @@ export type EntityOfType = {
   endGate: EndGate
 }
 
-export type Entity = {
-  id: Id
-  typeId: EntityType
-  step: (deltaT: number) => void
-  render: (cxt: CanvasRenderingContext2D) => void
-  state: {
-    position: CurrAndPrev
-    dimensions: Coors
-    dead: boolean
-  }
-  handleInteraction?: (entities: Entity[]) => void
-  modifyStatsOnDeath?: Partial<PlayStats>
-}
+export type Constructor<T = {}> = new (...args: any[]) => T
+
 export type Camera = {
   // offset
   position: Coors

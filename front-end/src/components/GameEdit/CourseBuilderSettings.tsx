@@ -1,6 +1,6 @@
 import {CircularProgress, Stack} from "@mui/joy"
 import {useState, useEffect, FC} from "react"
-import {Entity, EntityType} from "../../game/entities/entityTypes"
+import {EntityType} from "../../game/entities/entityTypes"
 import {useLevelContext} from "../../hooks/useLevels"
 import {AddingEntity} from "./ItemTypeEdit"
 import {Floor, Platform} from "../../game/entities/platform"
@@ -9,6 +9,7 @@ import {scrollbarProps} from "../LevelEditorHome"
 import {GroogEdit} from "./GroogEdit"
 import {Groog} from "../../game/entities/groog"
 import {FloorEditor} from "./FloorEdit"
+import {Entity} from "../../game/entities/Entity"
 
 export type EditableEntity = Exclude<EntityType, "player" | "bullet">
 
@@ -76,33 +77,33 @@ export const EditingEntities: FC<{
       }}
     >
       {edit.map((entity) => {
-        if (entity.typeId === "platform") {
+        if (entity instanceof Platform) {
           return (
             <PlatformEditor
               key={entity.id}
-              platform={entity as Platform}
+              platform={entity}
               editPlatform={(p) => {
                 setEdit((prev) => prev.map((e) => (e.id === p.id ? p : e)))
               }}
             />
           )
         }
-        if (entity.typeId === "groog") {
+        if (entity instanceof Groog) {
           return (
             <GroogEdit
               key={entity.id}
-              groog={entity as Groog}
+              groog={entity}
               editGroog={(p) => {
                 setEdit((prev) => prev.map((e) => (e.id === p.id ? p : e)))
               }}
             />
           )
         }
-        if (entity.typeId === "floor") {
+        if (entity instanceof Floor) {
           return (
             <FloorEditor
               key={entity.id}
-              floor={entity as Floor}
+              floor={entity}
               editFloor={(p) => {
                 setEdit((prev) => prev.map((e) => (e.id === p.id ? p : e)))
               }}

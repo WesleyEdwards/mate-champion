@@ -4,7 +4,6 @@ import {SpacialHashGrid} from "../spacialHashGrid"
 import {reconcileActions} from "../state/reconcileActions"
 import {updateCamera} from "../state/camera"
 import {updateTimers} from "../state/timeHelpers"
-import {Champ} from "../entities/champ"
 import {
   gameStateConst,
   initGameState,
@@ -12,10 +11,11 @@ import {
   uiIsDirty,
   updateStats
 } from "../helpers"
-import {Entity, GameStateProps} from "../entities/entityTypes"
+import {GameStateProps} from "../entities/entityTypes"
 import {updateTime} from "../state/helpers"
 import {EndGate} from "../entities/endGate"
 import {PlayLoopParams} from "./playLoop"
+import {Entity} from "../entities/Entity"
 
 export class GamePlay {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])
@@ -80,9 +80,9 @@ export class GamePlay {
 
     reconcileActions(this.state)
 
-    if (this.state.entities.some((e) => e.state.dead)) {
-      const dead = this.state.entities.filter((e) => e.state.dead)
-      this.state.entities = this.state.entities.filter((e) => !e.state.dead)
+    if (this.state.entities.some((e) => e.dead)) {
+      const dead = this.state.entities.filter((e) => e.dead)
+      this.state.entities = this.state.entities.filter((e) => !e.dead)
       for (const d of dead) {
         if (d.modifyStatsOnDeath) {
           for (const [k, v] of Object.entries(d.modifyStatsOnDeath)) {
@@ -95,7 +95,7 @@ export class GamePlay {
   }
 
   updatePlayer(champ: Entity) {
-    if (champ.state.position.curr[0] > this.currentLevel.endPosition) {
+    if (champ.posLeft > this.currentLevel.endPosition) {
       this.state.currStateOfGame = "nextLevel"
       this.state.timers.nextLevelTimer.val = gameStateConst.showMessageTime
       this.state.stats.level.curr += 1
@@ -157,7 +157,7 @@ export class GamePlay {
 
     for (const entity of this.state.entities) {
       cxt.save()
-      accountForPosition(entity.state.position.curr, cxt)
+      accountForPosition(entity.position.curr, cxt)
       entity.render(cxt)
 
       // cxt.strokeStyle = "red";
@@ -166,8 +166,8 @@ export class GamePlay {
       // cxt.strokeRect(
       //   0,
       //   0,
-      //   entity.state.dimensions[0],
-      //   entity.state.dimensions[1]
+      //   entity.state.width,
+      //   entity.state.height
       // );
 
       cxt.restore()

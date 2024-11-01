@@ -8,10 +8,8 @@ import {
 } from "@mui/joy"
 import {FC, useState} from "react"
 import {entityFC} from "./ItemTypeEdit"
-import {Add, Remove} from "@mui/icons-material"
 import {Floor} from "../../game/entities/platform"
 import {SizeControl} from "./helpers"
-import {ColorPicker} from "./ColorPicker"
 
 export const FloorEditor: FC<{
   floor: Floor
@@ -29,10 +27,10 @@ export const FloorEditor: FC<{
           title="Width"
           min={20}
           setValue={(change) => {
-            floor.state.dimensions[0] = change
+            floor.dimensions[0] = change
             return editFloor(floor)
           }}
-          value={floor.state.dimensions[0]}
+          value={floor.dimensions[0]}
         />
         <Divider />
       </CardContent>

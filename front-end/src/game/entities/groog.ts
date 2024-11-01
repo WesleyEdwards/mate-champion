@@ -1,11 +1,4 @@
-import {createId} from "../loopShared/utils"
-import {
-  toCurrAndPrev,
-  calcPlatEntityCollision,
-  areTouching1,
-  rightPos,
-  leftPos
-} from "../helpers"
+import {toCurrAndPrev, calcPlatEntityCollision, areTouching1} from "../helpers"
 import {renderGroog} from "../render/groog"
 import {
   GroogAction,
@@ -20,15 +13,12 @@ import {
   updatePosAndVel
 } from "../state/timeHelpers"
 import {Champ} from "./champ"
-import {CurrAndPrev, Coors, Entity} from "./entityTypes"
 import {GRAVITY} from "../loopShared/constants"
 import {GroogInfo} from "../loopShared/models"
+import {BaseEntity, Entity} from "./Entity"
+import {WithVelocity} from "./VelocityMixin"
 
 export type GroogState = {
-  position: CurrAndPrev
-  velocity: Coors
-  dimensions: Coors
-  dead: boolean
   timeBetweenTurn: number
   timeBetweenJump: number
   timers: {
@@ -43,19 +33,20 @@ export type GroogState = {
   queueActions: GroogAction[]
 }
 
-export class Groog implements Entity {
-  id = createId("groog")
-  typeId = "groog" as const
+export class Groog extends WithVelocity(BaseEntity) {
   state: GroogState
   modifyStatsOnDeath = {score: 10}
   constructor(g: GroogInfo) {
+    super({
+      typeId: "groog",
+      dimensions: [...groogConst.dimensions],
+      position: g.position
+    })
+
+    this.velocity = [g.moveSpeed, 0]
     this.state = {
-      position: toCurrAndPrev([...g.position]),
-      velocity: [g.moveSpeed, 0],
       timeBetweenTurn: g.timeBetweenTurn,
       timeBetweenJump: g.timeBetweenJump,
-      dimensions: [...groogConst.dimensions],
-      dead: false,
       timers: {
         sprite: emptyTime("up"),
         dyingTimer: emptyTime("down"),
@@ -71,37 +62,37 @@ export class Groog implements Entity {
 
   step: Entity["step"] = (deltaT) => {
     updateTimers(this.state.timers, deltaT)
-    updatePosAndVel(this.state.position, this.state.velocity, deltaT)
+    this.move(deltaT)
     if (
       this.state.render.curr === "die" &&
       this.state.timers.dyingTimer.val <= 0
     ) {
-      this.state.dead = true
+      this.dead = true
     }
     if (
       this.state.render.curr !== "die" &&
       this.state.timers.turnX.val > this.state.timeBetweenTurn
     ) {
       this.state.timers.turnX.val = 0
-      processGroogActionRaw(this.state, {
+      processGroogActionRaw(this, {
         name: "setFacingX",
-        dir: this.state.velocity[0] > 0 ? "left" : "right"
+        dir: this.velocity[0] > 0 ? "left" : "right"
       })
     }
     if (
       this.state.timers.jump.val > Math.max(this.state.timeBetweenJump, 700)
     ) {
       this.state.timers.jump.val = 0
-      processGroogActionRaw(this.state, {name: "jump"})
+      processGroogActionRaw(this, {name: "jump"})
     }
 
-    this.state.velocity[1] += GRAVITY * deltaT
+    this.velocity[1] += GRAVITY * deltaT
 
-    processGroogActions(this.state)
+    processGroogActions(this)
   }
 
   render: Entity["render"] = (cxt) => {
-    renderGroog(this.state, cxt)
+    renderGroog(this, cxt)
   }
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {
@@ -109,22 +100,22 @@ export class Groog implements Entity {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
         const {x, bottom, top, inline} = calcPlatEntityCollision(this, entity)
         if (x !== null) {
-          processGroogActionRaw(this.state, {name: "setX", x})
+          processGroogActionRaw(this, {name: "setX", x})
         }
         if (bottom !== null) {
-          processGroogActionRaw(this.state, {name: "setY", y: bottom})
+          processGroogActionRaw(this, {name: "setY", y: bottom})
         }
         if (top !== null) {
-          processGroogActionRaw(this.state, {
+          processGroogActionRaw(this, {
             name: "setY",
             y: top,
             onEntity: true
           })
-          if (rightPos(this) > rightPos(entity)) {
-            this.state.velocity[0] = -Math.abs(this.state.velocity[0])
+          if (this.posRight > entity.posRight) {
+            this.velocity[0] = -Math.abs(this.velocity[0])
           }
-          if (leftPos(this) < leftPos(entity)) {
-            this.state.velocity[0] = Math.abs(this.state.velocity[0])
+          if (this.posLeft < entity.posLeft) {
+            this.velocity[0] = Math.abs(this.velocity[0])
           }
         }
       }
@@ -133,8 +124,8 @@ export class Groog implements Entity {
       }
       if (entity.typeId === "player") {
         const touching = areTouching1(
-          this.state.position.curr,
-          entity.state.position.curr,
+          this.position.curr,
+          entity.position.curr,
           groogConst.killChampDist
         )
         if (touching && entity instanceof Champ) {

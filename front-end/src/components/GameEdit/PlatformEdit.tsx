@@ -1,14 +1,6 @@
-import {
-  Stack,
-  Card,
-  IconButton,
-  Typography,
-  CardContent,
-  Divider
-} from "@mui/joy"
-import {FC, useState} from "react"
+import {Stack, Card, Typography, CardContent, Divider} from "@mui/joy"
+import {FC} from "react"
 import {entityFC} from "./ItemTypeEdit"
-import {Add, Remove} from "@mui/icons-material"
 import {Platform} from "../../game/entities/platform"
 import {SizeControl} from "./helpers"
 import {ColorPicker} from "./ColorPicker"
@@ -24,7 +16,7 @@ export const PlatformEditor: FC<{
       <CardContent>
         <Renderer
           style={{
-            backgroundColor: platform.state.color,
+            backgroundColor: platform.color,
             width: "100%",
             marginBottom: "2rem"
           }}
@@ -37,13 +29,13 @@ export const PlatformEditor: FC<{
           justifyContent="space-between"
         >
           <Typography>
-            Color: <b>{platform.state.color}</b>
+            Color: <b>{platform.color}</b>
           </Typography>
           <ColorPicker
             disabled={false}
-            color={platform.state.color}
+            color={platform.color}
             setColor={(newColor) => {
-              platform.state.color = newColor
+              platform.color = newColor
               return editPlatform(platform)
             }}
             buttonLabel="Change"
@@ -53,20 +45,20 @@ export const PlatformEditor: FC<{
           title="Width"
           min={20}
           setValue={(change) => {
-            platform.state.dimensions[0] = change
+            platform.dimensions[0] = change
             return editPlatform(platform)
           }}
-          value={platform.state.dimensions[0]}
+          value={platform.width}
         />
         <Divider />
         <SizeControl
           title="Height"
           min={20}
           setValue={(change) => {
-            platform.state.dimensions[1] = change
+            platform.dimensions[1] = change
             return editPlatform(platform)
           }}
-          value={platform.state.dimensions[1]}
+          value={platform.height}
         />
       </CardContent>
     </Card>

@@ -1,24 +1,29 @@
-import {ChampState, ChampAssetDes, ChampDescription} from "../../entities/champ"
+import {
+  ChampState,
+  ChampAssetDes,
+  ChampDescription,
+  Champ
+} from "../../entities/champ"
 
-export const updateChampSpriteInfo = (p: ChampState) => {
+export const updateChampSpriteInfo = (p: Champ) => {
   const currRender = getChampSpritesInfo(p)
 
-  if (currRender !== p.render.prev) {
-    p.timers.sprite.val = 0
+  if (currRender !== p.state.render.prev) {
+    p.state.timers.sprite.val = 0
   }
-  p.render.prev = p.render.curr
-  p.render.curr = currRender
+  p.state.render.prev = p.state.render.curr
+  p.state.render.curr = currRender
 }
 
-const getChampSpritesInfo = (p: ChampState): ChampAssetDes => {
-  const directionY = p.facing.y === "down" ? "hor" : p.facing.y
+const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
+  const directionY = p.state.facing.y === "down" ? "hor" : p.state.facing.y
   const action = (): PlayerAction => {
-    if (!p.action) return "none"
-    if (p.timers.actionTimeRemain.val <= 0) {
+    if (!p.state.action) return "none"
+    if (p.state.timers.actionTimeRemain.val <= 0) {
       return "none"
     } else {
     }
-    return p.action
+    return p.state.action
   }
 
   const move: PlayerMove = p.velocity[0] === 0 ? "none" : "walk"

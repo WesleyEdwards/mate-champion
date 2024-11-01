@@ -1,6 +1,5 @@
-import {Coors, Entity, Id} from "./entities/entityTypes"
-
-type Position = [number, number]
+import {Entity} from "./entities/Entity"
+import {Coors, Id} from "./entities/entityTypes"
 
 export class SpacialHashGrid {
   // Bounds: min/max of the grid will be operating on
@@ -17,22 +16,22 @@ export class SpacialHashGrid {
     public bounds: Coors,
     public dimensions: Coors
   ) {
-    // const widthCells = Math.ceil(bounds[0] / dimensions[0]);
-    // const heightCells = Math.ceil(bounds[1] / dimensions[1]);
+    // const widthCells = Math.ceil(bounds[0] / width);
+    // const heightCells = Math.ceil(bounds[1] / height);
     // this.cells = new Array(widthCells).fill(new Array(heightCells).fill([]));
   }
 
   newClient(entity: Entity) {
     this.clients[entity.id] = {
-      position: [...entity.state.position.curr],
-      dimensions: [...entity.state.dimensions]
+      position: [...entity.position.curr],
+      dimensions: [...entity.dimensions]
     }
   }
 
   updateClient(entity: Entity) {
     this.clients[entity.id] = {
-      position: [...entity.state.position.curr],
-      dimensions: [...entity.state.dimensions]
+      position: [...entity.position.curr],
+      dimensions: [...entity.dimensions]
     }
   }
 
@@ -44,9 +43,8 @@ export class SpacialHashGrid {
       if (!a) return acc
 
       if (
-        Math.abs(a.position[0]) - Math.abs(entity.state.position.curr[0]) <
-          100 ||
-        Math.abs(a.position[1]) - Math.abs(entity.state.position.curr[1]) < 100
+        Math.abs(a.position[0]) - Math.abs(entity.posLeft) < 100 ||
+        Math.abs(a.position[1]) - Math.abs(entity.position.curr[1]) < 100
       ) {
         acc.push(id)
       }

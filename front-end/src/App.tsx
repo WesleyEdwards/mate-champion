@@ -11,8 +11,8 @@ import {LevelsContext, useLevels} from "./hooks/useLevels"
 import {Layout} from "./components/Layout"
 import {initializeTextures} from "./gameAssets/textures"
 import {Adding} from "./components/GameEdit/CourseBuilderSettings"
-import {Entity} from "./game/entities/entityTypes"
 import {ToastProvider} from "./hooks/Toaster"
+import {Entity} from "./game/entities/Entity"
 
 declare global {
   interface Window {

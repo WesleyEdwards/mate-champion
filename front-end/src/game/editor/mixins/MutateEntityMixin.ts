@@ -1,18 +1,13 @@
 import {AddableEntity} from "../../../components/GameEdit/CourseBuilderSettings"
 import {Ammo} from "../../entities/Ammo"
-import {Coors, Entity} from "../../entities/entityTypes"
+import {Entity} from "../../entities/Entity"
+import {Coors} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
-import {
-  bottomPos,
-  leftPos,
-  rightPos,
-  toCurrAndPrev,
-  topPos
-} from "../../helpers"
+import {toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
 import {incrementPosition, withCamPosition} from "../editHelpers"
-import {BaseThing, GameEdit} from "../GameEdit"
+import {BaseThing} from "../GameEdit"
 
 export function MutateEntityMixin<T extends BaseThing>(Base: T) {
   return class MutateEntityMixin extends Base {
@@ -43,8 +38,8 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
       this.hoveringEntities = new Set(
         this.state.entities
           .filter((e) => {
-            const isX = leftPos(e) + 3 < mouse[0] && rightPos(e) - 3 > mouse[0]
-            const isY = topPos(e) + 3 < mouse[1] && bottomPos(e) - 3 > mouse[1]
+            const isX = e.posLeft + 3 < mouse[0] && e.posRight - 3 > mouse[0]
+            const isY = e.posTop + 3 < mouse[1] && e.posBottom - 3 > mouse[1]
             return isX && isY
           })
           .map((e) => e.id)
@@ -67,7 +62,7 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
             e.typeId === "floor" || e.typeId === "endGate"
               ? [diff[0], 0]
               : [...diff]
-          incrementPosition(e.state.position.curr, d)
+          incrementPosition(e.position.curr, d)
         })
       }
     }
@@ -97,17 +92,17 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
       const pos = this.state.keys.mouseUp.curr
 
       const center: Coors = [
-        pos[0] - entity.state.dimensions[0] / 2,
-        pos[1] - entity.state.dimensions[1] / 2
+        pos[0] - entity.width / 2,
+        pos[1] - entity.height / 2
       ]
 
-      entity.state.position = toCurrAndPrev(
+      entity.position = toCurrAndPrev(
         withCamPosition(center, this.state.camera)
       )
 
       if (entity.typeId === "floor") {
         // Should probably do this higher up in the fun, but this works for now
-        entity.state.position.curr[1] = floorConst.floorY
+        entity.position.curr[1] = floorConst.floorY
       }
       this.state.entities.push(entity)
     }

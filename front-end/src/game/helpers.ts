@@ -1,17 +1,13 @@
 import {addEventListeners} from "./loopShared/eventListeners"
 import {LevelMap} from "./loopShared/models"
 import {Ammo} from "./entities/Ammo"
-import {
-  Coors,
-  CurrAndPrev,
-  Entity,
-  GameStateProps
-} from "./entities/entityTypes"
+import {Coors, CurrAndPrev, GameStateProps} from "./entities/entityTypes"
 import {Groog} from "./entities/groog"
 import {Floor, Platform} from "./entities/platform"
 import {emptyTime} from "./state/timeHelpers"
 import {EndGate} from "./entities/endGate"
 import {Champ} from "./entities/champ"
+import {BaseEntity, Entity} from "./entities/Entity"
 
 export const initGameState = (): GameStateProps => ({
   currStateOfGame: "nextLevel",
@@ -113,21 +109,19 @@ export const areEntitiesTouching = (
   rect1.position.curr[1] < rect2.position.curr[1] + rect2.dimensions[1] &&
   rect1.position.curr[1] + rect1.dimensions[1] > rect2.position.curr[1]
 
-function inlineX(entity: Entity, floor: Entity): boolean {
-  const width = entity.state.dimensions[0]
-  const posX = entity.state.position.curr[0]
+function inlineX(entity: BaseEntity, floor: BaseEntity): boolean {
+  const width = entity.width
+  const posX = entity.posLeft
   return (
-    !(posX + width < floor.state.position.curr[0]) &&
-    !(posX > floor.state.position.curr[0] + floor.state.dimensions[0])
+    !(posX + width < floor.posLeft) && !(posX > floor.posLeft + floor.width)
   )
 }
 
-function inlineY(entity: Entity, floor: Entity): boolean {
-  const height = entity.state.dimensions[1]
-  const posY = entity.state.position.curr[1]
+function inlineY(entity: BaseEntity, floor: BaseEntity): boolean {
+  const height = entity.height
+  const posY = entity.posTop
   return (
-    !(posY + height < floor.state.position.curr[1]) &&
-    !(posY > floor.state.position.curr[1] + floor.state.dimensions[1])
+    !(posY + height < floor.posTop) && !(posY > floor.posTop + floor.height)
   )
 }
 
@@ -143,8 +137,8 @@ type CollInfo = {
  * @returns the Y position where the entity should be set. Null if no collision.
  */
 export function calcPlatEntityCollision(
-  entity: Entity,
-  floor: Entity
+  entity: BaseEntity,
+  floor: BaseEntity
 ): CollInfo {
   let info: CollInfo = {
     x: null,
@@ -167,35 +161,38 @@ export function calcPlatEntityCollision(
   return info
 }
 function calcPlatEntityCollisionTop(
-  entity: Entity,
-  floor: Entity
+  entity: BaseEntity,
+  floor: BaseEntity
 ): number | null {
-  const eHeight = entity.state.dimensions[1]
-  const previous = entity.state.position.prev[1] + eHeight
-  const recent = entity.state.position.curr[1] + eHeight
-  const fPos = floor.state.position.curr[1]
+  const eHeight = entity.height
+  const previous = entity.position.prev[1] + eHeight
+  const recent = entity.position.curr[1] + eHeight
+  const fPos = floor.position.curr[1]
 
   if (recent >= fPos && previous <= fPos) return fPos - eHeight
   return null
 }
 function calcPlatEntityCollisionBottom(
-  entity: Entity,
-  floor: Entity
+  entity: BaseEntity,
+  floor: BaseEntity
 ): number | null {
-  const previous = entity.state.position.prev[1]
-  const recent = entity.state.position.curr[1]
-  const fPos = floor.state.position.curr[1] + floor.state.dimensions[1]
+  const previous = entity.position.prev[1]
+  const recent = entity.position.curr[1]
+  const fPos = floor.position.curr[1] + floor.height
 
   if (recent <= fPos && previous >= fPos) return fPos
   return null
 }
 
-function entityIsLeftOfFloor(entity: Entity, floor: Entity): number | null {
-  const eWidth = entity.state.dimensions[0]
+function entityIsLeftOfFloor(
+  entity: BaseEntity,
+  floor: BaseEntity
+): number | null {
+  const eWidth = entity.width
 
-  const previous = entity.state.position.prev[0] + eWidth
-  const recent = rightPos(entity)
-  const fPos = floor.state.position.curr[0]
+  const previous = entity.position.prev[0] + eWidth
+  const recent = entity.posRight
+  const fPos = floor.position.curr[0]
 
   if (recent >= fPos && previous <= fPos) {
     return fPos - eWidth
@@ -203,29 +200,16 @@ function entityIsLeftOfFloor(entity: Entity, floor: Entity): number | null {
   return null
 }
 
-function entityIsRightOfFloor(entity: Entity, floor: Entity): number | null {
-  const previous = entity.state.position.prev[0]
-  const recent = entity.state.position.curr[0]
-  const fPos = rightPos(floor)
+function entityIsRightOfFloor(
+  entity: BaseEntity,
+  floor: BaseEntity
+): number | null {
+  const previous = entity.position.prev[0]
+  const recent = entity.position.curr[0]
+  const fPos = floor.posRight
 
   if (recent <= fPos && previous >= fPos) {
     return fPos
   }
   return null
-}
-
-export function rightPos(entity: Entity) {
-  return entity.state.position.curr[0] + entity.state.dimensions[0]
-}
-
-export function leftPos(entity: Entity) {
-  return entity.state.position.curr[0]
-}
-
-export function bottomPos(entity: Entity) {
-  return entity.state.position.curr[1] + entity.state.dimensions[1]
-}
-
-export function topPos(entity: Entity) {
-  return entity.state.position.curr[1]
 }

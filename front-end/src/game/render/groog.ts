@@ -1,19 +1,19 @@
 import {Textures} from "../../gameAssets/textures"
-import {GroogAssetDes, groogConst, GroogState} from "../entities/groog"
+import {Groog, GroogAssetDes, groogConst, GroogState} from "../entities/groog"
 import {SpriteAssetInfo} from "./helpers"
 
-export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {
-  const asset = grogSpritesInfo[g.render.curr]
+export const renderGroog = (g: Groog, cxt: CanvasRenderingContext2D) => {
+  const asset = grogSpritesInfo[g.state.render.curr]
 
   if (!asset) return
 
   const w = groogConst.render.imageWidth
 
   const whichSprite =
-    Math.floor(g.timers.sprite.val / asset.cycleTime()) % asset.imgCount
+    Math.floor(g.state.timers.sprite.val / asset.cycleTime()) % asset.imgCount
 
   if (g.velocity[0] < 0) {
-    cxt.translate(g.dimensions[0], 0)
+    cxt.translate(g.width, 0)
     cxt.scale(-1, 1)
   }
 
@@ -28,8 +28,8 @@ export const renderGroog = (g: GroogState, cxt: CanvasRenderingContext2D) => {
     0,
     w,
     asset.image().height,
-    -drawImageWidth / 2 + g.dimensions[0] / 2,
-    -(drawImageHeight - g.dimensions[1]),
+    -drawImageWidth / 2 + g.width / 2,
+    -(drawImageHeight - g.height),
     drawImageWidth,
     drawImageHeight
   )

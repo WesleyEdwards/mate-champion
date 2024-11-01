@@ -1,5 +1,5 @@
 import {LevelMap} from "../loopShared/models"
-import {Coors, CurrAndPrev, Entity, Id} from "../entities/entityTypes"
+import {Coors, CurrAndPrev, Constructor, Id} from "../entities/entityTypes"
 import {updateTime} from "../state/helpers"
 import {updateTimers} from "../state/timeHelpers"
 import {
@@ -13,10 +13,9 @@ import {RenderMixin} from "./mixins/RenderMixin"
 import {MutateEntityMixin} from "./mixins/MutateEntityMixin"
 import {InputMixin} from "./mixins/InputMixin"
 import {SaveMixin} from "./mixins/SaveMixin"
+import {Entity} from "../entities/Entity"
 
-type GConstructor<T = {}> = new (...args: any[]) => T
-
-export type BaseThing = GConstructor<{
+export type BaseThing = Constructor<{
   currentLevel: LevelMap
   setLevels: (level: Partial<LevelMap>) => void
   canvas: HTMLCanvasElement
@@ -119,9 +118,7 @@ export class GameEdit extends RenderMixin(
       // unselect moving
       this.movingEntities.clear()
       for (const entity of this.state.entities) {
-        entity.state.position.curr = this.toRounded([
-          ...entity.state.position.curr
-        ])
+        entity.position.curr = this.toRounded([...entity.position.curr])
       }
     }
 
@@ -144,8 +141,8 @@ export class GameEdit extends RenderMixin(
   }
 
   handleStateCleanup() {
-    if (this.state.entities.some((e) => e.state.dead)) {
-      this.state.entities = this.state.entities.filter((e) => !e.state.dead)
+    if (this.state.entities.some((e) => e.dead)) {
+      this.state.entities = this.state.entities.filter((e) => !e.dead)
     }
 
     if (this.state.keys.delete.curr && this.state.keys.mousePos.curr) {
@@ -159,7 +156,7 @@ export class GameEdit extends RenderMixin(
     if (mouseUpAction) {
       // lock rounded into place.
       this.state.entities.forEach((e) => {
-        e.state.position.curr = this.toRounded(e.state.position.curr)
+        e.position.curr = this.toRounded(e.position.curr)
       })
     }
 
@@ -177,7 +174,7 @@ export class GameEdit extends RenderMixin(
 
     this.state.keys.mouseUp.curr = null
     this.state.endPosition =
-      this.state.entities.find((e) => e.typeId === "endGate")?.state?.position
+      this.state.entities.find((e) => e.typeId === "endGate")?.position
         ?.curr?.[0] ?? 4500
 
     // reconcile colors
@@ -185,8 +182,8 @@ export class GameEdit extends RenderMixin(
     if (bc && bc !== this.state.prevBaseColor) {
       this.state.entities.forEach((e) => {
         if (e instanceof Platform) {
-          if (e.state.color === this.state.prevBaseColor) {
-            e.state.color = bc
+          if (e.color === this.state.prevBaseColor) {
+            e.color = bc
           }
         }
       })

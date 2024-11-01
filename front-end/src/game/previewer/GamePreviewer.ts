@@ -1,7 +1,5 @@
 import {LevelMap} from "../loopShared/models"
-import {Champ} from "../entities/champ"
-import {EndGate} from "../entities/endGate"
-import {GameStateProps, Entity} from "../entities/entityTypes"
+import {GameStateProps} from "../entities/entityTypes"
 import {initGameState, levelToEntities} from "../helpers"
 import {renderBg} from "../render/background"
 import {accountForPosition} from "../render/helpers"
@@ -10,6 +8,7 @@ import {updateCamera} from "../state/camera"
 import {updateTime} from "../state/helpers"
 import {reconcileActions} from "../state/reconcileActions"
 import {updateTimers} from "../state/timeHelpers"
+import { Entity } from "../entities/Entity"
 
 export class GamePreviewer {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])
@@ -36,8 +35,8 @@ export class GamePreviewer {
       entity.step(this.state.time.deltaT)
       if (entity.typeId === "player") {
         if (
-          entity.state.position.curr[0] > this.level.endPosition ||
-          entity.state.dead
+          entity.posLeft > this.level.endPosition ||
+          entity.dead
         ) {
           this.startLevel()
         }
@@ -46,9 +45,9 @@ export class GamePreviewer {
 
     reconcileActions(this.state)
 
-    if (this.state.entities.some((e) => e.state.dead)) {
-      const dead = this.state.entities.filter((e) => e.state.dead)
-      this.state.entities = this.state.entities.filter((e) => !e.state.dead)
+    if (this.state.entities.some((e) => e.dead)) {
+      const dead = this.state.entities.filter((e) => e.dead)
+      this.state.entities = this.state.entities.filter((e) => !e.dead)
       for (const d of dead) {
         if (d.modifyStatsOnDeath) {
           for (const [k, v] of Object.entries(d.modifyStatsOnDeath)) {
@@ -90,7 +89,7 @@ export class GamePreviewer {
 
     for (const entity of this.state.entities) {
       cxt.save()
-      accountForPosition(entity.state.position.curr, cxt)
+      accountForPosition(entity.position.curr, cxt)
       entity.render(cxt)
 
       cxt.restore()
