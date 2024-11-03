@@ -7,7 +7,7 @@ import {FC} from "react"
 import {capitalize} from "lodash"
 import {ColorPicker} from "./ColorPicker"
 import {useLevelContext} from "../../hooks/useLevels"
-import { useNavigator } from "../../hooks/UseNavigator"
+import {useNavigator} from "../../hooks/UseNavigator"
 
 export const AddingEntity = ({
   edit,
@@ -91,7 +91,6 @@ export const AddingEntity = ({
                 disabled={disabled}
                 color={edit.color || "springgreen"}
                 setColor={(color) => {
-                  console.log("Setting color!")
                   handleSetEditingItem({baseColor: color})
                 }}
                 buttonLabel="Color"

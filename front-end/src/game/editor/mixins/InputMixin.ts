@@ -5,18 +5,37 @@ import {incrementPosition, withCamPosition} from "../editHelpers"
 import {BaseThing, GameEdit} from "../GameEdit"
 
 export function InputMixin<T extends BaseThing>(Base: T) {
-  return class InputMixin extends Base {
-    updateMouseHover() {
+  return class extends Base {
+    constructor(...args: any[]) {
+      super(...args)
+      this.registerStepFunction(this.updateMouseHover)
+      this.registerStepFunction(this.updateDragSelect)
+      this.registerStepFunction(this.updateCanvasMovement)
+      this.registerStepFunction(this.updateKeys, 1_000)
+    }
+
+    private updateKeys = () => {
+      Object.values(this.state.keys).forEach((obj) => {
+        if (typeof obj.curr === "boolean") {
+          obj.prev = obj.curr
+        } else {
+          if (obj.curr === null) {
+            obj.prev = obj.curr
+          } else {
+            obj.prev = [...obj.curr]
+          }
+        }
+      })
+    }
+
+    private updateMouseHover = () => {
       if (this.state.keys.ctrl.curr) {
         if (this.hoveringEntities.size > 0) {
           this.canvas.style.cursor = "pointer"
         } else {
           this.canvas.style.cursor = "crosshair"
         }
-      } else if (
-        this.hoveringEntities.size > 0 ||
-        this.movingEntities.size > 0
-      ) {
+      } else if (this.hoveringEntities.size > 0 || this.moving !== null) {
         this.canvas.style.cursor = "grab"
       } else {
         this.canvas.style.cursor = "auto"
@@ -31,7 +50,7 @@ export function InputMixin<T extends BaseThing>(Base: T) {
       }
     }
 
-    updateDragSelect() {
+    private updateDragSelect = () => {
       const justStartedDragSelecting =
         this.state.keys.shift.curr &&
         this.state.keys.mouseDown.prev === false &&
@@ -84,7 +103,7 @@ export function InputMixin<T extends BaseThing>(Base: T) {
       }
     }
 
-    updateCanvasMovement() {
+    private updateCanvasMovement = () => {
       if (!this.isMovingCanvas) return
       if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
         const diff: Coors = [

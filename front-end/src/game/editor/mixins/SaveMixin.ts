@@ -4,8 +4,12 @@ import {LevelMap} from "../../loopShared/models"
 import {BaseThing, GameEdit} from "../GameEdit"
 
 export function SaveMixin<T extends BaseThing>(Base: T) {
-  return class SaveMixin extends Base {
-    updateSave() {
+  return class extends Base {
+    constructor(...args: any[]) {
+      super(...args)
+      this.registerStepFunction(this.updateSave)
+    }
+    updateSave = () => {
       if (this.state.timers.sinceLastSave.val > 500) {
         this.state.timers.sinceLastSave.val = 0
         this.setLevels(this.editStateToLevelInfo())

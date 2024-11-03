@@ -3,7 +3,7 @@ import {accountForPosition} from "../../render/helpers"
 import {BaseThing, GameEdit} from "../GameEdit"
 
 export function RenderMixin<T extends BaseThing>(Base: T) {
-  return class RenderMixin extends Base {
+  return class extends Base {
     render(cxt: CanvasRenderingContext2D) {
       const camPos = this.state.camera.position
       cxt.save()

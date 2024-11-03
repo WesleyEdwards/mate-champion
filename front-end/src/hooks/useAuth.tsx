@@ -33,7 +33,7 @@ export const useAuth = (): AuthContextType => {
     ) {
       const levels = new StoreItem<LevelInfo>("unauth-level-info")
       const maps = new StoreItem<LevelMap>("unauth-level-map")
-      console.log("To add", {levels: levels.items, maps: maps.items})
+      console.log("Importing: ", {levels: levels.items, maps: maps.items})
       await api.level.importMap({levels: levels.items, maps: maps.items})
       localStorage.removeItem("unauth-level-info")
       localStorage.removeItem("unauth-level-map")

@@ -9,46 +9,6 @@ import {Ammo} from "../entities/Ammo"
 import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
 import {Entity} from "../entities/Entity"
 
-export const copyEntity = (e: Entity): Entity | undefined => {
-  if (
-    e.typeId === "endGate" ||
-    e.typeId === "player" ||
-    e.typeId === "floor" ||
-    e.typeId === "bullet"
-  ) {
-    return undefined
-  }
-  const copyOfWithOffset = (coors: CurrAndPrev): Coors => {
-    const correctForY = coors.curr[0] + 80 > MAX_CANVAS_HEIGHT ? -100 : 100
-    return [coors.curr[0] + 100, coors.curr[1] + correctForY]
-  }
-
-  const map: {
-    [K in AddableEntity]: (old: EntityOfType[K]) => EntityOfType[K]
-  } = {
-    groog: (old) =>
-      new Groog({
-        moveSpeed: old.velocity[0],
-        position: copyOfWithOffset(old.position),
-        timeBetweenJump: old.state.timeBetweenJump,
-        timeBetweenTurn: old.state.timeBetweenTurn
-      }),
-    floor: (old) =>
-      new Floor({
-        color: old.color,
-        startX: old.posLeft,
-        width: old.width
-      }),
-    platform: (old) =>
-      new Platform({
-        color: old.color,
-        dimensions: [old.width, old.height],
-        position: copyOfWithOffset(old.position)
-      }),
-    ammo: (old) => new Ammo(old.position.curr)
-  }
-  return map[e.typeId](e as never)
-}
 
 export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[0] += increment[0]
