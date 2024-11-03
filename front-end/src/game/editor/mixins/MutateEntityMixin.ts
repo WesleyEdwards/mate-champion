@@ -4,7 +4,7 @@ import {Entity} from "../../entities/Entity"
 import {Coors} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
-import {toCurrAndPrev} from "../../helpers"
+import {pointInsideEntity, toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
 import {incrementPosition, withCamPosition} from "../editHelpers"
 import {BaseThing} from "../GameEdit"
@@ -27,13 +27,22 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
         this.state.keys.mousePos.curr,
         this.state.camera
       )
+
+      this.sizableEntity = this.state.entities.reduce<{
+        entity: Entity
+        edge: "bottom" | "top" | "left" | "right"
+      } | null>((acc, e) => {
+        const edge = this.isEdgeOfEntity(e, mouse)
+
+        if (edge) {
+          return {edge, entity: e}
+        }
+        return acc
+      }, null)
+
       this.hoveringEntities = new Set(
         this.state.entities
-          .filter((e) => {
-            const isX = e.posLeft + 3 < mouse[0] && e.posRight - 3 > mouse[0]
-            const isY = e.posTop + 3 < mouse[1] && e.posBottom - 3 > mouse[1]
-            return isX && isY
-          })
+          .filter((e) => pointInsideEntity(e, mouse, -3))
           .map((e) => e.id)
       )
     }
@@ -64,7 +73,9 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
             delta: [0, 0]
           }
         }
-      } else if (stopGrabbing) {
+        return
+      }
+      if (stopGrabbing) {
         if (this.moving !== null) {
           const diff = this.moving.delta
 

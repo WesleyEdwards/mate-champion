@@ -35,6 +35,7 @@ export function addDevEventListeners(
     "mouseleave",
     () => {
       set("mousePos", null)
+      set("ctrl", false)
     },
     {signal: abortController.signal}
   )

@@ -1,3 +1,4 @@
+import {Entity} from "../../entities/Entity"
 import {renderBg} from "../../render/background"
 import {accountForPosition} from "../../render/helpers"
 import {BaseThing, GameEdit} from "../GameEdit"
@@ -13,15 +14,7 @@ export function RenderMixin<T extends BaseThing>(Base: T) {
 
       for (const entity of this.state.entities) {
         cxt.save()
-        accountForPosition(this.toRounded(entity.position.curr), cxt)
-        entity.render(cxt)
-
-        if (this.selectedEntities.has(entity.id)) {
-          cxt.strokeStyle = "red"
-          cxt.lineWidth = 2
-
-          cxt.strokeRect(0, 0, entity.width, entity.height)
-        }
+        this.renderEntity(entity, cxt)
         cxt.restore()
       }
 
@@ -47,7 +40,57 @@ export function RenderMixin<T extends BaseThing>(Base: T) {
         cxt.restore()
       }
 
+      if (this.sizableEntity) {
+        const entity = this.sizableEntity.entity
+        accountForPosition(entity.position.curr, cxt)
+        cxt.beginPath()
+        cxt.fillStyle = "blue"
+        cxt.strokeStyle = "blue"
+        cxt.lineWidth = 8
+        ;({
+          right: () => {
+            console.log("Draw right")
+            cxt.moveTo(entity.dimensions[0], 0)
+            cxt.lineTo(entity.dimensions[0], entity.dimensions[1])
+          },
+          left: () => {
+            cxt.moveTo(0, 0)
+            cxt.lineTo(0, entity.dimensions[1])
+          },
+          top: () => {
+            cxt.moveTo(0, 0)
+            cxt.lineTo(entity.dimensions[0], 0)
+          },
+          bottom: () => {
+            cxt.moveTo(0, entity.dimensions[1])
+            cxt.lineTo(entity.dimensions[0], entity.dimensions[1])
+          }
+        })[this.sizableEntity.edge]()
+
+        cxt.stroke()
+      }
+
       cxt.restore()
+    }
+
+    renderEntity = (entity: Entity, cxt: CanvasRenderingContext2D) => {
+      accountForPosition(this.toRounded(entity.position.curr), cxt)
+
+      if (this.moving?.entities?.has(entity.id)) {
+        cxt.globalAlpha = 0.25
+        entity.render(cxt)
+        accountForPosition(this.moving.delta, cxt)
+        cxt.globalAlpha = 1
+        entity.render(cxt)
+      } else {
+        entity.render(cxt)
+      }
+
+      if (this.selectedEntities.has(entity.id)) {
+        cxt.strokeStyle = "red"
+        cxt.lineWidth = 2
+        cxt.strokeRect(0, 0, entity.width, entity.height)
+      }
     }
   }
 }

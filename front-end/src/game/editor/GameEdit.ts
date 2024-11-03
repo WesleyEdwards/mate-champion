@@ -10,6 +10,7 @@ import {InputMixin} from "./mixins/InputMixin"
 import {SaveMixin} from "./mixins/SaveMixin"
 import {Entity} from "../entities/Entity"
 import {CleanupMixin} from "./mixins/CleanupMixin"
+import {firstTrue, pointInsideEntity} from "../helpers"
 
 export type BaseThing = Constructor<GameEditAll>
 class GameEditAll {
@@ -18,7 +19,10 @@ class GameEditAll {
   selectedEntities: Set<Id> = new Set()
   hoveringEntities: Set<Id> = new Set()
   dragSelection: {init: Coors; dragPos: CurrAndPrev} | null = null
-  sizableEntity?: {entity: Entity; edge: "bottom" | "top" | "left" | "right"}
+  sizableEntity: {
+    entity: Entity
+    edge: "bottom" | "top" | "left" | "right"
+  } | null = null
 
   private stepFunctions: {fun: (deltaT: number) => void; priority: number}[] =
     []
@@ -31,12 +35,6 @@ class GameEditAll {
     this.stepFunctions.sort((a, b) => (a.priority < b.priority ? -1 : 1))
   }
 
-  protected callStepFunctions(deltaT: number) {
-    for (const fn of this.stepFunctions) {
-      fn.fun(deltaT)
-    }
-  }
-
   constructor(
     public currentLevel: LevelMap,
     public setLevels: (level: Partial<LevelMap>) => void,
@@ -46,16 +44,17 @@ class GameEditAll {
     const state = levelInfoToEditState(currentLevel)
     addDevEventListeners(state, canvas)
     this.state = state
-
     const initCoors = JSON.parse(localStorage.getItem("edit-coors") ?? "[0,0]")
     this.state.camera.position = initCoors
+  }
 
-    this.registerStepFunction((timeStamp) =>
-      updateTime(this.state.time, timeStamp)
-    )
-    this.registerStepFunction((timeStamp) =>
-      updateTimers(this.state.timers, this.state.time.deltaT)
-    )
+  step(timeStamp: number) {
+    updateTime(this.state.time, timeStamp)
+    const deltaT = this.state.time.deltaT
+    updateTimers(this.state.timers, deltaT)
+    for (const fn of this.stepFunctions) {
+      fn.fun(timeStamp)
+    }
   }
 
   fromId(entity: Id): Entity | undefined {
@@ -83,12 +82,23 @@ class GameEditAll {
     const valY = Math.ceil(pos[1] / roundTo) * roundTo
     return [valX, valY]
   }
+
+  isEdgeOfEntity = (
+    e: Entity,
+    pos: Coors
+  ): "bottom" | "top" | "left" | "right" | null => {
+    if (!pointInsideEntity(e, pos, 10)) return null
+    const dist = 4
+
+    return firstTrue({
+      right: Math.abs(e.posRight - pos[0]) < dist,
+      left: Math.abs(e.posLeft - pos[0]) < dist,
+      top: Math.abs(e.posTop - pos[1]) < dist,
+      bottom: Math.abs(e.posBottom - pos[1]) < dist
+    })
+  }
 }
 
 export class GameEdit extends RenderMixin(
   CleanupMixin(SaveMixin(MutateEntityMixin(InputMixin(GameEditAll))))
-) {
-  step(timeStamp: number) {
-    this.callStepFunctions(timeStamp)
-  }
-}
+) {}
