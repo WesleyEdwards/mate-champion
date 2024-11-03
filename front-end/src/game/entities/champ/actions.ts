@@ -1,58 +1,9 @@
 import _ from "lodash"
-import {
-  ChampState,
-  champConst,
-  ChampDirectionY,
-  Champ
-} from "../../entities/champ"
-import {ActionMap} from "../helpers"
-import {Coors} from "../../entities/entityTypes"
-import {mBulletConst} from "../../entities/bullet"
-
-export const handleChampActions = (p: Champ) => {
-  cleanActions(p)
-
-  if (!queuedContains(p, "moveX")) {
-    processChampActionRaw(p, {name: "stopX"})
-  }
-
-  if (!queuedContains(p, "setFacingY")) {
-    processChampActionRaw(p, {name: "setFacingY", dir: "hor"})
-  }
-
-  for (const a of p.state.acceptQueue) {
-    processChampActionRaw(p, a)
-  }
-
-  p.state.acceptQueue = []
-}
-
-const cleanActions = (p: Champ) => {
-  // A list of filters to find actions that are NOT allowed
-  const notAllowedFilter = p.state.acceptQueue.reduce<
-    ((act: ChampActionStr) => boolean)[]
-  >((acc, curr) => {
-    if (curr.name === "jump") {
-      const allowedToJump = p.velocity[1] === 0 || p.state.jump.jumps === 0
-      if (allowedToJump) {
-        acc.push((a) => a === "setY")
-      } else {
-        acc.push((a) => a === "jump")
-      }
-    }
-    if (curr.name === "melee" || curr.name === "shoot") {
-      if (p.state.timers.actionCoolDownRemain.val > 0) {
-        acc.push((a) => a === "melee" || a === "shoot")
-      }
-    }
-
-    return acc
-  }, [])
-
-  for (const n of notAllowedFilter) {
-    p.state.acceptQueue = p.state.acceptQueue.filter((a) => !n(a.name))
-  }
-}
+import {champConst, ChampDirectionY, ChampBase, Champ} from "./champ"
+import {ActionMap} from "../../state/helpers"
+import {Coors} from "../entityTypes"
+import {mBulletConst} from "../bullet"
+import {WithVelType} from "../VelocityMixin"
 
 export type ChampAction =
   | {name: "moveX"; dir: "left" | "right"}
@@ -65,14 +16,10 @@ export type ChampAction =
   | {name: "setX"; x: number}
   | {name: "kill"}
 
-export const processChampActionRaw = (
-  champ: Champ,
-  action: ChampAction
-) => {
-  processActionMap[action.name](champ, action as never)
-}
-
-const processActionMap: ActionMap<ChampAction, Champ> = {
+export const processActionMap: ActionMap<
+  ChampAction,
+  InstanceType<WithVelType<ChampBase>>
+> = {
   moveX: (p, act) => {
     if (act.dir === "left") {
       p.velocity[0] = -champConst.moveSpeed
@@ -128,7 +75,7 @@ const processActionMap: ActionMap<ChampAction, Champ> = {
     })()
 
     p.state.publishQueue.push({
-      name: "shoot" as const,
+      name: "shoot",
       initPos: [x, y],
       velocity
     })
@@ -149,10 +96,4 @@ const processActionMap: ActionMap<ChampAction, Champ> = {
   kill: (p, act) => {
     p.dead = true
   }
-}
-
-type ChampActionStr = ChampAction["name"]
-
-const queuedContains = (p: Champ, act: ChampActionStr): boolean => {
-  return p.state.acceptQueue.some((a) => a.name === act)
 }

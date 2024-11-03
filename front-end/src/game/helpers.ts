@@ -6,7 +6,7 @@ import {Groog} from "./entities/groog"
 import {Floor, Platform} from "./entities/platform"
 import {emptyTime} from "./state/timeHelpers"
 import {EndGate} from "./entities/endGate"
-import {Champ} from "./entities/champ"
+import {Champ} from "./entities/champ/champ"
 import {BaseEntity, Entity} from "./entities/Entity"
 
 export const initGameState = (): GameStateProps => ({

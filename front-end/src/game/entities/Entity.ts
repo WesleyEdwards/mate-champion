@@ -1,7 +1,7 @@
 import {toCurrAndPrev} from "../helpers"
 import {PlayStats} from "../loopShared/models"
 import {generateRandomInt} from "../loopShared/utils"
-import {EntityType, CurrAndPrev, Coors} from "./entityTypes"
+import {EntityType, CurrAndPrev, Coors, Constructor} from "./entityTypes"
 
 export type BaseEntityProps = {
   typeId: EntityType
@@ -28,6 +28,9 @@ export interface Entity {
   handleInteraction?(entities: BaseEntity[]): void
   modifyStatsOnDeath?: Partial<PlayStats>
 }
+
+export type EntityConstructor = Constructor<BaseEntity>
+
 
 export class BaseEntity {
   id: string

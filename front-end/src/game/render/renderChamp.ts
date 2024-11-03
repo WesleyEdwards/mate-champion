@@ -1,38 +1,45 @@
 import {Textures} from "../../gameAssets/textures"
-import {ChampAssetDes, champConst, Champ} from "../entities/champ"
+import {ChampAssetDes, champConst, ChampBase} from "../entities/champ/champ"
+import {Entity, EntityConstructor} from "../entities/Entity"
+import {Constructor} from "../entities/entityTypes"
 import {SpriteAssetInfo} from "./helpers"
 
-export const renderPlayer = (p: Champ, cxt: CanvasRenderingContext2D) => {
-  const asset = champAssets[p.state.render.curr]
+export function RenderChamp<TBase extends Constructor<ChampBase>>(Base: TBase) {
+  return class extends Base {
+    render: Entity["render"] = (cxt) => {
+      const asset = champAssets[this.state.render.curr]
 
-  if (!asset) return
+      if (!asset) return
 
-  const w = champConst.render.imageWidth
+      const w = champConst.render.imageWidth
 
-  const whichSprite =
-    Math.floor(p.state.timers.sprite.val / asset.cycleTime()) % asset.imgCount
+      const whichSprite =
+        Math.floor(this.state.timers.sprite.val / asset.cycleTime()) %
+        asset.imgCount
 
-  if (p.state.facing.x === "left") {
-    cxt.translate(p.width, 0)
-    cxt.scale(-1, 1)
+      if (this.state.facing.x === "left") {
+        cxt.translate(this.width, 0)
+        cxt.scale(-1, 1)
+      }
+
+      const sx = (asset.startX + whichSprite) * w
+
+      const drawImageWidth = 300 // this allows room for the attacks to be drawn
+      const drawImageHeight = drawImageWidth * (105 / 200)
+
+      cxt.drawImage(
+        asset.image(),
+        sx,
+        0,
+        w,
+        asset.image().height,
+        -drawImageWidth / 2 + this.width / 2,
+        -(drawImageHeight - this.height),
+        drawImageWidth,
+        drawImageHeight
+      )
+    }
   }
-
-  const sx = (asset.startX + whichSprite) * w
-
-  const drawImageWidth = 300 // this allows room for the attacks to be drawn
-  const drawImageHeight = drawImageWidth * (105 / 200)
-
-  cxt.drawImage(
-    asset.image(),
-    sx,
-    0,
-    w,
-    asset.image().height,
-    -drawImageWidth / 2 + p.width / 2,
-    -(drawImageHeight - p.height),
-    drawImageWidth,
-    drawImageHeight
-  )
 }
 
 const champAssets: SpriteAssetInfo<ChampAssetDes> = {

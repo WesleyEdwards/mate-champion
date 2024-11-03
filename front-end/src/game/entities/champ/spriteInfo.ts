@@ -1,9 +1,5 @@
-import {
-  ChampState,
-  ChampAssetDes,
-  ChampDescription,
-  Champ
-} from "../../entities/champ"
+import {WithVelType} from "../VelocityMixin"
+import {ChampAssetDes, ChampDescription, Champ, ChampBase} from "./champ"
 
 export const updateChampSpriteInfo = (p: Champ) => {
   const currRender = getChampSpritesInfo(p)
@@ -15,7 +11,9 @@ export const updateChampSpriteInfo = (p: Champ) => {
   p.state.render.curr = currRender
 }
 
-const getChampSpritesInfo = (p: Champ): ChampAssetDes => {
+export const getChampSpritesInfo = (
+  p: InstanceType<WithVelType<ChampBase>>
+): ChampAssetDes => {
   const directionY = p.state.facing.y === "down" ? "hor" : p.state.facing.y
   const action = (): PlayerAction => {
     if (!p.state.action) return "none"

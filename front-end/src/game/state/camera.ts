@@ -1,5 +1,5 @@
 import {cameraConst} from "../loopShared/constants"
-import {Champ, ChampState} from "../entities/champ"
+import {Champ} from "../entities/champ/champ"
 import {Camera} from "../entities/entityTypes"
 import {updateTimers, updateWithTime} from "./timeHelpers"
 

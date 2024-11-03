@@ -1,9 +1,7 @@
-import {Champ} from "../entities/champ"
+import {Champ} from "../entities/champ/champ"
 import {updateKeys} from "./keys"
 import {updateCameraWithPlayer} from "./camera"
 import {Coors, GameStateProps} from "../entities/entityTypes"
-import {toCurrAndPrev} from "../helpers"
-import {emptyTime} from "./timeHelpers"
 import {Bullet, mBulletConst} from "../entities/bullet"
 
 export const reconcileActions = (gs: GameStateProps) => {
@@ -34,7 +32,7 @@ export const reconcileActions = (gs: GameStateProps) => {
       )
 
       updateCameraWithPlayer(gs.camera, entity)
-      updateKeys(gs.keys, entity.state)
+      updateKeys(gs.keys, entity)
     }
   }
 }

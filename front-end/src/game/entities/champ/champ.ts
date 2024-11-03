@@ -1,48 +1,16 @@
-import {calcPlatEntityCollision, areTouching1, toCurrAndPrev} from "../helpers"
-import {renderPlayer} from "../render/champ"
-import {ChampAction, processChampActionRaw} from "../state/champ/actions"
-import {updatePlayer} from "../state/champ/champ"
-import {PlayerAction} from "../state/champ/spriteInfo"
-import {
-  TimerUp,
-  TimerDown,
-  emptyTime,
-  updateTimers,
-  updatePosAndVel
-} from "../state/timeHelpers"
-import {Ammo} from "./Ammo"
-import {BaseEntity, Entity} from "./Entity"
-import {Coors} from "./entityTypes"
-import {Groog} from "./groog"
-import {WithVelocity} from "./VelocityMixin"
+import {calcPlatEntityCollision, areTouching1} from "../../helpers"
+import {ChampAction, processActionMap} from "./actions"
+import {PlayerAction} from "./spriteInfo"
+import {TimerUp, TimerDown, emptyTime} from "../../state/timeHelpers"
+import {Ammo} from "../Ammo"
+import {BaseEntity, Entity} from "../Entity"
+import {Coors} from "../entityTypes"
+import {Groog} from "../groog"
+import {WithVelocity} from "../VelocityMixin"
+import {RenderChamp} from "../../render/renderChamp"
+import {StepChamp} from "./step"
 
-export type ChampState = {
-  facing: {x: ChampDirectionX; y: ChampDirectionY}
-  jump: {
-    jumps: number
-    isJumping: boolean
-  }
-  action: "shoot" | "melee" | null
-  render: {
-    prev: ChampAssetDes
-    curr: ChampAssetDes
-  }
-  gravityFactor: number | null
-  acceptQueue: ChampAction[]
-  publishQueue: ChampPublish[]
-  timers: {
-    sprite: TimerUp
-    coyote: TimerUp
-    actionTimeRemain: TimerDown // Time left and cool down are both decreased always
-    actionCoolDownRemain: TimerDown // When < 0, the player can take another action
-  }
-}
-
-type ChampPublish = {
-  name: "shoot"
-  initPos: Coors
-  velocity: Coors
-}
+type ChampPublish = {name: "shoot"; initPos: Coors; velocity: Coors}
 
 export type ChampAssetDes = ChampDescription | "rising" | "falling"
 
@@ -74,8 +42,29 @@ export const champConst = {
 export type ChampDirectionY = "up" | "down" | "hor"
 export type ChampDirectionX = "left" | "right"
 
-export class Champ extends WithVelocity(BaseEntity) {
-  state: ChampState
+export class ChampBase extends BaseEntity {
+  state: {
+    facing: {x: ChampDirectionX; y: ChampDirectionY}
+    jump: {
+      jumps: number
+      isJumping: boolean
+    }
+    action: "shoot" | "melee" | null
+    render: {
+      prev: ChampAssetDes
+      curr: ChampAssetDes
+    }
+    gravityFactor: number | null
+    acceptQueue: ChampAction[]
+    publishQueue: ChampPublish[]
+    timers: {
+      sprite: TimerUp
+      coyote: TimerUp
+      actionTimeRemain: TimerDown // Time left and cool down are both decreased always
+      actionCoolDownRemain: TimerDown // When < 0, the player can take another action
+    }
+  }
+
   modifyStatsOnDeath = {lives: -1}
   constructor(position: Coors) {
     super({dimensions: [...champConst.widthHeight], position, typeId: "player"})
@@ -98,30 +87,21 @@ export class Champ extends WithVelocity(BaseEntity) {
       }
     }
   }
+}
 
-  step: Entity["step"] = (deltaT) => {
-    updateTimers(this.state.timers, deltaT)
-    this.move(deltaT)
-    updatePlayer(this, deltaT)
-  }
-
-  render: Entity["render"] = (cxt) => {
-    renderPlayer(this, cxt)
-  }
-
+export class Champ
+  extends StepChamp(WithVelocity(RenderChamp(ChampBase)))
+  implements Entity
+{
   handleInteraction: Entity["handleInteraction"] = (entities) => {
     for (const entity of entities) {
       if (entity.typeId === "floor" || entity.typeId === "platform") {
         const {x, bottom, top} = calcPlatEntityCollision(this, entity)
-        if (x !== null) processChampActionRaw(this, {name: "setX", x})
+        if (x !== null) this.processChampActionRaw({name: "setX", x})
         if (bottom !== null)
-          processChampActionRaw(this, {name: "setY", y: bottom})
+          this.processChampActionRaw({name: "setY", y: bottom})
         if (top !== null)
-          processChampActionRaw(this, {
-            name: "setY",
-            y: top,
-            onEntity: true
-          })
+          this.processChampActionRaw({name: "setY", y: top, onEntity: true})
       }
       if (entity instanceof Groog) {
         if (this.state.action === "melee") {
