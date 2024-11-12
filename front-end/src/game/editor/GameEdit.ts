@@ -2,7 +2,13 @@ import {LevelMap} from "../loopShared/models"
 import {Coors, CurrAndPrev, Constructor, Id} from "../entities/entityTypes"
 import {updateTime} from "../state/helpers"
 import {updateTimers} from "../state/timeHelpers"
-import {GameStateEditProps, levelInfoToEditState} from "./editHelpers"
+import {
+  Edge,
+  GameStateEditProps,
+  levelInfoToEditState,
+  ResizeEntity,
+  withCamPosition
+} from "./editHelpers"
 import {addDevEventListeners} from "./eventListeners"
 import {RenderMixin} from "./mixins/RenderMixin"
 import {MutateEntityMixin} from "./mixins/MutateEntityMixin"
@@ -10,7 +16,6 @@ import {InputMixin} from "./mixins/InputMixin"
 import {SaveMixin} from "./mixins/SaveMixin"
 import {Entity} from "../entities/Entity"
 import {CleanupMixin} from "./mixins/CleanupMixin"
-import {firstTrue, pointInsideEntity} from "../helpers"
 
 export type BaseThing = Constructor<GameEditAll>
 class GameEditAll {
@@ -19,10 +24,7 @@ class GameEditAll {
   selectedEntities: Set<Id> = new Set()
   hoveringEntities: Set<Id> = new Set()
   dragSelection: {init: Coors; dragPos: CurrAndPrev} | null = null
-  sizableEntity: {
-    entity: Entity
-    edge: "bottom" | "top" | "left" | "right"
-  } | null = null
+  sizableEntity: ResizeEntity | null = null
 
   private stepFunctions: {fun: (deltaT: number) => void; priority: number}[] =
     []
@@ -66,7 +68,8 @@ class GameEditAll {
       this.moving === null &&
       this.state.keys.mouseDown.curr &&
       this.hoveringEntities.size === 0 &&
-      !this.dragSelection
+      !this.dragSelection &&
+      !this.sizableEntity
     )
   }
 
@@ -76,26 +79,8 @@ class GameEditAll {
       .filter(Boolean) as Entity[]
   }
 
-  toRounded(pos: Coors): Coors {
-    const roundTo = 10
-    const valX = Math.ceil(pos[0] / roundTo) * roundTo
-    const valY = Math.ceil(pos[1] / roundTo) * roundTo
-    return [valX, valY]
-  }
-
-  isEdgeOfEntity = (
-    e: Entity,
-    pos: Coors
-  ): "bottom" | "top" | "left" | "right" | null => {
-    if (!pointInsideEntity(e, pos, 10)) return null
-    const dist = 4
-
-    return firstTrue({
-      right: Math.abs(e.posRight - pos[0]) < dist,
-      left: Math.abs(e.posLeft - pos[0]) < dist,
-      top: Math.abs(e.posTop - pos[1]) < dist,
-      bottom: Math.abs(e.posBottom - pos[1]) < dist
-    })
+  justPutMouseDown = () => {
+    return !this.state.keys.mouseDown.prev && this.state.keys.mouseDown.curr
   }
 }
 

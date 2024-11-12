@@ -225,12 +225,8 @@ export function pointInsideEntity(
   return isX && isY
 }
 
-export const firstTrue = <T extends string, Default extends T | undefined>(
-  x: Record<T, boolean>,
-  defaultVal?: Default
-): Default extends undefined ? T | null : T => {
-  const matches = Object.entries(x).find(([_, value]) => value)?.[0] ?? null
-  if (matches) return matches
-  if (defaultVal !== undefined) return defaultVal
-  return null as any
+export const firstTrue = <T extends string>(
+  x: Record<T, boolean>
+): T | undefined => {
+  return Object.entries(x).find(([_, value]) => value)?.[0]
 }

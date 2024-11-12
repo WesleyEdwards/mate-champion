@@ -29,24 +29,28 @@ export function InputMixin<T extends BaseThing>(Base: T) {
     }
 
     private updateMouseHover = () => {
-      if (this.state.keys.ctrl.curr) {
-        if (this.hoveringEntities.size > 0) {
-          this.canvas.style.cursor = "pointer"
-        } else {
-          this.canvas.style.cursor = "crosshair"
-        }
-      } else if (this.hoveringEntities.size > 0 || this.moving !== null) {
-        this.canvas.style.cursor = "grab"
-      } else {
-        this.canvas.style.cursor = "auto"
+      this.canvas.style.cursor = this.cursor
+    }
+    get cursor() {
+      if (this.sizableEntity) {
+        const edge = this.sizableEntity.edge
+        return edge === "bottom" || edge === "top" ? "ns-resize" : "ew-resize"
       }
 
-      if (this.dragSelection) return
-      const isMovingCanvas =
-        // this.movingEntities.size === 0 &&
-        this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0
-      if (isMovingCanvas) {
-        this.canvas.style.cursor = "move"
+      if (this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0) {
+        return "move"
+      }
+
+      if (this.state.keys.ctrl.curr) {
+        if (this.hoveringEntities.size > 0) {
+          return "pointer"
+        } else {
+          return "crosshair"
+        }
+      } else if (this.hoveringEntities.size > 0 || this.moving !== null) {
+        return "grab"
+      } else {
+        return "auto"
       }
     }
 

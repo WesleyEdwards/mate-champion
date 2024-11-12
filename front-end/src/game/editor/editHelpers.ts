@@ -1,14 +1,15 @@
 import {MAX_CANVAS_HEIGHT, platformConst} from "../loopShared/constants"
 import {LevelMap} from "../loopShared/models"
-import {Camera, Coors, CurrAndPrev, EntityOfType} from "../entities/entityTypes"
+import {
+  Camera,
+  Coors,
+  CurrAndPrev,
+  EntityOfType,
+  Id
+} from "../entities/entityTypes"
 import {levelToEntities} from "../helpers"
-import {Floor, Platform} from "../entities/platform"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
-import {Groog} from "../entities/groog"
-import {Ammo} from "../entities/Ammo"
-import {AddableEntity} from "../../components/GameEdit/CourseBuilderSettings"
 import {Entity} from "../entities/Entity"
-
 
 export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[0] += increment[0]
@@ -21,6 +22,14 @@ export const withCamPosition = (curr: Coors, cam: Camera): Coors => {
 
 export type EventState = {prev: boolean; curr: boolean}
 export type DragState = {prev: Coors | null; curr: Coors | null}
+
+export type Edge = "bottom" | "top" | "left" | "right"
+export type ResizeEntity = {
+  state: "hover" | "drag"
+  entityId: Id
+  proposed: Entity
+  edge: Edge
+}
 
 export type GameStateEditProps = {
   entities: Entity[]
@@ -73,3 +82,16 @@ export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
   },
   endPosition: level.endPosition
 })
+
+export function toRounded(pos: Coors): Coors {
+  const roundTo = 10
+  const valX = Math.ceil(pos[0] / roundTo) * roundTo
+  const valY = Math.ceil(pos[1] / roundTo) * roundTo
+  return [valX, valY]
+}
+
+export function toRoundedNum(num: number): number {
+  const roundTo = 10
+  const val = Math.ceil(num / roundTo) * roundTo
+  return val
+}

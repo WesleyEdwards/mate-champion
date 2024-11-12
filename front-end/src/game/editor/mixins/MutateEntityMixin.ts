@@ -6,7 +6,13 @@ import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
 import {pointInsideEntity, toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
-import {incrementPosition, withCamPosition} from "../editHelpers"
+import {
+  Edge,
+  incrementPosition,
+  ResizeEntity,
+  toRounded,
+  withCamPosition
+} from "../editHelpers"
 import {BaseThing} from "../GameEdit"
 
 export function MutateEntityMixin<T extends BaseThing>(Base: T) {
@@ -28,18 +34,6 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
         this.state.camera
       )
 
-      this.sizableEntity = this.state.entities.reduce<{
-        entity: Entity
-        edge: "bottom" | "top" | "left" | "right"
-      } | null>((acc, e) => {
-        const edge = this.isEdgeOfEntity(e, mouse)
-
-        if (edge) {
-          return {edge, entity: e}
-        }
-        return acc
-      }, null)
-
       this.hoveringEntities = new Set(
         this.state.entities
           .filter((e) => pointInsideEntity(e, mouse, -3))
@@ -48,10 +42,8 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
     }
 
     private updateMoving = () => {
-      const mouseDownAction =
-        this.state.keys.mouseDown.curr && !this.state.keys.mouseDown.prev
-
-      const startingToGrab = mouseDownAction && !this.state.keys.shift.curr
+      const startingToGrab =
+        this.justPutMouseDown() && !this.state.keys.shift.curr
       const stopGrabbing = !this.state.keys.mouseDown.curr
 
       if (startingToGrab) {
@@ -92,7 +84,7 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
 
         this.moving = null
         for (const entity of this.state.entities) {
-          entity.position.curr = this.toRounded([...entity.position.curr])
+          entity.position.curr = toRounded([...entity.position.curr])
         }
       }
     }
