@@ -24,11 +24,13 @@ export type EventState = {prev: boolean; curr: boolean}
 export type DragState = {prev: Coors | null; curr: Coors | null}
 
 export type Edge = "bottom" | "top" | "left" | "right"
+export type Edges = {x: "left" | "right" | null; y: "top" | "bottom" | null}
+
 export type ResizeEntity = {
   state: "hover" | "drag"
   entityId: Id
   proposed: Entity
-  edge: Edge
+  edge: Edges
 }
 
 export type GameStateEditProps = {

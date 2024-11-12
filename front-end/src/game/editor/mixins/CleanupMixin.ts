@@ -4,9 +4,15 @@ import {Entity} from "../../entities/Entity"
 import {Coors, CurrAndPrev, EntityOfType} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Platform, Floor} from "../../entities/platform"
-import {firstTrue, pointInsideEntity} from "../../helpers"
+import {pointInsideEntity} from "../../helpers"
 import {MAX_CANVAS_HEIGHT} from "../../loopShared/constants"
-import {Edge, toRounded, toRoundedNum, withCamPosition} from "../editHelpers"
+import {
+  Edges,
+  Edge,
+  toRounded,
+  toRoundedNum,
+  withCamPosition
+} from "../editHelpers"
 import {BaseThing} from "../GameEdit"
 
 export function CleanupMixin<T extends BaseThing>(Base: T) {
@@ -75,7 +81,7 @@ export function CleanupMixin<T extends BaseThing>(Base: T) {
     updateSizableEntity = () => {
       const s = this.sizableEntity
       if (this.state.keys.mouseDown.curr === false && s) {
-        // Change entity to new size
+        // Commit changes
         const currE = this.state.entities.find((e) => e.id === s.entityId)
         if (currE) {
           currE.dimensions = [...s.proposed.dimensions]
@@ -83,7 +89,6 @@ export function CleanupMixin<T extends BaseThing>(Base: T) {
         }
 
         this.sizableEntity = null
-        // Command pattern
       }
 
       if (this.moving?.entities) {
@@ -114,22 +119,25 @@ export function CleanupMixin<T extends BaseThing>(Base: T) {
         )
       }
     }
-    mouseOnEdge = (e: Entity): Edge | null => {
+    mouseOnEdge = (e: Entity): Edges | null => {
       const curr = this.state.keys.mousePos.curr
       if (!curr) return null
       const mousePos = withCamPosition(curr, this.state.camera)
 
       if (!pointInsideEntity(e, mousePos, 10)) return null
-      const dist = 4
+      const distFromEntity = 6
 
-      return (
-        firstTrue({
-          right: Math.abs(e.posRight - mousePos[0]) < dist,
-          left: Math.abs(e.posLeft - mousePos[0]) < dist,
-          top: Math.abs(e.posTop - mousePos[1]) < dist,
-          bottom: Math.abs(e.posBottom - mousePos[1]) < dist
-        }) ?? null
-      )
+      const right = Math.abs(e.posRight - mousePos[0]) < distFromEntity
+      const left = Math.abs(e.posLeft - mousePos[0]) < distFromEntity
+      const top = Math.abs(e.posTop - mousePos[1]) < distFromEntity
+      const bottom = Math.abs(e.posBottom - mousePos[1]) < distFromEntity
+      const edges: Edges = {x: null, y: null}
+      if (right) edges.x = "right"
+      if (left) edges.x = "left"
+      if (top) edges.y = "top"
+      if (bottom) edges.y = "bottom"
+      if (edges.x === null && edges.y === null) return null
+      return edges
     }
 
     private copyEntity = (
@@ -175,45 +183,51 @@ export function CleanupMixin<T extends BaseThing>(Base: T) {
 }
 const newPositionAndDimensions = (
   entity: Entity,
-  edge: Edge,
+  edges: Edges,
   newMousePosition: Coors
-) =>
-  (
-    ({
-      bottom: ({entity, newMousePosition}) => {
-        if (newMousePosition[1] < entity.posTop + 20) {
-          return
-        }
-        const newBottom = newMousePosition[1]
-        entity.dimensions[1] = toRoundedNum(newBottom) - entity.posTop
-      },
-      top: ({entity, newMousePosition}) => {
-        if (newMousePosition[1] > entity.posBottom - 20) {
-          return
-        }
-        const newTop = toRoundedNum(newMousePosition[1])
-        const oldBottom = entity.posBottom
-        entity.position.curr[1] = newTop
-        entity.dimensions[1] = oldBottom - newTop
-      },
-      left: ({entity, newMousePosition}) => {
-        if (newMousePosition[0] > entity.posRight - 20) {
-          return
-        }
-        const newLeft = toRoundedNum(newMousePosition[0])
-        const oldRight = entity.posRight
-        entity.position.curr[0] = newLeft
-        entity.dimensions[0] = oldRight - newLeft
-      },
-      right: ({entity, newMousePosition}) => {
-        if (newMousePosition[0] < entity.posLeft + 20) {
-          return
-        }
-        const newRight = toRoundedNum(newMousePosition[0])
-        entity.dimensions[0] = newRight - entity.posLeft
+) => {
+  const map: Record<
+    Edge,
+    (params: {entity: Entity; newMousePosition: Coors}) => void
+  > = {
+    bottom: ({entity, newMousePosition}) => {
+      if (newMousePosition[1] < entity.posTop + 20) {
+        return
       }
-    }) satisfies Record<
-      Edge,
-      (params: {entity: Entity; newMousePosition: Coors}) => void
-    >
-  )[edge]({entity, newMousePosition})
+      const newBottom = newMousePosition[1]
+      entity.dimensions[1] = toRoundedNum(newBottom) - entity.posTop
+    },
+    top: ({entity, newMousePosition}) => {
+      if (newMousePosition[1] > entity.posBottom - 20) {
+        return
+      }
+      const newTop = toRoundedNum(newMousePosition[1])
+      const oldBottom = entity.posBottom
+      entity.position.curr[1] = newTop
+      entity.dimensions[1] = oldBottom - newTop
+    },
+    left: ({entity, newMousePosition}) => {
+      if (newMousePosition[0] > entity.posRight - 20) {
+        return
+      }
+      const newLeft = toRoundedNum(newMousePosition[0])
+      const oldRight = entity.posRight
+      entity.position.curr[0] = newLeft
+      entity.dimensions[0] = oldRight - newLeft
+    },
+    right: ({entity, newMousePosition}) => {
+      if (newMousePosition[0] < entity.posLeft + 20) {
+        return
+      }
+      const newRight = toRoundedNum(newMousePosition[0])
+      entity.dimensions[0] = newRight - entity.posLeft
+    }
+  }
+
+  if (edges.x) {
+    map[edges.x]({entity, newMousePosition})
+  }
+  if (edges.y) {
+    map[edges.y]({entity, newMousePosition})
+  }
+}

@@ -224,9 +224,3 @@ export function pointInsideEntity(
   const isY = e.posTop - dist < point[1] && e.posBottom + dist > point[1]
   return isX && isY
 }
-
-export const firstTrue = <T extends string>(
-  x: Record<T, boolean>
-): T | undefined => {
-  return Object.entries(x).find(([_, value]) => value)?.[0]
-}

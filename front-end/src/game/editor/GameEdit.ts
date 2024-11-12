@@ -3,11 +3,9 @@ import {Coors, CurrAndPrev, Constructor, Id} from "../entities/entityTypes"
 import {updateTime} from "../state/helpers"
 import {updateTimers} from "../state/timeHelpers"
 import {
-  Edge,
   GameStateEditProps,
   levelInfoToEditState,
-  ResizeEntity,
-  withCamPosition
+  ResizeEntity
 } from "./editHelpers"
 import {addDevEventListeners} from "./eventListeners"
 import {RenderMixin} from "./mixins/RenderMixin"

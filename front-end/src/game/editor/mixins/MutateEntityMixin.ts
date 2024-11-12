@@ -6,13 +6,7 @@ import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
 import {pointInsideEntity, toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
-import {
-  Edge,
-  incrementPosition,
-  ResizeEntity,
-  toRounded,
-  withCamPosition
-} from "../editHelpers"
+import {incrementPosition, toRounded, withCamPosition} from "../editHelpers"
 import {BaseThing} from "../GameEdit"
 
 export function MutateEntityMixin<T extends BaseThing>(Base: T) {

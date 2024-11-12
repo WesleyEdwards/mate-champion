@@ -34,7 +34,15 @@ export function InputMixin<T extends BaseThing>(Base: T) {
     get cursor() {
       if (this.sizableEntity) {
         const edge = this.sizableEntity.edge
-        return edge === "bottom" || edge === "top" ? "ns-resize" : "ew-resize"
+        if (edge.y === null) return "ew-resize"
+        if (edge.x === null) return "ns-resize"
+        if (
+          (edge.x === "right" && edge.y === "top") ||
+          (edge.x === "left" && edge.y === "bottom")
+        ) {
+          return "nesw-resize"
+        }
+        return "nwse-resize"
       }
 
       if (this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0) {
