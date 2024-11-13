@@ -1,12 +1,5 @@
-import {MAX_CANVAS_HEIGHT, platformConst} from "../loopShared/constants"
 import {LevelMap} from "../loopShared/models"
-import {
-  Camera,
-  Coors,
-  CurrAndPrev,
-  EntityOfType,
-  Id
-} from "../entities/entityTypes"
+import {Coors, Id} from "../entities/entityTypes"
 import {levelToEntities} from "../helpers"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {Entity} from "../entities/Entity"
@@ -16,7 +9,7 @@ export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[1] += increment[1]
 }
 
-export const withCamPosition = (curr: Coors, cam: Camera): Coors => {
+export const withCamPosition = (curr: Coors, cam: {position: Coors}): Coors => {
   return [curr[0] + cam.position[0], curr[1] - cam.position[1]]
 }
 
@@ -37,7 +30,7 @@ export type GameStateEditProps = {
   entities: Entity[]
   prevBaseColor: string
   endPosition: number
-  camera: Camera
+  camera: {position: Coors}
   time: {
     deltaT: number
     prevStamp: number
@@ -59,13 +52,7 @@ export type GameStateEditProps = {
 export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
   entities: levelToEntities({...level}),
   prevBaseColor: level.platformColor,
-  camera: {
-    time: {
-      idleTime: emptyTime("up")
-    },
-    position: [0, 0],
-    velocity: [0, 0]
-  },
+  camera: {position: [0, 0]},
   time: {
     deltaT: 0,
     prevStamp: performance.now()

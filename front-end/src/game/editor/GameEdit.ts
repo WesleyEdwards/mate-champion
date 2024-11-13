@@ -45,7 +45,10 @@ class GameEditAll {
     addDevEventListeners(state, canvas)
     this.state = state
     const initCoors = JSON.parse(localStorage.getItem("edit-coors") ?? "[0,0]")
-    this.state.camera.position = initCoors
+    this.state.camera.position = [
+      Math.max(0, initCoors[0]),
+      Math.max(0, initCoors[1])
+    ]
   }
 
   step(timeStamp: number) {
@@ -59,16 +62,6 @@ class GameEditAll {
 
   fromId(entity: Id): Entity | undefined {
     return this.state.entities.find((e) => e.id === entity)
-  }
-
-  get isMovingCanvas() {
-    return (
-      this.moving === null &&
-      this.state.keys.mouseDown.curr &&
-      this.hoveringEntities.size === 0 &&
-      !this.dragSelection &&
-      !this.sizableEntity
-    )
   }
 
   get currentlySelected(): Entity[] {

@@ -1,8 +1,8 @@
 import {Coors} from "../../entities/entityTypes"
 import {areEntitiesTouching, toCurrAndPrev} from "../../helpers"
-import {LevelMap} from "../../loopShared/models"
-import {incrementPosition, withCamPosition} from "../editHelpers"
-import {BaseThing, GameEdit} from "../GameEdit"
+import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
+import {withCamPosition} from "../editHelpers"
+import {BaseThing} from "../GameEdit"
 
 export function InputMixin<T extends BaseThing>(Base: T) {
   return class extends Base {
@@ -116,24 +116,62 @@ export function InputMixin<T extends BaseThing>(Base: T) {
     }
 
     private updateCanvasMovement = () => {
-      if (!this.isMovingCanvas) return
-      if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
-        const diff: Coors = [
-          -this.state.keys.mousePos.curr[0] + this.state.keys.mousePos.prev[0],
-          this.state.keys.mousePos.curr[1] - this.state.keys.mousePos.prev[1]
-        ]
-        const proposedPos: Coors = [
-          this.state.camera.position[0] + diff[0],
-          this.state.camera.position[1] + diff[1]
-        ]
-        if (proposedPos[0] < -200 || proposedPos[0] > 10_000) {
-          diff[0] = 0
+      const canManuallyMoveCanvas =
+        this.moving === null &&
+        this.state.keys.mouseDown.curr &&
+        this.hoveringEntities.size === 0 &&
+        !this.dragSelection &&
+        !this.sizableEntity
+
+      const mp = this.state.keys.mousePos
+      if (canManuallyMoveCanvas) {
+        if (mp.curr && mp.prev) {
+          const diff: Coors = [
+            -mp.curr[0] + mp.prev[0],
+            mp.curr[1] - mp.prev[1]
+          ]
+          const proposedPos: Coors = [
+            this.state.camera.position[0] + diff[0],
+            this.state.camera.position[1] + diff[1]
+          ]
+          this.attemptToMoveCam(proposedPos)
         }
-        if (proposedPos[1] < 0 || proposedPos[1] > 500) {
-          diff[1] = 0
-        }
-        incrementPosition(this.state.camera.position, diff)
       }
+
+      if (this.moving && mp.curr) {
+        const proposedPos: Coors = [...this.state.camera.position]
+
+        const distToMoveCanvas = 3
+        const distFromEdge = 100
+        if (mp.curr[0] < distFromEdge) {
+          proposedPos[0] -= distToMoveCanvas
+        }
+        if (mp.curr[0] > MAX_CANVAS_WIDTH - distFromEdge) {
+          proposedPos[0] += distToMoveCanvas
+        }
+        if (mp.curr[1] < distFromEdge) {
+          proposedPos[1] += distToMoveCanvas
+        }
+        if (mp.curr[1] > MAX_CANVAS_HEIGHT - distFromEdge) {
+          proposedPos[1] -= distToMoveCanvas
+        }
+        const moved = this.attemptToMoveCam(proposedPos)
+        this.moving.delta[0] -= moved[0]
+        this.moving.delta[1] += moved[1]
+      }
+    }
+
+    // Returns the difference the cam was moved
+    attemptToMoveCam = (proposedPos: Coors): Coors => {
+      const camPos = this.state.camera.position
+      if (proposedPos[0] < -200 || proposedPos[0] > 10_000) {
+        proposedPos[0] = camPos[0]
+      }
+      if (proposedPos[1] < 0 || proposedPos[1] > 500) {
+        proposedPos[1] = camPos[1]
+      }
+      this.state.camera.position = [...proposedPos]
+      return [camPos[0] - proposedPos[0], camPos[1] - proposedPos[1]]
     }
   }
 }

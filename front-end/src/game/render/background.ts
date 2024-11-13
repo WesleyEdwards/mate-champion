@@ -1,8 +1,11 @@
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../loopShared/constants"
 import {Textures} from "../../gameAssets/textures"
-import {Camera} from "../entities/entityTypes"
+import {Camera, Coors} from "../entities/entityTypes"
 
-export const renderBg = (cam: Camera, cxt: CanvasRenderingContext2D) => {
+export const renderBg = (
+  cam: {position: Coors},
+  cxt: CanvasRenderingContext2D
+) => {
   const spacesToRight = Math.floor(cam.position[0] / MAX_CANVAS_WIDTH)
   const spacesUp = Math.floor(cam.position[1] / MAX_CANVAS_HEIGHT)
 
