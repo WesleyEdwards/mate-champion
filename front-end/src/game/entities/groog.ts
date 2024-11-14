@@ -5,19 +5,13 @@ import {
   processGroogActionRaw,
   processGroogActions
 } from "../state/groog"
-import {
-  TimerUp,
-  TimerDown,
-  emptyTime,
-  updateTimers,
-  updatePosAndVel
-} from "../state/timeHelpers"
+import {TimerUp, TimerDown, emptyTime, updateTimers} from "../state/timeHelpers"
 import {Champ} from "./champ/champ"
 import {GRAVITY} from "../loopShared/constants"
 import {GroogInfo} from "../loopShared/models"
 import {BaseEntity, Entity} from "./Entity"
 import {WithVelocity} from "./VelocityMixin"
-import { Coors } from "./entityTypes"
+import {Coors} from "./entityTypes"
 
 export type GroogState = {
   timeBetweenTurn: number
@@ -34,7 +28,7 @@ export type GroogState = {
   queueActions: GroogAction[]
 }
 
-class GroogBase extends BaseEntity  {
+class GroogBase extends BaseEntity {
   velocity: Coors
   state: GroogState
   constructor(g: GroogInfo) {
@@ -62,7 +56,7 @@ class GroogBase extends BaseEntity  {
   }
 }
 
-export class Groog extends WithVelocity(GroogBase)implements Entity {
+export class Groog extends WithVelocity(GroogBase) implements Entity {
   modifyStatsOnDeath = {score: 10}
 
   step: Entity["step"] = (deltaT) => {
@@ -97,7 +91,9 @@ export class Groog extends WithVelocity(GroogBase)implements Entity {
   }
 
   render: Entity["render"] = (cxt) => {
+    cxt.save()
     renderGroog(this, cxt)
+    cxt.restore()
   }
 
   handleInteraction: Entity["handleInteraction"] = (entities) => {

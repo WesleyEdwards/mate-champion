@@ -9,7 +9,7 @@ import {
   Checkbox
 } from "@mui/joy"
 import {FC} from "react"
-import {entityFC} from "./ItemTypeEdit"
+import grogImg from "../../assets/grog/enemy_walking_single.png"
 import {Groog, groogConst} from "../../game/entities/groog"
 import {MCSlider, NumberInput, SizeControl} from "./helpers"
 
@@ -17,18 +17,19 @@ export const GroogEdit: FC<{
   groog: Groog
   editGroog: (g: Groog) => void
 }> = ({groog, editGroog}) => {
-  const Renderer = entityFC["groog"]
-
   const facing = groog.velocity[0] > 0 ? "right" : "left"
 
   return (
     <Card>
       <CardContent>
-        <Renderer
+        <img
           style={{
+            maxWidth: "50px",
+            maxHeight: "50px",
             width: "100%",
             marginBottom: "1rem"
           }}
+          src={grogImg}
         />
 
         <Stack direction="row" gap="1rem" alignItems="center">
@@ -55,6 +56,7 @@ export const GroogEdit: FC<{
           title="Speed"
           setValue={(value) => {
             const accountForDir = groog.velocity[0] > 0 ? value : -value
+            console.log("After accounting for dir", accountForDir)
             groog.velocity[0] = accountForDir / 100
             return editGroog(groog)
           }}

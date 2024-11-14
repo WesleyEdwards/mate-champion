@@ -43,6 +43,7 @@ export type ChampDirectionY = "up" | "down" | "hor"
 export type ChampDirectionX = "left" | "right"
 
 export class ChampBase extends BaseEntity {
+  velocity: Coors = [0, 0]
   state: {
     facing: {x: ChampDirectionX; y: ChampDirectionY}
     jump: {

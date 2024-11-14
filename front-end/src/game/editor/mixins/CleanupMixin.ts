@@ -97,6 +97,9 @@ export function CleanupMixin<T extends BaseThing>(Base: T) {
 
       if (s?.state !== "drag") {
         for (const entity of this.state.entities) {
+          if (entity.typeId !== "platform" && entity.typeId !== "floor") {
+            continue
+          }
           const onEdge = this.mouseOnEdge(entity)
           if (onEdge) {
             const copy = this.copyEntity(entity)

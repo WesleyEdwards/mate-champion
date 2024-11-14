@@ -9,11 +9,10 @@ export class VelocityBase extends BaseEntity {
   velocity: Coors = [0, 0]
 }
 
-export function WithVelocity<TBase extends Constructor<BaseEntity>>(
+export function WithVelocity<TBase extends Constructor<VelocityBase>>(
   Base: TBase
 ) {
   return class extends Base {
-    velocity: Coors = [0, 0]
     move(deltaT: number) {
       this.position.prev[0] = this.position.curr[0]
       this.position.prev[1] = this.position.curr[1]

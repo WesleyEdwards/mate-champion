@@ -87,11 +87,9 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
       if (this.moving === null) {
         return
       }
-      if (this.state.keys.mousePos.curr && this.state.keys.mousePos.prev) {
-        const diff: Coors = [
-          this.state.keys.mousePos.curr[0] - this.state.keys.mousePos.prev[0],
-          this.state.keys.mousePos.curr[1] - this.state.keys.mousePos.prev[1]
-        ]
+      const mp = this.state.keys.mousePos
+      if (mp.curr && mp.prev) {
+        const diff: Coors = [mp.curr[0] - mp.prev[0], mp.curr[1] - mp.prev[1]]
         incrementPosition(this.moving.delta, diff)
       }
     }

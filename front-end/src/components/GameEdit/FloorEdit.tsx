@@ -7,7 +7,7 @@ import {
   Divider
 } from "@mui/joy"
 import {FC, useState} from "react"
-import {entityFC} from "./ItemTypeEdit"
+import platformImg from "../../assets/platform.png"
 import {Floor} from "../../game/entities/platform"
 import {SizeControl} from "./helpers"
 
@@ -15,12 +15,13 @@ export const FloorEditor: FC<{
   floor: Floor
   editFloor: (p: Floor) => void
 }> = ({floor, editFloor}) => {
-  const Renderer = entityFC["floor"]
-
   return (
     <Card>
       <CardContent>
-        <Renderer style={{width: "100%", marginBottom: "2rem"}} />
+        <img
+          src={platformImg}
+          style={{marginBottom: "2rem", width: "60px", height: "30px"}}
+        />
 
         <Divider />
         <SizeControl

@@ -15,7 +15,8 @@ export const mBulletConst = {
   distFromOppHit: 40
 } as const
 
-class BulletBase extends WithVelocity(BaseEntity) {
+class BulletBase extends (BaseEntity) {
+  velocity: Coors
   initPos: Coors
 
   constructor(position: Coors, velocity: Coors) {
@@ -29,7 +30,7 @@ class BulletBase extends WithVelocity(BaseEntity) {
   }
 }
 
-export class Bullet extends BulletBase {
+export class Bullet extends WithVelocity(BulletBase) {
   timers: {timeAlive: TimerUp} = {timeAlive: emptyTime("up")}
 
   step: Entity["step"] = (deltaT) => {

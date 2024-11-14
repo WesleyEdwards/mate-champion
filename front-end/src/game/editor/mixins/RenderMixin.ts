@@ -59,10 +59,8 @@ export function RenderMixin<T extends BaseThing>(Base: T) {
         entity.render(cxt)
         accountForPosition(toRounded(this.moving.delta), cxt)
         cxt.globalAlpha = 1
-        entity.render(cxt)
-      } else {
-        entity.render(cxt)
       }
+      entity.render(cxt)
 
       if (this.selectedEntities.has(entity.id)) {
         cxt.strokeStyle = "red"
