@@ -14,7 +14,6 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
   const [makingNew, setMakingNew] = useState<string>()
 
   const createLevel = async (name: string) => {
-    console.log("Creating")
     const createdLevel = await api.level.create({
       _id: crypto.randomUUID(),
       owner: user?._id ?? "",

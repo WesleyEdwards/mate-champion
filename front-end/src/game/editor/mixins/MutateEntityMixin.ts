@@ -7,87 +7,135 @@ import {Floor, Platform, floorConst} from "../../entities/platform"
 import {pointInsideEntity, toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
 import {incrementPosition, toRounded, withCamPosition} from "../editHelpers"
-import {BaseThing} from "../GameEdit"
+import {WithEvents} from "../GameEdit"
 
-export function MutateEntityMixin<T extends BaseThing>(Base: T) {
+export function MutateEntityMixin<T extends WithEvents>(Base: T) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
       this.registerStepFunction(this.updateEntitySelection)
       this.registerStepFunction(this.updateEntityMovement)
-      this.registerStepFunction(this.updateMoving)
+      this.registerStepFunction(this.startMovingEntities)
       this.registerStepFunction(this.addEntityToState)
+      this.registerStepFunction(this.finishMovingEntities)
+      this.registerStepFunction(this.checkNowMoving)
     }
 
     private updateEntitySelection = () => {
-      if (!this.state.keys.mousePos.curr) {
+      if (!this.userInput.mousePos.curr) {
         return new Set()
       }
       const mouse = withCamPosition(
-        this.state.keys.mousePos.curr,
+        this.userInput.mousePos.curr,
         this.state.camera
       )
 
       this.hoveringEntities = new Set(
-        this.state.entities
+        this.entities
           .filter((e) => pointInsideEntity(e, mouse, -3))
           .map((e) => e.id)
       )
     }
 
-    private updateMoving = () => {
-      const startingToGrab =
-        this.justPutMouseDown() && !this.state.keys.shift.curr
-      const stopGrabbing = !this.state.keys.mouseDown.curr
+    private startMovingEntities = () => {
+      const justMouseUpped = this.hasClicked()
 
-      if (startingToGrab) {
-        if (
-          this.state.keys.ctrl.curr === false &&
-          this.selectedEntities.intersection(this.hoveringEntities).size === 0
-        ) {
-          this.selectedEntities.clear() // unselect when not ctrl click
-        }
+      const ctrl = this.userInput.ctrl.curr
+      const entityOnTop = Array.from(this.hoveringEntities).pop()
 
-        const last = Array.from(this.hoveringEntities).pop()
-        if (last) {
-          this.selectedEntities.add(last)
-        }
-
-        if (this.selectedEntities.size > 0) {
+      const alreadySelected = this.selectedEntities.has(entityOnTop ?? "")
+      if (!justMouseUpped) {
+        const startingToGrab =
+          this.justPutMouseDown() && !this.userInput.shift.curr
+        if (!ctrl && entityOnTop && startingToGrab) {
+          // grab one entity and start dragging.
+          // const
+          if (!alreadySelected) {
+            this.selectedEntities.clear()
+          }
+          this.selectedEntities.add(entityOnTop)
           this.moving = {
             entities: new Set(this.selectedEntities),
             delta: [0, 0]
           }
         }
+
         return
       }
-      if (stopGrabbing) {
-        if (this.moving !== null) {
-          const diff = this.moving.delta
 
-          this.moving.entities.forEach((entity) => {
-            const e = this.fromId(entity)
-            if (!e) return
-            const d: Coors =
-              e.typeId === "floor" || e.typeId === "endGate"
-                ? [diff[0], 0]
-                : [...diff]
-            incrementPosition(e.position.curr, d)
-          })
+      if (ctrl && entityOnTop) {
+        if (alreadySelected) {
+          this.selectedEntities.delete(entityOnTop)
+        } else {
+          this.selectedEntities.add(entityOnTop)
         }
+        return
+      }
+      if (entityOnTop && !ctrl) {
+        this.selectedEntities.clear()
+        if (entityOnTop) {
+          this.selectedEntities.add(entityOnTop)
+        }
+        // if (!alreadySelected) {
+        //   this.selectedEntities.add(entityOnTop)
+        // }
+      }
 
-        this.moving = null
-        for (const entity of this.state.entities) {
-          entity.position.curr = toRounded([...entity.position.curr])
+      if (!entityOnTop && !ctrl) {
+        this.selectedEntities.clear()
+        return
+      }
+    }
+    checkNowMoving = () => {
+      const startingToGrab =
+        this.justPutMouseDown() && !this.userInput.shift.curr
+
+      // check for hovering to allow resizing one that is selected
+      if (
+        startingToGrab &&
+        this.selectedEntities.size > 0 &&
+        this.hoveringEntities.size > 0
+      ) {
+        this.moving = {
+          entities: new Set(this.selectedEntities),
+          delta: [0, 0]
         }
       }
+    }
+
+    hasClicked = () => {
+      const prev = this.userInput.mouseDown.prev
+      const mp = this.userInput.mousePos.curr
+      const mouseDown = this.userInput.mousePutDown.curr
+      return (
+        prev &&
+        mp &&
+        !this.userInput.mouseDown.curr &&
+        mouseDown &&
+        Math.abs(mouseDown[0] - mp[0]) < 4 &&
+        Math.abs(mouseDown[1] - mp[1]) < 4
+      )
+    }
+
+    finishMovingEntities = () => {
+      if (!this.moving) return
+      const endGrab = !this.userInput.mouseDown.curr
+      if (!endGrab) return
+      const moved = this.moving
+
+      this.moving = null
+
+      if (Math.abs(moved.delta[0]) < 4 && Math.abs(moved.delta[1]) < 4) {
+        return
+      }
+      this.command({type: "move", ...moved})
     }
 
     private updateEntityMovement = () => {
       if (this.moving === null) {
         return
       }
-      const mp = this.state.keys.mousePos
+      const mp = this.userInput.mousePos
       if (mp.curr && mp.prev) {
         const diff: Coors = [mp.curr[0] - mp.prev[0], mp.curr[1] - mp.prev[1]]
         incrementPosition(this.moving.delta, diff)
@@ -95,16 +143,17 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
     }
 
     private addEntityToState = () => {
+      const input = this.userInput
       const shouldAddEntity =
-        this.state.keys.ctrl.curr &&
-        this.state.keys.mousePos.curr &&
-        this.state.keys.mouseUp.curr &&
+        input.ctrl.curr &&
+        input.mousePos.curr &&
+        input.mouseUp.curr &&
         this.hoveringEntities.size === 0 &&
         this.moving === null
       if (!shouldAddEntity) {
         return
       }
-      if (!this.state.keys.mouseUp.curr) return
+      if (!input.mouseUp.curr) return
 
       const addable: Record<AddableEntity, Entity> = {
         groog: new Groog({
@@ -125,7 +174,7 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
       const toAdd = window.addingEntity.type ?? "platform"
 
       const entity = addable[toAdd]
-      const pos = this.state.keys.mouseUp.curr
+      const pos = input.mouseUp.curr
 
       const center: Coors = [
         pos[0] - entity.width / 2,
@@ -137,10 +186,9 @@ export function MutateEntityMixin<T extends BaseThing>(Base: T) {
       )
 
       if (entity.typeId === "floor") {
-        // Should probably do this higher up in the fun, but this works for now
         entity.position.curr[1] = floorConst.floorY
       }
-      this.state.entities.push(entity)
+      this.command({type: "add", entities: [entity]})
     }
   }
 }

@@ -3,9 +3,11 @@ import {Coors, CurrAndPrev, Constructor, Id} from "../entities/entityTypes"
 import {updateTime} from "../state/helpers"
 import {updateTimers} from "../state/timeHelpers"
 import {
+  emptyUserInput,
   GameStateEditProps,
   levelInfoToEditState,
-  ResizeEntity
+  ResizeEntity,
+  UserInput
 } from "./editHelpers"
 import {addDevEventListeners} from "./eventListeners"
 import {RenderMixin} from "./mixins/RenderMixin"
@@ -14,10 +16,15 @@ import {InputMixin} from "./mixins/InputMixin"
 import {SaveMixin} from "./mixins/SaveMixin"
 import {Entity} from "../entities/Entity"
 import {CleanupMixin} from "./mixins/CleanupMixin"
+import {levelToEntities} from "../helpers"
+import {CommandStackMixin} from "./CommandMixin"
 
 export type BaseThing = Constructor<GameEditAll>
-class GameEditAll {
+
+export class GameEditAll {
+  entities: Entity[]
   state: GameStateEditProps
+  userInput: UserInput
   moving: {entities: Set<Id>; delta: Coors} | null = null
   selectedEntities: Set<Id> = new Set()
   hoveringEntities: Set<Id> = new Set()
@@ -41,8 +48,11 @@ class GameEditAll {
     public canvas: HTMLCanvasElement
   ) {
     window.addingEntity.baseColor = currentLevel.platformColor
+    this.entities = levelToEntities({...currentLevel})
     const state = levelInfoToEditState(currentLevel)
-    addDevEventListeners(state, canvas)
+    const userInput = emptyUserInput()
+    addDevEventListeners(userInput, canvas)
+    this.userInput = userInput
     this.state = state
     const initCoors = JSON.parse(localStorage.getItem("edit-coors") ?? "[0,0]")
     this.state.camera.position = [
@@ -61,7 +71,7 @@ class GameEditAll {
   }
 
   fromId(entity: Id): Entity | undefined {
-    return this.state.entities.find((e) => e.id === entity)
+    return this.entities.find((e) => e.id === entity)
   }
 
   get currentlySelected(): Entity[] {
@@ -71,10 +81,18 @@ class GameEditAll {
   }
 
   justPutMouseDown = () => {
-    return !this.state.keys.mouseDown.prev && this.state.keys.mouseDown.curr
+    return !this.userInput.mouseDown.prev && this.userInput.mouseDown.curr
   }
 }
 
 export class GameEdit extends RenderMixin(
-  CleanupMixin(SaveMixin(MutateEntityMixin(InputMixin(GameEditAll))))
+  CleanupMixin(
+    SaveMixin(MutateEntityMixin(InputMixin(CommandStackMixin(GameEditAll))))
+  )
 ) {}
+
+export type GameEditConstructor = Constructor<GameEditAll>
+
+export type WithEvents = Constructor<
+  GameEditAll & InstanceType<ReturnType<typeof CommandStackMixin>>
+>

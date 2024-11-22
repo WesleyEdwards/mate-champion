@@ -1,52 +1,47 @@
-import {GameStateEditProps} from "./editHelpers"
-import {GameEdit} from "./GameEdit"
+import {UserInput} from "./editHelpers"
 
 export function addDevEventListeners(
-  contentCreator: GameStateEditProps,
+  userInput: UserInput,
   canvas: HTMLCanvasElement
 ) {
   resetAbortController()
 
-  function set<K extends keyof GameStateEditProps["keys"]>(
-    key: K,
-    value: GameStateEditProps["keys"][K]["curr"]
-  ) {
-    contentCreator.keys[key].curr = value
-  }
+  const params = {signal: abortController.signal}
 
   canvas.addEventListener(
     "mousedown",
-    (e: MouseEvent) => {
+    (e) => {
       e.preventDefault()
-      set("mouseDown", true)
-      set("mousePos", [e.offsetX, e.offsetY])
+      userInput["mouseDown"].curr = true
+      userInput["mousePutDown"].curr = [e.offsetX, e.offsetY]
+      userInput["mousePos"].curr = [e.offsetX, e.offsetY]
     },
-    {signal: abortController.signal}
+    params
   )
   canvas.addEventListener(
     "mousemove",
     (e) => {
-      set("mousePos", [e.offsetX, e.offsetY])
+      userInput["mousePos"].curr = [e.offsetX, e.offsetY]
     },
-    {signal: abortController.signal}
+    params
   )
 
   canvas.addEventListener(
     "mouseleave",
     () => {
-      set("mousePos", null)
-      set("ctrl", false)
+      userInput["mousePos"].curr = null
+      userInput["ctrl"].curr = false
     },
-    {signal: abortController.signal}
+    params
   )
 
   window.addEventListener(
     "mouseup",
     (e) => {
-      set("mouseDown", false)
-      set("mouseUp", [e.offsetX, e.offsetY])
+      userInput["mouseDown"].curr = false
+      userInput["mouseUp"].curr = [e.offsetX, e.offsetY]
     },
-    {signal: abortController.signal}
+    params
   )
 
   window.addEventListener(
@@ -54,23 +49,37 @@ export function addDevEventListeners(
     (e) => {
       if (e.code === "KeyD" && e.ctrlKey) {
         e.preventDefault()
-        set("copy", true)
+        userInput["copy"].curr = true
       }
-      if (e.code === "Delete") set("delete", true)
-      if (e.ctrlKey) set("ctrl", true)
-      if (e.shiftKey) set("shift", true)
+      if (e.code === "Delete") userInput["delete"].curr = true
+      if (e.ctrlKey) userInput["ctrl"].curr = true
+      if (e.shiftKey) userInput["shift"].curr = true
     },
-    {signal: abortController.signal}
+    params
+  )
+  window.addEventListener(
+    "keypress",
+    (e) => {
+      if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey) {
+        e.preventDefault()
+        userInput["undo"] = true
+      }
+      if (e.code === "KeyZ" && e.ctrlKey && e.shiftKey) {
+        e.preventDefault()
+        userInput["redo"] = true
+      }
+    },
+    params
   )
 
   window.addEventListener(
     "keyup",
     (e) => {
-      if (e.code === "Delete") set("delete", false)
-      if (e.ctrlKey === false) set("ctrl", false)
-      if (e.shiftKey === false) set("shift", false)
+      if (e.code === "Delete") userInput["delete"].curr = false
+      if (e.ctrlKey === false) userInput["ctrl"].curr = false
+      if (e.shiftKey === false) userInput["shift"].curr = false
     },
-    {signal: abortController.signal}
+    params
   )
 }
 

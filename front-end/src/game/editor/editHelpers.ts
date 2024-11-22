@@ -16,7 +16,6 @@ export const withCamPosition = (curr: Coors, cam: {position: Coors}): Coors => {
 export type EventState = {prev: boolean; curr: boolean}
 export type DragState = {prev: Coors | null; curr: Coors | null}
 
-export type Edge = "bottom" | "top" | "left" | "right"
 export type Edges = {x: "left" | "right" | null; y: "top" | "bottom" | null}
 
 export type ResizeEntity = {
@@ -26,10 +25,33 @@ export type ResizeEntity = {
   edge: Edges
 }
 
+export type UserInput = {
+  shift: EventState
+  ctrl: EventState
+  delete: EventState
+  mousePutDown: DragState
+  mouseDown: EventState
+  copy: EventState
+  mouseUp: DragState
+  mousePos: DragState
+  undo: boolean
+  redo: boolean
+}
+export const emptyUserInput = (): UserInput => ({
+  shift: {prev: false, curr: false},
+  ctrl: {prev: false, curr: false},
+  delete: {prev: false, curr: false},
+  copy: {prev: false, curr: false},
+  mouseDown: {prev: false, curr: false},
+  mousePutDown: {prev: null, curr: null},
+  mouseUp: {prev: null, curr: null},
+  mousePos: {prev: null, curr: null},
+  undo: false,
+  redo: false
+})
+
 export type GameStateEditProps = {
-  entities: Entity[]
   prevBaseColor: string
-  endPosition: number
   camera: {position: Coors}
   time: {
     deltaT: number
@@ -37,20 +59,11 @@ export type GameStateEditProps = {
   }
   timers: {
     sinceLastSave: TimerUp
-  }
-  keys: {
-    shift: EventState
-    ctrl: EventState
-    delete: EventState
-    mouseDown: EventState
-    copy: EventState
-    mouseUp: DragState
-    mousePos: DragState
+    sinceLastUndoRedo: TimerUp
   }
 }
 
 export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
-  entities: levelToEntities({...level}),
   prevBaseColor: level.platformColor,
   camera: {position: [0, 0]},
   time: {
@@ -58,18 +71,9 @@ export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
     prevStamp: performance.now()
   },
   timers: {
-    sinceLastSave: emptyTime("up")
-  },
-  keys: {
-    shift: {prev: false, curr: false},
-    ctrl: {prev: false, curr: false},
-    delete: {prev: false, curr: false},
-    copy: {prev: false, curr: false},
-    mouseDown: {prev: false, curr: false},
-    mouseUp: {prev: null, curr: null},
-    mousePos: {prev: null, curr: null}
-  },
-  endPosition: level.endPosition
+    sinceLastSave: emptyTime("up"),
+    sinceLastUndoRedo: emptyTime("up")
+  }
 })
 
 export function toRounded(pos: Coors): Coors {

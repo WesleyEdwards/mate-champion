@@ -56,7 +56,6 @@ export const GroogEdit: FC<{
           title="Speed"
           setValue={(value) => {
             const accountForDir = groog.velocity[0] > 0 ? value : -value
-            console.log("After accounting for dir", accountForDir)
             groog.velocity[0] = accountForDir / 100
             return editGroog(groog)
           }}

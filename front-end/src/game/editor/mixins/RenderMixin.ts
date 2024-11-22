@@ -1,10 +1,10 @@
 import {Entity} from "../../entities/Entity"
 import {renderBg} from "../../render/background"
 import {accountForPosition} from "../../render/helpers"
-import {Edge, Edges, toRounded} from "../editHelpers"
-import {BaseThing} from "../GameEdit"
+import {toRounded} from "../editHelpers"
+import {GameEditConstructor, WithEvents} from "../GameEdit"
 
-export function RenderMixin<T extends BaseThing>(Base: T) {
+export function RenderMixin<T extends GameEditConstructor>(Base: T) {
   return class extends Base {
     render(cxt: CanvasRenderingContext2D) {
       const camPos = this.state.camera.position
@@ -13,7 +13,7 @@ export function RenderMixin<T extends BaseThing>(Base: T) {
 
       renderBg(this.state.camera, cxt)
 
-      for (const entity of this.state.entities) {
+      for (const entity of this.entities) {
         cxt.save()
         if (
           this.sizableEntity?.entityId === entity.id &&

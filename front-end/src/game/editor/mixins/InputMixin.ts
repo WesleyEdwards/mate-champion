@@ -2,9 +2,9 @@ import {Coors} from "../../entities/entityTypes"
 import {areEntitiesTouching, toCurrAndPrev} from "../../helpers"
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
 import {withCamPosition} from "../editHelpers"
-import {BaseThing} from "../GameEdit"
+import {WithEvents} from "../GameEdit"
 
-export function InputMixin<T extends BaseThing>(Base: T) {
+export function InputMixin<T extends WithEvents>(Base: T) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
@@ -15,7 +15,8 @@ export function InputMixin<T extends BaseThing>(Base: T) {
     }
 
     private updateKeys = () => {
-      Object.values(this.state.keys).forEach((obj) => {
+      Object.values(this.userInput).forEach((obj) => {
+        if (typeof obj === "boolean") return
         if (typeof obj.curr === "boolean") {
           obj.prev = obj.curr
         } else {
@@ -26,6 +27,19 @@ export function InputMixin<T extends BaseThing>(Base: T) {
           }
         }
       })
+
+      if (this.state.timers.sinceLastUndoRedo.val > 200) {
+        if (this.userInput.undo) {
+          this.undo()
+          this.state.timers.sinceLastUndoRedo.val = 0
+        }
+        if (this.userInput.redo) {
+          this.redo()
+          this.state.timers.sinceLastUndoRedo.val = 0
+        }
+        this.userInput.redo = false
+        this.userInput.undo = false
+      }
     }
 
     private updateMouseHover = () => {
@@ -45,11 +59,11 @@ export function InputMixin<T extends BaseThing>(Base: T) {
         return "nwse-resize"
       }
 
-      if (this.state.keys.mouseDown.curr && this.hoveringEntities.size === 0) {
+      if (this.userInput.mouseDown.curr && this.hoveringEntities.size === 0) {
         return "move"
       }
 
-      if (this.state.keys.ctrl.curr) {
+      if (this.userInput.ctrl.curr) {
         if (this.hoveringEntities.size > 0) {
           return "pointer"
         } else {
@@ -64,15 +78,15 @@ export function InputMixin<T extends BaseThing>(Base: T) {
 
     private updateDragSelect = () => {
       const justStartedDragSelecting =
-        this.state.keys.shift.curr &&
-        this.state.keys.mouseDown.prev === false &&
-        this.state.keys.mouseDown.curr === true
+        this.userInput.shift.curr &&
+        this.userInput.mouseDown.prev === false &&
+        this.userInput.mouseDown.curr === true
 
-      if (!this.state.keys.mousePos.curr) {
+      if (!this.userInput.mousePos.curr) {
         return
       }
       const mp = withCamPosition(
-        this.state.keys.mousePos.curr,
+        this.userInput.mousePos.curr,
         this.state.camera
       )
 
@@ -80,7 +94,7 @@ export function InputMixin<T extends BaseThing>(Base: T) {
         this.dragSelection = {init: [...mp], dragPos: toCurrAndPrev([...mp])}
       }
 
-      if (this.state.keys.mouseUp.curr) {
+      if (this.userInput.mouseUp.curr) {
         this.dragSelection = null
       }
 
@@ -91,7 +105,7 @@ export function InputMixin<T extends BaseThing>(Base: T) {
           dragPos.curr[1] !== dragPos.prev[1]
         ) {
           this.selectedEntities.clear()
-          for (const entity of this.state.entities) {
+          for (const entity of this.entities) {
             if (
               areEntitiesTouching(entity, {
                 position: {
@@ -118,12 +132,12 @@ export function InputMixin<T extends BaseThing>(Base: T) {
     private updateCanvasMovement = () => {
       const canManuallyMoveCanvas =
         this.moving === null &&
-        this.state.keys.mouseDown.curr &&
+        this.userInput.mouseDown.curr &&
         this.hoveringEntities.size === 0 &&
         !this.dragSelection &&
         !this.sizableEntity
 
-      const mp = this.state.keys.mousePos
+      const mp = this.userInput.mousePos
       if (canManuallyMoveCanvas) {
         if (mp.curr && mp.prev) {
           const diff: Coors = [

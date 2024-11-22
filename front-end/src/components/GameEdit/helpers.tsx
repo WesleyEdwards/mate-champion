@@ -114,8 +114,8 @@ export const NumberInput = ({
   return (
     <FormControl>
       <Input
-      disabled={disabled}
-        value={vString}
+        disabled={disabled}
+        value={disabled ? 0 : vString}
         onChange={(event) => {
           setVString(event.target.value)
         }}

@@ -24,6 +24,7 @@ const getBuilder = <T extends HasId>(
   endpointBuilder: (async (req, res) => {
     const {params, jwtBody} = req
     const {id} = params
+    const {preResponseFilter = (x) => x} = info
 
     if (!id || typeof id !== "string") {
       return res.status(400).json("Bad request")
@@ -34,9 +35,9 @@ const getBuilder = <T extends HasId>(
       and: [idCondition(id), condition]
     })
 
-    if (isParseError(item)) return res.status(404).json(item)
+    if (!isValid<T>(item)) return res.status(404).json(item)
 
-    return res.json(item)
+    return res.json(preResponseFilter(item))
   }) satisfies AuthReqHandler<{}>
 })
 
@@ -55,7 +56,7 @@ const createBuilder = <T extends HasId, B = {}>(
   method: "post",
   endpointBuilder: (async (req, res) => {
     const {jwtBody} = req
-    console.log("Trying to post", req.body)
+    const {preResponseFilter = (x) => x} = info
     const levelBody = await info.validate(req.body, jwtBody)
     if (isParseError(levelBody)) return res.status(400).json(levelBody)
 
@@ -73,7 +74,7 @@ const createBuilder = <T extends HasId, B = {}>(
 
     await info.postCreate?.(level)
 
-    return res.json(level)
+    return res.json(preResponseFilter(level))
   }) satisfies AuthReqHandler<B>
 })
 
@@ -118,6 +119,7 @@ export const modifyBuilder = <T extends HasId, B extends Modification<T>>(
   endpointBuilder: (async (req, res) => {
     const {body, params, jwtBody} = req
     const id = params.id
+    const {preResponseFilter = (x) => x} = info
 
     const condition = info.perms?.(jwtBody) ?? {always: true}
 
@@ -131,7 +133,9 @@ export const modifyBuilder = <T extends HasId, B extends Modification<T>>(
 
     const updatedLevel = await endpoint.updateOne(id, levelPartial)
 
-    return res.json(updatedLevel)
+    if (!isValid<T>(updatedLevel)) return res.status(400).json(levelPartial)
+
+    return res.json(preResponseFilter(updatedLevel))
   }) satisfies AuthReqHandler<B>
 })
 
