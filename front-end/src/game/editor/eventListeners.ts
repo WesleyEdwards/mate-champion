@@ -62,11 +62,11 @@ export function addDevEventListeners(
     (e) => {
       if (e.code === "KeyZ" && e.ctrlKey && !e.shiftKey) {
         e.preventDefault()
-        userInput["undo"] = true
+        userInput["undo"] = "undo"
       }
       if (e.code === "KeyZ" && e.ctrlKey && e.shiftKey) {
         e.preventDefault()
-        userInput["redo"] = true
+        userInput["undo"] = "redo"
       }
     },
     params

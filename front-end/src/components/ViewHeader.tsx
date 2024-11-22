@@ -15,6 +15,7 @@ import {
   Construction,
   Edit,
   PlayArrow,
+  Redo,
   Sync,
   Undo
 } from "@mui/icons-material"
@@ -272,6 +273,17 @@ const EditHeader: FC = () => {
       </Typography>
 
       <div style={{flex: 1}}></div>
+      <Stack direction="row" sx={{alignSelf: "start"}}>
+        <Tooltip title="Undo">
+          <IconButton onClick={() => (window.editor.action = "undo")}>
+            <Undo />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Redo">
+        <IconButton onClick={() => (window.editor.action = "redo")}>
+          <Redo />
+        </IconButton></Tooltip>
+      </Stack>
       <Stack direction="row" gap="5px" alignItems={"start"}>
         <Button
           sx={{width: "8rem"}}

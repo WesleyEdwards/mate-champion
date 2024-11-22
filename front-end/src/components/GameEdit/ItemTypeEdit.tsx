@@ -1,5 +1,5 @@
 import {Stack, Card, Typography} from "@mui/joy"
-import {AddableEntity, Adding} from "./CourseBuilderSettings"
+import {Adding} from "./CourseBuilderSettings"
 import grogImg from "../../assets/grog/enemy_walking_single.png"
 import packageImg from "../../assets/mate-package.png"
 import platformImg from "../../assets/platform.png"
@@ -17,7 +17,7 @@ export const AddingEntity = ({
 }) => {
   const {currentScreen} = useNavigator()
   const handleSetEditingItem = (params: Partial<Adding>) => {
-    window.addingEntity = {...window.addingEntity, ...params}
+    window.editor.addingEntity = {...window.editor.addingEntity, ...params}
     setEdit((prev) => ({...prev, ...params}))
   }
 
@@ -65,7 +65,7 @@ export const AddingEntity = ({
                             width: "60px",
                             height: "30px",
                             backgroundColor:
-                              window.addingEntity.color ?? "springgreen",
+                              window.editor.addingEntity.color ?? "springgreen",
                             borderColor: "black",
                             borderWidth: "3px",
                             borderStyle: "solid"

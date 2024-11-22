@@ -31,15 +31,16 @@ export const CourseBuilderSettings = () => {
   const [editingEntities, setEditingEntities] = useState<Entity[]>([])
 
   const updateEditing = () => {
+    const adding = window.editor.addingEntity
     if (
-      adding.type !== window.addingEntity.type ||
-      adding.color !== window.addingEntity.baseColor ||
-      adding.color !== window.addingEntity.color
+      adding.type !== adding.type ||
+      adding.color !== adding.baseColor ||
+      adding.color !== adding.color
     ) {
-      setAdding({...window.addingEntity})
+      setAdding({...adding})
     }
-    if (!arraysAreSame(editingEntities, window.editingEntities)) {
-      setEditingEntities([...window.editingEntities])
+    if (!arraysAreSame(editingEntities, window.editor.editingEntities)) {
+      setEditingEntities([...window.editor.editingEntities])
     }
   }
 

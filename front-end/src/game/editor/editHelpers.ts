@@ -30,8 +30,7 @@ export type UserInput = {
   mouseUp: DragState
   mousePos: DragState
   copy: boolean
-  undo: boolean
-  redo: boolean
+  undo: "undo" | "redo" | undefined
 }
 export const emptyUserInput = (): UserInput => ({
   shift: {prev: false, curr: false},
@@ -42,8 +41,7 @@ export const emptyUserInput = (): UserInput => ({
   mouseUp: {prev: null, curr: null},
   mousePos: {prev: null, curr: null},
   copy: false,
-  undo: false,
-  redo: false
+  undo: undefined
 })
 
 export type GameStateEditProps = {

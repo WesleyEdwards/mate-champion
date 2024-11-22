@@ -15,7 +15,12 @@ export function InputMixin<T extends WithCamera>(Base: T) {
 
     private updateKeys = () => {
       Object.values(this.userInput).forEach((obj) => {
-        if (typeof obj === "boolean") return
+        if (
+          typeof obj === "string" ||
+          obj === undefined ||
+          typeof obj === "boolean"
+        )
+          return
         if (typeof obj.curr === "boolean") {
           obj.prev = obj.curr
         } else {
@@ -27,17 +32,21 @@ export function InputMixin<T extends WithCamera>(Base: T) {
         }
       })
 
+      if (window.editor.action) {
+        this.userInput.undo = window.editor.action
+        window.editor.action = undefined
+      }
+
       if (this.state.timers.sinceLastUndoRedo.val > 200) {
-        if (this.userInput.undo) {
+        if (this.userInput.undo === "undo") {
           this.undo()
           this.state.timers.sinceLastUndoRedo.val = 0
         }
-        if (this.userInput.redo) {
+        if (this.userInput.undo === "redo") {
           this.redo()
           this.state.timers.sinceLastUndoRedo.val = 0
         }
-        this.userInput.redo = false
-        this.userInput.undo = false
+        this.userInput.undo = undefined
       }
     }
 

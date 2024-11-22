@@ -161,14 +161,14 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
         }),
         floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
         platform: new Platform({
-          color: window.addingEntity.baseColor ?? "springgreen",
+          color: window.editor.addingEntity.baseColor ?? "springgreen",
           position: [0, 0],
           dimensions: [300, platformConst.defaultHeight]
         }),
         ammo: new Ammo([0, 0])
       }
 
-      const toAdd = window.addingEntity.type ?? "platform"
+      const toAdd = window.editor.addingEntity.type ?? "platform"
 
       const entity = addable[toAdd]
       const pos = input.mouseUp.curr

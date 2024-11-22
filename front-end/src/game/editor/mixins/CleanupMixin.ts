@@ -60,7 +60,7 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
       this.userInput.mouseUp.curr = null
 
       // reconcile colors
-      const bc = window.addingEntity.baseColor
+      const bc = window.editor.addingEntity.baseColor
       if (bc && bc !== this.state.prevBaseColor) {
         this.entities.forEach((e) => {
           if (e instanceof Platform) {

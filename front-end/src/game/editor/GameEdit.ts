@@ -48,7 +48,7 @@ export class GameEditAll {
     public setLevels: (level: Partial<LevelMap>) => void,
     public canvas: HTMLCanvasElement
   ) {
-    window.addingEntity.baseColor = currentLevel.platformColor
+    window.editor.addingEntity.baseColor = currentLevel.platformColor
     this.entities = levelToEntities({...currentLevel})
     const state = levelInfoToEditState(currentLevel)
     const userInput = emptyUserInput()

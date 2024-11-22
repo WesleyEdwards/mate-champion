@@ -18,8 +18,11 @@ declare global {
   interface Window {
     stopLoop: boolean
     pause: boolean
-    editingEntities: Entity[]
-    addingEntity: Adding
+    editor: {
+      editingEntities: Entity[]
+      addingEntity: Adding
+      action: "undo" | "redo" | undefined
+    }
     debounceLog: (...args: any[]) => void
   }
 
@@ -36,9 +39,13 @@ function debounceLog(...args: any[]) {
   if (rand === 1) console.log(...args)
 }
 
-window.addingEntity = {type: "platform", color: undefined, baseColor: undefined}
+window.editor = {
+  addingEntity: {type: "platform", color: undefined, baseColor: undefined},
+  editingEntities: [],
+  action: undefined
+}
 window.debounceLog = debounceLog
-window.editingEntities = []
+// window.
 
 const theme: Theme = extendTheme(mateTheme)
 

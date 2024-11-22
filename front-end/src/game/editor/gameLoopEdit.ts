@@ -22,10 +22,13 @@ export function gameLoopEdit(params: {
     game.step(timeStamp)
     game.render(context)
 
-    const diff = arraysAreSame(game.currentlySelected, window.editingEntities)
+    const diff = arraysAreSame(
+      game.currentlySelected,
+      window.editor.editingEntities
+    )
 
     if (!diff) {
-      window.editingEntities = [...game.currentlySelected]
+      window.editor.editingEntities = [...game.currentlySelected]
     }
 
     requestAnimationFrame(gameLoop)
