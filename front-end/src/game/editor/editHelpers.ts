@@ -9,10 +9,6 @@ export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[1] += increment[1]
 }
 
-export const withCamPosition = (curr: Coors, cam: {position: Coors}): Coors => {
-  return [curr[0] + cam.position[0], curr[1] - cam.position[1]]
-}
-
 export type EventState = {prev: boolean; curr: boolean}
 export type DragState = {prev: Coors | null; curr: Coors | null}
 
@@ -31,9 +27,9 @@ export type UserInput = {
   delete: EventState
   mousePutDown: DragState
   mouseDown: EventState
-  copy: EventState
   mouseUp: DragState
   mousePos: DragState
+  copy: boolean
   undo: boolean
   redo: boolean
 }
@@ -41,37 +37,37 @@ export const emptyUserInput = (): UserInput => ({
   shift: {prev: false, curr: false},
   ctrl: {prev: false, curr: false},
   delete: {prev: false, curr: false},
-  copy: {prev: false, curr: false},
   mouseDown: {prev: false, curr: false},
   mousePutDown: {prev: null, curr: null},
   mouseUp: {prev: null, curr: null},
   mousePos: {prev: null, curr: null},
+  copy: false,
   undo: false,
   redo: false
 })
 
 export type GameStateEditProps = {
   prevBaseColor: string
-  camera: {position: Coors}
   time: {
     deltaT: number
     prevStamp: number
   }
   timers: {
     sinceLastSave: TimerUp
+    sinceLastSaveCamPos: TimerUp
     sinceLastUndoRedo: TimerUp
   }
 }
 
 export const levelInfoToEditState = (level: LevelMap): GameStateEditProps => ({
   prevBaseColor: level.platformColor,
-  camera: {position: [0, 0]},
   time: {
     deltaT: 0,
     prevStamp: performance.now()
   },
   timers: {
     sinceLastSave: emptyTime("up"),
+    sinceLastSaveCamPos: emptyTime("up"),
     sinceLastUndoRedo: emptyTime("up")
   }
 })

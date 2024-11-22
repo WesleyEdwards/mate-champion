@@ -13,10 +13,6 @@ export function SaveMixin<T extends WithEvents>(Base: T) {
       if (this.state.timers.sinceLastSave.val > 500) {
         this.state.timers.sinceLastSave.val = 0
         this.setLevels(this.editStateToLevelInfo())
-        localStorage.setItem(
-          "edit-coors",
-          JSON.stringify(this.state.camera.position)
-        )
       }
     }
 

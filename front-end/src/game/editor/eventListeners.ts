@@ -49,7 +49,7 @@ export function addDevEventListeners(
     (e) => {
       if (e.code === "KeyD" && e.ctrlKey) {
         e.preventDefault()
-        userInput["copy"].curr = true
+        userInput["copy"] = true
       }
       if (e.code === "Delete") userInput["delete"].curr = true
       if (e.ctrlKey) userInput["ctrl"].curr = true

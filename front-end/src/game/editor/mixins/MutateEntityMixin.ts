@@ -6,10 +6,10 @@ import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
 import {pointInsideEntity, toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
-import {incrementPosition, toRounded, withCamPosition} from "../editHelpers"
-import {WithEvents} from "../GameEdit"
+import {incrementPosition} from "../editHelpers"
+import {WithCamera, WithEvents} from "../GameEdit"
 
-export function MutateEntityMixin<T extends WithEvents>(Base: T) {
+export function MutateEntityMixin<T extends WithCamera>(Base: T) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
@@ -25,10 +25,7 @@ export function MutateEntityMixin<T extends WithEvents>(Base: T) {
       if (!this.userInput.mousePos.curr) {
         return new Set()
       }
-      const mouse = withCamPosition(
-        this.userInput.mousePos.curr,
-        this.state.camera
-      )
+      const mouse = this.withCamPosition(this.userInput.mousePos.curr)
 
       this.hoveringEntities = new Set(
         this.entities
@@ -181,9 +178,7 @@ export function MutateEntityMixin<T extends WithEvents>(Base: T) {
         pos[1] - entity.height / 2
       ]
 
-      entity.position = toCurrAndPrev(
-        withCamPosition(center, this.state.camera)
-      )
+      entity.position = toCurrAndPrev(this.withCamPosition(center))
 
       if (entity.typeId === "floor") {
         entity.position.curr[1] = floorConst.floorY

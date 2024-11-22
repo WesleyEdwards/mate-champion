@@ -5,11 +5,11 @@ import {Coors, CurrAndPrev, EntityOfType} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Platform, Floor} from "../../entities/platform"
 import {pointInsideEntity} from "../../helpers"
-import {MAX_CANVAS_HEIGHT} from "../../loopShared/constants"
-import {Edges, toRounded, toRoundedNum, withCamPosition} from "../editHelpers"
-import {WithEvents} from "../GameEdit"
+import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
+import {Edges, toRounded, toRoundedNum} from "../editHelpers"
+import {WithCamera, WithEvents} from "../GameEdit"
 
-export function CleanupMixin<T extends WithEvents>(Base: T) {
+export function CleanupMixin<T extends WithCamera>(Base: T) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
@@ -33,11 +33,14 @@ export function CleanupMixin<T extends WithEvents>(Base: T) {
         })
       }
 
-      if (this.userInput.copy.curr) {
-        const copyOfWithOffset = (coors: CurrAndPrev): Coors => {
-          const correctForY =
-            coors.curr[0] + 80 > MAX_CANVAS_HEIGHT ? -100 : 100
-          return [coors.curr[0] + 100, coors.curr[1] + correctForY]
+      if (this.userInput.copy) {
+        const copyOfWithOffset = (c: CurrAndPrev): Coors => {
+          const coors = this.withoutCamPosition(c.curr)
+          const toTheTop = coors[1] > MAX_CANVAS_HEIGHT / 4
+          const toTheRight = coors[0] < MAX_CANVAS_WIDTH * 0.75
+          const correctForX = c.curr[0] + (toTheRight ? 100 : -100)
+          const correctForY = c.curr[1] + (toTheTop ? -100 : 100)
+          return [correctForX, correctForY]
         }
 
         const newEntities = this.currentlySelected.reduce<Entity[]>(
@@ -51,7 +54,7 @@ export function CleanupMixin<T extends WithEvents>(Base: T) {
           []
         )
         this.command({type: "add", entities: newEntities})
-        this.userInput.copy.curr = false
+        this.userInput.copy = false
       }
 
       this.userInput.mouseUp.curr = null
@@ -113,14 +116,14 @@ export function CleanupMixin<T extends WithEvents>(Base: T) {
         newPositionAndDimensions(
           s.proposed,
           s.edge,
-          withCamPosition(this.userInput.mousePos.curr, this.state.camera)
+          this.withCamPosition(this.userInput.mousePos.curr)
         )
       }
     }
     mouseOnEdge = (e: Entity): Edges | null => {
       const curr = this.userInput.mousePos.curr
       if (!curr) return null
-      const mousePos = withCamPosition(curr, this.state.camera)
+      const mousePos = this.withCamPosition(curr)
 
       if (!pointInsideEntity(e, mousePos, 10)) return null
       const distFromEntity = 6

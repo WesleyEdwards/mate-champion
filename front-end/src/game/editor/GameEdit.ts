@@ -18,6 +18,7 @@ import {Entity} from "../entities/Entity"
 import {CleanupMixin} from "./mixins/CleanupMixin"
 import {levelToEntities} from "../helpers"
 import {CommandStackMixin} from "./CommandMixin"
+import {CameraMixin} from "./mixins/CameraMixin"
 
 export type BaseThing = Constructor<GameEditAll>
 
@@ -54,11 +55,6 @@ export class GameEditAll {
     addDevEventListeners(userInput, canvas)
     this.userInput = userInput
     this.state = state
-    const initCoors = JSON.parse(localStorage.getItem("edit-coors") ?? "[0,0]")
-    this.state.camera.position = [
-      Math.max(0, initCoors[0]),
-      Math.max(0, initCoors[1])
-    ]
   }
 
   step(timeStamp: number) {
@@ -87,7 +83,9 @@ export class GameEditAll {
 
 export class GameEdit extends RenderMixin(
   CleanupMixin(
-    SaveMixin(MutateEntityMixin(InputMixin(CommandStackMixin(GameEditAll))))
+    SaveMixin(
+      MutateEntityMixin(InputMixin(CameraMixin(CommandStackMixin(GameEditAll))))
+    )
   )
 ) {}
 
@@ -95,4 +93,7 @@ export type GameEditConstructor = Constructor<GameEditAll>
 
 export type WithEvents = Constructor<
   GameEditAll & InstanceType<ReturnType<typeof CommandStackMixin>>
+>
+export type WithCamera = Constructor<
+  GameEditAll & InstanceType<ReturnType<typeof CameraMixin>>
 >

@@ -1,10 +1,9 @@
 import {Coors} from "../../entities/entityTypes"
 import {areEntitiesTouching, toCurrAndPrev} from "../../helpers"
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
-import {withCamPosition} from "../editHelpers"
-import {WithEvents} from "../GameEdit"
+import {WithCamera} from "../GameEdit"
 
-export function InputMixin<T extends WithEvents>(Base: T) {
+export function InputMixin<T extends WithCamera>(Base: T) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
@@ -85,10 +84,7 @@ export function InputMixin<T extends WithEvents>(Base: T) {
       if (!this.userInput.mousePos.curr) {
         return
       }
-      const mp = withCamPosition(
-        this.userInput.mousePos.curr,
-        this.state.camera
-      )
+      const mp = this.withCamPosition(this.userInput.mousePos.curr)
 
       if (justStartedDragSelecting) {
         this.dragSelection = {init: [...mp], dragPos: toCurrAndPrev([...mp])}
@@ -145,15 +141,15 @@ export function InputMixin<T extends WithEvents>(Base: T) {
             mp.curr[1] - mp.prev[1]
           ]
           const proposedPos: Coors = [
-            this.state.camera.position[0] + diff[0],
-            this.state.camera.position[1] + diff[1]
+            this.camera.position[0] + diff[0],
+            this.camera.position[1] + diff[1]
           ]
           this.attemptToMoveCam(proposedPos)
         }
       }
 
       if (this.moving && mp.curr) {
-        const proposedPos: Coors = [...this.state.camera.position]
+        const proposedPos: Coors = [...this.camera.position]
 
         const distToMoveCanvas = 3
         const distFromEdge = 100
@@ -177,14 +173,14 @@ export function InputMixin<T extends WithEvents>(Base: T) {
 
     // Returns the difference the cam was moved
     attemptToMoveCam = (proposedPos: Coors): Coors => {
-      const camPos = this.state.camera.position
+      const camPos = this.camera.position
       if (proposedPos[0] < -200 || proposedPos[0] > 10_000) {
         proposedPos[0] = camPos[0]
       }
       if (proposedPos[1] < 0 || proposedPos[1] > 500) {
         proposedPos[1] = camPos[1]
       }
-      this.state.camera.position = [...proposedPos]
+      this.camera.position = [...proposedPos]
       return [camPos[0] - proposedPos[0], camPos[1] - proposedPos[1]]
     }
   }
