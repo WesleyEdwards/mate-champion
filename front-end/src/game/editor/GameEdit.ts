@@ -76,9 +76,8 @@ export class GameEditAll {
       .filter(Boolean) as Entity[]
   }
 
-  justPutMouseDown = () => {
-    return !this.userInput.mouseDown.prev && this.userInput.mouseDown.curr
-  }
+  justPutMouseDown = () =>
+    !this.userInput.mouseDown.prev && this.userInput.mouseDown.curr
 }
 
 export class GameEdit extends RenderMixin(

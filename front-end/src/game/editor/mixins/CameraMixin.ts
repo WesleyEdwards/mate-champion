@@ -1,3 +1,4 @@
+import {Entity} from "../../entities/Entity"
 import {Coors} from "../../entities/entityTypes"
 import {WithEvents} from "../GameEdit"
 
@@ -32,6 +33,18 @@ export function CameraMixin<TBase extends WithEvents>(Base: TBase) {
         this.state.timers.sinceLastSaveCamPos.val = 0
         localStorage.setItem("edit-coors", JSON.stringify(this.camera.position))
       }
+    }
+
+    pointInsideEntity = (
+      e: Entity,
+      point: Coors,
+      distOutsideOfEntityThreshHold?: number
+    ) => {
+      const pos = this.withCamPosition(point)
+      const dist = distOutsideOfEntityThreshHold ?? 0
+      const isX = e.posLeft - dist < pos[0] && e.posRight + dist > pos[0]
+      const isY = e.posTop - dist < pos[1] && e.posBottom + dist > pos[1]
+      return isX && isY
     }
   }
 }

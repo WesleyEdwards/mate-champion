@@ -9,9 +9,18 @@ export function addDevEventListeners(
   const params = {signal: abortController.signal}
 
   canvas.addEventListener(
+    "contextmenu",
+    (e) => {
+      e.preventDefault() // right click
+    },
+    params
+  )
+
+  canvas.addEventListener(
     "mousedown",
     (e) => {
       e.preventDefault()
+      if (e.button !== 0) return // right click
       userInput["mouseDown"].curr = true
       userInput["mousePutDown"].curr = [e.offsetX, e.offsetY]
       userInput["mousePos"].curr = [e.offsetX, e.offsetY]

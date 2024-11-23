@@ -4,9 +4,8 @@ import {Entity} from "../../entities/Entity"
 import {Coors, CurrAndPrev, EntityOfType} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Platform, Floor} from "../../entities/platform"
-import {pointInsideEntity} from "../../helpers"
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
-import {Edges, toRounded, toRoundedNum} from "../editHelpers"
+import {Edges, pointInsideEntity, toRounded, toRoundedNum} from "../editHelpers"
 import {WithCamera, WithEvents} from "../GameEdit"
 
 export function CleanupMixin<T extends WithCamera>(Base: T) {
@@ -123,11 +122,10 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
     mouseOnEdge = (e: Entity): Edges | null => {
       const curr = this.userInput.mousePos.curr
       if (!curr) return null
-      const mousePos = this.withCamPosition(curr)
-
-      if (!pointInsideEntity(e, mousePos, 10)) return null
+      if (!this.pointInsideEntity(e, curr, 10)) return null
       const distFromEntity = 6
-
+      
+      const mousePos = this.withCamPosition(curr)
       const right = Math.abs(e.posRight - mousePos[0]) < distFromEntity
       const left = Math.abs(e.posLeft - mousePos[0]) < distFromEntity
       const top = Math.abs(e.posTop - mousePos[1]) < distFromEntity

@@ -1,6 +1,5 @@
 import {LevelMap} from "../loopShared/models"
 import {Coors, Id} from "../entities/entityTypes"
-import {levelToEntities} from "../helpers"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {Entity} from "../entities/Entity"
 
@@ -8,6 +7,10 @@ export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[0] += increment[0]
   curr[1] += increment[1]
 }
+export const differenceBetween = (curr: Coors, increment: Coors): Coors => [
+  curr[0] - increment[0],
+  curr[1] - increment[1]
+]
 
 export type EventState = {prev: boolean; curr: boolean}
 export type DragState = {prev: Coors | null; curr: Coors | null}
@@ -82,3 +85,16 @@ export function toRoundedNum(num: number): number {
   const val = Math.ceil(num / roundTo) * roundTo
   return val
 }
+
+export function pointInsideEntity(
+  e: Entity,
+  point: Coors,
+  distOutsideOfEntityThreshHold?: number
+) {
+  const dist = distOutsideOfEntityThreshHold ?? 0
+  const isX = e.posLeft - dist < point[0] && e.posRight + dist > point[0]
+  const isY = e.posTop - dist < point[1] && e.posBottom + dist > point[1]
+  return isX && isY
+}
+
+export const areEqual = (a: Coors, b: Coors) => a[0] === b[0] && a[1] === b[1]

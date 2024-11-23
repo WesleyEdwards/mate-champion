@@ -4,49 +4,59 @@ import {Entity} from "../../entities/Entity"
 import {Coors} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
-import {pointInsideEntity, toCurrAndPrev} from "../../helpers"
+import {toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
-import {incrementPosition} from "../editHelpers"
-import {WithCamera, WithEvents} from "../GameEdit"
+import {areEqual, differenceBetween, incrementPosition} from "../editHelpers"
+import {WithCamera} from "../GameEdit"
 
 export function MutateEntityMixin<T extends WithCamera>(Base: T) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args)
-      this.registerStepFunction(this.updateEntitySelection)
-      this.registerStepFunction(this.updateEntityMovement)
+      this.registerStepFunction(this.updateHover)
+      this.registerStepFunction(this.updateDraggingEntity)
       this.registerStepFunction(this.startMovingEntities)
       this.registerStepFunction(this.addEntityToState)
       this.registerStepFunction(this.finishMovingEntities)
       this.registerStepFunction(this.checkNowMoving)
     }
 
-    private updateEntitySelection = () => {
-      if (!this.userInput.mousePos.curr) {
-        return new Set()
+    private updateHover = () => {
+      const mp = this.userInput.mousePos.curr
+      if (!mp) return
+      if (areEqual(mp, this.userInput.mousePos.prev ?? [0, 0])) {
+        return
       }
-      const mouse = this.withCamPosition(this.userInput.mousePos.curr)
-
       this.hoveringEntities = new Set(
         this.entities
-          .filter((e) => pointInsideEntity(e, mouse, -3))
+          .filter((e) => this.pointInsideEntity(e, mp, -5))
           .map((e) => e.id)
       )
     }
 
-    private startMovingEntities = () => {
-      const justMouseUpped = this.hasClicked()
+    private updateDraggingEntity = () => {
+      if (this.moving === null) return
+      const mp = this.userInput.mousePos
+      if (mp.curr && mp.prev) {
+        incrementPosition(
+          this.moving.delta,
+          differenceBetween(mp.curr, mp.prev)
+        )
+      }
+    }
 
+    private startMovingEntities = () => {
       const ctrl = this.userInput.ctrl.curr
       const entityOnTop = Array.from(this.hoveringEntities).pop()
 
+      // The hovering entity is already selected
       const alreadySelected = this.selectedEntities.has(entityOnTop ?? "")
-      if (!justMouseUpped) {
+
+      if (!this.justMouseUpped()) {
         const startingToGrab =
           this.justPutMouseDown() && !this.userInput.shift.curr
         if (!ctrl && entityOnTop && startingToGrab) {
           // grab one entity and start dragging.
-          // const
           if (!alreadySelected) {
             this.selectedEntities.clear()
           }
@@ -56,11 +66,11 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
             delta: [0, 0]
           }
         }
-
         return
       }
 
       if (ctrl && entityOnTop) {
+        // Toggle between selected/not selected
         if (alreadySelected) {
           this.selectedEntities.delete(entityOnTop)
         } else {
@@ -68,22 +78,17 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
         }
         return
       }
-      if (entityOnTop && !ctrl) {
-        this.selectedEntities.clear()
-        if (entityOnTop) {
-          this.selectedEntities.add(entityOnTop)
-        }
-        // if (!alreadySelected) {
-        //   this.selectedEntities.add(entityOnTop)
-        // }
-      }
 
-      if (!entityOnTop && !ctrl) {
-        this.selectedEntities.clear()
-        return
+      if (ctrl) return
+
+      this.selectedEntities.clear()
+
+      if (entityOnTop) {
+        this.selectedEntities.add(entityOnTop)
       }
     }
-    checkNowMoving = () => {
+
+    private checkNowMoving = () => {
       const startingToGrab =
         this.justPutMouseDown() && !this.userInput.shift.curr
 
@@ -100,7 +105,7 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
       }
     }
 
-    hasClicked = () => {
+    private justMouseUpped = () => {
       const prev = this.userInput.mouseDown.prev
       const mp = this.userInput.mousePos.curr
       const mouseDown = this.userInput.mousePutDown.curr
@@ -128,50 +133,22 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
       this.command({type: "move", ...moved})
     }
 
-    private updateEntityMovement = () => {
-      if (this.moving === null) {
-        return
-      }
-      const mp = this.userInput.mousePos
-      if (mp.curr && mp.prev) {
-        const diff: Coors = [mp.curr[0] - mp.prev[0], mp.curr[1] - mp.prev[1]]
-        incrementPosition(this.moving.delta, diff)
-      }
-    }
-
     private addEntityToState = () => {
-      const input = this.userInput
       const shouldAddEntity =
-        input.ctrl.curr &&
-        input.mousePos.curr &&
-        input.mouseUp.curr &&
+        this.userInput.ctrl.curr &&
+        this.justPutMouseDown() &&
         this.hoveringEntities.size === 0 &&
         this.moving === null
+
       if (!shouldAddEntity) {
         return
       }
-      if (!input.mouseUp.curr) return
-
-      const addable: Record<AddableEntity, Entity> = {
-        groog: new Groog({
-          moveSpeed: 0.3,
-          position: [0, 0],
-          timeBetweenJump: 2000,
-          timeBetweenTurn: 3000
-        }),
-        floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
-        platform: new Platform({
-          color: window.editor.addingEntity.baseColor ?? "springgreen",
-          position: [0, 0],
-          dimensions: [300, platformConst.defaultHeight]
-        }),
-        ammo: new Ammo([0, 0])
-      }
+      if (!this.userInput.mouseUp.curr) return
 
       const toAdd = window.editor.addingEntity.type ?? "platform"
 
       const entity = addable[toAdd]
-      const pos = input.mouseUp.curr
+      const pos = this.userInput.mouseUp.curr
 
       const center: Coors = [
         pos[0] - entity.width / 2,
@@ -186,4 +163,20 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
       this.command({type: "add", entities: [entity]})
     }
   }
+}
+
+const addable: Record<AddableEntity, Entity> = {
+  groog: new Groog({
+    moveSpeed: 0.3,
+    position: [0, 0],
+    timeBetweenJump: 2000,
+    timeBetweenTurn: 3000
+  }),
+  floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
+  platform: new Platform({
+    color: window.editor.addingEntity.baseColor ?? "springgreen",
+    position: [0, 0],
+    dimensions: [300, platformConst.defaultHeight]
+  }),
+  ammo: new Ammo([0, 0])
 }

@@ -213,14 +213,3 @@ function entityIsRightOfFloor(
   }
   return null
 }
-
-export function pointInsideEntity(
-  e: Entity,
-  point: Coors,
-  distOutsideOfEntityThreshHold?: number
-) {
-  const dist = distOutsideOfEntityThreshHold ?? 0
-  const isX = e.posLeft - dist < point[0] && e.posRight + dist > point[0]
-  const isY = e.posTop - dist < point[1] && e.posBottom + dist > point[1]
-  return isX && isY
-}
