@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express"
-import {DbClient} from "../DbClient"
 import {UserType} from "../types"
+import {Clients} from "../appClients"
 
 export type JWTBody = {
   userId: string
@@ -17,4 +17,4 @@ export type AuthReqHandler<Body> = (
   next: NextFunction
 ) => void
 
-export type ReqBuilder<Body = {}> = (client: DbClient) => AuthReqHandler<Body>
+export type ReqBuilder<Body = {}> = (clients: Clients) => AuthReqHandler<Body>

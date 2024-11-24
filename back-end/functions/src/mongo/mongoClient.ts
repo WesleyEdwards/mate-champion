@@ -5,9 +5,10 @@ import {
   MongoClient,
   OptionalUnlessRequiredId
 } from "mongodb"
-import {BasicEndpoints, Condition, DbClient, HasId} from "../DbClient"
+import {DbQueries, Condition, HasId} from "../DbClient"
 import {LevelInfo, LevelMap, Score, User} from "../types"
 import {runMigrations} from "./mongoMigrations"
+import {DbClient} from "../appClients"
 
 function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
   const acc: Filter<T> = {}
@@ -70,7 +71,7 @@ export const mongoClient = (dbPath: string): DbClient => {
 function functionsForModel<T extends HasId>(
   db: Db,
   model: string
-): BasicEndpoints<T> {
+): DbQueries<T> {
   const collection: Collection<T> = db.collection(model)
 
   return {

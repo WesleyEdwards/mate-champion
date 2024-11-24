@@ -25,13 +25,13 @@ const sendUserBody = (user: User, self: JWTBody | undefined) => {
 }
 
 export const createUser: ReqBuilder<{password: string}> =
-  (client) =>
+  ({db}) =>
   async ({body}, res) => {
     const passwordHash = await bcrypt.hash(body.password, 10)
     const userBody = checkValidation("user", {...body, passwordHash})
     if (isParseError(userBody)) return res.status(400).json(userBody)
 
-    const emailExists = await client.user.findOne({
+    const emailExists = await db.user.findOne({
       email: {equal: userBody.email ?? ""}
     })
 
@@ -39,7 +39,7 @@ export const createUser: ReqBuilder<{password: string}> =
     if (isValid(emailExists)) {
       return res.status(400).json({error: "Email already exists"})
     }
-    const user = await client.user.insertOne(userBody)
+    const user = await db.user.insertOne(userBody)
     if (!isValid<User>(user)) {
       return res.status(500).json({error: "Error creating user"})
     }
@@ -53,7 +53,7 @@ export const createUser: ReqBuilder<{password: string}> =
     })
 
     if (!isValid<Score>(scoreBody)) return res.status(400).json(userBody)
-    await client.score.insertOne(scoreBody)
+    await db.score.insertOne(scoreBody)
 
     return res.json({
       user: sendUserBody(user, {userId: user._id, userType: user.userType}),
@@ -62,7 +62,7 @@ export const createUser: ReqBuilder<{password: string}> =
   }
 
 export const loginUser: ReqBuilder<{email: string; password: string}> =
-  (client) =>
+  ({db}) =>
   async ({body}, res) => {
     const loginBody = {
       email: body.email,
@@ -73,10 +73,10 @@ export const loginUser: ReqBuilder<{email: string; password: string}> =
       res.status(404).json({message: "Invalid credentials"})
       return
     }
-    const userWithEmail = await client.user.findOne({
+    const userWithEmail = await db.user.findOne({
       email: {equal: loginBody.email}
     })
-    const userWithName = await client.user.findOne({
+    const userWithName = await db.user.findOne({
       name: {equal: loginBody.email}
     })
     const user = userWithEmail ?? userWithName
@@ -101,9 +101,9 @@ export const loginUser: ReqBuilder<{email: string; password: string}> =
   }
 
 export const getSelf: ReqBuilder =
-  (client) =>
+  ({db}) =>
   async ({jwtBody}, res) => {
-    const user = await client.user.findOne({
+    const user = await db.user.findOne({
       _id: {equal: jwtBody?.userId || ""}
     })
     if (!isValid<User>(user)) return res.status(404).json("Not found")

@@ -8,14 +8,14 @@ export type ImportLevelsBody = {
 }
 
 export const importLevels: ReqBuilder =
-  (client) =>
+  ({db}) =>
   async ({jwtBody, body}, res) => {
     const toImport = body as ImportLevelsBody
 
     const validate = isValidImport(toImport)
     if (isParseError(validate)) return res.json(400).json({error: "Bad input"})
 
-    const creator = await client.user.findOne({_id: {equal: jwtBody?.userId ??""}})
+    const creator = await db.user.findOne({_id: {equal: jwtBody?.userId ?? ""}})
     if (!isValid<User>(creator)) {
       return res.json(404).json({error: "User not found"})
     }
@@ -33,9 +33,9 @@ export const importLevels: ReqBuilder =
     for (const level of updateLevels) {
       const mapFor = updateMaps.find((m) => m._id === level._id)
       if (!mapFor) continue
-      const success = await client.level.insertOne(level)
+      const success = await db.level.insertOne(level)
       if (success) {
-        await client.levelMap.insertOne(mapFor)
+        await db.levelMap.insertOne(mapFor)
       }
       successes++
     }

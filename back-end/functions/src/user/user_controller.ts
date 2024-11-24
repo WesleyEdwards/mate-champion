@@ -1,11 +1,11 @@
+import {Clients} from "../appClients"
 import {controller} from "../auth/controller"
-import {DbClient} from "../DbClient"
 import {checkPartialValidation, isValid} from "../request_body"
 import {createBasicEndpoints} from "../requestBuilders"
 import {User} from "../types"
 import {createUser, getSelf, loginUser} from "./userQueries"
 
-const userBaseEndpoints = (db: DbClient) => {
+const userBaseEndpoints = ({db}: Clients) => {
   const preResponseFilter = (user: User) => {
     const {passwordHash, ...rest} = user
     return rest as User
@@ -53,19 +53,19 @@ const userBaseEndpoints = (db: DbClient) => {
   })
 }
 
-export const usersController = controller("user", (db) => [
-  ...userBaseEndpoints(db),
-  {path: "/", method: "get", endpointBuilder: getSelf(db)},
+export const usersController = controller("user", (params) => [
+  ...userBaseEndpoints(params),
+  {path: "/", method: "get", endpointBuilder: getSelf(params)},
   {
     path: "/create",
     method: "post",
-    endpointBuilder: createUser(db),
+    endpointBuilder: createUser(params),
     skipAuth: true
   },
   {
     path: "/login",
     method: "post",
-    endpointBuilder: loginUser(db),
+    endpointBuilder: loginUser(params),
     skipAuth: true
   }
 ])

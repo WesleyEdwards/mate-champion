@@ -1,8 +1,8 @@
 import express, {RequestHandler, Express} from "express"
-import {DbClient} from "../DbClient"
 
 import jwt from "jsonwebtoken"
 import {AuthReqHandler, JWTBody} from "./authTypes"
+import {Clients} from "../appClients"
 
 export const authenticationMiddleware: AuthReqHandler<any> = async (
   req,
@@ -31,8 +31,8 @@ export type Route = {
 }
 
 export const controller =
-  (name: string, routes: (client: DbClient) => Route[]) =>
-  (app: Express, client: DbClient) => {
+  (name: string, routes: (params: Clients) => Route[]) =>
+  (app: Express, client: Clients) => {
     const router = express.Router()
     routes(client).forEach((route) => {
       if (!route.skipAuth) {

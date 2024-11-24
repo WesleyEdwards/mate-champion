@@ -1,6 +1,6 @@
 import {JWTBody, AuthReqHandler} from "./auth/authTypes"
 import {Route} from "./auth/controller"
-import {BasicEndpoints, HasId, Condition, Modification} from "./DbClient"
+import {DbQueries, HasId, Condition, Modification} from "./DbClient"
 import {isParseError, isValid} from "./request_body"
 import {LevelInfo} from "./types"
 
@@ -16,7 +16,7 @@ const idCondition = <T extends HasId>(id: string): Condition<T> => {
 }
 const getBuilder = <T extends HasId>(
   info: GetterInfo<T>,
-  endpoint: BasicEndpoints<T>
+  endpoint: DbQueries<T>
 ): Route => ({
   path: "/:id",
   method: "get",
@@ -50,7 +50,7 @@ type CreateInfo<T extends HasId, B = {}> = Skippable & {
 
 const createBuilder = <T extends HasId, B = {}>(
   info: CreateInfo<T, B>,
-  endpoint: BasicEndpoints<T>
+  endpoint: DbQueries<T>
 ): Route => ({
   path: "/insert",
   method: "post",
@@ -85,7 +85,7 @@ type QueryInfo<T extends HasId> = Skippable & {
 
 const queryBuilder = <T extends HasId, B extends Condition<T>>(
   info: QueryInfo<T>,
-  endpoint: BasicEndpoints<T>
+  endpoint: DbQueries<T>
 ): Route => ({
   path: "/query",
   method: "post",
@@ -111,7 +111,7 @@ type ModifyInfo<T extends HasId> = Skippable & {
 
 export const modifyBuilder = <T extends HasId, B extends Modification<T>>(
   info: ModifyInfo<T>,
-  endpoint: BasicEndpoints<T>
+  endpoint: DbQueries<T>
 ): Route => ({
   path: "/:id",
   method: "put",
@@ -146,7 +146,7 @@ type DeleteInfo<T extends HasId> = Skippable & {
 
 export const deleteBuilder = <T extends HasId>(
   info: DeleteInfo<T>,
-  endpoint: BasicEndpoints<T>
+  endpoint: DbQueries<T>
 ): Route => ({
   path: "/:id",
   method: "delete",
@@ -161,7 +161,7 @@ export const deleteBuilder = <T extends HasId>(
 })
 
 export type BuildEndpoints1<T extends HasId> = {
-  endpoint: BasicEndpoints<T>
+  endpoint: DbQueries<T>
   get: GetterInfo<T> | null
   query: QueryInfo<T> | null
   create: CreateInfo<T> | null

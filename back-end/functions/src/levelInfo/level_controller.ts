@@ -1,11 +1,11 @@
 import {controller, Route} from "../auth/controller"
-import {DbClient} from "../DbClient"
 import {importLevels} from "./levelQueries"
 import {LevelInfo, User} from "../types"
 import {createBasicEndpoints} from "../requestBuilders"
 import {checkPartialValidation, checkValidation, isValid} from "../request_body"
+import {Clients} from "../appClients"
 
-const levelBaseEndpoints = (db: DbClient) =>
+const levelBaseEndpoints = ({db}: Clients) =>
   createBasicEndpoints<LevelInfo>({
     endpoint: db.level,
     get: {
@@ -69,9 +69,16 @@ const levelBaseEndpoints = (db: DbClient) =>
     }
   })
 
-export const levelsController = controller("level", (db: DbClient): Route[] => {
-  return [
-    ...levelBaseEndpoints(db),
-    {path: "/import-map", method: "post", endpointBuilder: importLevels(db)}
-  ]
-})
+export const levelsController = controller(
+  "level",
+  (clients: Clients): Route[] => {
+    return [
+      ...levelBaseEndpoints(clients),
+      {
+        path: "/import-map",
+        method: "post",
+        endpointBuilder: importLevels(clients)
+      }
+    ]
+  }
+)
