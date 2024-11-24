@@ -10,6 +10,7 @@ import {GroogEdit} from "./GroogEdit"
 import {Groog} from "../../game/entities/groog"
 import {FloorEditor} from "./FloorEdit"
 import {Entity} from "../../game/entities/Entity"
+import {getGlobalEditing} from "../../game/editor/editHelpers"
 
 export type EditableEntity = Exclude<EntityType, "player" | "bullet">
 
@@ -31,7 +32,7 @@ export const CourseBuilderSettings = () => {
   const [editingEntities, setEditingEntities] = useState<Entity[]>([])
 
   const updateEditing = () => {
-    const adding = window.editor.addingEntity
+    const adding = getGlobalEditing().addingEntity
     if (
       adding.type !== adding.type ||
       adding.color !== adding.baseColor ||
@@ -39,8 +40,9 @@ export const CourseBuilderSettings = () => {
     ) {
       setAdding({...adding})
     }
-    if (!arraysAreSame(editingEntities, window.editor.editingEntities)) {
-      setEditingEntities([...window.editor.editingEntities])
+    const editing = getGlobalEditing().editingEntities
+    if (!arraysAreSame(editingEntities, editing)) {
+      setEditingEntities([...editing])
     }
   }
 

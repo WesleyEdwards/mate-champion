@@ -2,6 +2,8 @@ import {LevelMap} from "../loopShared/models"
 import {Coors, Id} from "../entities/entityTypes"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {Entity} from "../entities/Entity"
+import {Adding} from "../../components/GameEdit/CourseBuilderSettings"
+import {EditGlobal} from "../../App"
 
 export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[0] += increment[0]
@@ -98,3 +100,31 @@ export function pointInsideEntity(
 }
 
 export const areEqual = (a: Coors, b: Coors) => a[0] === b[0] && a[1] === b[1]
+
+export const getGlobalEditing = (): EditGlobal => {
+  if (window.editor) return window.editor
+  return {
+    addingEntity: {type: "platform", color: undefined, baseColor: undefined},
+    editingEntities: [],
+    action: undefined
+  }
+}
+
+export const setGlobalEditing = <K extends keyof EditGlobal>(
+  k: K,
+  v: EditGlobal[K]
+) => {
+  if (window.editor) {
+    window.editor[k] = v
+  } else
+    window.editor = {
+      ...emptyGlobal(),
+      [k]: v
+    }
+}
+
+const emptyGlobal = (): EditGlobal => ({
+  addingEntity: {type: "platform", color: undefined, baseColor: undefined},
+  editingEntities: [],
+  action: undefined
+})

@@ -1,6 +1,7 @@
 import {Coors} from "../../entities/entityTypes"
 import {areEntitiesTouching, toCurrAndPrev} from "../../helpers"
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
+import {getGlobalEditing, setGlobalEditing} from "../editHelpers"
 import {WithCamera} from "../GameEdit"
 
 export function InputMixin<T extends WithCamera>(Base: T) {
@@ -32,10 +33,8 @@ export function InputMixin<T extends WithCamera>(Base: T) {
         }
       })
 
-      if (window.editor.action) {
-        this.userInput.undo = window.editor.action
-        window.editor.action = undefined
-      }
+      this.userInput.undo = getGlobalEditing().action
+      setGlobalEditing("action", undefined)
 
       if (this.state.timers.sinceLastUndoRedo.val > 200) {
         if (this.userInput.undo === "undo") {

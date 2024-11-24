@@ -14,15 +14,16 @@ import {Adding} from "./components/GameEdit/CourseBuilderSettings"
 import {ToastProvider} from "./hooks/Toaster"
 import {Entity} from "./game/entities/Entity"
 
+export type EditGlobal = {
+  editingEntities: Entity[]
+  addingEntity: Adding
+  action: "undo" | "redo" | undefined
+}
 declare global {
   interface Window {
     stopLoop: boolean
     pause: boolean
-    editor: {
-      editingEntities: Entity[]
-      addingEntity: Adding
-      action: "undo" | "redo" | undefined
-    }
+    editor?: EditGlobal
     debounceLog: (...args: any[]) => void
   }
 
@@ -38,16 +39,8 @@ function debounceLog(...args: any[]) {
   const rand = Math.floor(0 + Math.random() * (10 + 1))
   if (rand === 1) console.log(...args)
 }
-console.log("asdf")
-
-window.editor = {
-  addingEntity: {type: "platform", color: undefined, baseColor: undefined},
-  editingEntities: [],
-  action: undefined
-}
 
 window.debounceLog = debounceLog
-// window.
 
 const theme: Theme = extendTheme(mateTheme)
 

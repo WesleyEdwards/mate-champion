@@ -30,6 +30,7 @@ import {LevelMap} from "../game/loopShared/models"
 import {abortGame} from "../game/editor/eventListeners"
 import {MCScreen} from "./GameEntry"
 import {useToast} from "../hooks/Toaster"
+import {setGlobalEditing} from "../game/editor/editHelpers"
 
 const ViewHeaderSubScreen: FC<{
   title: string
@@ -275,14 +276,15 @@ const EditHeader: FC = () => {
       <div style={{flex: 1}}></div>
       <Stack direction="row" sx={{alignSelf: "start"}}>
         <Tooltip title="Undo">
-          <IconButton onClick={() => (window.editor.action = "undo")}>
+          <IconButton onClick={() => setGlobalEditing("action", "undo")}>
             <Undo />
           </IconButton>
         </Tooltip>
         <Tooltip title="Redo">
-        <IconButton onClick={() => (window.editor.action = "redo")}>
-          <Redo />
-        </IconButton></Tooltip>
+          <IconButton onClick={() => setGlobalEditing("action", "redo")}>
+            <Redo />
+          </IconButton>
+        </Tooltip>
       </Stack>
       <Stack direction="row" gap="5px" alignItems={"start"}>
         <Button

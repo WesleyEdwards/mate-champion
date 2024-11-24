@@ -5,7 +5,7 @@ import {Coors, CurrAndPrev, EntityOfType} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
 import {Platform, Floor} from "../../entities/platform"
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
-import {Edges, pointInsideEntity, toRounded, toRoundedNum} from "../editHelpers"
+import {Edges, getGlobalEditing, toRounded, toRoundedNum} from "../editHelpers"
 import {WithCamera, WithEvents} from "../GameEdit"
 
 export function CleanupMixin<T extends WithCamera>(Base: T) {
@@ -59,7 +59,7 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
       this.userInput.mouseUp.curr = null
 
       // reconcile colors
-      const bc = window.editor.addingEntity.baseColor
+      const bc = getGlobalEditing().addingEntity.baseColor
       if (bc && bc !== this.state.prevBaseColor) {
         this.entities.forEach((e) => {
           if (e instanceof Platform) {
@@ -124,7 +124,7 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
       if (!curr) return null
       if (!this.pointInsideEntity(e, curr, 10)) return null
       const distFromEntity = 6
-      
+
       const mousePos = this.withCamPosition(curr)
       const right = Math.abs(e.posRight - mousePos[0]) < distFromEntity
       const left = Math.abs(e.posLeft - mousePos[0]) < distFromEntity

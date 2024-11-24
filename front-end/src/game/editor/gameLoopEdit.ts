@@ -1,6 +1,7 @@
 import {arraysAreSame} from "../../components/GameEdit/CourseBuilderSettings"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
 import {LevelMap} from "../loopShared/models"
+import {getGlobalEditing, setGlobalEditing} from "./editHelpers"
 import {GameEdit} from "./GameEdit"
 
 export function gameLoopEdit(params: {
@@ -24,11 +25,11 @@ export function gameLoopEdit(params: {
 
     const diff = arraysAreSame(
       game.currentlySelected,
-      window.editor.editingEntities
+      getGlobalEditing().editingEntities
     )
 
     if (!diff) {
-      window.editor.editingEntities = [...game.currentlySelected]
+      setGlobalEditing("editingEntities", [...game.currentlySelected])
     }
 
     requestAnimationFrame(gameLoop)

@@ -6,7 +6,12 @@ import {Groog} from "../../entities/groog"
 import {Floor, Platform, floorConst} from "../../entities/platform"
 import {toCurrAndPrev} from "../../helpers"
 import {platformConst} from "../../loopShared/constants"
-import {areEqual, differenceBetween, incrementPosition} from "../editHelpers"
+import {
+  areEqual,
+  differenceBetween,
+  getGlobalEditing,
+  incrementPosition
+} from "../editHelpers"
 import {WithCamera} from "../GameEdit"
 
 export function MutateEntityMixin<T extends WithCamera>(Base: T) {
@@ -145,7 +150,7 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
       }
       if (!this.userInput.mouseUp.curr) return
 
-      const toAdd = window.editor.addingEntity.type ?? "platform"
+      const toAdd = getGlobalEditing().addingEntity.type ?? "platform"
 
       const entity = addable[toAdd]
       const pos = this.userInput.mouseUp.curr
@@ -174,7 +179,7 @@ const addable: Record<AddableEntity, Entity> = {
   }),
   floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
   platform: new Platform({
-    color: window.editor.addingEntity.baseColor ?? "springgreen",
+    color: window?.editor?.addingEntity?.baseColor ?? "springgreen",
     position: [0, 0],
     dimensions: [300, platformConst.defaultHeight]
   }),

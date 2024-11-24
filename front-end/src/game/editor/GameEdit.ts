@@ -5,8 +5,10 @@ import {updateTimers} from "../state/timeHelpers"
 import {
   emptyUserInput,
   GameStateEditProps,
+  getGlobalEditing,
   levelInfoToEditState,
   ResizeEntity,
+  setGlobalEditing,
   UserInput
 } from "./editHelpers"
 import {addDevEventListeners} from "./eventListeners"
@@ -48,7 +50,11 @@ export class GameEditAll {
     public setLevels: (level: Partial<LevelMap>) => void,
     public canvas: HTMLCanvasElement
   ) {
-    window.editor.addingEntity.baseColor = currentLevel.platformColor
+    setGlobalEditing("addingEntity", {
+      ...getGlobalEditing().addingEntity,
+      baseColor: currentLevel.platformColor
+    })
+
     this.entities = levelToEntities({...currentLevel})
     const state = levelInfoToEditState(currentLevel)
     const userInput = emptyUserInput()

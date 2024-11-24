@@ -7,6 +7,7 @@ import {capitalize} from "lodash"
 import {ColorPicker} from "./ColorPicker"
 import {useNavigator} from "../../hooks/UseNavigator"
 import {camelCaseToTitleCase} from "../../helpers"
+import {getGlobalEditing, setGlobalEditing} from "../../game/editor/editHelpers"
 
 export const AddingEntity = ({
   edit,
@@ -17,7 +18,10 @@ export const AddingEntity = ({
 }) => {
   const {currentScreen} = useNavigator()
   const handleSetEditingItem = (params: Partial<Adding>) => {
-    window.editor.addingEntity = {...window.editor.addingEntity, ...params}
+    setGlobalEditing("addingEntity", {
+      ...getGlobalEditing().addingEntity,
+      ...params
+    })
     setEdit((prev) => ({...prev, ...params}))
   }
 
@@ -65,7 +69,8 @@ export const AddingEntity = ({
                             width: "60px",
                             height: "30px",
                             backgroundColor:
-                              window.editor.addingEntity.color ?? "springgreen",
+                              getGlobalEditing().addingEntity.color ??
+                              "springgreen",
                             borderColor: "black",
                             borderWidth: "3px",
                             borderStyle: "solid"
