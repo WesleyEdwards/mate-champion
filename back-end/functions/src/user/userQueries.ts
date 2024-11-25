@@ -61,7 +61,7 @@ export const createUser: ReqBuilder<{password: string}> =
     })
   }
 
-export const loginUser: ReqBuilder<{email: string; password: string}> =
+export const loginWithPassword: ReqBuilder<{email: string; password: string}> =
   ({db}) =>
   async ({body}, res) => {
     const loginBody = {
@@ -100,6 +100,58 @@ export const loginUser: ReqBuilder<{email: string; password: string}> =
     })
   }
 
+export const sendAuthCode: ReqBuilder<{email: string}> =
+  ({db, email}) =>
+  async ({body}, res) => {
+    if (!("email" in body)) {
+      return res.status(400).json("Invalid email")
+    }
+    const authCode = checkValidation("authCode", {
+      code: randomCode(),
+      email: body.email
+    })
+    if (isParseError(authCode)) {
+      return res.status(400).json(authCode)
+    }
+
+    db.authCode.insertOne(authCode)
+
+    await email.send({
+      html: `Your verification code is ${authCode.code}`,
+      subject: "Mate Champion Verification",
+      to: body.email
+    })
+    return res.status(200).json({identifier: authCode._id})
+  }
+
+export const submitAuthCode: ReqBuilder<{email: string; code: string}> =
+  ({db}) =>
+  async ({body}, res) => {
+    if (!("email" in body) || !("code" in body)) {
+      return res.status(400).json("Invalid body")
+    }
+
+    const code = await db.authCode.findOne({
+      and: [{email: {equal: body.email}}, {code: {equal: body.code}}]
+    })
+
+    if (!isValid(code)) {
+      return res.status(400).json("Invalid code")
+    }
+
+    const user = await db.user.findOne({email: {equal: body.email}})
+
+    if (!isValid<User>(user)) {
+      console.log("Need to create a user")
+      return res.status(400).json("unable to find user")
+    }
+
+    return res.json({
+      user: sendUserBody(user, {userId: user._id, userType: user.userType}),
+      token: createUserToken(user)
+    })
+  }
+
 export const getSelf: ReqBuilder =
   ({db}) =>
   async ({jwtBody}, res) => {
@@ -109,3 +161,14 @@ export const getSelf: ReqBuilder =
     if (!isValid<User>(user)) return res.status(404).json("Not found")
     return res.json(sendUserBody(user, jwtBody))
   }
+
+function randomCode() {
+  let result = ""
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  let counter = 0
+  while (counter < 6) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+    counter += 1
+  }
+  return result
+}

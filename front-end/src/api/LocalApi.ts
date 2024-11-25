@@ -33,6 +33,8 @@ export class LocalApi implements Api {
   readonly auth: Api["auth"] = {
     createAccount: (...args) => this.basedOn.auth.createAccount(...args),
     signIn: (...args) => this.basedOn.auth.signIn(...args),
+    sendAuthCode: (...args) => this.basedOn.auth.sendAuthCode(...args),
+    submitAuthCode: (...args) => this.basedOn.auth.submitAuthCode(...args),
     getSelf: () => this.basedOn.auth.getSelf()
   }
 

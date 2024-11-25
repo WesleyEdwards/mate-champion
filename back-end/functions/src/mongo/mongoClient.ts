@@ -6,7 +6,7 @@ import {
   OptionalUnlessRequiredId
 } from "mongodb"
 import {DbQueries, Condition, HasId} from "../DbClient"
-import {LevelInfo, LevelMap, Score, User} from "../types"
+import {AuthCode, LevelInfo, LevelMap, Score, User} from "../types"
 import {runMigrations} from "./mongoMigrations"
 import {DbClient} from "../appClients"
 
@@ -64,6 +64,7 @@ export const mongoClient = (dbPath: string): DbClient => {
     score: functionsForModel<Score>(db, "score"),
     level: functionsForModel<LevelInfo>(db, "level"),
     levelMap: functionsForModel<LevelMap>(db, "levelMap"),
+    authCode: functionsForModel<AuthCode>(db, "authCode"),
     runMigrations: () => runMigrations(db)
   }
 }

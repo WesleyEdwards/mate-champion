@@ -41,10 +41,12 @@ export const useAuth = (): AuthContextType => {
   }
 
   const login = async (body: LoginBody) => {
-    const authUser = await api.auth.signIn(body)
-    localStorageManager.set("high-score", authUser.highScore)
+    const res = await api.auth.submitAuthCode(body)
+    localStorageManager.set("high-score", res.user.highScore)
+    localStorageManager.set("token", res.token)
+    
     importLevels()
-    setUser(authUser)
+    setUser(res.user)
   }
 
   const createAccount = async (body: User & {password: string}) => {

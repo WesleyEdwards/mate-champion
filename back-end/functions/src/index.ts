@@ -13,12 +13,13 @@ import {emailClient} from "./email/emailClient"
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
 
 const dbPath = process.env.MONGO_URI!
+const emailKey = process.env.SENDGRID_API_KEY
 
 console.log("NODE_ENV is", process.env.NODE_ENV)
 
 const clients = {
   db: mongoClient(dbPath),
-  email: emailClient()
+  email: emailClient(emailKey!)
 }
 
 const app = express()

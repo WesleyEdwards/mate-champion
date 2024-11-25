@@ -14,7 +14,7 @@ export class LiveApi implements Api {
     this.token = token || ""
   }
 
-  private setToken(token: string) {
+  setToken(token: string) {
     if (!token) return
     this.token = token
     localStorageManager.set("token", token)
@@ -36,43 +36,21 @@ export class LiveApi implements Api {
     return makeRequest(path, "delete", this.token, this.baseUrl)
   }
 
-  readonly auth = {
-    createAccount: (
-      body: User & {password: string; score?: number}
-    ): Promise<User> => {
-      return this.post("user/create", body).then((res) => {
-        this.setToken(res.token)
-        return res.user
-      })
-    },
-    signIn: (body: LoginBody): Promise<User> => {
-      return this.post("user/login", body).then((res) => {
-        this.setToken(res.token)
-        return res.user
-      })
-    },
-    getSelf: (): Promise<User> => {
-      if (!this.token) return Promise.reject("No token")
-      return this.get("user")
-    }
+  readonly auth: Api["auth"] = {
+    createAccount: (body) => this.post("user/create", body),
+    signIn: (body: LoginBody) => this.post("user/login", body),
+    sendAuthCode: (body) => this.post("user/sendAuthCode", body),
+    submitAuthCode: (body) => this.post("user/submitAuthCode", body),
+
+    getSelf: (): Promise<User> => this.get("user")
   }
 
-  readonly user = {
-    detail: (id: string): Promise<User> => {
-      return this.get(`user/${id}`)
-    },
-    query: (filter: Condition<User>): Promise<User[]> => {
-      return this.post("user", filter)
-    },
-    create: (body: User): Promise<User> => {
-      return this.post("user/create", body)
-    },
-    modify: (id: string, mod: Partial<User>): Promise<User> => {
-      return this.put(`user/${id}`, mod)
-    },
-    delete: (id: string): Promise<User> => {
-      return this.del(`user/${id}`)
-    }
+  readonly user: Api["user"] = {
+    detail: (id) => this.get(`user/${id}`),
+    query: (filter) => this.post("user", filter),
+    create: (body) => this.post("user/create", body),
+    modify: (id, mod) => this.put(`user/${id}`, mod),
+    delete: (id) => this.del(`user/${id}`)
   }
 
   readonly level: Api["level"] = {
@@ -90,28 +68,14 @@ export class LiveApi implements Api {
     modifyMap: (id, mod) => this.put(`level-map/${id}`, mod),
     importMap: (info) => this.post("level/import-map", info)
   }
-  readonly score = {
-    detail: (id: string): Promise<Score> => {
-      return this.get(`score/${id}`)
-    },
-    query: (filter: Condition<Score>): Promise<Score[]> => {
-      return this.post("score/query", filter)
-    },
-    create: (body: Score): Promise<Score> => {
-      return this.post("score/create", body)
-    },
-    update: (id: string, body: Partial<Score>): Promise<Score> => {
-      return this.put(`score/${id}`, body)
-    },
-    delete: (id: string): Promise<number> => {
-      return this.del(`score/${id}`)
-    },
-    self: (): Promise<TopScore[]> => {
-      return this.get(`score/self`)
-    },
-    topScores: (): Promise<TopScore[]> => {
-      return this.get(`score/top-scores`)
-    }
+  readonly score: Api["score"] = {
+    detail: (id) => this.get(`score/${id}`),
+    query: (filter) => this.post("score/query", filter),
+    create: (body) => this.post("score/create", body),
+    update: (id, body) => this.put(`score/${id}`, body),
+    delete: (id) => this.del(`score/${id}`),
+    self: () => this.get(`score/self`),
+    topScores: () => this.get(`score/top-scores`)
   }
 }
 

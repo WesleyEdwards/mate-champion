@@ -8,7 +8,11 @@ export type User = {
 
 export type LoginBody = {
   email: string
-  password: string
+  code: string
+}
+export type LoginResponse = {
+  user: User
+  token: string
 }
 
 export type Score = {
@@ -28,7 +32,7 @@ export declare type Condition<T> =
   | {or: Array<Condition<T>>}
   | {and: Array<Condition<T>>}
   | {always: true}
-  | (T extends object ? { [P in keyof T]?: Condition<T[P]> } : never)
+  | (T extends object ? {[P in keyof T]?: Condition<T[P]>} : never)
 
 export type TopScore = {
   name: string

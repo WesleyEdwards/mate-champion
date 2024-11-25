@@ -40,6 +40,8 @@ export class ApiCache implements Api {
   readonly auth: Api["auth"] = {
     createAccount: (body) => this.basedOn.auth.createAccount(body),
     signIn: (body) => this.basedOn.auth.signIn(body),
+    sendAuthCode: (body) => this.basedOn.auth.sendAuthCode(body),
+    submitAuthCode: (body) => this.basedOn.auth.submitAuthCode(body),
     getSelf: () => this.cacheRequest("auth.getSelf", this.basedOn.auth.getSelf)
   }
 

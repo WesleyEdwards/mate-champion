@@ -1,5 +1,12 @@
 import {LevelInfo, LevelMap} from "../game/loopShared/models"
-import {User, LoginBody, Condition, Score, TopScore} from "../types"
+import {
+  User,
+  LoginBody,
+  Condition,
+  Score,
+  TopScore,
+  LoginResponse
+} from "../types"
 
 export interface Api {
   type: "cache" | "server" | "unauth"
@@ -7,7 +14,12 @@ export interface Api {
     createAccount: (
       body: User & {password: string; score?: number}
     ) => Promise<User>
-    signIn: (body: LoginBody) => Promise<User>
+    signIn: (body: LoginBody) => Promise<LoginResponse>
+    sendAuthCode: (body: {email: string}) => Promise<{identifier: string}>
+    submitAuthCode: (body: {
+      email: string
+      code: string
+    }) => Promise<LoginResponse>
     getSelf: () => Promise<User>
   }
 

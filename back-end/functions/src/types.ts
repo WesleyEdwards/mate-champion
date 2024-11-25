@@ -79,9 +79,17 @@ export const levelMapSchema = z
   })
   .merge(baseObjectSchema)
 
+export const authCodeSchema = z
+  .object({
+    code: z.string(),
+    email: z.string()
+  })
+  .merge(baseObjectSchema)
+
 export type UserType = z.infer<typeof userTypeSchema>
 export type User = z.infer<typeof userSchema>
 export type Score = z.infer<typeof scoreSchema>
+export type AuthCode = z.infer<typeof authCodeSchema>
 export type LevelInfo = {
   owner: string
   public: boolean
@@ -97,14 +105,16 @@ type Schemas =
   | typeof scoreSchema
   | typeof levelSchema
   | typeof levelMapSchema
+  | typeof authCodeSchema
 
-export type SchemaType = "score" | "user" | "level" | "levelMap"
+export type SchemaType = "score" | "user" | "level" | "levelMap" | "authCode"
 
 export const schemaMap: Record<SchemaType, Schemas> = {
   user: userSchema,
   score: scoreSchema,
   level: levelSchema,
-  levelMap: levelMapSchema
+  levelMap: levelMapSchema,
+  authCode: authCodeSchema
 }
 
 export type DbObject<T extends SchemaType> = T extends "score"
@@ -115,4 +125,6 @@ export type DbObject<T extends SchemaType> = T extends "score"
   ? LevelInfo
   : T extends "levelMap"
   ? LevelMap
+  : T extends "authCode"
+  ? AuthCode
   : never

@@ -3,7 +3,13 @@ import {controller} from "../auth/controller"
 import {checkPartialValidation, isValid} from "../request_body"
 import {createBasicEndpoints} from "../requestBuilders"
 import {User} from "../types"
-import {createUser, getSelf, loginUser} from "./userQueries"
+import {
+  createUser,
+  getSelf,
+  loginWithPassword,
+  sendAuthCode,
+  submitAuthCode
+} from "./userQueries"
 
 const userBaseEndpoints = ({db}: Clients) => {
   const preResponseFilter = (user: User) => {
@@ -65,7 +71,19 @@ export const usersController = controller("user", (params) => [
   {
     path: "/login",
     method: "post",
-    endpointBuilder: loginUser(params),
+    endpointBuilder: loginWithPassword(params),
+    skipAuth: true
+  },
+  {
+    path: "/sendAuthCode",
+    method: "post",
+    endpointBuilder: sendAuthCode(params),
+    skipAuth: true
+  },
+  {
+    path: "/submitAuthCode",
+    method: "post",
+    endpointBuilder: submitAuthCode(params),
     skipAuth: true
   }
 ])
