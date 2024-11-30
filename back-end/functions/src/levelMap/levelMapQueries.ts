@@ -1,11 +1,12 @@
-import {ReqBuilder} from "../auth/authTypes"
-import {Condition} from "../DbClient"
+import {buildQuery} from "../auth/authTypes"
+import {Condition} from "../condition"
+import {LevelInfo} from "../levelInfo/level_controller"
 import {checkPartialValidation, isParseError, isValid} from "../request_body"
-import {LevelInfo} from "../types"
+import {createSchema, levelMapSchema} from "../types"
 
-export const getLevelMap: ReqBuilder =
-  ({db}) =>
-  async ({params, jwtBody}, res) => {
+export const getLevelMap = buildQuery({
+  fun: async ({req, res, db}) => {
+    const {params, jwtBody} = req
     if (!params.id || typeof params.id !== "string") {
       return res.status(400).json("Bad request")
     }
@@ -21,10 +22,12 @@ export const getLevelMap: ReqBuilder =
     const levelMap = await db.levelMap.findOne({_id: {equal: params.id}})
     return res.json(levelMap)
   }
+})
 
-export const modifyLevelMap: ReqBuilder =
-  ({db}) =>
-  async ({params, body, jwtBody}, res) => {
+export const modifyLevelMap = buildQuery({
+  validator: levelMapSchema.partial(),
+  fun: async ({req, res, db}) => {
+    const {jwtBody, params, body} = req
     const condition: Condition<LevelInfo> =
       jwtBody?.userType === "Admin"
         ? {_id: {equal: params.id}}
@@ -38,10 +41,13 @@ export const modifyLevelMap: ReqBuilder =
     if (isParseError(level)) {
       return res.status(404).json("Level map not found")
     }
-    const levelMapPartial = checkPartialValidation("levelMap", {
-      ...body,
-      level: params.id
-    })
+    const levelMapPartial = checkPartialValidation(
+      {
+        ...body,
+        level: params.id
+      },
+      levelMapSchema
+    )
     if (isParseError(levelMapPartial))
       return res.status(400).json(levelMapPartial)
 
@@ -49,17 +55,20 @@ export const modifyLevelMap: ReqBuilder =
 
     return res.json(updatedLevel)
   }
+})
 
-export const generateLevels: ReqBuilder =
-  ({db}) =>
-  async ({body}, res) => {
-    const levelIds = body as string[]
-    if (!Array.isArray(levelIds)) {
-      return res.status(400).json("Please supply a list of ids of levels")
-    }
+export const generateLevels = buildQuery({
+  validator: createSchema((z) =>
+    z.object({
+      levels: z.array(z.string())
+    })
+  ),
+  fun: async ({req, res, db}) => {
+    const levelIds = req.body.levels
     const levels = await db.levelMap.findMany({_id: {inside: levelIds}})
 
     return res.json(
       levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))
     )
   }
+})

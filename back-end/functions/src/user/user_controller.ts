@@ -1,89 +1,38 @@
-import {Clients} from "../appClients"
 import {controller} from "../auth/controller"
-import {checkPartialValidation, isValid} from "../request_body"
+import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createBasicEndpoints} from "../requestBuilders"
-import {User} from "../types"
-import {
-  createUser,
-  getSelf,
-  loginWithPassword,
-  sendAuthCode,
-  submitAuthCode
-} from "./userQueries"
+import {createDbObject, Infer, userTypeSchema} from "../types"
 
-const userBaseEndpoints = ({db}: Clients) => {
-  const preResponseFilter = (user: User) => {
-    const {passwordHash, ...rest} = user
-    return rest as User
-  }
-  return createBasicEndpoints<User>({
-    endpoint: db.user,
-    get: {
-      perms: (jwtBody) => {
-        if (jwtBody?.userType === "Admin") return {always: true}
-        return {_id: {equal: jwtBody?.userId ?? ""}}
-      },
-      preResponseFilter
-    },
-    create: null,
-    query: {
-      perms: (jwtBody) => {
-        if (jwtBody?.userType === "Admin") return {always: true}
-        return {_id: {equal: jwtBody?.userId ?? ""}}
-      },
-      preResponseFilter: (users) => users.map(preResponseFilter)
-    },
-    modify: {
-      perms: (jwtBody) => {
-        if (jwtBody?.userType === "Admin") return {always: true}
-        return {_id: {equal: jwtBody?.userId ?? ""}}
-      },
-      validate: (body, jwtBody) => {
-        const userPartial = checkPartialValidation("user", body)
-        if (!isValid<User>(userPartial)) return userPartial
+export type User = Infer<typeof userSchema>
 
-        if (jwtBody?.userType !== "Admin" && userPartial.userType) {
-          return {error: "Unauthorized"}
-        }
-
-        return userPartial
-      },
-      preResponseFilter
-    },
-    del: {
-      perms: (jwtBody) => {
-        if (jwtBody?.userType === "Admin") return {always: true}
-        return {_id: {equal: jwtBody?.userId ?? ""}}
-      }
-    }
+const userSchema = createDbObject((z) =>
+  z.object({
+    name: z.string({required_error: "Name is required"}),
+    email: z.string().email({message: "Invalid email"}),
+    passwordHash: z.string().optional(),
+    highScore: z.number().default(0),
+    userType: userTypeSchema.default("User")
   })
-}
+)
 
-export const usersController = controller("user", (params) => [
-  ...userBaseEndpoints(params),
-  {path: "/", method: "get", endpointBuilder: getSelf(params)},
-  {
-    path: "/create",
-    method: "post",
-    endpointBuilder: createUser(params),
-    skipAuth: true
+const userBaseEndpoints = createBasicEndpoints<User>({
+  validator: userSchema,
+  endpoint: (db) => db.user,
+  mask: ["passwordHash"],
+  perms: {
+    read: () => ({always: true}),
+    // read: ifNotAdmin<User>((jwtBody) => ({
+    //   _id: {equal: jwtBody?.userId ?? ""}
+    // })),
+    delete: ifNotAdmin<User>((jwtBody) => ({
+      _id: {equal: jwtBody?.userId ?? ""}
+    })),
+    create: ifNotAdmin<User>(() => ({never: true})),
+    modify: ifNotAdmin<User>((jwtBody) => ({
+      _id: {equal: jwtBody?.userId ?? ""}
+    }))
   },
-  {
-    path: "/login",
-    method: "post",
-    endpointBuilder: loginWithPassword(params),
-    skipAuth: true
-  },
-  {
-    path: "/sendAuthCode",
-    method: "post",
-    endpointBuilder: sendAuthCode(params),
-    skipAuth: true
-  },
-  {
-    path: "/submitAuthCode",
-    method: "post",
-    endpointBuilder: submitAuthCode(params),
-    skipAuth: true
-  }
-])
+  builder: {create: {}, del: {}, get: {}, modify: {}, query: {}}
+})
+
+export const usersController = controller("user", userBaseEndpoints)

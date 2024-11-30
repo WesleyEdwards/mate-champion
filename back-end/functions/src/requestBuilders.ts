@@ -1,185 +1,189 @@
-import {JWTBody, AuthReqHandler} from "./auth/authTypes"
+import {JWTBody, Validator, buildQuery} from "./auth/authTypes"
 import {Route} from "./auth/controller"
-import {DbQueries, HasId, Condition, Modification} from "./DbClient"
-import {isParseError, isValid} from "./request_body"
-import {LevelInfo} from "./types"
+import {DbQueries, HasId} from "./DbClient"
+import {isValid} from "./request_body"
+import {Condition} from "./condition"
+import {Clients, DbClient} from "./appClients"
 
-type Skippable = {skipAuth?: boolean}
-// If perms are not supplied, it defaults to just being authenticated.
-type GetterInfo<T extends HasId> = Skippable & {
-  perms?: (jwt: JWTBody | undefined) => Condition<T>
-  preResponseFilter?: (items: T) => T
-}
+const idCondition = <T extends HasId>(id: string): Condition<T> =>
+  ({_id: {equal: id}} as Condition<T>)
 
-const idCondition = <T extends HasId>(id: string): Condition<T> => {
-  return {_id: {equal: id}} as Condition<T>
-}
-const getBuilder = <T extends HasId>(
-  info: GetterInfo<T>,
-  endpoint: DbQueries<T>
-): Route => ({
+const getBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   path: "/:id",
   method: "get",
   skipAuth: info.skipAuth,
-  endpointBuilder: (async (req, res) => {
-    const {params, jwtBody} = req
-    const {id} = params
-    const {preResponseFilter = (x) => x} = info
+  endpointBuilder: buildQuery({
+    fun: async ({req, res, db}) => {
+      const {params, jwtBody} = req
+      const {id} = params
+      if (!id || typeof id !== "string") {
+        return res.status(400).json("Bad request")
+      }
 
-    if (!id || typeof id !== "string") {
-      return res.status(400).json("Bad request")
+      const item = await info.endpoint(db).findOne({
+        and: [idCondition(id), info.perms.read(jwtBody)]
+      })
+
+      if (!isValid<T>(item)) return res.status(404).json(item)
+
+      return res.json(info.preRes(item))
     }
-
-    const condition = info.perms?.(jwtBody) ?? {always: true}
-    const item = await endpoint.findOne({
-      and: [idCondition(id), condition]
-    })
-
-    if (!isValid<T>(item)) return res.status(404).json(item)
-
-    return res.json(preResponseFilter(item))
-  }) satisfies AuthReqHandler<{}>
+  })
 })
 
-type CreateInfo<T extends HasId, B = {}> = Skippable & {
-  perms?: (jwt: JWTBody | undefined) => boolean
-  validate: (body: B, jwtBody: JWTBody | undefined) => Promise<T | {error: any}>
-  postCreate?: (item: T) => Promise<unknown>
-  preResponseFilter?: (items: T) => T
-}
-
-const createBuilder = <T extends HasId, B = {}>(
-  info: CreateInfo<T, B>,
-  endpoint: DbQueries<T>
-): Route => ({
-  path: "/insert",
-  method: "post",
-  endpointBuilder: (async (req, res) => {
-    const {jwtBody} = req
-    const {preResponseFilter = (x) => x} = info
-    const levelBody = await info.validate(req.body, jwtBody)
-    if (isParseError(levelBody)) return res.status(400).json(levelBody)
-
-    const item = levelBody as T
-
-    const canCreate = info.perms?.(jwtBody) ?? true
-
-    if (!canCreate) {
-      return res.status(401).json({error: "Cannot create"})
-    }
-
-    const level = await endpoint.insertOne(item)
-
-    if (!isValid<LevelInfo>(level)) return res.status(500).json(level)
-
-    await info.postCreate?.(level)
-
-    return res.json(preResponseFilter(level))
-  }) satisfies AuthReqHandler<B>
-})
-
-type QueryInfo<T extends HasId> = Skippable & {
-  perms?: (s: JWTBody | undefined) => Condition<T>
-  preResponseFilter?: (items: T[]) => T[]
-}
-
-const queryBuilder = <T extends HasId, B extends Condition<T>>(
-  info: QueryInfo<T>,
-  endpoint: DbQueries<T>
-): Route => ({
+const queryBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   path: "/query",
   method: "post",
   skipAuth: info.skipAuth,
-  endpointBuilder: (async (req, res) => {
-    const query = info.perms?.(req.jwtBody) ?? {always: true}
-
-    const fullQuery: Condition<T> = {and: [req.body, query]}
-
-    const items = await endpoint.findMany(fullQuery)
-    return res.json(items)
-  }) satisfies AuthReqHandler<B>
+  endpointBuilder: buildQuery({
+    validator: info.validator,
+    fun: async ({req, res, db}) => {
+      const query = info.perms.read(req.jwtBody) ?? {always: true}
+      const fullQuery: Condition<T> = {and: [req.body as any, query]}
+      const items = await info.endpoint(db).findMany(fullQuery)
+      return res.json(items.map(info.preRes))
+    }
+  })
 })
 
-type ModifyInfo<T extends HasId> = Skippable & {
-  perms?: (s: JWTBody | undefined) => Condition<T>
-  validate: (
-    body: any,
-    jwtBody: JWTBody | undefined
-  ) => Partial<T> | {error: any}
-  preResponseFilter?: (items: T) => T
+type CreateInfo<T extends HasId> = {
+  preProcess?: (item: T, clients: Clients) => Promise<T>
+  postCreate?: (item: T, clients: Clients) => Promise<unknown>
 }
 
-export const modifyBuilder = <T extends HasId, B extends Modification<T>>(
-  info: ModifyInfo<T>,
-  endpoint: DbQueries<T>
+const createBuilder = <T extends HasId>(
+  info: Shared<T> & CreateInfo<T>
 ): Route => ({
+  path: "/insert",
+  method: "post",
+  endpointBuilder: buildQuery({
+    validator: info.validator,
+    fun: async ({req, res, ...clients}) => {
+      const {jwtBody, body} = req
+
+      const canCreate = info.perms.read(jwtBody) ?? true
+
+      if (!canCreate) {
+        return res.status(401).json({error: "Cannot create"})
+      }
+
+      const processed = info.preProcess
+        ? await info.preProcess(body, clients)
+        : body
+
+      const created = await info.endpoint(clients.db).insertOne(processed)
+
+      if (!isValid<T>(created)) return res.status(500).json(created)
+      await info.postCreate?.(created, clients)
+
+      return res.json(info.preRes(created))
+    }
+  })
+})
+
+export const modifyBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   path: "/:id",
   method: "put",
   skipAuth: info.skipAuth,
-  endpointBuilder: (async (req, res) => {
-    const {body, params, jwtBody} = req
-    const id = params.id
-    const {preResponseFilter = (x) => x} = info
+  endpointBuilder: buildQuery({
+    validator: info.validator,
+    fun: async ({req, res, db}) => {
+      const {body, params, jwtBody} = req
+      const id = params.id
 
-    const condition = info.perms?.(jwtBody) ?? {always: true}
+      const item = await info.endpoint(db).findOne({
+        and: [info.perms.read(jwtBody), idCondition(id)]
+      })
 
-    const level = await endpoint.findOne({and: [condition, idCondition(id)]})
-
-    if (!isValid(level)) return res.status(404).json("Not found")
-
-    const levelPartial = info.validate(body, jwtBody)
-
-    if (!isValid<T>(levelPartial)) return res.status(400).json(levelPartial)
-
-    const updatedLevel = await endpoint.updateOne(id, levelPartial)
-
-    if (!isValid<T>(updatedLevel)) return res.status(400).json(levelPartial)
-
-    return res.json(preResponseFilter(updatedLevel))
-  }) satisfies AuthReqHandler<B>
+      if (!isValid(item)) return res.status(404).json("Not found")
+      const updated = await info.endpoint(db).updateOne(id, body)
+      if (!isValid<T>(updated)) return res.status(400).json(body)
+      return res.json(info.preRes(updated))
+    }
+  })
 })
 
-type DeleteInfo<T extends HasId> = Skippable & {
-  perms: (s: JWTBody | undefined) => Condition<T>
-  postDelete?: (item: T) => Promise<unknown>
+type DeleteInfo<T extends HasId> = {
+  postDelete?: (item: T, clients: Clients) => Promise<unknown>
 }
 
 export const deleteBuilder = <T extends HasId>(
-  info: DeleteInfo<T>,
-  endpoint: DbQueries<T>
+  info: Shared<T> & DeleteInfo<T>
 ): Route => ({
   path: "/:id",
   method: "delete",
   skipAuth: info.skipAuth,
-  endpointBuilder: (async (req, res) => {
-    const condition = info.perms(req.jwtBody)
-
-    const deleted = await endpoint.deleteOne(req.params.id, condition)
-    await info.postDelete?.(deleted)
-    return res.json(deleted._id)
-  }) satisfies AuthReqHandler<{}>
+  endpointBuilder: buildQuery({
+    fun: async ({req, res, ...clients}) => {
+      const deleted = await info
+        .endpoint(clients.db)
+        .deleteOne(req.params.id, info.perms.delete(req.jwtBody))
+      await info.postDelete?.(deleted, clients)
+      return res.json(deleted._id)
+    }
+  })
 })
 
+type Skippable = {skipAuth?: boolean}
 export type BuildEndpoints1<T extends HasId> = {
-  endpoint: DbQueries<T>
-  get: GetterInfo<T> | null
-  query: QueryInfo<T> | null
-  create: CreateInfo<T> | null
-  modify: ModifyInfo<T> | null
-  del: DeleteInfo<T> | null
+  get: Skippable | null
+  query: Skippable | null
+  create: (Skippable & CreateInfo<T>) | null
+  modify: Skippable | null
+  del: (Skippable & DeleteInfo<T>) | null
+}
+
+export type PermsForAction<T> = (jwt: JWTBody | undefined) => Condition<T>
+
+type Perms<T> = {
+  read: PermsForAction<T>
+  delete: PermsForAction<T>
+  create: PermsForAction<T>
+  modify: PermsForAction<T>
+}
+
+type Shared<T extends HasId> = {
+  validator: Validator<T>
+  skipAuth?: boolean
+  endpoint: (db: DbClient) => DbQueries<T>
+  preRes: (items: T) => T
+  perms: Perms<T>
+}
+
+type BuilderParams<T extends HasId> = {
+  endpoint: (db: DbClient) => DbQueries<T>
+  validator: Validator<T>
+  builder: BuildEndpoints1<T>
+  mask?: (keyof T)[]
+  perms: Perms<T>
 }
 
 export const createBasicEndpoints = <T extends HasId>(
-  builder: BuildEndpoints1<T>
+  params: BuilderParams<T>
 ) => {
-  const {endpoint, get, create, query, modify, del} = builder
+  const {builder, mask, perms, validator, endpoint} = params
+  const {create, modify, del, get, query} = builder
+
+  const prepareRes = (item: T) => {
+    if (!mask) return item
+    for (const key of mask) {
+      delete item[key]
+    }
+    return item
+  }
+  const shared = {
+    endpoint,
+    perms,
+    preRes: prepareRes,
+    validator
+  }
 
   const list = [
-    get ? getBuilder(get, endpoint) : null,
-    create ? createBuilder(create, endpoint) : null,
-    query ? queryBuilder(query, endpoint) : null,
-    modify ? modifyBuilder(modify, endpoint) : null,
-    del ? deleteBuilder(del, endpoint) : null
+    get ? getBuilder({...shared, ...get}) : null,
+    create ? createBuilder({...shared, ...create}) : null,
+    query ? queryBuilder({...shared, ...query}) : null,
+    modify ? modifyBuilder({...shared, ...modify}) : null,
+    del ? deleteBuilder({...shared, ...del}) : null
   ]
   return list.filter((r) => r !== null)
 }

@@ -1,31 +1,29 @@
-import {ReqBuilder} from "../auth/authTypes"
-import {isParseError, isValid, isValidImport} from "../request_body"
-import {LevelInfo, LevelMap, User} from "../types"
+import {buildQuery} from "../auth/authTypes"
+import {isValid} from "../request_body"
+import {createSchema, LevelMap, levelMapSchema} from "../types"
+import {User} from "../user/user_controller"
+import {LevelInfo, levelSchema} from "./level_controller"
 
-export type ImportLevelsBody = {
-  levels: LevelInfo[]
-  maps: LevelMap[]
-}
-
-export const importLevels: ReqBuilder =
-  ({db}) =>
-  async ({jwtBody, body}, res) => {
-    const toImport = body as ImportLevelsBody
-
-    const validate = isValidImport(toImport)
-    if (isParseError(validate)) return res.json(400).json({error: "Bad input"})
-
+export const importLevels = buildQuery({
+  validator: createSchema((z) =>
+    z.object({
+      levels: z.array(levelSchema),
+      maps: z.array(levelMapSchema)
+    })
+  ),
+  fun: async ({req, res, db}) => {
+    const {body, jwtBody} = req
     const creator = await db.user.findOne({_id: {equal: jwtBody?.userId ?? ""}})
     if (!isValid<User>(creator)) {
       return res.json(404).json({error: "User not found"})
     }
 
-    const updateLevels: LevelInfo[] = validate.levels.map((level) => ({
+    const updateLevels: LevelInfo[] = body.levels.map((level) => ({
       ...level,
       creatorName: creator.name,
       owner: creator._id
     }))
-    const updateMaps: LevelMap[] = validate.maps.map((map) => ({
+    const updateMaps: LevelMap[] = body.maps.map((map) => ({
       ...map
     }))
 
@@ -42,3 +40,4 @@ export const importLevels: ReqBuilder =
 
     return res.json(successes)
   }
+})

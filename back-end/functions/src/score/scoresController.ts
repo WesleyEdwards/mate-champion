@@ -1,25 +1,48 @@
 import {controller} from "../auth/controller"
-import {
-  createScore,
-  deleteScore,
-  getMine,
-  getTopScores,
-  queryScores
-} from "./scoreQueries"
+import {ifNotAdmin} from "../levelInfo/level_controller"
+import {createBasicEndpoints} from "../requestBuilders"
+import {createDbObject, Infer} from "../types"
+import {getTopScores} from "./scoreQueries"
 
-export const scoresController = controller("score", (db) => [
-  {
-    path: "/create",
-    method: "post",
-    endpointBuilder: createScore(db)
+export const scoreSchema = createDbObject((z) =>
+  z.object({
+    userId: z.string({required_error: "User Id required"}),
+    score: z.number({required_error: "Score required"})
+  })
+)
+
+export type Score = Infer<typeof scoreSchema>
+
+const basicEndpoints = createBasicEndpoints<Score>({
+  endpoint: (db) => db.score,
+  validator: scoreSchema,
+  builder: {
+    get: {skipAuth: true},
+    query: {skipAuth: true},
+    create: {},
+    modify: {},
+    del: {}
   },
-  {path: "/self", method: "get", endpointBuilder: getMine(db)},
-  {path: "/:id", method: "delete", endpointBuilder: deleteScore(db)},
-  {path: "/query", method: "post", endpointBuilder: queryScores(db)},
+  perms: {
+    read: () => ({always: true}),
+    delete: ifNotAdmin<Score>((jwtBody) => {
+      return {userId: {equal: jwtBody?.userId ?? ""}}
+    }),
+    create: ifNotAdmin<Score>((jwtBody) => {
+      return {userId: {equal: jwtBody?.userId ?? ""}}
+    }),
+    modify: ifNotAdmin<Score>((jwtBody) => {
+      return {userId: {equal: jwtBody?.userId ?? ""}}
+    })
+  }
+})
+
+export const scoresController = controller("score", [
+  ...basicEndpoints,
   {
     path: "/top-scores",
     method: "get",
-    endpointBuilder: getTopScores(db),
+    endpointBuilder: getTopScores,
     skipAuth: true
   }
 ])

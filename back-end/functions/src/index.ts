@@ -9,6 +9,7 @@ import {usersController} from "./user/user_controller"
 import {scoresController} from "./score/scoresController"
 import {levelMapController} from "./levelMap/level_map_controller"
 import {emailClient} from "./email/emailClient"
+import {authController} from "./user/auth_controller"
 
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
 
@@ -27,6 +28,7 @@ app.use(express.json()) // middleware to convert everything to json
 app.use(cookieParser())
 app.use(cors())
 
+authController(app, clients)
 usersController(app, clients)
 levelsController(app, clients)
 levelMapController(app, clients)

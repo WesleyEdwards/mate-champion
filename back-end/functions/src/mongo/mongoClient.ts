@@ -5,10 +5,15 @@ import {
   MongoClient,
   OptionalUnlessRequiredId
 } from "mongodb"
-import {DbQueries, Condition, HasId} from "../DbClient"
-import {AuthCode, LevelInfo, LevelMap, Score, User} from "../types"
+import {DbQueries, HasId} from "../DbClient"
+import {LevelMap} from "../types"
 import {runMigrations} from "./mongoMigrations"
 import {DbClient} from "../appClients"
+import {Condition} from "../condition"
+import {User} from "../user/user_controller"
+import {LevelInfo} from "../levelInfo/level_controller"
+import {Score} from "../score/scoresController"
+import {AuthCode} from "../user/auth_controller"
 
 function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
   const acc: Filter<T> = {}
@@ -21,6 +26,9 @@ function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
   }
   if ("inside" in condition) {
     return {$in: condition.inside} as Filter<T>
+  }
+  if ("never" in condition) {
+    return {_id: false} as Filter<T>
   }
   if ("or" in condition) {
     acc.$or = condition.or.map((cond) => conditionToFilter(cond)) as any
@@ -87,6 +95,7 @@ function functionsForModel<T extends HasId>(
       return {error: "Unknown error"}
     },
     findOne: async (filter) => {
+      console.log("filter", filter)
       console.log("conditionToFilter(filter)", conditionToFilter(filter))
       const item = (await collection.findOne(
         conditionToFilter(filter)
@@ -94,7 +103,7 @@ function functionsForModel<T extends HasId>(
       if (item) {
         return item
       }
-      return {error: "unable to findItem"}
+      return {error: "unable to find Item"}
     },
     findMany: async (filter: Condition<T>) => {
       const items = collection.find(conditionToFilter(filter))

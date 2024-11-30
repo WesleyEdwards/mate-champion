@@ -1,5 +1,9 @@
 import {DbQueries} from "./DbClient"
-import {AuthCode, LevelInfo, LevelMap, Score, User} from "./types"
+import {LevelInfo} from "./levelInfo/level_controller"
+import {Score} from "./score/scoresController"
+import {LevelMap} from "./types"
+import {AuthCode} from "./user/auth_controller"
+import {User} from "./user/user_controller"
 
 export type DbClient = {
   user: DbQueries<User>

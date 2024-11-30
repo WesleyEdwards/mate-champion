@@ -1,7 +1,7 @@
-import express, {RequestHandler, Express} from "express"
+import express, {Express, Response} from "express"
 
 import jwt from "jsonwebtoken"
-import {AuthReqHandler, JWTBody} from "./authTypes"
+import {AuthReqHandler, JWTBody, RequestWithJWTBody} from "./authTypes"
 import {Clients} from "../appClients"
 
 export const authenticationMiddleware: AuthReqHandler<any> = async (
@@ -23,18 +23,26 @@ export const authenticationMiddleware: AuthReqHandler<any> = async (
   return null
 }
 
-export type Route = {
+export type EndpointBuilderType<Body> = (
+  info: {
+    req: RequestWithJWTBody<Body>
+    res: Response
+  } & Clients
+) => Promise<Response<any, Record<string, any>>>
+
+export type Route<Body = any> = {
   path: string
   method: "post" | "put" | "get" | "delete"
-  endpointBuilder: RequestHandler
+  endpointBuilder: EndpointBuilderType<Body>
   skipAuth?: boolean
 }
 
+export const createRoute = <Z>(x: Route<Z>): Route<Z> => x
+
 export const controller =
-  (name: string, routes: (params: Clients) => Route[]) =>
-  (app: Express, client: Clients) => {
+  (name: string, routes: Route<any>[]) => (app: Express, client: Clients) => {
     const router = express.Router()
-    routes(client).forEach((route) => {
+    routes.forEach((route) => {
       if (!route.skipAuth) {
         router.use(route.path, (req, res, next) => {
           if (req.method.toLowerCase() === route.method) {
@@ -44,7 +52,9 @@ export const controller =
           }
         })
       }
-      router[route.method](route.path, route.endpointBuilder)
+      router[route.method](route.path, (req, res) =>
+        route.endpointBuilder({...client, req, res})
+      )
     })
     app.use(`/${name}`, router)
   }

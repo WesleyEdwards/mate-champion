@@ -1,76 +1,31 @@
-import {ReqBuilder} from "../auth/authTypes"
-import {checkValidation, isParseError, isValid} from "../request_body"
-import {Score, User} from "../types"
+import {buildQuery} from "../auth/authTypes"
+import {User} from "../user/user_controller"
+import {Score} from "./scoresController"
 
-export const createScore: ReqBuilder =
-  ({db}) =>
-  async ({body, jwtBody}, res) => {
-    const scoreBody = checkValidation("score", {
-      ...body,
-      userId: jwtBody!.userId
-    })
-    if (isParseError(scoreBody)) return res.status(400).json(scoreBody)
-
-    const user = await db.user.findOne({_id: {equal: jwtBody!.userId}})
-
-    if (!isValid<User>(user)) return res.status(400).json("User does not exist")
-    if (scoreBody.score > user.highScore) {
-      await db.user.updateOne(user._id, {highScore: scoreBody.score})
-    }
-
-    const score = await db.score.insertOne(scoreBody)
-    if (!score) return res.json("Error creating score")
-
-    return res.json(score)
-  }
-
-export const queryScores: ReqBuilder =
-  ({db}) =>
-  async ({body}, res) => {
+export const getTopScores = buildQuery({
+  fun: async ({res, db}) => {
     const scores = await db.score.findMany({})
-    return res.json(scores)
-  }
-
-export const getMine: ReqBuilder =
-  ({db}) =>
-  async ({jwtBody}, res) => {
-    const scores = await db.score.findMany({
-      userId: {equal: jwtBody!.userId}
-    })
-    return res.json(scores)
-  }
-
-export const deleteScore: ReqBuilder =
-  ({db}) =>
-  async ({params}, res) => {
-    const score = await db.score.deleteOne(params.id)
-    return res.json(score)
-  }
-
-export const getTopScores: ReqBuilder =
-  ({db}) =>
-  async (_, res) => {
-    const scores: Score[] = await db.score.findMany({})
 
     const userIds = [...new Set(scores.map((score) => score.userId))]
-    const queryUsers: User[] = await db.user.findMany({
-      _id: {inside: userIds}
-    })
+    const queryUsers = await db.user.findMany({_id: {inside: userIds}})
 
-    const usersAndScores = scores.reduce((acc, score) => {
-      const user = queryUsers.find((user) => user._id === score.userId)!
-      const exists = acc.find(
-        (userAndScore) => userAndScore.user._id === user._id
-      )
-      if (exists) {
-        if (exists.score.score < score.score) {
-          exists.score = score
+    const usersAndScores = scores.reduce<{user: User; score: Score}[]>(
+      (acc, score) => {
+        const user = queryUsers.find((user) => user._id === score.userId)!
+        const exists = acc.find(
+          (userAndScore) => userAndScore.user._id === user._id
+        )
+        if (exists) {
+          if (exists.score.score < score.score) {
+            exists.score = score
+          }
+          return acc
         }
+        acc.push({user, score})
         return acc
-      }
-      acc.push({user, score})
-      return acc
-    }, [] as {user: User; score: Score}[])
+      },
+      []
+    )
 
     const ordered = usersAndScores.sort((a, b) => b.score.score - a.score.score)
     const info = ordered
@@ -82,3 +37,4 @@ export const getTopScores: ReqBuilder =
 
     return res.json(info)
   }
+})

@@ -1,7 +1,10 @@
 import {Db, Collection} from "mongodb"
 import {z} from "zod"
-import {baseObjectSchema, coors} from "../types"
-import {groogJumpFrequency, groogJumpFrequencyCleanup} from "./migrations/groogJumpFrequency"
+import {coors} from "../types"
+import {
+  groogJumpFrequency,
+  groogJumpFrequencyCleanup
+} from "./migrations/groogJumpFrequency"
 
 export type MigrationFun = (db: Db) => Promise<unknown>
 
@@ -37,76 +40,72 @@ const migrationFun = async (
   return true
 }
 
-const oldLevelMap = z
-  .object({
-    packages: coors.array().default([]),
-    endPosition: z.number().default(4500),
-    opponents: z
-      .object({
-        grog: z
-          .object({
-            position: coors,
-            moveSpeed: z.number(),
-            jumpOften: z.boolean().optional().default(false)
-          })
-          .array()
-      })
-      .default({grog: []}),
-    platformColor: z.string().default("springgreen"),
-    platforms: z
-      .object({
-        dimensions: coors,
-        position: coors,
-        color: z.string().nullable().default(null)
-      })
-      .array()
-      .default([]),
-    floors: z
-      .object({
-        x: z.number(),
-        width: z.number(),
-        color: z.string()
-      })
-      .array()
-      .default([])
-  })
-  .merge(baseObjectSchema)
+const oldLevelMap = z.object({
+  packages: coors.array().default([]),
+  endPosition: z.number().default(4500),
+  opponents: z
+    .object({
+      grog: z
+        .object({
+          position: coors,
+          moveSpeed: z.number(),
+          jumpOften: z.boolean().optional().default(false)
+        })
+        .array()
+    })
+    .default({grog: []}),
+  platformColor: z.string().default("springgreen"),
+  platforms: z
+    .object({
+      dimensions: coors,
+      position: coors,
+      color: z.string().nullable().default(null)
+    })
+    .array()
+    .default([]),
+  floors: z
+    .object({
+      x: z.number(),
+      width: z.number(),
+      color: z.string()
+    })
+    .array()
+    .default([])
+})
 
-const newLevelMap = z
-  .object({
-    champInitPos: coors.default([400, 400]),
-    packages: coors.array().default([]),
-    endPosition: z.number().default(4500),
-    opponents: z
-      .object({
-        grog: z
-          .object({
-            position: coors,
-            moveSpeed: z.number(),
-            jumpOften: z.boolean().optional().default(false)
-          })
-          .array()
-      })
-      .default({grog: []}),
-    platformColor: z.string().default("springgreen"),
-    platforms: z
-      .object({
-        dimensions: coors,
-        position: coors,
-        color: z.string().nullable().default(null)
-      })
-      .array()
-      .default([]),
-    floors: z
-      .object({
-        x: z.number(),
-        width: z.number(),
-        color: z.string()
-      })
-      .array()
-      .default([])
-  })
-  .merge(baseObjectSchema)
+const newLevelMap = z.object({
+  champInitPos: coors.default([400, 400]),
+  packages: coors.array().default([]),
+  endPosition: z.number().default(4500),
+  opponents: z
+    .object({
+      grog: z
+        .object({
+          position: coors,
+          moveSpeed: z.number(),
+          jumpOften: z.boolean().optional().default(false)
+        })
+        .array()
+    })
+    .default({grog: []}),
+  platformColor: z.string().default("springgreen"),
+  platforms: z
+    .object({
+      dimensions: coors,
+      position: coors,
+      color: z.string().nullable().default(null)
+    })
+    .array()
+    .default([]),
+  floors: z
+    .object({
+      x: z.number(),
+      width: z.number(),
+      color: z.string()
+    })
+    .array()
+    .default([])
+})
 type OldLevelMap = z.infer<typeof oldLevelMap>
 type NewLevelMap = z.infer<typeof newLevelMap>
 
@@ -122,7 +121,7 @@ const addPlayerInitPos: MigrationFun = async (db) => {
     const level: OldLevelMap = levelRaw as any
     console.log("Fixing ", levelRaw._id)
     await levelCollection.updateOne(
-      {_id: level._id as any},
+      {_id: (level as any)._id as any},
       {
         $set: {
           champInitPos: [400, 400]

@@ -1,14 +1,8 @@
+import {Condition} from "./condition"
+
 export type HasId = {
   _id: string
 }
-
-export declare type Condition<T> =
-  | {equal: T}
-  | {inside: T[]}
-  | {or: Array<Condition<T>>}
-  | {and: Array<Condition<T>>}
-  | {always: true}
-  | (keyof T extends never ? never : {[P in keyof T]?: Condition<T[P]>})
 
 export declare type Modification<T> = {assign: T}
 

@@ -1,44 +1,34 @@
-import {controller, Route} from "../auth/controller"
+import {controller} from "../auth/controller"
 import {importLevels} from "./levelQueries"
-import {LevelInfo, User} from "../types"
-import {createBasicEndpoints} from "../requestBuilders"
-import {checkPartialValidation, checkValidation, isValid} from "../request_body"
-import {Clients} from "../appClients"
+import {createDbObject, Infer} from "../types"
+import {createBasicEndpoints, PermsForAction} from "../requestBuilders"
+import {JWTBody} from "../auth/authTypes"
+import {isValid} from "../request_body"
+import {User} from "../user/user_controller"
 
-const levelBaseEndpoints = ({db}: Clients) =>
-  createBasicEndpoints<LevelInfo>({
-    endpoint: db.level,
-    get: {
-      perms: (jwtBody) => {
-        if (jwtBody?.userType === "Admin") return {always: true}
-        return {
-          or: [{public: {equal: true}}, {owner: {equal: jwtBody?.userId ?? ""}}]
-        }
-      }
-    },
-    query: {
-      perms: (jwtBody) =>
-        jwtBody?.userType === "Admin"
-          ? {always: true}
-          : {
-              or: [
-                {owner: {equal: jwtBody?.userId ?? ""}},
-                {public: {equal: true}}
-              ]
-            }
-    },
+export const levelSchema = createDbObject((z) =>
+  z.object({
+    owner: z.string(),
+    public: z.boolean().default(false),
+    name: z.string(),
+    description: z.string().nullable().default(null),
+    creatorName: z.string().default("")
+  })
+)
+
+export type LevelInfo = Infer<typeof levelSchema>
+
+const levelBaseEndpoints = createBasicEndpoints<LevelInfo>({
+  validator: levelSchema,
+  endpoint: (db) => db.level,
+  builder: {
     create: {
-      validate: async (body, jwtBody) => {
-        const val = checkValidation("level", body)
-        if (!isValid<LevelInfo>(val)) return val
-        const user = await db.user.findOne({_id: {equal: val.owner}})
-        if (!isValid<User>(user)) return user
-        if (jwtBody?.userId !== val.owner) {
-          return {error: "not owner"}
-        }
-        return {...val, creatorName: user.name} satisfies LevelInfo
+      preProcess: async (item, {db}) => {
+        const user = await db.user.findOne({_id: {equal: item.owner}})
+        if (!isValid<User>(user)) throw new Error("User not found")
+        return {...item, creatorName: user.name} satisfies LevelInfo
       },
-      postCreate: async (level) => {
+      postCreate: async (level, {db}) => {
         await db.levelMap.insertOne({
           champInitPos: [400, 400],
           _id: level._id,
@@ -51,34 +41,43 @@ const levelBaseEndpoints = ({db}: Clients) =>
         })
       }
     },
-    modify: {
-      perms: (jwtBody) => {
-        return jwtBody?.userType === "Admin"
-          ? {always: true}
-          : {owner: {equal: jwtBody?.userId ?? ""}}
-      },
-      validate: (body) => {
-        return checkPartialValidation("level", body)
-      }
-    },
     del: {
-      perms: (jwtBody) => ({owner: {equal: jwtBody?.userId ?? ""}}),
-      postDelete: async (item) => {
+      postDelete: async (item, {db}) => {
         await db.levelMap.deleteOne(item._id)
       }
-    }
-  })
-
-export const levelsController = controller(
-  "level",
-  (clients: Clients): Route[] => {
-    return [
-      ...levelBaseEndpoints(clients),
-      {
-        path: "/import-map",
-        method: "post",
-        endpointBuilder: importLevels(clients)
-      }
-    ]
+    },
+    get: {},
+    modify: {},
+    query: {}
+  },
+  perms: {
+    read: ifNotAdmin<LevelInfo>((jwtBody) => ({
+      owner: {equal: jwtBody?.userId ?? ""}
+    })),
+    delete: ifNotAdmin<LevelInfo>((jwtBody) => ({
+      owner: {equal: jwtBody?.userId ?? ""}
+    })),
+    create: ifNotAdmin<LevelInfo>((jwtBody) => ({
+      owner: {equal: jwtBody?.userId ?? ""}
+    })),
+    modify: ifNotAdmin<LevelInfo>((jwtBody) => ({
+      owner: {equal: jwtBody?.userId ?? ""}
+    }))
   }
-)
+})
+
+export function ifNotAdmin<T>(fun: PermsForAction<T>): PermsForAction<T> {
+  return (jwtBody: JWTBody | undefined) => {
+    if (jwtBody?.userType === "Admin") return {always: true}
+    return fun(jwtBody)
+  }
+}
+
+export const levelsController = controller("level", [
+  ...levelBaseEndpoints,
+  {
+    path: "/import-map",
+    method: "post",
+    endpointBuilder: importLevels
+  }
+])
