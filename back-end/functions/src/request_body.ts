@@ -7,6 +7,7 @@ export function checkValidSchema<T>(
   schema: ZodType<T> | ZodObject<any, any, any, T>
 ): T | ParseError {
   const result = schema.safeParse(body)
+  console.log("result", result)
   if (result.success) return result.data as unknown as T
   return {error: result.error.issues.at(0) ?? {message: "Unknown error"}}
 }

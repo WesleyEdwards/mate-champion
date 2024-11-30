@@ -91,12 +91,9 @@ function functionsForModel<T extends HasId>(
       if (acknowledged) {
         return newItem
       }
-      console.log("NEW ITEM", newItem)
       return {error: "Unknown error"}
     },
     findOne: async (filter) => {
-      console.log("filter", filter)
-      console.log("conditionToFilter(filter)", conditionToFilter(filter))
       const item = (await collection.findOne(
         conditionToFilter(filter)
       )) as T | null

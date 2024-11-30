@@ -9,16 +9,44 @@ const msg: MailDataRequired = {
   html: ""
 }
 
-export const emailClient = (key: string): EmailClient => {
-  sgMail.setApiKey(key)
+export const emailClient = (
+  option: string,
+  key?: string
+): EmailClient => {
+  if (option === "sendgrid" && key) {
+    return sendgridEmail(key)
+  }
+  return localEmail()
+}
 
+const sendgridEmail = (key: string): EmailClient => {
+  sgMail.setApiKey(key)
   return {
     send: async (params) => {
       console.log("Sending email")
       try {
         const res = await sgMail.send({...msg, ...params})
+        console.log("Sent email", res[0].toString())
+      } catch (error: any) {
+        console.error(error)
 
-        console.log("Send email", res[0].toString())
+        if (error.response) {
+          console.error(error.response.body)
+        }
+      }
+    }
+  }
+}
+const localEmail = (): EmailClient => {
+  console.log("LOCAL")
+  return {
+    send: async (params) => {
+      try {
+        console.log("------------------------------")
+        console.log(`Sending email to ${params.to}`)
+        console.log(params.subject)
+        console.log(params.html)
+        console.log("------------------------------")
       } catch (error: any) {
         console.error(error)
 

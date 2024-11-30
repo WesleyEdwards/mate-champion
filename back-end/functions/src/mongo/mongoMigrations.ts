@@ -110,16 +110,12 @@ type OldLevelMap = z.infer<typeof oldLevelMap>
 type NewLevelMap = z.infer<typeof newLevelMap>
 
 const addPlayerInitPos: MigrationFun = async (db) => {
-  console.log("About to begin")
   const levelCollection = db.collection("levelMap")
-  console.log("levelColl")
 
   const allLevels = await levelCollection.find({}).toArray()
 
-  console.log("all levels", allLevels.length)
   for (const levelRaw of allLevels) {
     const level: OldLevelMap = levelRaw as any
-    console.log("Fixing ", levelRaw._id)
     await levelCollection.updateOne(
       {_id: (level as any)._id as any},
       {

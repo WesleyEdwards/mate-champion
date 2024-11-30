@@ -57,7 +57,10 @@ export const loginWithPassword = buildQuery({
 
 export const sendAuthCode = buildQuery({
   validator: createSchema((z) =>
-    z.object({email: z.string(), name: z.string().optional()})
+    z.object({
+      email: z.string().email({message: "Invalid email"}),
+      name: z.string().optional()
+    })
   ),
   fun: async ({db, email, req, res}) => {
     const {body} = req

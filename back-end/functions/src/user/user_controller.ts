@@ -21,9 +21,6 @@ const userBaseEndpoints = createBasicEndpoints<User>({
   mask: ["passwordHash"],
   perms: {
     read: () => ({always: true}),
-    // read: ifNotAdmin<User>((jwtBody) => ({
-    //   _id: {equal: jwtBody?.userId ?? ""}
-    // })),
     delete: ifNotAdmin<User>((jwtBody) => ({
       _id: {equal: jwtBody?.userId ?? ""}
     })),

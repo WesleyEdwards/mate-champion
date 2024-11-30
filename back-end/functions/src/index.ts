@@ -14,13 +14,14 @@ import {authController} from "./user/auth_controller"
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
 
 const dbPath = process.env.MONGO_URI!
+const emailOption = process.env.EMAIL
 const emailKey = process.env.SENDGRID_API_KEY
 
 console.log("NODE_ENV is", process.env.NODE_ENV)
 
 const clients = {
   db: mongoClient(dbPath),
-  email: emailClient(emailKey!)
+  email: emailClient(emailOption ?? "local", emailKey)
 }
 
 const app = express()
