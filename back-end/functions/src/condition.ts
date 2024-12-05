@@ -1,3 +1,4 @@
+import {Filter} from "mongodb"
 import {z, ZodType, ZodTypeDef} from "zod"
 
 export declare type Condition<T> =
@@ -34,4 +35,102 @@ export const createCondition = <T extends ZodType<any, any, any>>(
     ])
   )
   return condition
+}
+
+export function evalCondition<T>(item: T, condition: Condition<T>): boolean {
+  if ("equal" in condition) {
+    return condition.equal === item
+  }
+
+  if ("inside" in condition) {
+    return condition.inside.some((i) => areEqual(item, i))
+  }
+
+  if ("never" in condition) {
+    return false
+  }
+
+  if ("always" in condition) {
+    return true
+  }
+
+  if ("or" in condition) {
+    return condition.or.some((orCondition) => evalCondition(item, orCondition))
+  }
+
+  if ("and" in condition) {
+    return condition.and.every((andCondition) =>
+      evalCondition(item, andCondition)
+    )
+  }
+
+  // Handle object matching by keys
+  if (
+    typeof item === "object" &&
+    typeof condition === "object" &&
+    item !== null
+  ) {
+    return Object.entries(condition).every(([key, subCondition]) => {
+      const itemValue = (item as any)[key]
+      return (
+        itemValue !== undefined &&
+        evalCondition(itemValue, subCondition as Condition<any>)
+      )
+    })
+  }
+
+  return false
+}
+
+const areEqual = (a: any, b: any): boolean => {
+  if (typeof a !== typeof b) return false
+  if (typeof a === "object") {
+    return JSON.stringify(a) === JSON.stringify(b)
+  }
+  return a === b
+}
+
+export function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
+  const acc: Filter<T> = {}
+
+  if ("equal" in condition) {
+    return condition.equal as Filter<T>
+  }
+  if ("inside" in condition) {
+    return {$in: condition.inside} as Filter<T>
+  }
+  if ("never" in condition) {
+    return {_id: false} as Filter<T>
+  }
+  if ("or" in condition) {
+    acc.$or = condition.or.map((cond) => conditionToFilter(cond)) as any
+    return acc
+  }
+
+  if ("and" in condition) {
+    acc.$and = condition.and.map((cond) => conditionToFilter(cond)) as any
+    return acc
+  }
+
+  if ("always" in condition) {
+    if (condition.always) {
+      return acc
+    } else {
+      throw new Error("Invalid 'always' condition. It must be true.")
+    }
+  }
+
+  for (const key in condition) {
+    const value = condition[key]
+
+    if (key === "equal" || key === "or" || key === "and" || key === "always") {
+      continue
+    }
+
+    if (value && typeof value === "object") {
+      acc[key as keyof Filter<T>] = conditionToFilter(value as any)
+    }
+  }
+
+  return acc
 }

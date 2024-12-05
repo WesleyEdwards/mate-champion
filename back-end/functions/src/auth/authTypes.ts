@@ -31,8 +31,9 @@ export const buildQuery = <T>(params: {
   const intermediate: EndpointBuilderType<T> = async (info) => {
     if (params.validator) {
       const valid = checkValidSchema(info.req.body, params.validator)
+      console.log(valid)
       if (!isValid(valid)) {
-        return info.res.status(400).json({error: "Invalid body"})
+        return info.res.status(400).json({error: valid})
       }
     }
 

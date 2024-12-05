@@ -2,7 +2,7 @@ import {JWTBody, Validator, buildQuery} from "./auth/authTypes"
 import {Route} from "./auth/controller"
 import {DbQueries, HasId} from "./DbClient"
 import {isValid} from "./request_body"
-import {Condition} from "./condition"
+import {Condition, createCondition} from "./condition"
 import {Clients, DbClient} from "./appClients"
 
 const idCondition = <T extends HasId>(id: string): Condition<T> =>
@@ -36,7 +36,7 @@ const queryBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   method: "post",
   skipAuth: info.skipAuth,
   endpointBuilder: buildQuery({
-    validator: info.validator,
+    validator: createCondition(info.validator),
     fun: async ({req, res, db}) => {
       const query = info.perms.read(req.jwtBody) ?? {always: true}
       const fullQuery: Condition<T> = {and: [req.body as any, query]}

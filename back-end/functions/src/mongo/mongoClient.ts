@@ -9,59 +9,11 @@ import {DbQueries, HasId} from "../DbClient"
 import {LevelMap} from "../types"
 import {runMigrations} from "./mongoMigrations"
 import {DbClient} from "../appClients"
-import {Condition} from "../condition"
+import {Condition, conditionToFilter} from "../condition"
 import {User} from "../user/user_controller"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {Score} from "../score/scoresController"
 import {AuthCode} from "../user/auth_controller"
-
-function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
-  const acc: Filter<T> = {}
-
-  if ("equal" in condition) {
-    return condition.equal as Filter<T>
-  }
-  if ("assign" in condition) {
-    return condition.assign as Filter<T>
-  }
-  if ("inside" in condition) {
-    return {$in: condition.inside} as Filter<T>
-  }
-  if ("never" in condition) {
-    return {_id: false} as Filter<T>
-  }
-  if ("or" in condition) {
-    acc.$or = condition.or.map((cond) => conditionToFilter(cond)) as any
-    return acc
-  }
-
-  if ("and" in condition) {
-    acc.$and = condition.and.map((cond) => conditionToFilter(cond)) as any
-    return acc
-  }
-
-  if ("always" in condition) {
-    if (condition.always) {
-      return acc
-    } else {
-      throw new Error("Invalid 'always' condition. It must be true.")
-    }
-  }
-
-  for (const key in condition) {
-    const value = condition[key]
-
-    if (key === "equal" || key === "or" || key === "and" || key === "always") {
-      continue
-    }
-
-    if (value && typeof value === "object") {
-      acc[key as keyof Filter<T>] = conditionToFilter(value as any)
-    }
-  }
-
-  return acc
-}
 
 export const mongoClient = (dbPath: string): DbClient => {
   const mClient: MongoClient = new MongoClient(dbPath)
@@ -104,15 +56,6 @@ function functionsForModel<T extends HasId>(
     },
     findMany: async (filter: Condition<T>) => {
       const items = collection.find(conditionToFilter(filter))
-      return (await items.toArray()) as T[]
-    },
-    queryPartial: async (filter: Condition<T>, fields: string[]) => {
-      const items = collection.find(conditionToFilter(filter), {
-        projection: fields.reduce((acc, field) => {
-          acc[field] = 1
-          return acc
-        }, {} as Record<string, 1>)
-      })
       return (await items.toArray()) as T[]
     },
     updateOne: async (id, item) => {
