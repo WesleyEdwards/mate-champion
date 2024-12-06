@@ -6,34 +6,29 @@ import {
   OptionalUnlessRequiredId
 } from "mongodb"
 import {DbQueries, HasId} from "../DbClient"
-import {LevelMap} from "../types"
 import {runMigrations} from "./mongoMigrations"
 import {DbClient} from "../appClients"
 import {Condition, conditionToFilter} from "../condition"
-import {User} from "../user/user_controller"
-import {LevelInfo} from "../levelInfo/level_controller"
-import {Score} from "../score/scoresController"
-import {AuthCode} from "../user/auth_controller"
 
-export const mongoClient = (dbPath: string): DbClient => {
-  const mClient: MongoClient = new MongoClient(dbPath)
-  const db = mClient.db("mate-db")
+export const mongoClient = (mongoUri: string, dbPath: string): DbClient => {
+  const mClient: MongoClient = new MongoClient(mongoUri)
+  const db = mClient.db(dbPath)
 
   return {
-    user: functionsForModel<User>(db, "user"),
-    score: functionsForModel<Score>(db, "score"),
-    level: functionsForModel<LevelInfo>(db, "level"),
-    levelMap: functionsForModel<LevelMap>(db, "levelMap"),
-    authCode: functionsForModel<AuthCode>(db, "authCode"),
+    user: functionsForModel(db, "user"),
+    score: functionsForModel(db, "score"),
+    level: functionsForModel(db, "level"),
+    levelMap: functionsForModel(db, "levelMap"),
+    authCode: functionsForModel(db, "authCode"),
     runMigrations: () => runMigrations(db)
   }
 }
 
 function functionsForModel<T extends HasId>(
   db: Db,
-  model: string
+  collectionPath: string
 ): DbQueries<T> {
-  const collection: Collection<T> = db.collection(model)
+  const collection: Collection<T> = db.collection(collectionPath)
 
   return {
     insertOne: async (newItem: T) => {

@@ -1,7 +1,7 @@
 import express, {Express, Response} from "express"
 
 import jwt from "jsonwebtoken"
-import {AuthReqHandler, JWTBody, RequestWithJWTBody} from "./authTypes"
+import {AuthReqHandler, JWTBody, RequestWithJWTBody} from "../auth/authTypes"
 import {Clients} from "../appClients"
 
 export const authenticationMiddleware: AuthReqHandler<any> = async (

@@ -1,4 +1,4 @@
-import {AuthCode} from "../../user/auth_controller"
+import {AuthCode} from "../../src/user/auth_controller"
 
 export const mockAuthCodes: AuthCode[] = [
   {

@@ -1,4 +1,4 @@
-import {controller} from "../auth/controller"
+import {controller} from "../controllers/controller"
 import {modifyLevelMap, getLevelMap, generateLevels} from "./levelMapQueries"
 
 export const levelMapController = controller("level-map", [

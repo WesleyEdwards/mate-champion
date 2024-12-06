@@ -10,14 +10,14 @@ import {applyControllers} from "./controllers/appControllers"
 
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
 
-const dbPath = process.env.MONGO_URI!
+const mongoUri = process.env.MONGO_URI!
 const emailOption = process.env.EMAIL
 const emailKey = process.env.SENDGRID_API_KEY
 
 console.log("NODE_ENV is", process.env.NODE_ENV)
 
 const clients: Clients = {
-  db: mongoClient(dbPath),
+  db: mongoClient(mongoUri, "mate-db"),
   email: emailClient(emailOption ?? "local", emailKey)
 }
 const app = express()

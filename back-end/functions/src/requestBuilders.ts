@@ -1,5 +1,5 @@
 import {JWTBody, Validator, buildQuery} from "./auth/authTypes"
-import {Route} from "./auth/controller"
+import {Route} from "./controllers/controller"
 import {DbQueries, HasId} from "./DbClient"
 import {isValid} from "./request_body"
 import {Condition, createCondition} from "./condition"

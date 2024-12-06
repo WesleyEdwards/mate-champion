@@ -1,4 +1,4 @@
-import {controller} from "../auth/controller"
+import {controller} from "../controllers/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createBasicEndpoints} from "../requestBuilders"
 import {createDbObject, Infer} from "../types"

@@ -1,4 +1,4 @@
-import {controller} from "../auth/controller"
+import {controller} from "../controllers/controller"
 import {importLevels} from "./levelQueries"
 import {createDbObject, Infer} from "../types"
 import {createBasicEndpoints, PermsForAction} from "../requestBuilders"

@@ -1,18 +1,14 @@
 import {MailDataRequired, MailService} from "@sendgrid/mail"
+import {EmailClient} from "../appClients"
 
 const sgMail: MailService = require("@sendgrid/mail")
-
-import {EmailClient} from "../appClients"
 
 const msg: MailDataRequired = {
   from: "westheedwards@gmail.com",
   html: ""
 }
 
-export const emailClient = (
-  option: string,
-  key?: string
-): EmailClient => {
+export const emailClient = (option: string, key?: string): EmailClient => {
   if (option === "sendgrid" && key) {
     return sendgridEmail(key)
   }
@@ -38,7 +34,6 @@ const sendgridEmail = (key: string): EmailClient => {
   }
 }
 const localEmail = (): EmailClient => {
-  console.log("LOCAL")
   return {
     send: async (params) => {
       try {

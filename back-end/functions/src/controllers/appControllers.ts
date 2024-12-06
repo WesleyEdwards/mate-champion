@@ -15,6 +15,5 @@ export const applyControllers = (
   levelsController(app, clients)
   levelMapController(app, clients)
   scoresController(app, clients)
-
   return app
 }

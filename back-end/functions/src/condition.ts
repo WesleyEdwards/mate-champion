@@ -1,13 +1,14 @@
 import {Filter} from "mongodb"
 import {z, ZodType, ZodTypeDef} from "zod"
 
-export declare type Condition<T> =
+export type Condition<T> =
   | {equal: T}
   | {inside: T[]}
   | {or: Array<Condition<T>>}
   | {and: Array<Condition<T>>}
   | {always: true}
   | {never: true}
+  | {listAnyElement: T extends (infer U)[] ? Condition<U> : never}
   | (keyof T extends never ? never : {[P in keyof T]?: Condition<T[P]>})
 
 // Recursive type definition
@@ -38,20 +39,20 @@ export const createCondition = <T extends ZodType<any, any, any>>(
 }
 
 export function evalCondition<T>(item: T, condition: Condition<T>): boolean {
-  if ("equal" in condition) {
-    return condition.equal === item
-  }
-
-  if ("inside" in condition) {
-    return condition.inside.some((i) => areEqual(item, i))
-  }
-
   if ("never" in condition) {
     return false
   }
 
   if ("always" in condition) {
     return true
+  }
+
+  if ("equal" in condition) {
+    return condition.equal === item
+  }
+
+  if ("inside" in condition) {
+    return condition.inside.some((i) => areEqual(item, i))
   }
 
   if ("or" in condition) {
@@ -63,8 +64,11 @@ export function evalCondition<T>(item: T, condition: Condition<T>): boolean {
       evalCondition(item, andCondition)
     )
   }
+  if ("listAnyElement" in condition) {
+    if (!Array.isArray(item)) throw new Error("Invalid condition")
+    return item.some((value) => evalCondition(value, condition.listAnyElement))
+  }
 
-  // Handle object matching by keys
   if (
     typeof item === "object" &&
     typeof condition === "object" &&
@@ -118,6 +122,10 @@ export function conditionToFilter<T>(condition: Condition<T>): Filter<T> {
     } else {
       throw new Error("Invalid 'always' condition. It must be true.")
     }
+  }
+
+  if ("listAnyElement" in condition) {
+    return conditionToFilter(condition.listAnyElement) as any
   }
 
   for (const key in condition) {

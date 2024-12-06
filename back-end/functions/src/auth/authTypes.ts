@@ -3,7 +3,7 @@ import {UserType} from "../types"
 import {Clients} from "../appClients"
 import {ZodType} from "zod"
 import {checkValidSchema, isValid} from "../request_body"
-import {EndpointBuilderType} from "./controller"
+import {EndpointBuilderType} from "../controllers/controller"
 
 export type JWTBody = {
   userId: string
@@ -31,7 +31,6 @@ export const buildQuery = <T>(params: {
   const intermediate: EndpointBuilderType<T> = async (info) => {
     if (params.validator) {
       const valid = checkValidSchema(info.req.body, params.validator)
-      console.log(valid)
       if (!isValid(valid)) {
         return info.res.status(400).json({error: valid})
       }
