@@ -1,41 +1,118 @@
 import {Filter} from "mongodb"
-import {z, ZodType, ZodTypeDef} from "zod"
+import {z} from "zod"
+import {SafeParsable} from "./request_body"
 
 export type Condition<T> =
+  | {always: true}
+  | {never: true}
   | {equal: T}
   | {inside: T[]}
   | {or: Array<Condition<T>>}
   | {and: Array<Condition<T>>}
-  | {always: true}
-  | {never: true}
   | {listAnyElement: T extends (infer U)[] ? Condition<U> : never}
   | (keyof T extends never ? never : {[P in keyof T]?: Condition<T[P]>})
 
-// Recursive type definition
-export const createCondition = <T extends ZodType<any, any, any>>(
-  schema: T
-): ZodType<
-  | {equal: z.infer<T>}
-  | {inside: z.infer<T>[]}
-  | {or: Array<z.infer<ZodType>>}
-  | {and: Array<z.infer<ZodType>>}
-  | {always: true}
-  | Partial<Record<string, any>>,
-  ZodTypeDef,
-  any
-> => {
-  const condition: ZodType<any> = z.lazy(() =>
-    z.union([
-      z.object({equal: schema}),
-      z.object({inside: z.array(schema)}),
-      z.object({or: z.array(condition)}),
-      z.object({and: z.array(condition)}),
-      z.object({always: z.literal(true)}),
-      z.object({never: z.literal(true)}),
-      z.record(z.string(), condition) // Handles the recursive object case
-    ])
-  )
-  return condition
+type SF<T> = ReturnType<SafeParsable<T>["safeParse"]>
+export const createConditionSchema = <T>(
+  schema: z.ZodType<T, any, any>
+): SafeParsable<T> => {
+  return {
+    safeParse: (body: any) => {
+      if (
+        typeof body !== "object" ||
+        body === null ||
+        body === undefined ||
+        Array.isArray(body)
+      ) {
+        return {success: false, error: {message: "Invalid"}}
+      }
+
+      const bodyKeys = Object.keys(body)
+      if (bodyKeys.length !== 1) {
+        return {success: false, error: {message: "too many keys"}}
+      }
+
+      const key = bodyKeys[0]
+
+      const valueKeys = zodKeys(schema)
+
+      const valid = [
+        "always",
+        "never",
+        "equal",
+        "inside",
+        "or",
+        "and",
+        "listAnyElement",
+        ...valueKeys
+      ]
+      if (!valid.includes(key)) {
+        return {success: false, error: {message: "invalid key"}}
+      }
+
+      if (key === "always" || key === "never") {
+        return z.object({[key]: z.literal(true)}).safeParse(body) as SF<T>
+      }
+
+      if (key === "equal") {
+        return z.object({equal: schema}).safeParse(body) as SF<T>
+      }
+      if (key === "inside") {
+        return z.object({inside: schema.array()}).safeParse(body) as SF<T>
+      }
+      if (key === "listAnyElement") {
+        if (schema instanceof z.ZodArray) {
+          const others = createConditionSchema(schema.element)
+          if (others.safeParse(body[key]).success === false) {
+            return {error: {message: "invalid"}, success: false}
+          }
+          return z
+            .object({listAnyElement: z.any(body[key])})
+            .safeParse(body) as SF<T>
+        }
+      }
+
+      if (key === "and" || key === "or") {
+        if (!Array.isArray(body[key])) {
+          return {error: {message: "invalid"}, success: false}
+        }
+        const others = createConditionSchema(schema)
+        for (const item of body[key]) {
+          if (others.safeParse(item).success === false) {
+            return {error: {message: "invalid"}, success: false}
+          }
+        }
+        return z
+          .object({
+            [key]: z.any({[key]: body[key]})
+          })
+          .safeParse(body) as SF<T>
+      }
+
+      if (schema instanceof z.ZodObject) {
+        const others = createConditionSchema(schema.shape[key])
+        if (others.safeParse(body[key]).success === false) {
+          return {error: {message: "invalid"}, success: false}
+        }
+        return z
+          .object({
+            [key]: z.any(body[key])
+          })
+          .safeParse(body) as SF<T>
+      }
+      return {error: {message: "nope"}, success: false}
+    }
+  }
+}
+const zodKeys = <T extends z.ZodTypeAny>(schema: T): string[] => {
+  if (schema === null || schema === undefined) return []
+  if (schema instanceof z.ZodNullable || schema instanceof z.ZodOptional)
+    return zodKeys(schema.unwrap())
+  if (schema instanceof z.ZodArray) return []
+  if (schema instanceof z.ZodObject) {
+    return Object.keys(schema.shape)
+  }
+  return []
 }
 
 export function evalCondition<T>(item: T, condition: Condition<T>): boolean {

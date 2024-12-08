@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express"
 import {UserType} from "../types"
 import {Clients} from "../appClients"
 import {ZodType} from "zod"
-import {checkValidSchema, isValid} from "../request_body"
+import {checkValidSchema, isValid, SafeParsable} from "../request_body"
 import {EndpointBuilderType} from "../controllers/controller"
 
 export type JWTBody = {
@@ -25,7 +25,7 @@ export type ReqBuilder<Body = {}> = (clients: Clients) => AuthReqHandler<Body>
 export type Validator<T> = ZodType<T, any, any>
 
 export const buildQuery = <T>(params: {
-  validator?: Validator<T>
+  validator?: SafeParsable<T>
   fun: EndpointBuilderType<T>
 }) => {
   const intermediate: EndpointBuilderType<T> = async (info) => {

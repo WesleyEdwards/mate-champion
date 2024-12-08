@@ -1,4 +1,5 @@
 import {Condition, evalCondition} from "../src/condition"
+import {Animal, AnimalType, dog_test} from "./mocks/conditions"
 
 // Test Condition system, specifically the typing and 'evalCondition' function
 function testCondition<T>(condition: Condition<T>, inputs: [T, boolean][]) {
@@ -121,21 +122,21 @@ describe("Object Key Conditions", () => {
     const condition: Condition<Animal> = {
       parents: {listAnyElement: {name: {equal: "Bella"}}}
     }
-    expect(evalCondition(dog, condition)).toBe(true)
+    expect(evalCondition(dog_test, condition)).toBe(true)
   })
 
   test("should handle missing nested keys", () => {
     const condition: Condition<Animal> = {
       parents: {listAnyElement: {name: {equal: "NotFound"}}}
     }
-    expect(evalCondition(dog, condition)).toBe(false)
+    expect(evalCondition(dog_test, condition)).toBe(false)
   })
 
   test("should handle empty array in conditions", () => {
     const condition: Condition<Animal> = {
       parents: {listAnyElement: {name: {inside: []}}}
     }
-    expect(evalCondition(dog, condition)).toBe(false)
+    expect(evalCondition(dog_test, condition)).toBe(false)
   })
 
   test("various key tests", () => {
@@ -147,51 +148,14 @@ describe("Object Key Conditions", () => {
       {
         parents: {
           listAnyElement: {
-            and: [{gender: {equal: "Male"}, _id: {inside: ["123-father"]}}]
+            and: [{gender: {equal: "Male"}}, {_id: {inside: ["123-father"]}}]
           }
         }
       }
     ]
 
     for (const condition of trueConditions) {
-      expect(evalCondition(dog, condition)).toBe(true)
+      expect(evalCondition(dog_test, condition)).toBe(true)
     }
   })
 })
-
-enum AnimalType {
-  Mammal = "Mammal",
-  Reptile = "Reptile"
-}
-type Gender = "Male" | "Female"
-
-type Animal = {
-  _id: string
-  type: AnimalType
-  gender: Gender
-  name: string
-  age: number
-  pastOwners: string[]
-  parents: {_id: string; name: string; gender: Gender}[]
-}
-
-const dog: Animal = {
-  _id: "1234",
-  type: AnimalType.Mammal,
-  gender: "Male",
-  name: "Fido",
-  age: 4,
-  pastOwners: ["bob", "ryan", "thomas"],
-  parents: [
-    {
-      _id: "123-mother",
-      name: "Bella",
-      gender: "Female"
-    },
-    {
-      _id: "123-father",
-      name: "Jack",
-      gender: "Male"
-    }
-  ]
-}
