@@ -12,6 +12,9 @@ export type Condition<T> =
   | {listAnyElement: T extends (infer U)[] ? Condition<U> : never}
   | (keyof T extends never ? never : {[P in keyof T]?: Condition<T[P]>})
 
+const errorMessage = (message: string) =>
+  ({success: false, error: {message}} as const)
+
 type SF<T> = ReturnType<SafeParsable<T>["safeParse"]>
 export const createConditionSchema = <T>(
   schema: z.ZodType<T, any, any>
@@ -24,31 +27,15 @@ export const createConditionSchema = <T>(
         body === undefined ||
         Array.isArray(body)
       ) {
-        return {success: false, error: {message: "Invalid"}}
+        return errorMessage("Invalid condition type")
       }
 
       const bodyKeys = Object.keys(body)
       if (bodyKeys.length !== 1) {
-        return {success: false, error: {message: "too many keys"}}
+        return errorMessage("Single key expected")
       }
 
       const key = bodyKeys[0]
-
-      const valueKeys = zodKeys(schema)
-
-      const valid = [
-        "always",
-        "never",
-        "equal",
-        "inside",
-        "or",
-        "and",
-        "listAnyElement",
-        ...valueKeys
-      ]
-      if (!valid.includes(key)) {
-        return {success: false, error: {message: "invalid key"}}
-      }
 
       if (key === "always" || key === "never") {
         return z.object({[key]: z.literal(true)}).safeParse(body) as SF<T>
@@ -64,7 +51,7 @@ export const createConditionSchema = <T>(
         if (schema instanceof z.ZodArray) {
           const others = createConditionSchema(schema.element)
           if (others.safeParse(body[key]).success === false) {
-            return {error: {message: "invalid"}, success: false}
+            return errorMessage("invalid condition")
           }
           return z
             .object({listAnyElement: z.any(body[key])})
@@ -74,36 +61,36 @@ export const createConditionSchema = <T>(
 
       if (key === "and" || key === "or") {
         if (!Array.isArray(body[key])) {
-          return {error: {message: "invalid"}, success: false}
+          return errorMessage("invalid condition")
         }
         const others = createConditionSchema(schema)
         for (const item of body[key]) {
           if (others.safeParse(item).success === false) {
-            return {error: {message: "invalid"}, success: false}
+            return errorMessage("invalid condition")
           }
         }
         return z
-          .object({
-            [key]: z.any({[key]: body[key]})
-          })
+          .object({[key]: z.any({[key]: body[key]})})
           .safeParse(body) as SF<T>
       }
 
       if (schema instanceof z.ZodObject) {
-        const others = createConditionSchema(schema.shape[key])
-        if (others.safeParse(body[key]).success === false) {
-          return {error: {message: "invalid"}, success: false}
+        const valueKeys = zodKeys(schema)
+        if (!valueKeys.includes(key)) {
+          return errorMessage("Invalid condition")
         }
-        return z
-          .object({
-            [key]: z.any(body[key])
-          })
-          .safeParse(body) as SF<T>
+
+        const subSchema = createConditionSchema(schema.shape[key])
+        if (subSchema.safeParse(body[key]).success === false) {
+          return errorMessage("invalid condition")
+        }
+        return z.object({[key]: z.any(body[key])}).safeParse(body) as SF<T>
       }
-      return {error: {message: "nope"}, success: false}
+      return errorMessage("Invalid condition")
     }
   }
 }
+
 const zodKeys = <T extends z.ZodTypeAny>(schema: T): string[] => {
   if (schema === null || schema === undefined) return []
   if (schema instanceof z.ZodNullable || schema instanceof z.ZodOptional)
