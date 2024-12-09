@@ -1,4 +1,3 @@
-import {buildQuery} from "../auth/authTypes"
 import {Condition} from "../simpleServer/condition"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {
@@ -8,6 +7,7 @@ import {
 } from "../simpleServer/request_body"
 import {coors, Infer} from "../types"
 import {createDbObject, createSchema} from "../simpleServer/validation"
+import {buildQuery} from "../simpleServer/buildQuery"
 
 export type LevelMap = Infer<typeof levelMapSchema>
 export const levelMapSchema = createDbObject((z) =>

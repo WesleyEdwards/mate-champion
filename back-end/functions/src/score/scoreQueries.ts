@@ -1,4 +1,4 @@
-import {buildQuery} from "../auth/authTypes"
+import {buildQuery} from "../simpleServer/buildQuery"
 import {User} from "../user/user_controller"
 import {Score} from "./scoresController"
 

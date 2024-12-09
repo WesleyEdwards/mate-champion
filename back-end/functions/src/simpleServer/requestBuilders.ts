@@ -1,9 +1,10 @@
-import {JWTBody, Validator, buildQuery} from "../auth/authTypes"
+import {JWTBody, Validator} from "../auth/authTypes"
 import {Route} from "../controllers/controller"
 import {DbQueries, HasId} from "./DbClient"
 import {isValid} from "./request_body"
 import {Condition, createConditionSchema} from "./condition"
 import {Clients, DbClient} from "./appClients"
+import {buildQuery} from "./buildQuery"
 
 const idCondition = <T extends HasId>(id: string): Condition<T> =>
   ({_id: {equal: id}} as Condition<T>)
@@ -39,7 +40,9 @@ const queryBuilder = <T extends HasId>(info: Shared<T>): Route => ({
     validator: createConditionSchema<T>(info.validator),
     fun: async ({req, res, db}) => {
       const query = info.perms.read(req.jwtBody) ?? {always: true}
-      const fullQuery: Condition<T> = {and: [req.body as any, query]}
+      const fullQuery: Condition<T> = {
+        and: [req.body as unknown as Condition<T>, query]
+      }
       const items = await info.endpoint(db).findMany(fullQuery)
       return res.json(items.map(info.preRes))
     }
@@ -61,7 +64,7 @@ const createBuilder = <T extends HasId>(
     fun: async ({req, res, ...clients}) => {
       const {jwtBody, body} = req
 
-      const canCreate = info.perms.read(jwtBody) ?? true
+      const canCreate = info.perms.create(jwtBody) ?? true
 
       if (!canCreate) {
         return res.status(401).json({error: "Cannot create"})
@@ -92,7 +95,7 @@ export const modifyBuilder = <T extends HasId>(info: Shared<T>): Route => ({
       const id = params.id
 
       const item = await info.endpoint(db).findOne({
-        and: [info.perms.read(jwtBody), idCondition(id)]
+        and: [info.perms.modify(jwtBody), idCondition(id)]
       })
 
       if (!isValid(item)) return res.status(404).json("Not found")
@@ -126,11 +129,11 @@ export const deleteBuilder = <T extends HasId>(
 
 type Skippable = {skipAuth?: boolean}
 export type BuildEndpoints1<T extends HasId> = {
-  get: Skippable | null
-  query: Skippable | null
-  create: (Skippable & CreateInfo<T>) | null
-  modify: Skippable | null
-  del: (Skippable & DeleteInfo<T>) | null
+  get: Skippable
+  query: Skippable
+  create: Skippable & CreateInfo<T>
+  modify: Skippable
+  del: Skippable & DeleteInfo<T>
 }
 
 export type PermsForAction<T> = (jwt: JWTBody | undefined) => Condition<T>
@@ -178,12 +181,11 @@ export const createBasicEndpoints = <T extends HasId>(
     validator
   }
 
-  const list = [
-    get ? getBuilder({...shared, ...get}) : null,
-    create ? createBuilder({...shared, ...create}) : null,
-    query ? queryBuilder({...shared, ...query}) : null,
-    modify ? modifyBuilder({...shared, ...modify}) : null,
-    del ? deleteBuilder({...shared, ...del}) : null
+  return [
+    getBuilder({...shared, ...get}),
+    createBuilder({...shared, ...create}),
+    queryBuilder({...shared, ...query}),
+    modifyBuilder({...shared, ...modify}),
+    deleteBuilder({...shared, ...del})
   ]
-  return list.filter((r) => r !== null)
 }

@@ -5,7 +5,7 @@ import {LevelInfo} from "../../src/levelInfo/level_controller"
 import {Score} from "../../src/score/scoresController"
 import {mockAuthCodes} from "./authCodes"
 import {mockUserList} from "./users"
-import { LevelMap } from "../../src/levelMap/levelMapQueries"
+import {LevelMap} from "../../src/levelMap/levelMapQueries"
 
 export class DataStore<T extends HasId> {
   constructor(private items: T[]) {}
