@@ -5,7 +5,7 @@ import * as functions from "firebase-functions"
 import cors from "cors"
 import {mongoClient} from "./mongo/mongoClient"
 import {emailClient} from "./email/emailClient"
-import {Clients} from "./appClients"
+import {Clients} from "./simpleServer/appClients"
 import {applyControllers} from "./controllers/appControllers"
 
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})

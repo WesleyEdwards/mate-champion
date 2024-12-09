@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express"
 import {UserType} from "../types"
-import {Clients} from "../appClients"
+import {Clients} from "../simpleServer/appClients"
 import {ZodType} from "zod"
-import {checkValidSchema, isValid, SafeParsable} from "../request_body"
+import {checkValidSchema, isValid, SafeParsable} from "../simpleServer/request_body"
 import {EndpointBuilderType} from "../controllers/controller"
 
 export type JWTBody = {

@@ -1,4 +1,4 @@
-import {Clients} from "../appClients"
+import {Clients} from "../simpleServer/appClients"
 import express from "express"
 import {levelsController} from "../levelInfo/level_controller"
 import {levelMapController} from "../levelMap/level_map_controller"

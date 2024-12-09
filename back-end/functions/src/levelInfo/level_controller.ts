@@ -1,10 +1,14 @@
 import {controller} from "../controllers/controller"
 import {importLevels} from "./levelQueries"
-import {createDbObject, Infer} from "../types"
-import {createBasicEndpoints, PermsForAction} from "../requestBuilders"
+import {Infer} from "../types"
+import {
+  createBasicEndpoints,
+  PermsForAction
+} from "../simpleServer/requestBuilders"
 import {JWTBody} from "../auth/authTypes"
-import {isValid} from "../request_body"
+import {isValid} from "../simpleServer/request_body"
 import {User} from "../user/user_controller"
+import {createDbObject} from "../simpleServer/validation"
 
 export const levelSchema = createDbObject((z) =>
   z.object({

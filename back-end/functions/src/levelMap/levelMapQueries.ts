@@ -1,8 +1,48 @@
 import {buildQuery} from "../auth/authTypes"
-import {Condition} from "../condition"
+import {Condition} from "../simpleServer/condition"
 import {LevelInfo} from "../levelInfo/level_controller"
-import {checkPartialValidation, isParseError, isValid} from "../request_body"
-import {createSchema, levelMapSchema} from "../types"
+import {
+  checkPartialValidation,
+  isParseError,
+  isValid
+} from "../simpleServer/request_body"
+import {coors, Infer} from "../types"
+import {createDbObject, createSchema} from "../simpleServer/validation"
+
+export type LevelMap = Infer<typeof levelMapSchema>
+export const levelMapSchema = createDbObject((z) =>
+  z.object({
+    champInitPos: coors.default([400, 400]),
+    packages: coors.array().default([]),
+    endPosition: z.number().default(4500),
+    groog: z
+      .object({
+        position: coors,
+        moveSpeed: z.number(),
+        timeBetweenJump: z.number().optional().default(2000),
+        timeBetweenTurn: z.number().optional().default(3000)
+      })
+      .array()
+      .default([]),
+    platformColor: z.string().default("springgreen"),
+    platforms: z
+      .object({
+        dimensions: coors,
+        position: coors,
+        color: z.string().nullable().default(null)
+      })
+      .array()
+      .default([]),
+    floors: z
+      .object({
+        x: z.number(),
+        width: z.number(),
+        color: z.string()
+      })
+      .array()
+      .default([])
+  })
+)
 
 export const getLevelMap = buildQuery({
   fun: async ({req, res, db}) => {

@@ -4,8 +4,6 @@ export type HasId = {
   _id: string
 }
 
-export declare type Modification<T> = {assign: T}
-
 export type OrError<T> = T | {error: string}
 
 export type DbQueries<T extends HasId> = {

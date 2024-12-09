@@ -1,11 +1,15 @@
 import bcrypt from "bcrypt"
 import {buildQuery, JWTBody} from "../auth/authTypes"
 import jwt from "jsonwebtoken"
-import {checkValidSchema, isParseError, isValid} from "../request_body"
-import {createSchema} from "../types"
+import {
+  checkValidSchema,
+  isParseError,
+  isValid
+} from "../simpleServer/request_body"
 import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
 import {authCodeSchema} from "./auth_controller"
+import {createSchema} from "../simpleServer/validation"
 
 function createUserToken(user: User) {
   const body: JWTBody = {

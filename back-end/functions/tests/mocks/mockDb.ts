@@ -1,11 +1,11 @@
-import {DbClient} from "../../src/appClients"
-import {Condition, evalCondition} from "../../src/condition"
-import {DbQueries, HasId, OrError} from "../../src/DbClient"
+import {DbClient} from "../../src/simpleServer/appClients"
+import {Condition, evalCondition} from "../../src/simpleServer/condition"
+import {DbQueries, HasId, OrError} from "../../src/simpleServer/DbClient"
 import {LevelInfo} from "../../src/levelInfo/level_controller"
 import {Score} from "../../src/score/scoresController"
-import {LevelMap} from "../../src/types"
 import {mockAuthCodes} from "./authCodes"
 import {mockUserList} from "./users"
+import { LevelMap } from "../../src/levelMap/levelMapQueries"
 
 export class DataStore<T extends HasId> {
   constructor(private items: T[]) {}

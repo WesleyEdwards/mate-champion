@@ -5,10 +5,10 @@ import {
   MongoClient,
   OptionalUnlessRequiredId
 } from "mongodb"
-import {DbQueries, HasId} from "../DbClient"
+import {DbQueries, HasId} from "../simpleServer/DbClient"
 import {runMigrations} from "./mongoMigrations"
-import {DbClient} from "../appClients"
-import {Condition, conditionToFilter} from "../condition"
+import {DbClient} from "../simpleServer/appClients"
+import {Condition, conditionToFilter} from "../simpleServer/condition"
 
 export const mongoClient = (mongoUri: string, dbPath: string): DbClient => {
   const mClient: MongoClient = new MongoClient(mongoUri)

@@ -1,5 +1,5 @@
 import express from "express"
-import {Clients} from "../../src/appClients"
+import {Clients} from "../../src/simpleServer/appClients"
 import dotenv from "dotenv"
 import {mockDatabase} from "./mockDb"
 import {applyControllers} from "../../src/controllers/appControllers"

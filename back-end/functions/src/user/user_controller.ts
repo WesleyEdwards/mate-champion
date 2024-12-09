@@ -1,7 +1,8 @@
 import {controller} from "../controllers/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
-import {createBasicEndpoints} from "../requestBuilders"
-import {createDbObject, Infer, userTypeSchema} from "../types"
+import {createBasicEndpoints} from "../simpleServer/requestBuilders"
+import {createDbObject} from "../simpleServer/validation"
+import {Infer, userTypeSchema} from "../types"
 
 export type User = Infer<typeof userSchema>
 

@@ -1,4 +1,4 @@
-import {Condition, evalCondition} from "../src/condition"
+import {Condition, evalCondition} from "../src/simpleServer/condition"
 import {Animal, AnimalType, dog_test} from "./mocks/conditions"
 
 // Test Condition system, specifically the typing and 'evalCondition' function

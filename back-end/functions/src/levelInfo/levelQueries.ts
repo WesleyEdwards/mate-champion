@@ -1,6 +1,7 @@
 import {buildQuery} from "../auth/authTypes"
-import {isValid} from "../request_body"
-import {createSchema, LevelMap, levelMapSchema} from "../types"
+import {LevelMap, levelMapSchema} from "../levelMap/levelMapQueries"
+import {isValid} from "../simpleServer/request_body"
+import {createSchema} from "../simpleServer/validation"
 import {User} from "../user/user_controller"
 import {LevelInfo, levelSchema} from "./level_controller"
 

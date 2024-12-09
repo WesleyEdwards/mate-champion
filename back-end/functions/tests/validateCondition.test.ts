@@ -1,5 +1,5 @@
 import {z} from "zod"
-import {Condition, createConditionSchema} from "../src/condition"
+import {Condition, createConditionSchema} from "../src/simpleServer/condition"
 import {Animal, animalSchema, AnimalType} from "./mocks/conditions"
 
 describe("assures the correct schema is created from `createConditionSchema`", () => {

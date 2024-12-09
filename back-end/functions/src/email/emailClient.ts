@@ -1,5 +1,5 @@
 import {MailDataRequired, MailService} from "@sendgrid/mail"
-import {EmailClient} from "../appClients"
+import {EmailClient} from "../simpleServer/appClients"
 
 const sgMail: MailService = require("@sendgrid/mail")
 
