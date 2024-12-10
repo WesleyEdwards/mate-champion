@@ -1,4 +1,4 @@
-import {Condition} from "../simpleServer/condition"
+import {Condition} from "../simpleServer/condition/condition"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {
   checkPartialValidation,
@@ -50,7 +50,7 @@ export const getLevelMap = buildMCQuery({
     if (!params.id || typeof params.id !== "string") {
       return res.status(400).json("Bad request")
     }
-    const level = await db.level.findOne({_id: {equal: params.id}})
+    const level = await db.level.findOne({_id: {Equal: params.id}})
     if (!isValid<LevelInfo>(level)) return res.status(404).json("Not found")
     if (
       level.owner !== jwtBody?.userId &&
@@ -59,7 +59,7 @@ export const getLevelMap = buildMCQuery({
     ) {
       return res.status(404).json("Cant access")
     }
-    const levelMap = await db.levelMap.findOne({_id: {equal: params.id}})
+    const levelMap = await db.levelMap.findOne({_id: {Equal: params.id}})
     return res.json(levelMap)
   }
 })
@@ -70,11 +70,11 @@ export const modifyLevelMap = buildMCQuery({
     const {jwtBody, params, body} = req
     const condition: Condition<LevelInfo> =
       jwtBody?.userType === "Admin"
-        ? {_id: {equal: params.id}}
+        ? {_id: {Equal: params.id}}
         : {
-            and: [
-              {_id: {equal: params.id}},
-              {owner: {equal: jwtBody?.userId ?? ""}}
+            And: [
+              {_id: {Equal: params.id}},
+              {owner: {Equal: jwtBody?.userId ?? ""}}
             ]
           }
     const level = await db.level.findOne(condition)
@@ -105,7 +105,7 @@ export const generateLevels = buildMCQuery({
   ),
   fun: async ({req, res, db}) => {
     const levelIds = req.body.levels
-    const levels = await db.levelMap.findMany({_id: {inside: levelIds}})
+    const levels = await db.levelMap.findMany({_id: {Inside: levelIds}})
 
     return res.json(
       levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))

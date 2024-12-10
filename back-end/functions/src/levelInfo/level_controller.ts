@@ -1,4 +1,4 @@
-import {controller} from "../controllers/controller"
+import {controller} from "../simpleServer/controller"
 import {importLevels} from "./levelQueries"
 import {Infer} from "../types"
 import {PermsForAction} from "../simpleServer/requestBuilders"
@@ -26,7 +26,7 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
   builder: {
     create: {
       preProcess: async (item, {db}) => {
-        const user = await db.user.findOne({_id: {equal: item.owner}})
+        const user = await db.user.findOne({_id: {Equal: item.owner}})
         if (!isValid<User>(user)) throw new Error("User not found")
         return {...item, creatorName: user.name} satisfies LevelInfo
       },
@@ -54,23 +54,23 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
   },
   perms: {
     read: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {equal: jwtBody?.userId ?? ""}
+      owner: {Equal: jwtBody?.userId ?? ""}
     })),
     delete: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {equal: jwtBody?.userId ?? ""}
+      owner: {Equal: jwtBody?.userId ?? ""}
     })),
     create: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {equal: jwtBody?.userId ?? ""}
+      owner: {Equal: jwtBody?.userId ?? ""}
     })),
     modify: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {equal: jwtBody?.userId ?? ""}
+      owner: {Equal: jwtBody?.userId ?? ""}
     }))
   }
 })
 
 export function ifNotAdmin<T>(fun: PermsForAction<T>): PermsForAction<T> {
   return (jwtBody: JWTBody | undefined) => {
-    if (jwtBody?.userType === "Admin") return {always: true}
+    if (jwtBody?.userType === "Admin") return {Always: true}
     return fun(jwtBody)
   }
 }

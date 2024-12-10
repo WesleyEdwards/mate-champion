@@ -38,7 +38,7 @@ export const loginWithPassword = buildMCQuery({
     const {body} = req
 
     const user = await db.user.findOne({
-      email: {equal: body.email}
+      email: {Equal: body.email}
     })
 
     if (!isValid<User>(user) || !user.passwordHash) {
@@ -73,7 +73,7 @@ export const sendAuthCode = buildMCQuery({
       code: randomCode(),
       email: body.email
     }
-    const user = await db.user.findOne({email: {equal: body.email}})
+    const user = await db.user.findOne({email: {Equal: body.email}})
 
     if (!isValid<User>(user)) {
       const newUser: User = {
@@ -110,14 +110,14 @@ export const submitAuthCode = buildMCQuery({
   fun: async ({db, req, res}) => {
     const {body} = req
     const code = await db.authCode.findOne({
-      and: [{email: {equal: body.email}}, {code: {equal: body.code}}]
+      And: [{email: {Equal: body.email}}, {code: {Equal: body.code}}]
     })
 
     if (!isValid(code)) {
       return res.status(400).json("Invalid code")
     }
 
-    const user = await db.user.findOne({email: {equal: body.email}})
+    const user = await db.user.findOne({email: {Equal: body.email}})
 
     if (!isValid<User>(user)) {
       return res.status(400).json("unable to find user")
@@ -134,7 +134,7 @@ export const getSelf = buildMCQuery({
   fun: async ({res, db, req}) => {
     const {jwtBody} = req
     const user = await db.user.findOne({
-      _id: {equal: jwtBody?.userId || ""}
+      _id: {Equal: jwtBody?.userId || ""}
     })
     if (!isValid<User>(user)) return res.status(404).json("Not found")
     return res.json(sendUserBody(user, jwtBody))

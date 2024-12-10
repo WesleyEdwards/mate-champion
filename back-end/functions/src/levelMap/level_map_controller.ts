@@ -1,4 +1,4 @@
-import {controller} from "../controllers/controller"
+import {controller} from "../simpleServer/controller"
 import {modifyLevelMap, getLevelMap, generateLevels} from "./levelMapQueries"
 
 export const levelMapController = controller("level-map", [

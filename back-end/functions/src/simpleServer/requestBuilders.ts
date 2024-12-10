@@ -1,12 +1,16 @@
 import {JWTBody} from "../auth/authTypes"
-import {Route, SClient, Validator} from "../controllers/controller"
+import {Route, SClient} from "./controller"
 import {DbQueries, HasId} from "./DbClient"
 import {isValid} from "./request_body"
-import {Condition, createConditionSchema} from "./condition"
+import {
+  Condition,
+  createConditionSchema,
+  Validator
+} from "./condition/condition"
 import {buildQuery} from "./buildQuery"
 
 const idCondition = <T extends HasId>(id: string): Condition<T> =>
-  ({_id: {equal: id}} as Condition<T>)
+  ({_id: {Equal: id}} as Condition<T>)
 
 const getBuilder = <T extends HasId, C extends SClient>(
   info: Shared<T, C>
@@ -23,7 +27,7 @@ const getBuilder = <T extends HasId, C extends SClient>(
       }
 
       const item = await info.endpoint(db).findOne({
-        and: [idCondition(id), info.perms.read(jwtBody)]
+        And: [idCondition(id), info.perms.read(jwtBody)]
       })
 
       if (!isValid<T>(item)) return res.status(404).json(item)
@@ -42,9 +46,9 @@ const queryBuilder = <T extends HasId, C extends SClient>(
   endpointBuilder: buildQuery({
     validator: createConditionSchema<T>(info.validator),
     fun: async ({req, res, db}) => {
-      const query = info.perms.read(req.jwtBody) ?? {always: true}
+      const query = info.perms.read(req.jwtBody) ?? {Always: true}
       const fullQuery: Condition<T> = {
-        and: [req.body as unknown as Condition<T>, query]
+        And: [req.body as unknown as Condition<T>, query]
       }
       const items = await info.endpoint(db).findMany(fullQuery)
       return res.json(items.map(info.preRes))
@@ -64,7 +68,8 @@ const createBuilder = <T extends HasId, C extends SClient>(
   method: "post",
   endpointBuilder: buildQuery({
     validator: info.validator,
-    fun: async ({req, res, db}) => {
+    fun: async ({req, res, ...rest}) => {
+      const client = rest as unknown as C
       const {jwtBody, body} = req
 
       const canCreate = info.perms.create(jwtBody) ?? true
@@ -74,13 +79,13 @@ const createBuilder = <T extends HasId, C extends SClient>(
       }
 
       const processed = info.preProcess
-        ? await info.preProcess(body, db)
+        ? await info.preProcess(body, client)
         : body
 
-      const created = await info.endpoint(db).insertOne(processed)
+      const created = await info.endpoint(client.db).insertOne(processed)
 
       if (!isValid<T>(created)) return res.status(500).json(created)
-      await info.postCreate?.(created, db)
+      await info.postCreate?.(created, client)
 
       return res.json(info.preRes(created))
     }
@@ -100,7 +105,7 @@ export const modifyBuilder = <T extends HasId, C extends SClient>(
       const id = params.id
 
       const item = await info.endpoint(db).findOne({
-        and: [info.perms.modify(jwtBody), idCondition(id)]
+        And: [info.perms.modify(jwtBody), idCondition(id)]
       })
 
       if (!isValid(item)) return res.status(404).json("Not found")
@@ -122,18 +127,19 @@ export const deleteBuilder = <T extends HasId, C extends SClient>(
   method: "delete",
   skipAuth: info.skipAuth,
   endpointBuilder: buildQuery({
-    fun: async ({req, res, db}) => {
+    fun: async ({req, res, ...rest}) => {
+      const client = rest as unknown as C
       const deleted = await info
-        .endpoint(db)
+        .endpoint(client.db)
         .deleteOne(req.params.id, info.perms.delete(req.jwtBody))
-      await info.postDelete?.(deleted, db)
+      await info.postDelete?.(deleted, client)
       return res.json(deleted._id)
     }
   })
 })
 
 type Skippable = {skipAuth?: boolean}
-export type BuildEndpoints1<T extends HasId, C extends SClient> = {
+export type EndpointsBuilder<T extends HasId, C extends SClient> = {
   get: Skippable
   query: Skippable
   create: Skippable & CreateInfo<T, C>
@@ -161,7 +167,7 @@ type Shared<T extends HasId, C extends SClient> = {
 export type BuilderParams<T extends HasId, C extends SClient> = {
   endpoint: (db: C["db"]) => DbQueries<T>
   validator: Validator<T>
-  builder: BuildEndpoints1<T, C>
+  builder: EndpointsBuilder<T, C>
   mask?: (keyof T)[]
   perms: Perms<T>
 }

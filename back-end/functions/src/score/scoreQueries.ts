@@ -7,7 +7,7 @@ export const getTopScores = buildMCQuery({
     const scores = await db.score.findMany({})
 
     const userIds = [...new Set(scores.map((score) => score.userId))]
-    const queryUsers = await db.user.findMany({_id: {inside: userIds}})
+    const queryUsers = await db.user.findMany({_id: {Inside: userIds}})
 
     const usersAndScores = scores.reduce<{user: User; score: Score}[]>(
       (acc, score) => {

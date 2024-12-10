@@ -1,5 +1,5 @@
 import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {controller} from "../controllers/controller"
+import {controller} from "../simpleServer/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer, userTypeSchema} from "../types"
@@ -21,13 +21,13 @@ const userBaseEndpoints = createBasicMCEndpoints<User>({
   endpoint: (db) => db.user,
   mask: ["passwordHash"],
   perms: {
-    read: () => ({always: true}),
+    read: () => ({Always: true}),
     delete: ifNotAdmin<User>((jwtBody) => ({
-      _id: {equal: jwtBody?.userId ?? ""}
+      _id: {Equal: jwtBody?.userId ?? ""}
     })),
-    create: ifNotAdmin<User>(() => ({never: true})),
+    create: ifNotAdmin<User>(() => ({Never: true})),
     modify: ifNotAdmin<User>((jwtBody) => ({
-      _id: {equal: jwtBody?.userId ?? ""}
+      _id: {Equal: jwtBody?.userId ?? ""}
     }))
   },
   builder: {create: {}, del: {}, get: {}, modify: {}, query: {}}

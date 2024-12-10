@@ -1,5 +1,5 @@
 import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {controller} from "../controllers/controller"
+import {controller} from "../simpleServer/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
@@ -21,14 +21,14 @@ const authEndpoints = createBasicMCEndpoints<AuthCode>({
   endpoint: (db) => db.authCode,
   perms: {
     read: ifNotAdmin<AuthCode>((jwtBody) => ({
-      _id: {equal: jwtBody?.userId ?? ""}
+      _id: {Equal: jwtBody?.userId ?? ""}
     })),
     delete: ifNotAdmin<AuthCode>((jwtBody) => ({
-      _id: {equal: jwtBody?.userId ?? ""}
+      _id: {Equal: jwtBody?.userId ?? ""}
     })),
-    create: ifNotAdmin<AuthCode>(() => ({never: true})),
+    create: ifNotAdmin<AuthCode>(() => ({Never: true})),
     modify: ifNotAdmin<AuthCode>((jwtBody) => ({
-      _id: {equal: jwtBody?.userId ?? ""}
+      _id: {Equal: jwtBody?.userId ?? ""}
     }))
   },
   builder: {create: {}, del: {}, get: {}, modify: {}, query: {}}

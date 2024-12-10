@@ -1,4 +1,4 @@
-import {Clients} from "../simpleServer/appClients"
+import {Clients} from "./appClients"
 import {buildQuery} from "../simpleServer/buildQuery"
 import {HasId} from "../simpleServer/DbClient"
 import {SafeParsable} from "../simpleServer/request_body"
@@ -6,7 +6,7 @@ import {
   BuilderParams,
   createBasicEndpoints
 } from "../simpleServer/requestBuilders"
-import {EndpointBuilderType} from "./controller"
+import {EndpointBuilderType} from "../simpleServer/controller"
 
 export function buildMCQuery<T>(params: {
   validator?: SafeParsable<T>

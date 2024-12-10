@@ -2,8 +2,7 @@ import express, {Express, Response, Request, NextFunction} from "express"
 
 import jwt from "jsonwebtoken"
 import {JWTBody} from "../auth/authTypes"
-import {Clients} from "../simpleServer/appClients"
-import {ZodType} from "zod"
+import {Clients} from "../controllers/appClients"
 
 export type RequestWithJWTBody<Body, C extends SClient> = Request<
   any,
@@ -22,8 +21,6 @@ export type AuthReqHandler<Body, C extends SClient> = (
 export type ReqBuilder<Body, C extends SClient> = (
   clients: Clients
 ) => AuthReqHandler<Body, C>
-
-export type Validator<T> = ZodType<T, any, any>
 
 export type SClient = {
   db: any

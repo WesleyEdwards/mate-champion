@@ -1,4 +1,4 @@
-import {EndpointBuilderType, SClient} from "../controllers/controller"
+import {EndpointBuilderType, SClient} from "./controller"
 import {SafeParsable, checkValidSchema, isValid} from "./request_body"
 
 export function buildQuery<T, C extends SClient>(params: {

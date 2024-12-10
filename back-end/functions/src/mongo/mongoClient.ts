@@ -7,8 +7,9 @@ import {
 } from "mongodb"
 import {DbQueries, HasId} from "../simpleServer/DbClient"
 import {runMigrations} from "./mongoMigrations"
-import {DbClient} from "../simpleServer/appClients"
-import {Condition, conditionToFilter} from "../simpleServer/condition"
+import {DbClient} from "../controllers/appClients"
+import {Condition} from "../simpleServer/condition/condition"
+import {conditionToFilter} from "../simpleServer/mongo/conditionToFilter"
 
 export const mongoClient = (mongoUri: string, dbPath: string): DbClient => {
   const mClient: MongoClient = new MongoClient(mongoUri)
@@ -67,9 +68,9 @@ function functionsForModel<T extends HasId>(
     deleteOne: async (id, condition) => {
       const c: Filter<T> = condition
         ? conditionToFilter({
-            and: [{_id: {equal: id}}, condition]
+            And: [{_id: {Equal: id}}, condition]
           } as Condition<T>)
-        : conditionToFilter({_id: {equal: id}} as Condition<T>)
+        : conditionToFilter({_id: {Equal: id}} as Condition<T>)
 
       const item = await collection.findOneAndDelete(c)
       if (!item) {

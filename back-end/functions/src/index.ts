@@ -5,7 +5,7 @@ import * as functions from "firebase-functions"
 import cors from "cors"
 import {mongoClient} from "./mongo/mongoClient"
 import {emailClient} from "./email/emailClient"
-import {Clients} from "./simpleServer/appClients"
+import {Clients} from "./controllers/appClients"
 import {applyControllers} from "./controllers/appControllers"
 
 dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
@@ -22,7 +22,7 @@ const clients: Clients = {
 }
 const app = express()
 
-app.use(express.json()) // middleware to convert everything to json
+app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 

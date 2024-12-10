@@ -1,5 +1,8 @@
 import {z} from "zod"
-import {Condition, createConditionSchema} from "../src/simpleServer/condition"
+import {
+  Condition,
+  createConditionSchema
+} from "../src/simpleServer/condition/condition"
 import {Animal, animalSchema, AnimalType} from "./mocks/conditions"
 
 describe("assures the correct schema is created from `createConditionSchema`", () => {
@@ -24,85 +27,85 @@ describe("assures the correct schema is created from `createConditionSchema`", (
   })
 
   test("Always & Never", () => {
-    successAndMatchObj({always: true})
+    successAndMatchObj({Always: true})
     successAndMatchObj({never: true})
 
-    unSuccessful({always: false})
+    unSuccessful({Always: false})
     unSuccessful({never: false})
-    unSuccessful({always: {}})
+    unSuccessful({Always: {}})
     unSuccessful({never: 3})
   })
 
   test("Equal", () => {
-    successAndMatchObj({equal: ""})
-    successAndMatchObj({equal: "asdf"})
+    successAndMatchObj({Equal: ""})
+    successAndMatchObj({Equal: "asdf"})
 
-    unSuccessful({equal: 3})
-    unSuccessful({equal: null})
-    unSuccessful({equal: undefined})
+    unSuccessful({Equal: 3})
+    unSuccessful({Equal: null})
+    unSuccessful({Equal: undefined})
   })
 
   test("Inside", () => {
-    successAndMatchObj({inside: []})
-    successAndMatchObj({inside: [""]})
-    successAndMatchObj({inside: ["asdf", "", "foo"]})
+    successAndMatchObj({Inside: []})
+    successAndMatchObj({Inside: [""]})
+    successAndMatchObj({Inside: ["asdf", "", "foo"]})
 
-    unSuccessful({inside: ["asdf", "", 34]})
-    unSuccessful({inside: [3]})
-    unSuccessful({inside: [null]})
-    unSuccessful({inside: [undefined]})
-    unSuccessful({inside: {key: "undefined"}})
+    unSuccessful({Inside: ["asdf", "", 34]})
+    unSuccessful({Inside: [3]})
+    unSuccessful({Inside: [null]})
+    unSuccessful({Inside: [undefined]})
+    unSuccessful({Inside: {key: "undefined"}})
   })
 
   const validStringConditions = [
-    {always: true},
+    {Always: true},
     {never: true},
-    {equal: ""},
-    {equal: "asdf"},
-    {inside: []},
-    {inside: ["asdf", "", "foo"]}
+    {Equal: ""},
+    {Equal: "asdf"},
+    {Inside: []},
+    {Inside: ["asdf", "", "foo"]}
   ]
   const invalidStringConditions = [
-    {always: false},
+    {Always: false},
     {never: false},
     "",
     [3],
     {},
-    {inside: ["asdf", "", 34]},
+    {Inside: ["asdf", "", 34]},
     [undefined],
     {key: "undefined"},
-    {equal: {key: "undefined"}}
+    {Equal: {key: "undefined"}}
   ]
 
   test("ListAnyElement", () => {
     for (const valid of [...validStringConditions, invalidStringConditions]) {
-      unSuccessful({listAnyElement: valid})
+      unSuccessful({ListAnyElement: valid})
     }
   })
 
   test("Or", () => {
     for (const valid of validStringConditions) {
-      successAndMatchObj({or: [valid]})
+      successAndMatchObj({Or: [valid]})
     }
     for (const invalid of invalidStringConditions) {
-      unSuccessful({or: [invalid]})
+      unSuccessful({Or: [invalid]})
     }
-    successAndMatchObj({or: validStringConditions})
-    successAndMatchObj({or: [{or: validStringConditions}]})
-    successAndMatchObj({or: [{or: [{or: validStringConditions}]}]})
-    successAndMatchObj({or: [{or: [{or: [{always: true}]}]}]})
+    successAndMatchObj({Or: validStringConditions})
+    successAndMatchObj({Or: [{Or: validStringConditions}]})
+    successAndMatchObj({Or: [{Or: [{Or: validStringConditions}]}]})
+    successAndMatchObj({Or: [{Or: [{Or: [{Always: true}]}]}]})
   })
   test("And", () => {
     for (const valid of validStringConditions) {
-      successAndMatchObj({and: [valid]})
+      successAndMatchObj({And: [valid]})
     }
     for (const invalid of invalidStringConditions) {
-      unSuccessful({and: [invalid]})
+      unSuccessful({And: [invalid]})
     }
-    successAndMatchObj({and: validStringConditions})
-    successAndMatchObj({and: [{and: validStringConditions}]})
-    successAndMatchObj({and: [{and: [{and: validStringConditions}]}]})
-    successAndMatchObj({and: [{and: [{and: [{always: true}]}]}]})
+    successAndMatchObj({And: validStringConditions})
+    successAndMatchObj({And: [{And: validStringConditions}]})
+    successAndMatchObj({And: [{And: [{And: validStringConditions}]}]})
+    successAndMatchObj({And: [{And: [{And: [{Always: true}]}]}]})
   })
 })
 
@@ -121,17 +124,17 @@ describe("assures the correct schema is created from `createConditionSchema` wit
 
   test("Invalid input", () => {
     const validAnimalConditions: Condition<Animal>[] = [
-      {always: true},
-      {_id: {equal: "1234"}},
-      {age: {equal: 4}},
-      {type: {inside: [AnimalType.Mammal]}},
-      {parents: {listAnyElement: {gender: {equal: "Male"}}}},
-      {parents: {listAnyElement: {always: true}}},
-      {parents: {listAnyElement: {name: {equal: "Bella"}}}},
+      {Always: true},
+      {_id: {Equal: "1234"}},
+      {age: {Equal: 4}},
+      {type: {Inside: [AnimalType.Mammal]}},
+      {parents: {ListAnyElement: {gender: {Equal: "Male"}}}},
+      {parents: {ListAnyElement: {Always: true}}},
+      {parents: {ListAnyElement: {name: {Equal: "Bella"}}}},
       {
         parents: {
-          listAnyElement: {
-            and: [{gender: {equal: "Male"}}, {_id: {inside: ["123-father"]}}]
+          ListAnyElement: {
+            And: [{gender: {Equal: "Male"}}, {_id: {Inside: ["123-father"]}}]
           }
         }
       }
@@ -140,19 +143,19 @@ describe("assures the correct schema is created from `createConditionSchema` wit
       successAndMatchObj(c)
     }
     const invalidAnimalConditions = [
-      {always: false},
-      {_id: {inside: "1234"}},
-      {ageIncorrect: {equal: 4}},
-      {type: {inside: [3]}},
-      {parents: {listAnyElement: {gender: {equal: 3}}}},
-      {parents: {age: {always: true}}},
-      {parents: {listAnyElement: {nameIncorrect: {equal: "Bella"}}}},
+      {Always: false},
+      {_id: {Inside: "1234"}},
+      {ageIncorrect: {Equal: 4}},
+      {type: {Inside: [3]}},
+      {parents: {ListAnyElement: {gender: {Equal: 3}}}},
+      {parents: {age: {Always: true}}},
+      {parents: {ListAnyElement: {nameIncorrect: {Equal: "Bella"}}}},
       {
         parents: {
-          listAnyElement: {
-            and: [
-              {gender: {equal: "Male"}},
-              {_id: {inside: ["123-father"]}},
+          ListAnyElement: {
+            And: [
+              {gender: {Equal: "Male"}},
+              {_id: {Inside: ["123-father"]}},
               {never: false}
             ]
           }

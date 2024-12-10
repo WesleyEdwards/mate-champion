@@ -1,5 +1,5 @@
 import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {controller} from "../controllers/controller"
+import {controller} from "../simpleServer/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
@@ -25,15 +25,15 @@ const basicEndpoints = createBasicMCEndpoints<Score>({
     del: {}
   },
   perms: {
-    read: () => ({always: true}),
+    read: () => ({Always: true}),
     delete: ifNotAdmin<Score>((jwtBody) => {
-      return {userId: {equal: jwtBody?.userId ?? ""}}
+      return {userId: {Equal: jwtBody?.userId ?? ""}}
     }),
     create: ifNotAdmin<Score>((jwtBody) => {
-      return {userId: {equal: jwtBody?.userId ?? ""}}
+      return {userId: {Equal: jwtBody?.userId ?? ""}}
     }),
     modify: ifNotAdmin<Score>((jwtBody) => {
-      return {userId: {equal: jwtBody?.userId ?? ""}}
+      return {userId: {Equal: jwtBody?.userId ?? ""}}
     })
   }
 })

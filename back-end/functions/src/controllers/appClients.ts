@@ -3,7 +3,7 @@ import {LevelMap} from "../levelMap/levelMapQueries"
 import {Score} from "../score/scoresController"
 import {AuthCode} from "../user/auth_controller"
 import {User} from "../user/user_controller"
-import {DbQueries} from "./DbClient"
+import {DbQueries} from "../simpleServer/DbClient"
 
 export type DbClient = {
   user: DbQueries<User>
