@@ -1,11 +1,11 @@
-import {EndpointBuilderType} from "../controllers/controller"
+import {EndpointBuilderType, SClient} from "../controllers/controller"
 import {SafeParsable, checkValidSchema, isValid} from "./request_body"
 
-export const buildQuery = <T>(params: {
+export function buildQuery<T, C extends SClient>(params: {
   validator?: SafeParsable<T>
-  fun: EndpointBuilderType<T>
-}) => {
-  const intermediate: EndpointBuilderType<T> = async (info) => {
+  fun: EndpointBuilderType<T, C>
+}) {
+  const intermediate: EndpointBuilderType<T, C> = async (info) => {
     if (params.validator) {
       const valid = checkValidSchema(info.req.body, params.validator)
       if (!isValid(valid)) {

@@ -1,6 +1,6 @@
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 import {controller} from "../controllers/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
-import {createBasicEndpoints} from "../simpleServer/requestBuilders"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer, userTypeSchema} from "../types"
 
@@ -16,7 +16,7 @@ const userSchema = createDbObject((z) =>
   })
 )
 
-const userBaseEndpoints = createBasicEndpoints<User>({
+const userBaseEndpoints = createBasicMCEndpoints<User>({
   validator: userSchema,
   endpoint: (db) => db.user,
   mask: ["passwordHash"],

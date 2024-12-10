@@ -7,7 +7,7 @@ import {
 } from "../simpleServer/request_body"
 import {coors, Infer} from "../types"
 import {createDbObject, createSchema} from "../simpleServer/validation"
-import {buildQuery} from "../simpleServer/buildQuery"
+import {buildMCQuery} from "../controllers/serverBuilders"
 
 export type LevelMap = Infer<typeof levelMapSchema>
 export const levelMapSchema = createDbObject((z) =>
@@ -44,7 +44,7 @@ export const levelMapSchema = createDbObject((z) =>
   })
 )
 
-export const getLevelMap = buildQuery({
+export const getLevelMap = buildMCQuery({
   fun: async ({req, res, db}) => {
     const {params, jwtBody} = req
     if (!params.id || typeof params.id !== "string") {
@@ -64,7 +64,7 @@ export const getLevelMap = buildQuery({
   }
 })
 
-export const modifyLevelMap = buildQuery({
+export const modifyLevelMap = buildMCQuery({
   validator: levelMapSchema.partial(),
   fun: async ({req, res, db}) => {
     const {jwtBody, params, body} = req
@@ -97,7 +97,7 @@ export const modifyLevelMap = buildQuery({
   }
 })
 
-export const generateLevels = buildQuery({
+export const generateLevels = buildMCQuery({
   validator: createSchema((z) =>
     z.object({
       levels: z.array(z.string())

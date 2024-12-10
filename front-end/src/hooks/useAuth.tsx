@@ -49,7 +49,7 @@ export const useAuth = (): AuthContextType => {
     setUser(res.user)
   }
 
-  const createAccount = async (body: User & {password: string}) => {
+  const createAccount = async (body: User) => {
     await api.auth.createAccount(body).then(setUser)
     importLevels()
   }
@@ -76,7 +76,7 @@ export const useAuth = (): AuthContextType => {
 type AuthContextType = {
   api: Api
   login: (body: LoginBody) => Promise<unknown>
-  createAccount: (body: User & {password: string}) => Promise<unknown>
+  createAccount: (body: User) => Promise<unknown>
   user?: User
   logout: () => void
   modifyUser: (body: Partial<User>) => void

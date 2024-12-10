@@ -1,6 +1,6 @@
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 import {controller} from "../controllers/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
-import {createBasicEndpoints} from "../simpleServer/requestBuilders"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
 import {getTopScores} from "./scoreQueries"
@@ -14,7 +14,7 @@ export const scoreSchema = createDbObject((z) =>
 
 export type Score = Infer<typeof scoreSchema>
 
-const basicEndpoints = createBasicEndpoints<Score>({
+const basicEndpoints = createBasicMCEndpoints<Score>({
   endpoint: (db) => db.score,
   validator: scoreSchema,
   builder: {

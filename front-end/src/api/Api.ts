@@ -11,9 +11,7 @@ import {
 export interface Api {
   type: "cache" | "server" | "unauth"
   readonly auth: {
-    createAccount: (
-      body: User & {password: string; score?: number}
-    ) => Promise<User>
+    createAccount: (body: User) => Promise<User>
     signIn: (body: LoginBody) => Promise<LoginResponse>
     sendAuthCode: (body: {email: string}) => Promise<{identifier: string}>
     submitAuthCode: (body: {

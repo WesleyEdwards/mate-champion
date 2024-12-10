@@ -37,12 +37,12 @@ export class LiveApi implements Api {
   }
 
   readonly auth: Api["auth"] = {
-    createAccount: (body) => this.post("user/create", body),
-    signIn: (body: LoginBody) => this.post("user/login", body),
-    sendAuthCode: (body) => this.post("user/sendAuthCode", body),
-    submitAuthCode: (body) => this.post("user/submitAuthCode", body),
+    createAccount: (body) => this.post("auth/create", body),
+    signIn: (body: LoginBody) => this.post("auth/login", body),
+    sendAuthCode: (body) => this.post("auth/sendAuthCode", body),
+    submitAuthCode: (body) => this.post("auth/submitAuthCode", body),
 
-    getSelf: (): Promise<User> => this.get("user")
+    getSelf: () => this.get("user")
   }
 
   readonly user: Api["user"] = {

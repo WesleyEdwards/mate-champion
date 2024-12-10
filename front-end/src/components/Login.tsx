@@ -26,7 +26,6 @@ export const Login: FC<ScreenProps> = () => {
       return
     }
     if (email) {
-      console.log("code")
       api.auth.sendAuthCode({email}).then((res) => {
         setIdentifier(res.identifier)
       })

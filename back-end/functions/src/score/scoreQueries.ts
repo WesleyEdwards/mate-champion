@@ -1,8 +1,8 @@
-import {buildQuery} from "../simpleServer/buildQuery"
+import {buildMCQuery} from "../controllers/serverBuilders"
 import {User} from "../user/user_controller"
 import {Score} from "./scoresController"
 
-export const getTopScores = buildQuery({
+export const getTopScores = buildMCQuery({
   fun: async ({res, db}) => {
     const scores = await db.score.findMany({})
 

@@ -1,6 +1,6 @@
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 import {controller} from "../controllers/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
-import {createBasicEndpoints} from "../simpleServer/requestBuilders"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
 import {
@@ -16,7 +16,7 @@ export const authCodeSchema = createDbObject((z) =>
   z.object({code: z.string(), email: z.string()})
 )
 
-const authEndpoints = createBasicEndpoints<AuthCode>({
+const authEndpoints = createBasicMCEndpoints<AuthCode>({
   validator: authCodeSchema,
   endpoint: (db) => db.authCode,
   perms: {

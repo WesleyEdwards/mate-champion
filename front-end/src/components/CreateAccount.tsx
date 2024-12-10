@@ -14,7 +14,7 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
   const [submitting, setSubmitting] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  // const [password, setPassword] = useState("")
 
   const handleSubmitNew = async () => {
     if (!email.includes("@") || !email.includes(".")) {
@@ -29,16 +29,11 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
       setError("Name is too long")
       return setSubmitting(false)
     }
-    if (password.length < 3) {
-      setError("Password must be at least 3 characters long")
-      return setSubmitting(false)
-    }
     try {
       await createAccount({
         _id: crypto.randomUUID(),
         name,
         email: email === "" ? undefined : email,
-        password,
         highScore: score ?? 0,
         userType: "User"
       })
@@ -79,24 +74,24 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
         />
         <Stack direction="row" alignItems={"center"} gap="12px">
           <Input
-            sx={{flexGrow: "1"}}
+            sx={{flexGrow: "1", mb: 2}}
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Tooltip title="Your email can be used to reset your password">
+          {/* <Tooltip title="Your email can be used to reset your password">
             <InfoOutlined />
-          </Tooltip>
+          </Tooltip> */}
         </Stack>
-        <Input
+        {/* <Input
           placeholder="Password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-        />
+        /> */}
         {error && <Alert color="danger">{error}</Alert>}
         <Button
-          disabled={[name, password, email].some((v) => !v)}
+          disabled={[name, email].some((v) => !v)}
           loading={submitting}
           type="submit"
         >

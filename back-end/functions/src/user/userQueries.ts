@@ -10,7 +10,7 @@ import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
 import {authCodeSchema} from "./auth_controller"
 import {createSchema} from "../simpleServer/validation"
-import {buildQuery} from "../simpleServer/buildQuery"
+import {buildMCQuery} from "../controllers/serverBuilders"
 
 function createUserToken(user: User) {
   const body: JWTBody = {
@@ -30,7 +30,7 @@ const sendUserBody = (user: User, self: JWTBody | undefined) => {
   return userWithoutPassword
 }
 
-export const loginWithPassword = buildQuery({
+export const loginWithPassword = buildMCQuery({
   validator: createSchema((z) =>
     z.object({email: z.string(), password: z.string()})
   ),
@@ -60,7 +60,7 @@ export const loginWithPassword = buildQuery({
   }
 })
 
-export const sendAuthCode = buildQuery({
+export const sendAuthCode = buildMCQuery({
   validator: createSchema((z) =>
     z.object({
       email: z.string().email({message: "Invalid email"}),
@@ -103,7 +103,7 @@ export const sendAuthCode = buildQuery({
   }
 })
 
-export const submitAuthCode = buildQuery({
+export const submitAuthCode = buildMCQuery({
   validator: createSchema((z) =>
     z.object({email: z.string(), code: z.string()})
   ),
@@ -130,7 +130,7 @@ export const submitAuthCode = buildQuery({
   }
 })
 
-export const getSelf = buildQuery({
+export const getSelf = buildMCQuery({
   fun: async ({res, db, req}) => {
     const {jwtBody} = req
     const user = await db.user.findOne({

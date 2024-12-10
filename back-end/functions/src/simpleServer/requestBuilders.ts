@@ -1,15 +1,16 @@
-import {JWTBody, Validator} from "../auth/authTypes"
-import {Route} from "../controllers/controller"
+import {JWTBody} from "../auth/authTypes"
+import {Route, SClient, Validator} from "../controllers/controller"
 import {DbQueries, HasId} from "./DbClient"
 import {isValid} from "./request_body"
 import {Condition, createConditionSchema} from "./condition"
-import {Clients, DbClient} from "./appClients"
 import {buildQuery} from "./buildQuery"
 
 const idCondition = <T extends HasId>(id: string): Condition<T> =>
   ({_id: {equal: id}} as Condition<T>)
 
-const getBuilder = <T extends HasId>(info: Shared<T>): Route => ({
+const getBuilder = <T extends HasId, C extends SClient>(
+  info: Shared<T, C>
+): Route<any, C> => ({
   path: "/:id",
   method: "get",
   skipAuth: info.skipAuth,
@@ -32,7 +33,9 @@ const getBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   })
 })
 
-const queryBuilder = <T extends HasId>(info: Shared<T>): Route => ({
+const queryBuilder = <T extends HasId, C extends SClient>(
+  info: Shared<T, C>
+): Route<any, C> => ({
   path: "/query",
   method: "post",
   skipAuth: info.skipAuth,
@@ -49,19 +52,19 @@ const queryBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   })
 })
 
-type CreateInfo<T extends HasId> = {
-  preProcess?: (item: T, clients: Clients) => Promise<T>
-  postCreate?: (item: T, clients: Clients) => Promise<unknown>
+type CreateInfo<T extends HasId, C extends SClient> = {
+  preProcess?: (item: T, clients: C) => Promise<T>
+  postCreate?: (item: T, clients: C) => Promise<unknown>
 }
 
-const createBuilder = <T extends HasId>(
-  info: Shared<T> & CreateInfo<T>
-): Route => ({
+const createBuilder = <T extends HasId, C extends SClient>(
+  info: Shared<T, C> & CreateInfo<T, C>
+): Route<any, C> => ({
   path: "/insert",
   method: "post",
   endpointBuilder: buildQuery({
     validator: info.validator,
-    fun: async ({req, res, ...clients}) => {
+    fun: async ({req, res, db}) => {
       const {jwtBody, body} = req
 
       const canCreate = info.perms.create(jwtBody) ?? true
@@ -71,20 +74,22 @@ const createBuilder = <T extends HasId>(
       }
 
       const processed = info.preProcess
-        ? await info.preProcess(body, clients)
+        ? await info.preProcess(body, db)
         : body
 
-      const created = await info.endpoint(clients.db).insertOne(processed)
+      const created = await info.endpoint(db).insertOne(processed)
 
       if (!isValid<T>(created)) return res.status(500).json(created)
-      await info.postCreate?.(created, clients)
+      await info.postCreate?.(created, db)
 
       return res.json(info.preRes(created))
     }
   })
 })
 
-export const modifyBuilder = <T extends HasId>(info: Shared<T>): Route => ({
+export const modifyBuilder = <T extends HasId, C extends SClient>(
+  info: Shared<T, C>
+): Route<any, C> => ({
   path: "/:id",
   method: "put",
   skipAuth: info.skipAuth,
@@ -106,34 +111,34 @@ export const modifyBuilder = <T extends HasId>(info: Shared<T>): Route => ({
   })
 })
 
-type DeleteInfo<T extends HasId> = {
-  postDelete?: (item: T, clients: Clients) => Promise<unknown>
+type DeleteInfo<T extends HasId, C extends SClient> = {
+  postDelete?: (item: T, clients: C) => Promise<unknown>
 }
 
-export const deleteBuilder = <T extends HasId>(
-  info: Shared<T> & DeleteInfo<T>
-): Route => ({
+export const deleteBuilder = <T extends HasId, C extends SClient>(
+  info: Shared<T, C> & DeleteInfo<T, C>
+): Route<any, C> => ({
   path: "/:id",
   method: "delete",
   skipAuth: info.skipAuth,
   endpointBuilder: buildQuery({
-    fun: async ({req, res, ...clients}) => {
+    fun: async ({req, res, db}) => {
       const deleted = await info
-        .endpoint(clients.db)
+        .endpoint(db)
         .deleteOne(req.params.id, info.perms.delete(req.jwtBody))
-      await info.postDelete?.(deleted, clients)
+      await info.postDelete?.(deleted, db)
       return res.json(deleted._id)
     }
   })
 })
 
 type Skippable = {skipAuth?: boolean}
-export type BuildEndpoints1<T extends HasId> = {
+export type BuildEndpoints1<T extends HasId, C extends SClient> = {
   get: Skippable
   query: Skippable
-  create: Skippable & CreateInfo<T>
+  create: Skippable & CreateInfo<T, C>
   modify: Skippable
-  del: Skippable & DeleteInfo<T>
+  del: Skippable & DeleteInfo<T, C>
 }
 
 export type PermsForAction<T> = (jwt: JWTBody | undefined) => Condition<T>
@@ -145,24 +150,24 @@ type Perms<T> = {
   modify: PermsForAction<T>
 }
 
-type Shared<T extends HasId> = {
+type Shared<T extends HasId, C extends SClient> = {
   validator: Validator<T>
   skipAuth?: boolean
-  endpoint: (db: DbClient) => DbQueries<T>
+  endpoint: (clients: C) => DbQueries<T>
   preRes: (items: T) => T
   perms: Perms<T>
 }
 
-type BuilderParams<T extends HasId> = {
-  endpoint: (db: DbClient) => DbQueries<T>
+export type BuilderParams<T extends HasId, C extends SClient> = {
+  endpoint: (db: C["db"]) => DbQueries<T>
   validator: Validator<T>
-  builder: BuildEndpoints1<T>
+  builder: BuildEndpoints1<T, C>
   mask?: (keyof T)[]
   perms: Perms<T>
 }
 
-export const createBasicEndpoints = <T extends HasId>(
-  params: BuilderParams<T>
+export const createBasicEndpoints = <T extends HasId, C extends SClient>(
+  params: BuilderParams<T, C>
 ) => {
   const {builder, mask, perms, validator, endpoint} = params
   const {create, modify, del, get, query} = builder
@@ -182,10 +187,10 @@ export const createBasicEndpoints = <T extends HasId>(
   }
 
   return [
-    getBuilder({...shared, ...get}),
-    createBuilder({...shared, ...create}),
-    queryBuilder({...shared, ...query}),
-    modifyBuilder({...shared, ...modify}),
-    deleteBuilder({...shared, ...del})
+    getBuilder<T, C>({...shared, ...get}),
+    createBuilder<T, C>({...shared, ...create}),
+    queryBuilder<T, C>({...shared, ...query}),
+    modifyBuilder<T, C>({...shared, ...modify}),
+    deleteBuilder<T, C>({...shared, ...del})
   ]
 }

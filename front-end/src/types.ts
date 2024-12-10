@@ -25,7 +25,7 @@ export type HasId = {
   _id: string
 }
 
-export declare type Condition<T> =
+export type Condition<T> =
   | {equal: T}
   | {assign: T}
   | {inside: T[]}

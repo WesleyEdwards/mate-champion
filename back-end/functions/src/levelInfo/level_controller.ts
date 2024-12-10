@@ -1,14 +1,12 @@
 import {controller} from "../controllers/controller"
 import {importLevels} from "./levelQueries"
 import {Infer} from "../types"
-import {
-  createBasicEndpoints,
-  PermsForAction
-} from "../simpleServer/requestBuilders"
+import {PermsForAction} from "../simpleServer/requestBuilders"
 import {JWTBody} from "../auth/authTypes"
 import {isValid} from "../simpleServer/request_body"
 import {User} from "../user/user_controller"
 import {createDbObject} from "../simpleServer/validation"
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 
 export const levelSchema = createDbObject((z) =>
   z.object({
@@ -22,7 +20,7 @@ export const levelSchema = createDbObject((z) =>
 
 export type LevelInfo = Infer<typeof levelSchema>
 
-const levelBaseEndpoints = createBasicEndpoints<LevelInfo>({
+const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
   validator: levelSchema,
   endpoint: (db) => db.level,
   builder: {
