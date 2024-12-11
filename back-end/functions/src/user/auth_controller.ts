@@ -30,8 +30,7 @@ const authEndpoints = createBasicMCEndpoints<AuthCode>({
     modify: ifNotAdmin<AuthCode>((jwtBody) => ({
       _id: {Equal: jwtBody?.userId ?? ""}
     }))
-  },
-  builder: {create: {}, del: {}, get: {}, modify: {}, query: {}}
+  }
 })
 
 export const authController = controller("auth", [

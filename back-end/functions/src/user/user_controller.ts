@@ -3,6 +3,7 @@ import {controller} from "../simpleServer/controller"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer, userTypeSchema} from "../types"
+import {maskKeys} from "../simpleServer/requestBuilders"
 
 export type User = Infer<typeof userSchema>
 
@@ -19,7 +20,7 @@ const userSchema = createDbObject((z) =>
 const userBaseEndpoints = createBasicMCEndpoints<User>({
   validator: userSchema,
   endpoint: (db) => db.user,
-  mask: ["passwordHash"],
+  preRes: maskKeys(["passwordHash"]),
   perms: {
     read: () => ({Always: true}),
     delete: ifNotAdmin<User>((jwtBody) => ({
@@ -29,8 +30,7 @@ const userBaseEndpoints = createBasicMCEndpoints<User>({
     modify: ifNotAdmin<User>((jwtBody) => ({
       _id: {Equal: jwtBody?.userId ?? ""}
     }))
-  },
-  builder: {create: {}, del: {}, get: {}, modify: {}, query: {}}
+  }
 })
 
 export const usersController = controller("user", userBaseEndpoints)

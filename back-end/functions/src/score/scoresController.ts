@@ -17,12 +17,9 @@ export type Score = Infer<typeof scoreSchema>
 const basicEndpoints = createBasicMCEndpoints<Score>({
   endpoint: (db) => db.score,
   validator: scoreSchema,
-  builder: {
-    get: {skipAuth: true},
-    query: {skipAuth: true},
-    create: {},
-    modify: {},
-    del: {}
+  skipAuth: {
+    get: true,
+    query: true
   },
   perms: {
     read: () => ({Always: true}),

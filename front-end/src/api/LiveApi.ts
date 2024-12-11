@@ -41,8 +41,7 @@ export class LiveApi implements Api {
     signIn: (body: LoginBody) => this.post("auth/login", body),
     sendAuthCode: (body) => this.post("auth/sendAuthCode", body),
     submitAuthCode: (body) => this.post("auth/submitAuthCode", body),
-
-    getSelf: () => this.get("user")
+    getSelf: () => this.get("auth/self")
   }
 
   readonly user: Api["user"] = {
@@ -54,12 +53,8 @@ export class LiveApi implements Api {
   }
 
   readonly level: Api["level"] = {
-    detail: (id: string): Promise<LevelInfo> => {
-      return this.get(`level/${id}`)
-    },
-    query: (filter: Condition<LevelInfo>): Promise<LevelInfo[]> => {
-      return this.post("level/query", filter)
-    },
+    detail: (id) => this.get(`level/${id}`),
+    query: (filter) => this.post("level/query", filter),
     create: (body) => this.post("level/insert", body),
     modify: (id, mod) => this.put(`level/${id}`, mod),
     delete: (id) => this.del(`level/${id}`),
