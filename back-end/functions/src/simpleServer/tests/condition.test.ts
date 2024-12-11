@@ -1,6 +1,6 @@
-import {Condition} from "../src/simpleServer/condition/condition"
-import {evalCondition} from "../src/simpleServer/condition/evalCondition"
-import {Animal, AnimalType, dog_test} from "./mocks/conditions"
+import {Condition} from "../condition/condition"
+import {evalCondition} from "../condition/evalCondition"
+import {Animal, AnimalType, dog_test} from "./mocks"
 
 // Test Condition system, specifically the typing And 'evalCondition' function
 function testCondition<T>(condition: Condition<T>, inputs: [T, boolean][]) {

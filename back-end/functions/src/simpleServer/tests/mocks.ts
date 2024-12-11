@@ -4,8 +4,6 @@ export enum AnimalType {
   Mammal = "Mammal",
   Reptile = "Reptile"
 }
-// type Gender = "Male" | "Female"
-
 export type Animal = z.infer<typeof animalSchema>
 
 export const animalSchema = z.object({
