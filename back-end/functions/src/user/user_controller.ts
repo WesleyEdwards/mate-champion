@@ -1,9 +1,11 @@
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {controller} from "../simpleServer/controller"
+import {
+  createBasicMCEndpoints,
+  mcController
+} from "../controllers/serverBuilders"
 import {ifNotAdmin} from "../levelInfo/level_controller"
+import {maskKeys} from "../simpleServer/server/mask"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer, userTypeSchema} from "../types"
-import {maskKeys} from "../simpleServer/requestBuilders"
 
 export type User = Infer<typeof userSchema>
 
@@ -17,20 +19,23 @@ const userSchema = createDbObject((z) =>
   })
 )
 
-const userBaseEndpoints = createBasicMCEndpoints<User>({
-  validator: userSchema,
-  endpoint: (db) => db.user,
-  preRes: maskKeys(["passwordHash"]),
-  perms: {
-    read: () => ({Always: true}),
-    delete: ifNotAdmin<User>((jwtBody) => ({
-      _id: {Equal: jwtBody?.userId ?? ""}
-    })),
-    create: ifNotAdmin<User>(() => ({Never: true})),
-    modify: ifNotAdmin<User>((jwtBody) => ({
-      _id: {Equal: jwtBody?.userId ?? ""}
-    }))
-  }
-})
-
-export const usersController = controller("user", userBaseEndpoints)
+export const usersController = mcController(
+  "user",
+  createBasicMCEndpoints({
+    validator: userSchema,
+    endpoint: (db) => db.user,
+    permissions: {
+      read: () => ({Always: true}),
+      delete: ifNotAdmin<User>((auth) => ({
+        _id: {Equal: auth.jwtBody?.userId ?? ""}
+      })),
+      create: ifNotAdmin<User>(() => ({Never: true})),
+      modify: ifNotAdmin<User>((auth) => ({
+        _id: {Equal: auth.jwtBody?.userId ?? ""}
+      }))
+    },
+    actions: {
+      prepareResponse: maskKeys(["passwordHash"])
+    }
+  })
+)

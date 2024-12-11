@@ -1,15 +1,15 @@
 import bcrypt from "bcrypt"
 import {JWTBody} from "../auth/authTypes"
 import jwt from "jsonwebtoken"
-import {
-  checkValidSchema,
-  isParseError,
-  isValid
-} from "../simpleServer/request_body"
 import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
 import {authCodeSchema} from "./auth_controller"
-import {createSchema} from "../simpleServer/validation"
+import {
+  checkValidSchema,
+  createSchema,
+  isParseError,
+  isValid
+} from "../simpleServer/validation"
 import {buildMCQuery} from "../controllers/serverBuilders"
 
 function createUserToken(user: User) {

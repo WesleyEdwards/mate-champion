@@ -1,11 +1,10 @@
+import {buildMCQuery} from "../controllers/serverBuilders"
 import {LevelMap, levelMapSchema} from "../levelMap/levelMapQueries"
-import { buildQuery } from "../simpleServer/buildQuery"
-import {isValid} from "../simpleServer/request_body"
-import {createSchema} from "../simpleServer/validation"
+import {createSchema, isValid} from "../simpleServer/validation"
 import {User} from "../user/user_controller"
 import {LevelInfo, levelSchema} from "./level_controller"
 
-export const importLevels = buildQuery({
+export const importLevels = buildMCQuery({
   validator: createSchema((z) =>
     z.object({
       levels: z.array(levelSchema),
@@ -14,7 +13,7 @@ export const importLevels = buildQuery({
   ),
   fun: async ({req, res, db}) => {
     const {body, jwtBody} = req
-    const creator = await db.user.findOne({_id: {equal: jwtBody?.userId ?? ""}})
+    const creator = await db.user.findOne({_id: {Equal: jwtBody?.userId ?? ""}})
     if (!isValid<User>(creator)) {
       return res.json(404).json({error: "User not found"})
     }

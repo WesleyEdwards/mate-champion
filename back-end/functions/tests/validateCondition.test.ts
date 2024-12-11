@@ -1,9 +1,7 @@
 import {z} from "zod"
-import {
-  Condition,
-  createConditionSchema
-} from "../src/simpleServer/condition/condition"
+import {Condition} from "../src/simpleServer/condition/condition"
 import {Animal, animalSchema, AnimalType} from "./mocks/conditions"
+import {createConditionSchema} from "../src/simpleServer/condition/conditionSchema"
 
 describe("assures the correct schema is created from `createConditionSchema`", () => {
   const stringSchema = createConditionSchema(z.string())

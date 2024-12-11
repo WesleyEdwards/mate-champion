@@ -1,12 +1,13 @@
-import {controller} from "../simpleServer/controller"
 import {importLevels} from "./levelQueries"
 import {Infer} from "../types"
-import {BuilderParams} from "../simpleServer/requestBuilders"
-import {JWTBody} from "../auth/authTypes"
-import {isValid} from "../simpleServer/request_body"
+import {BuilderParams} from "../simpleServer/server/requestBuilders"
 import {User} from "../user/user_controller"
-import {createDbObject} from "../simpleServer/validation"
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
+import {createDbObject, isValid} from "../simpleServer/validation"
+import {
+  createBasicMCEndpoints,
+  MCAuth,
+  mcController
+} from "../controllers/serverBuilders"
 import {HasId} from "../simpleServer/DbClient"
 
 export const levelSchema = createDbObject((z) =>
@@ -24,25 +25,25 @@ export type LevelInfo = Infer<typeof levelSchema>
 const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
   validator: levelSchema,
   endpoint: (db) => db.level,
-  perms: {
-    read: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {Equal: jwtBody?.userId ?? ""}
+  permissions: {
+    read: ifNotAdmin<LevelInfo>((auth) => ({
+      owner: {Equal: auth.jwtBody?.userId ?? ""}
     })),
-    delete: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {Equal: jwtBody?.userId ?? ""}
+    delete: ifNotAdmin<LevelInfo>((auth) => ({
+      owner: {Equal: auth.jwtBody?.userId ?? ""}
     })),
-    create: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {Equal: jwtBody?.userId ?? ""}
+    create: ifNotAdmin<LevelInfo>((auth) => ({
+      owner: {Equal: auth.jwtBody?.userId ?? ""}
     })),
-    modify: ifNotAdmin<LevelInfo>((jwtBody) => ({
-      owner: {Equal: jwtBody?.userId ?? ""}
+    modify: ifNotAdmin<LevelInfo>((auth) => ({
+      owner: {Equal: auth.jwtBody?.userId ?? ""}
     }))
   },
   actions: {
     postDelete: async (item, {db}) => {
       await db.levelMap.deleteOne(item._id)
     },
-    preCreate: async (item, {db}) => {
+    interceptCreate: async (item, {db}) => {
       const user = await db.user.findOne({_id: {Equal: item.owner}})
       if (!isValid<User>(user)) throw new Error("User not found")
       return {...item, creatorName: user.name} satisfies LevelInfo
@@ -63,15 +64,15 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<T, any>["perms"]["create"]
-): BuilderParams<T, any>["perms"]["create"] {
-  return (jwtBody: JWTBody | undefined) => {
-    if (jwtBody?.userType === "Admin") return {Always: true}
-    return fun(jwtBody)
+  fun: BuilderParams<T, any, MCAuth>["permissions"]["create"]
+): BuilderParams<T, any, MCAuth>["permissions"]["create"] {
+  return (auth: MCAuth) => {
+    if (auth.jwtBody?.userType === "Admin") return {Always: true}
+    return fun(auth)
   }
 }
 
-export const levelsController = controller("level", [
+export const levelsController = mcController("level", [
   ...levelBaseEndpoints,
   {
     path: "/import-map",

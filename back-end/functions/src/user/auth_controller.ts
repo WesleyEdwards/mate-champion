@@ -1,5 +1,7 @@
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {controller} from "../simpleServer/controller"
+import {
+  createBasicMCEndpoints,
+  mcController
+} from "../controllers/serverBuilders"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
@@ -16,24 +18,24 @@ export const authCodeSchema = createDbObject((z) =>
   z.object({code: z.string(), email: z.string()})
 )
 
-const authEndpoints = createBasicMCEndpoints<AuthCode>({
+const authEndpoints = createBasicMCEndpoints({
   validator: authCodeSchema,
   endpoint: (db) => db.authCode,
-  perms: {
-    read: ifNotAdmin<AuthCode>((jwtBody) => ({
-      _id: {Equal: jwtBody?.userId ?? ""}
+  permissions: {
+    read: ifNotAdmin<AuthCode>((auth) => ({
+      _id: {Equal: auth.jwtBody?.userId ?? ""}
     })),
-    delete: ifNotAdmin<AuthCode>((jwtBody) => ({
-      _id: {Equal: jwtBody?.userId ?? ""}
+    delete: ifNotAdmin<AuthCode>((auth) => ({
+      _id: {Equal: auth.jwtBody?.userId ?? ""}
     })),
     create: ifNotAdmin<AuthCode>(() => ({Never: true})),
-    modify: ifNotAdmin<AuthCode>((jwtBody) => ({
-      _id: {Equal: jwtBody?.userId ?? ""}
+    modify: ifNotAdmin<AuthCode>((auth) => ({
+      _id: {Equal: auth.jwtBody?.userId ?? ""}
     }))
   }
 })
 
-export const authController = controller("auth", [
+export const authController = mcController("auth", [
   {path: "/self", method: "get", endpointBuilder: getSelf},
   {
     path: "/login",

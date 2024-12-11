@@ -1,5 +1,7 @@
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {controller} from "../simpleServer/controller"
+import {
+  createBasicMCEndpoints,
+  mcController
+} from "../controllers/serverBuilders"
 import {ifNotAdmin} from "../levelInfo/level_controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
@@ -14,28 +16,28 @@ export const scoreSchema = createDbObject((z) =>
 
 export type Score = Infer<typeof scoreSchema>
 
-const basicEndpoints = createBasicMCEndpoints<Score>({
+const basicEndpoints = createBasicMCEndpoints({
   endpoint: (db) => db.score,
   validator: scoreSchema,
   skipAuth: {
     get: true,
     query: true
   },
-  perms: {
+  permissions: {
     read: () => ({Always: true}),
-    delete: ifNotAdmin<Score>((jwtBody) => {
-      return {userId: {Equal: jwtBody?.userId ?? ""}}
+    delete: ifNotAdmin<Score>((auth) => {
+      return {userId: {Equal: auth.jwtBody?.userId ?? ""}}
     }),
-    create: ifNotAdmin<Score>((jwtBody) => {
-      return {userId: {Equal: jwtBody?.userId ?? ""}}
+    create: ifNotAdmin<Score>((auth) => {
+      return {userId: {Equal: auth.jwtBody?.userId ?? ""}}
     }),
-    modify: ifNotAdmin<Score>((jwtBody) => {
-      return {userId: {Equal: jwtBody?.userId ?? ""}}
+    modify: ifNotAdmin<Score>((auth) => {
+      return {userId: {Equal: auth.jwtBody?.userId ?? ""}}
     })
   }
 })
 
-export const scoresController = controller("score", [
+export const scoresController = mcController("score", [
   ...basicEndpoints,
   {
     path: "/top-scores",
