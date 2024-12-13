@@ -4,12 +4,12 @@ export type HasId = {
   _id: string
 }
 
-export type OrError<T> = T | {error: string}
+export type MaybeError<T> = {success: true; data: T} | {success: false; error: any}
 
 export type DbQueries<T extends HasId> = {
-  findOne: (filter: Condition<T>) => Promise<OrError<T>>
+  findOne: (filter: Condition<T>) => Promise<MaybeError<T>>
   findMany: (filter: Condition<T>) => Promise<T[]>
-  insertOne: (item: T) => Promise<OrError<T>>
-  updateOne: (id: string, update: Partial<T>) => Promise<OrError<T>>
+  insertOne: (item: T) => Promise<MaybeError<T>>
+  updateOne: (id: string, update: Partial<T>) => Promise<MaybeError<T>>
   deleteOne: (id: string, condition?: Condition<T>) => Promise<T>
 }

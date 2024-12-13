@@ -4,6 +4,7 @@ import {Score} from "../score/scoresController"
 import {AuthCode} from "../user/auth_controller"
 import {User} from "../user/user_controller"
 import {DbQueries} from "../simpleServer/DbClient"
+import {JWTBody} from "../auth/middleware"
 
 export type DbClient = {
   user: DbQueries<User>
@@ -22,4 +23,4 @@ export type EmailClient = {
   }) => Promise<unknown>
 }
 
-export type Clients = {db: DbClient; email: EmailClient}
+export type Clients = {db: DbClient; email: EmailClient; auth?: JWTBody}

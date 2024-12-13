@@ -1,14 +1,13 @@
 import {importLevels} from "./levelQueries"
 import {Infer} from "../types"
 import {BuilderParams} from "../simpleServer/server/requestBuilders"
-import {User} from "../user/user_controller"
-import {createDbObject, isValid} from "../simpleServer/validation"
+import {createDbObject} from "../simpleServer/validation"
 import {
   createBasicMCEndpoints,
-  MCAuth,
   mcController
 } from "../controllers/serverBuilders"
 import {HasId} from "../simpleServer/DbClient"
+import {Clients} from "../controllers/appClients"
 
 export const levelSchema = createDbObject((z) =>
   z.object({
@@ -36,7 +35,7 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
       owner: {Equal: auth.jwtBody?.userId ?? ""}
     })),
     modify: ifNotAdmin<LevelInfo>((auth) => ({
-      owner: {Equal: auth.jwtBody?.userId ?? ""}
+      owner: {Equal: auth.userId ?? ""}
     }))
   },
   actions: {
@@ -45,8 +44,8 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
     },
     interceptCreate: async (item, {db}) => {
       const user = await db.user.findOne({_id: {Equal: item.owner}})
-      if (!isValid<User>(user)) throw new Error("User not found")
-      return {...item, creatorName: user.name} satisfies LevelInfo
+      if (!user.success) throw new Error("User not found")
+      return {...item, creatorName: user.data.name} satisfies LevelInfo
     },
     postCreate: async (level, {db}) => {
       await db.levelMap.insertOne({
@@ -64,11 +63,11 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<T, any, MCAuth>["permissions"]["create"]
-): BuilderParams<T, any, MCAuth>["permissions"]["create"] {
-  return (auth: MCAuth) => {
-    if (auth.jwtBody?.userType === "Admin") return {Always: true}
-    return fun(auth)
+  fun: BuilderParams<T, any>["permissions"]["create"]
+): BuilderParams<T, Clients>["permissions"]["create"] {
+  return (c) => {
+    if (c.auth?.userType === "Admin") return {Always: true}
+    return fun(c)
   }
 }
 

@@ -5,15 +5,16 @@ import {levelMapController} from "../levelMap/level_map_controller"
 import {scoresController} from "../score/scoresController"
 import {usersController} from "../user/user_controller"
 import {authController} from "../user/auth_controller"
+import {middleware} from "../auth/middleware"
 
 export const applyControllers = (
   app: ReturnType<typeof express>,
-  clients: Clients
+  clients: Omit<Clients, "auth">
 ) => {
-  authController(app, clients)
-  usersController(app, clients)
-  levelsController(app, clients)
-  levelMapController(app, clients)
-  scoresController(app, clients)
+  authController(app, middleware(clients))
+  usersController(app, middleware(clients))
+  levelsController(app, middleware(clients))
+  levelMapController(app, middleware(clients))
+  scoresController(app, middleware(clients))
   return app
 }

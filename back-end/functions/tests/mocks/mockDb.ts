@@ -1,6 +1,6 @@
 import {DbClient} from "../../src/controllers/appClients"
 import {Condition} from "../../src/simpleServer/condition/condition"
-import {DbQueries, HasId, OrError} from "../../src/simpleServer/DbClient"
+import {DbQueries, HasId, MaybeError} from "../../src/simpleServer/DbClient"
 import {LevelInfo} from "../../src/levelInfo/level_controller"
 import {Score} from "../../src/score/scoresController"
 import {mockAuthCodes} from "./authCodes"
@@ -12,18 +12,25 @@ export class DataStore<T extends HasId> {
   constructor(private items: T[]) {}
   insertOne = async (item: T) => {
     this.items.push(item)
-    return item
+    return {success: true, data: item} as const
   }
-  findOne = async (filter: Condition<T>): Promise<OrError<T>> => {
+  findOne = async (filter: Condition<T>): Promise<MaybeError<T>> => {
     const filtered = this.items.filter((item) => evalCondition(item, filter))
-    const res: OrError<T> = filtered.at(0) ?? {error: "Not found"}
-    return res
+
+    const res = filtered.at(0)
+    if (res) {
+      return {success: true, data: res}
+    }
+    return {
+      success: false,
+      error: "Not found"
+    }
   }
   findMany = async (filter: Condition<T>): Promise<T[]> => {
     const filtered = this.items.filter((item) => evalCondition(item, filter))
     return filtered
   }
-  updateOne = (id: string, update: Partial<T>): Promise<OrError<T>> => {
+  updateOne = (id: string, update: Partial<T>): Promise<MaybeError<T>> => {
     throw new Error("Function not implemented.")
   }
   deleteOne = (

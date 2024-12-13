@@ -16,7 +16,7 @@ const emailKey = process.env.SENDGRID_API_KEY
 
 console.log("NODE_ENV is", process.env.NODE_ENV)
 
-const clients: Clients = {
+const clients: Omit<Clients, "auth"> = {
   db: mongoClient(mongoUri, "mate-db"),
   email: emailClient(emailOption ?? "local", emailKey)
 }

@@ -5,8 +5,7 @@ import {
   checkPartialValidation,
   createDbObject,
   createSchema,
-  isParseError,
-  isValid
+  isParseError
 } from "../simpleServer/validation"
 import {buildMCQuery} from "../controllers/serverBuilders"
 
@@ -46,17 +45,17 @@ export const levelMapSchema = createDbObject((z) =>
 )
 
 export const getLevelMap = buildMCQuery({
-  fun: async ({req, res, db}) => {
-    const {params, jwtBody} = req
+  fun: async ({req, res, db, auth}) => {
+    const {params} = req
     if (!params.id || typeof params.id !== "string") {
       return res.status(400).json("Bad request")
     }
     const level = await db.level.findOne({_id: {Equal: params.id}})
-    if (!isValid<LevelInfo>(level)) return res.status(404).json("Not found")
+    if (!level.success) return res.status(404).json("Not found")
     if (
-      level.owner !== jwtBody?.userId &&
-      jwtBody?.userType !== "Admin" &&
-      !level.public
+      level.data.owner !== auth?.userId &&
+      auth?.userType !== "Admin" &&
+      !level.data.public
     ) {
       return res.status(404).json("Cant access")
     }
@@ -67,15 +66,15 @@ export const getLevelMap = buildMCQuery({
 
 export const modifyLevelMap = buildMCQuery({
   validator: levelMapSchema.partial(),
-  fun: async ({req, res, db}) => {
-    const {jwtBody, params, body} = req
+  fun: async ({req, res, db, auth}) => {
+    const {params, body} = req
     const condition: Condition<LevelInfo> =
-      jwtBody?.userType === "Admin"
+      auth?.userType === "Admin"
         ? {_id: {Equal: params.id}}
         : {
             And: [
               {_id: {Equal: params.id}},
-              {owner: {Equal: jwtBody?.userId ?? ""}}
+              {owner: {Equal: auth?.userId ?? ""}}
             ]
           }
     const level = await db.level.findOne(condition)

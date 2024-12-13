@@ -37,18 +37,18 @@ function functionsForModel<T extends HasId>(
         newItem as OptionalUnlessRequiredId<T>
       )
       if (acknowledged) {
-        return newItem
+        return {success: true, data: newItem}
       }
-      return {error: "Unknown error"}
+      return {success: false, error: "Unknown error"}
     },
     findOne: async (filter) => {
       const item = (await collection.findOne(
         conditionToFilter(filter)
       )) as T | null
       if (item) {
-        return item
+        return {success: true, data: item}
       }
-      return {error: "unable to find Item"}
+      return {success: false, error: "unable to find Item"}
     },
     findMany: async (filter: Condition<T>) => {
       const items = collection.find(conditionToFilter(filter))
@@ -61,9 +61,9 @@ function functionsForModel<T extends HasId>(
         {returnDocument: "after"}
       )
       if (!value) {
-        throw new Error("unable to updateOne. Item not found")
+        return {success: false, error: "unable to find item"}
       }
-      return value as T
+      return {success: true, data: value as T}
     },
     deleteOne: async (id, condition) => {
       const c: Filter<T> = condition

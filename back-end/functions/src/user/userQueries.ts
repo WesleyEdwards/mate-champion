@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import {JWTBody} from "../auth/authTypes"
+import {JWTBody} from "../auth/middleware"
 import jwt from "jsonwebtoken"
 import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
@@ -7,8 +7,7 @@ import {authCodeSchema} from "./auth_controller"
 import {
   checkValidSchema,
   createSchema,
-  isParseError,
-  isValid
+  isParseError
 } from "../simpleServer/validation"
 import {buildMCQuery} from "../controllers/serverBuilders"
 
@@ -37,12 +36,17 @@ export const loginWithPassword = buildMCQuery({
   fun: async ({req, res, db}) => {
     const {body} = req
 
-    const user = await db.user.findOne({
+    const findUser = await db.user.findOne({
       email: {Equal: body.email}
     })
 
-    if (!isValid<User>(user) || !user.passwordHash) {
+    if (!findUser.success) {
       return res.status(404).json({message: "Invalid credentials"})
+    }
+    const {data: user} = findUser
+
+    if (!user.passwordHash) {
+      return res.status(404).json({message: "No password for this user."})
     }
 
     const isValidPassword = await bcrypt.compare(
@@ -75,7 +79,7 @@ export const sendAuthCode = buildMCQuery({
     }
     const user = await db.user.findOne({email: {Equal: body.email}})
 
-    if (!isValid<User>(user)) {
+    if (!user.success) {
       const newUser: User = {
         name: body.name ?? body.email,
         email: body.email,
@@ -113,31 +117,36 @@ export const submitAuthCode = buildMCQuery({
       And: [{email: {Equal: body.email}}, {code: {Equal: body.code}}]
     })
 
-    if (!isValid(code)) {
+    if (!code.success) {
       return res.status(400).json("Invalid code")
     }
 
     const user = await db.user.findOne({email: {Equal: body.email}})
 
-    if (!isValid<User>(user)) {
+    if (!user.success) {
       return res.status(400).json("unable to find user")
     }
 
+    await db.authCode.deleteOne(code.data._id)
+
     return res.json({
-      user: sendUserBody(user, {userId: user._id, userType: user.userType}),
-      token: createUserToken(user)
+      user: sendUserBody(user.data, {
+        userId: user.data._id,
+        userType: user.data.userType
+      }),
+      token: createUserToken(user.data)
     })
   }
 })
 
 export const getSelf = buildMCQuery({
-  fun: async ({res, db, req}) => {
-    const {jwtBody} = req
+  fun: async ({res, db, auth}) => {
+    console.log("Getting self")
     const user = await db.user.findOne({
-      _id: {Equal: jwtBody?.userId || ""}
+      _id: {Equal: auth?.userId || ""}
     })
-    if (!isValid<User>(user)) return res.status(404).json("Not found")
-    return res.json(sendUserBody(user, jwtBody))
+    if (!user.success) return res.status(404).json("Not found")
+    return res.json(sendUserBody(user.data, auth))
   }
 })
 
