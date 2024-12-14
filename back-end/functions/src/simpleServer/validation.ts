@@ -2,7 +2,7 @@ import {z, ZodIssue, ZodObject, ZodRawShape} from "zod"
 import {v4 as uuidv4} from "uuid"
 import { MaybeError } from "./DbClient"
 
-const baseObjectSchema = z.object({
+export const baseObjectSchema = z.object({
   _id: z.string().uuid().default(uuidv4)
 })
 

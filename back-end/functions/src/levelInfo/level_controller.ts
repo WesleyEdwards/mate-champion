@@ -1,23 +1,22 @@
 import {importLevels} from "./levelQueries"
 import {Infer} from "../types"
 import {BuilderParams} from "../simpleServer/server/requestBuilders"
-import {createDbObject} from "../simpleServer/validation"
-import {
-  createBasicMCEndpoints,
-  mcController
-} from "../controllers/serverBuilders"
+import {baseObjectSchema} from "../simpleServer/validation"
 import {HasId} from "../simpleServer/DbClient"
 import {Clients} from "../controllers/appClients"
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
+import {z} from "zod"
+import {Route} from "../simpleServer/server/controller"
 
-export const levelSchema = createDbObject((z) =>
-  z.object({
+export const levelSchema = z
+  .object({
     owner: z.string(),
     public: z.boolean().default(false),
     name: z.string(),
     description: z.string().nullable().default(null),
     creatorName: z.string().default("")
   })
-)
+  .merge(baseObjectSchema)
 
 export type LevelInfo = Infer<typeof levelSchema>
 
@@ -63,19 +62,19 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<T, any>["permissions"]["create"]
-): BuilderParams<T, Clients>["permissions"]["create"] {
+  fun: BuilderParams<any, T>["permissions"]["create"]
+): BuilderParams<Clients, T>["permissions"]["create"] {
   return (c) => {
     if (c.auth?.userType === "Admin") return {Always: true}
     return fun(c)
   }
 }
 
-export const levelsController = mcController("level", [
+export const levelsController: Route<Clients>[] = [
   ...levelBaseEndpoints,
   {
     path: "/import-map",
     method: "post",
     endpointBuilder: importLevels
   }
-])
+]

@@ -1,4 +1,4 @@
-import {Route, SClient} from "./controller"
+import {Route, SInfo} from "./controller"
 import {DbQueries, HasId} from "../DbClient"
 import {Condition} from "../condition/condition"
 import {buildQuery} from "./buildQuery"
@@ -8,7 +8,7 @@ import {
 } from "../condition/conditionSchema"
 import {ZodType} from "zod"
 
-export type BuilderParams<T extends HasId, C extends SClient> = {
+export type BuilderParams<C extends SInfo, T extends HasId> = {
   validator: ZodType<T, any, any>
   skipAuth?: {
     get?: boolean
@@ -42,9 +42,9 @@ export type BuilderParams<T extends HasId, C extends SClient> = {
   }
 }
 
-export const createBasicEndpoints = <T extends HasId, C extends SClient>(
-  builderInfo: BuilderParams<T, C>
-): Route<any, C>[] => [
+export const createBasicEndpoints = <C extends SInfo, T extends HasId>(
+  builderInfo: BuilderParams<C, T>
+): Route<C>[] => [
   {
     path: "/:id",
     method: "get",
@@ -77,8 +77,8 @@ export const createBasicEndpoints = <T extends HasId, C extends SClient>(
   }
 ]
 
-const getBuilder = <T extends HasId, C extends SClient>(
-  info: BuilderParams<T, C>
+const getBuilder = <T extends HasId, C extends SInfo>(
+  info: BuilderParams<C, T>
 ) =>
   buildQuery({
     fun: async ({req, res, ...rest}) => {
@@ -101,8 +101,8 @@ const getBuilder = <T extends HasId, C extends SClient>(
     }
   })
 
-const queryBuilder = <T extends HasId, C extends SClient>(
-  info: BuilderParams<T, C>
+const queryBuilder = <T extends HasId, C extends SInfo>(
+  info: BuilderParams<C, T>
 ) =>
   buildQuery({
     validator: createConditionSchema(info.validator),
@@ -124,8 +124,8 @@ const queryBuilder = <T extends HasId, C extends SClient>(
     }
   })
 
-const createBuilder = <T extends HasId, C extends SClient>(
-  info: BuilderParams<T, C>
+const createBuilder = <T extends HasId, C extends SInfo>(
+  info: BuilderParams<C, T>
 ) =>
   buildQuery({
     validator: info.validator,
@@ -154,8 +154,8 @@ const createBuilder = <T extends HasId, C extends SClient>(
     }
   })
 
-const modifyBuilder = <T extends HasId, C extends SClient>(
-  info: BuilderParams<T, C>
+const modifyBuilder = <T extends HasId, C extends SInfo>(
+  info: BuilderParams<C, T>
 ) =>
   buildQuery({
     validator: partialValidator(info.validator),
@@ -185,8 +185,8 @@ const modifyBuilder = <T extends HasId, C extends SClient>(
     }
   })
 
-const deleteBuilder = <T extends HasId, C extends SClient>(
-  info: BuilderParams<T, C>
+const deleteBuilder = <T extends HasId, C extends SInfo>(
+  info: BuilderParams<C, T>
 ) =>
   buildQuery({
     fun: async ({req, res, ...rest}) => {

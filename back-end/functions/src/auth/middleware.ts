@@ -10,8 +10,8 @@ export type JWTBody = {
 
 const isJwt = (x: any): x is JWTBody => "userId" in x && "userType" in x
 
-export const middleware =
-  (clients: Omit<Clients, "auth">) => (req: Request, skipAuth?: boolean) => {
+export const middleware = (clients: Omit<Clients, "auth">) => {
+  return (req: Request, skipAuth?: boolean) => {
     const token = req.headers.authorization?.split(" ")?.at(1)
     if (token) {
       try {
@@ -30,3 +30,4 @@ export const middleware =
       return null
     }
   }
+}

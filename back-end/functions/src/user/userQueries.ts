@@ -10,6 +10,8 @@ import {
   isParseError
 } from "../simpleServer/validation"
 import {buildMCQuery} from "../controllers/serverBuilders"
+import {Clients} from "../controllers/appClients"
+import {buildQuery} from "../simpleServer/server/buildQuery"
 
 function createUserToken(user: User) {
   const body: JWTBody = {
@@ -139,7 +141,7 @@ export const submitAuthCode = buildMCQuery({
   }
 })
 
-export const getSelf = buildMCQuery({
+export const getSelf = buildQuery<Clients>({
   fun: async ({res, db, auth}) => {
     console.log("Getting self")
     const user = await db.user.findOne({

@@ -1,8 +1,7 @@
 import express from "express"
-import {Clients} from "../../src/controllers/appClients"
 import dotenv from "dotenv"
+import {MateServer} from "../../src/server"
 import {mockDatabase} from "./mockDb"
-import {applyControllers} from "../../src/controllers/appControllers"
 
 export const getMockApp = () => {
   const mockApp = express()
@@ -11,14 +10,13 @@ export const getMockApp = () => {
 
   mockApp.use(express.json())
 
-  const mockClients: Clients = {
+  new MateServer({
     db: mockDatabase,
     email: {
       send: () => Promise.reject("Test has not been set up for emails")
     }
-  }
+  }).generateEndpoints(mockApp)
 
-  applyControllers(mockApp, mockClients)
   return mockApp
 }
 

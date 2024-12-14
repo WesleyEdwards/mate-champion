@@ -1,27 +1,27 @@
 import express, {Express, Response, Request} from "express"
 
-export type SClient = {
+export type SInfo = {
   db: any
   auth?: any
 }
 
-export type EndpointBuilderType<Body, C extends SClient> = (
+export type EndpointBuilderType<C extends SInfo, Body> = (
   info: {
     req: Request<any, any, Body>
     res: Response
   } & C
 ) => Promise<Response<any, Record<string, any>>>
 
-export type Route<Body, C extends SClient> = {
+export type Route<C extends SInfo, Body = any> = {
   path: string
   method: "post" | "put" | "get" | "delete"
-  endpointBuilder: EndpointBuilderType<Body, C>
+  endpointBuilder: EndpointBuilderType<C, Body>
   skipAuth?: boolean
 }
 
-export function controller<C extends SClient>(
+export function controller<C extends SInfo>(
   basePath: string,
-  routes: Route<any, C>[]
+  routes: Route<C>[]
 ) {
   return (
     app: Express,
@@ -36,7 +36,7 @@ export function controller<C extends SClient>(
         }
         const c = client(req, route.skipAuth)
         if (c === null) {
-          return res.status(403).json({error: "Unauthorized"})
+          return res.status(401).json({message: "Unauthorized"})
         } else {
           next()
         }

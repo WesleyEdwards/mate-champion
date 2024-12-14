@@ -30,14 +30,24 @@ export class DataStore<T extends HasId> {
     const filtered = this.items.filter((item) => evalCondition(item, filter))
     return filtered
   }
-  updateOne = (id: string, update: Partial<T>): Promise<MaybeError<T>> => {
-    throw new Error("Function not implemented.")
+  updateOne = async (
+    id: string,
+    update: Partial<T>
+  ): Promise<MaybeError<T>> => {
+    const old = this.items.find((i) => i._id === id)
+    if (!old) return {success: false, error: "Not found"}
+    const copy = {...old}
+    this.items = [...this.items.map((item) => ({...item, ...update}))]
+    return {success: true, data: copy}
   }
-  deleteOne = (
+  deleteOne = async (
     id: string,
     condition?: Condition<T> | undefined
   ): Promise<T> => {
-    throw new Error("Function not implemented.")
+    const old = this.items.find((i) => i._id === id)
+    this.items = [...this.items.filter((i) => i._id !== id)]
+    if (!old) throw new Error("Not found")
+    return old
   }
 }
 

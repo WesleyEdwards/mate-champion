@@ -1,7 +1,7 @@
-import {MailDataRequired, MailService} from "@sendgrid/mail"
+import {MailDataRequired} from "@sendgrid/mail"
 import {EmailClient} from "../controllers/appClients"
 
-const sgMail: MailService = require("@sendgrid/mail")
+import sgMail from "@sendgrid/mail"
 
 const msg: MailDataRequired = {
   from: "westheedwards@gmail.com",
@@ -19,10 +19,9 @@ const sendgridEmail = (key: string): EmailClient => {
   sgMail.setApiKey(key)
   return {
     send: async (params) => {
-      console.log("Sending email")
       try {
         const res = await sgMail.send({...msg, ...params})
-        console.log("Sent email", res[0].toString())
+        console.log("Email sent", res[0].toString())
       } catch (error: any) {
         console.error(error)
 
@@ -37,14 +36,18 @@ const localEmail = (): EmailClient => {
   return {
     send: async (params) => {
       try {
-        console.log("------------------------------")
-        console.log(`Sending email to ${params.to}`)
-        console.log(params.subject)
-        console.log(params.html)
-        console.log("------------------------------")
+        console.info(
+          `
+          ------------------------------
+          Sending email to ${params.to}
+          ${params.subject}
+          ${params.html}
+          ------------------------------
+
+          `
+        )
       } catch (error: any) {
         console.error(error)
-
         if (error.response) {
           console.error(error.response.body)
         }

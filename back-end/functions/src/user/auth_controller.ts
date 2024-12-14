@@ -1,9 +1,7 @@
-import {
-  createBasicMCEndpoints,
-  mcController
-} from "../controllers/serverBuilders"
+import {z} from "zod"
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 import {ifNotAdmin} from "../levelInfo/level_controller"
-import {createDbObject} from "../simpleServer/validation"
+import {baseObjectSchema} from "../simpleServer/validation"
 import {Infer} from "../types"
 import {
   getSelf,
@@ -11,12 +9,14 @@ import {
   sendAuthCode,
   submitAuthCode
 } from "./userQueries"
+import {Clients} from "../controllers/appClients"
+import {Route} from "../simpleServer/server/controller"
 
 export type AuthCode = Infer<typeof authCodeSchema>
 
-export const authCodeSchema = createDbObject((z) =>
-  z.object({code: z.string(), email: z.string()})
-)
+export const authCodeSchema = z
+  .object({code: z.string(), email: z.string()})
+  .merge(baseObjectSchema)
 
 const authEndpoints = createBasicMCEndpoints({
   validator: authCodeSchema,
@@ -35,7 +35,7 @@ const authEndpoints = createBasicMCEndpoints({
   }
 })
 
-export const authController = mcController("auth", [
+export const authController: Route<Clients>[] = [
   {path: "/self", method: "get", endpointBuilder: getSelf},
   {
     path: "/login",
@@ -56,4 +56,4 @@ export const authController = mcController("auth", [
     skipAuth: true
   },
   ...authEndpoints
-])
+]

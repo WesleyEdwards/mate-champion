@@ -1,8 +1,7 @@
-import {
-  createBasicMCEndpoints,
-  mcController
-} from "../controllers/serverBuilders"
+import {Clients} from "../controllers/appClients"
+import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 import {ifNotAdmin} from "../levelInfo/level_controller"
+import {Route} from "../simpleServer/server/controller"
 import {createDbObject} from "../simpleServer/validation"
 import {Infer} from "../types"
 import {getTopScores} from "./scoreQueries"
@@ -37,7 +36,7 @@ const basicEndpoints = createBasicMCEndpoints({
   }
 })
 
-export const scoresController = mcController("score", [
+export const scoresController: Route<Clients>[] = [
   ...basicEndpoints,
   {
     path: "/top-scores",
@@ -45,4 +44,4 @@ export const scoresController = mcController("score", [
     endpointBuilder: getTopScores,
     skipAuth: true
   }
-])
+]

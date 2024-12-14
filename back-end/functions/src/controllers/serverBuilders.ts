@@ -7,23 +7,18 @@ import {
 import {EndpointBuilderType} from "../simpleServer/server/controller"
 import {buildQuery} from "../simpleServer/server/buildQuery"
 import {JWTBody} from "../auth/middleware"
-import {controller, Route} from "../simpleServer/server/controller"
 import {SafeParsable} from "../simpleServer/validation"
 
 export type MCAuth = {jwtBody?: JWTBody}
 
 export function buildMCQuery<T>(params: {
   validator?: SafeParsable<T>
-  fun: EndpointBuilderType<T, Clients>
+  fun: EndpointBuilderType<Clients, T>
 }) {
-  return buildQuery<T, Clients>(params)
+  return buildQuery<Clients, T>(params)
 }
 export function createBasicMCEndpoints<T extends HasId>(
-  params: BuilderParams<T, Clients>
+  params: BuilderParams<Clients, T>
 ) {
-  return createBasicEndpoints<T, Clients>(params)
-}
-
-export const mcController = (path: string, routes: Route<any, Clients>[]) => {
-  return controller(path, routes)
+  return createBasicEndpoints<Clients, T>(params)
 }
