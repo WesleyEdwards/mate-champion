@@ -22,12 +22,12 @@ export const usersController = createBasicMCEndpoints({
   endpoint: (db) => db.user,
   permissions: {
     read: () => ({Always: true}),
-    delete: ifNotAdmin<User>((auth) => ({
-      _id: {Equal: auth.jwtBody?.userId ?? ""}
+    delete: ifNotAdmin<User>(({auth}) => ({
+      _id: {Equal: auth?.userId ?? ""}
     })),
     create: ifNotAdmin<User>(() => ({Never: true})),
-    modify: ifNotAdmin<User>((auth) => ({
-      _id: {Equal: auth.jwtBody?.userId ?? ""}
+    modify: ifNotAdmin<User>(({auth}) => ({
+      _id: {Equal: auth?.userId ?? ""}
     }))
   },
   actions: {

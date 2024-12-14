@@ -24,17 +24,17 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
   validator: levelSchema,
   endpoint: (db) => db.level,
   permissions: {
-    read: ifNotAdmin<LevelInfo>((auth) => ({
-      owner: {Equal: auth.jwtBody?.userId ?? ""}
+    read: ifNotAdmin<LevelInfo>(({auth}) => ({
+      Or: [{owner: {Equal: auth?.userId ?? ""}}, {public: {Equal: true}}]
     })),
-    delete: ifNotAdmin<LevelInfo>((auth) => ({
-      owner: {Equal: auth.jwtBody?.userId ?? ""}
+    delete: ifNotAdmin<LevelInfo>(({auth}) => ({
+      owner: {Equal: auth?.userId ?? ""}
     })),
-    create: ifNotAdmin<LevelInfo>((auth) => ({
-      owner: {Equal: auth.jwtBody?.userId ?? ""}
+    create: ifNotAdmin<LevelInfo>(({auth}) => ({
+      owner: {Equal: auth?.userId ?? ""}
     })),
-    modify: ifNotAdmin<LevelInfo>((auth) => ({
-      owner: {Equal: auth.userId ?? ""}
+    modify: ifNotAdmin<LevelInfo>(({auth}) => ({
+      owner: {Equal: auth?.userId ?? ""}
     }))
   },
   actions: {
@@ -62,7 +62,7 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<any, T>["permissions"]["create"]
+  fun: BuilderParams<Clients, T>["permissions"]["create"]
 ): BuilderParams<Clients, T>["permissions"]["create"] {
   return (c) => {
     if (c.auth?.userType === "Admin") return {Always: true}

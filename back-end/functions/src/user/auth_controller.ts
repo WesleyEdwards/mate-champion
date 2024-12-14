@@ -22,15 +22,15 @@ const authEndpoints = createBasicMCEndpoints({
   validator: authCodeSchema,
   endpoint: (db) => db.authCode,
   permissions: {
-    read: ifNotAdmin<AuthCode>((auth) => ({
-      _id: {Equal: auth.jwtBody?.userId ?? ""}
+    read: ifNotAdmin<AuthCode>(({auth}) => ({
+      _id: {Equal: auth?.userId ?? ""}
     })),
-    delete: ifNotAdmin<AuthCode>((auth) => ({
-      _id: {Equal: auth.jwtBody?.userId ?? ""}
+    delete: ifNotAdmin<AuthCode>(({auth}) => ({
+      _id: {Equal: auth?.userId ?? ""}
     })),
     create: ifNotAdmin<AuthCode>(() => ({Never: true})),
-    modify: ifNotAdmin<AuthCode>((auth) => ({
-      _id: {Equal: auth.jwtBody?.userId ?? ""}
+    modify: ifNotAdmin<AuthCode>(({auth}) => ({
+      _id: {Equal: auth?.userId ?? ""}
     }))
   }
 })

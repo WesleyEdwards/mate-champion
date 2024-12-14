@@ -24,14 +24,14 @@ const basicEndpoints = createBasicMCEndpoints({
   },
   permissions: {
     read: () => ({Always: true}),
-    delete: ifNotAdmin<Score>((auth) => {
-      return {userId: {Equal: auth.jwtBody?.userId ?? ""}}
+    delete: ifNotAdmin<Score>(({auth}) => {
+      return {userId: {Equal: auth?.userId ?? ""}}
     }),
-    create: ifNotAdmin<Score>((auth) => {
-      return {userId: {Equal: auth.jwtBody?.userId ?? ""}}
+    create: ifNotAdmin<Score>(({auth}) => {
+      return {userId: {Equal: auth?.userId ?? ""}}
     }),
-    modify: ifNotAdmin<Score>((auth) => {
-      return {userId: {Equal: auth.jwtBody?.userId ?? ""}}
+    modify: ifNotAdmin<Score>(({auth}) => {
+      return {userId: {Equal: auth?.userId ?? ""}}
     })
   }
 })

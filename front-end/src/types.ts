@@ -26,12 +26,12 @@ export type HasId = {
 }
 
 export type Condition<T> =
-  | {equal: T}
-  | {assign: T}
-  | {inside: T[]}
-  | {or: Array<Condition<T>>}
-  | {and: Array<Condition<T>>}
-  | {always: true}
+  | {Equal: T}
+  | {Assign: T}
+  | {Inside: T[]}
+  | {Or: Array<Condition<T>>}
+  | {And: Array<Condition<T>>}
+  | {Always: true}
   | (T extends object ? {[P in keyof T]?: Condition<T[P]>} : never)
 
 export type TopScore = {

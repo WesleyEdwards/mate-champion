@@ -1,32 +1,11 @@
 import {middleware} from "./auth/middleware"
-import express from "express"
 import {Clients, EmailClient} from "./controllers/appClients"
-import {controller, Route, SInfo} from "./simpleServer/server/controller"
 import {authController} from "./user/auth_controller"
 import {usersController} from "./user/user_controller"
 import {levelsController} from "./levelInfo/level_controller"
 import {levelMapController} from "./levelMap/level_map_controller"
 import {scoresController} from "./score/scoresController"
-
-type ExpressType = ReturnType<typeof express>
-
-abstract class SimplyServer<C extends SInfo> {
-  abstract db: C["db"]
-  controllers: {[K in string]: Route<C>[]} = {}
-
-  middleware: (req: express.Request, skipAuth?: boolean) => C | null = () =>
-    null
-
-  endpoints: (app: ExpressType) => ExpressType = (a) => a
-
-  generateEndpoints = (app: ExpressType) => {
-    for (const [path, routes] of Object.entries(this.controllers)) {
-      controller(path, routes)(app, this.middleware)
-    }
-    this.endpoints(app)
-    return app
-  }
-}
+import {ExpressType, SimplyServer} from "./simpleServer/server/simpleServer"
 
 export class MateServer extends SimplyServer<Clients> {
   db: Clients["db"]

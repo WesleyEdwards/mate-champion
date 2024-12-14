@@ -30,7 +30,7 @@ export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
     if (!user) {
       return setLevels([])
     }
-    api.level.query({public: {equal: true}}).then(setLevels)
+    api.level.query({public: {Equal: true}}).then(setLevels)
   }, [])
 
   return (
