@@ -143,7 +143,6 @@ export const submitAuthCode = buildMCQuery({
 
 export const getSelf = buildQuery<Clients>({
   fun: async ({res, db, auth}) => {
-    console.log("Getting self")
     const user = await db.user.findOne({
       _id: {Equal: auth?.userId || ""}
     })

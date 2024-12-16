@@ -97,7 +97,7 @@ const getBuilder = <T extends HasId, C extends SInfo>(
         return res.status(404).json(item)
       }
 
-      return res.json(info.actions?.prepareResponse?.(item.data) ?? item)
+      return res.json(info.actions?.prepareResponse?.(item.data) ?? item.data)
     }
   })
 
@@ -107,13 +107,10 @@ const queryBuilder = <T extends HasId, C extends SInfo>(
   buildQuery({
     validator: createConditionSchema(info.validator),
     fun: async ({req, res, ...rest}) => {
-      console.log("Querying")
       const client = rest as C
-      console.log("client", client)
       const query = info.permissions.read(client) ?? {Always: true}
 
       const fullQuery = {And: [req.body, query]}
-      console.log("fullQuery", fullQuery)
 
       const items = await info.endpoint(client.db).findMany(fullQuery)
       return res.json(
@@ -192,7 +189,6 @@ const deleteBuilder = <T extends HasId, C extends SInfo>(
     fun: async ({req, res, ...rest}) => {
       const client = rest as C
 
-      console.log("Deleting ", req.params.id)
       if (!req.params.id) {
         return res.status(400).json({error: "Provide a valid id"})
       }

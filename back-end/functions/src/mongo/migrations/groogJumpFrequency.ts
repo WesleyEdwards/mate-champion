@@ -41,7 +41,6 @@ export const groogJumpFrequency: MigrationFun = async (db) => {
 
   // for (const levelRaw of allLevels) {
   //   const level = levelRaw as any
-  //   console.log("Fixing ", levelRaw._id)
   //   await levelCollection.updateOne(
   //     {_id: level._id as any},
   //     {
@@ -58,16 +57,12 @@ export const groogJumpFrequency: MigrationFun = async (db) => {
   // }
 }
 export const groogJumpFrequencyCleanup: MigrationFun = async (db) => {
-  console.log("About to begin")
   const levelCollection = db.collection("levelMap")
-  console.log("levelColl")
 
   const allLevels = await levelCollection.find({}).toArray()
 
-  console.log("all levels", allLevels.length)
   for (const levelRaw of allLevels) {
     const level: OldLevelMap = levelRaw as any
-    console.log("Fixing ", levelRaw._id)
     await levelCollection.updateOne(
       {_id: (level as any)._id as any},
       {

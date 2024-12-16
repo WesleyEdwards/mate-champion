@@ -60,7 +60,10 @@ export const getLevelMap = buildMCQuery({
       return res.status(404).json("Cant access")
     }
     const levelMap = await db.levelMap.findOne({_id: {Equal: params.id}})
-    return res.json(levelMap)
+    if (levelMap.success === false) {
+      return res.status(400).json(levelMap.error)
+    }
+    return res.json(levelMap.data)
   }
 })
 
@@ -82,16 +85,16 @@ export const modifyLevelMap = buildMCQuery({
       return res.status(404).json("Level map not found")
     }
     const levelMapPartial = checkPartialValidation(
-      {
-        ...body,
-        level: params.id
-      },
+      {...body, level: params.id},
       levelMapSchema
     )
     if (isParseError(levelMapPartial))
       return res.status(400).json(levelMapPartial)
 
     const updatedLevel = await db.levelMap.updateOne(params.id, levelMapPartial)
+    if (updatedLevel.success === false) {
+      return res.status(400).json(updatedLevel.error)
+    }
 
     return res.json(updatedLevel)
   }
