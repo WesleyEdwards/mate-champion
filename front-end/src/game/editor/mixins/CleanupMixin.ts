@@ -56,6 +56,7 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
         this.userInput.copy = false
       }
 
+      this.userInput.mouseUp.prev = this.userInput.mouseUp.curr
       this.userInput.mouseUp.curr = null
 
       // reconcile colors

@@ -96,7 +96,7 @@ export const modifyLevelMap = buildMCQuery({
       return res.status(400).json(updatedLevel.error)
     }
 
-    return res.json(updatedLevel)
+    return res.json(updatedLevel.data)
   }
 })
 

@@ -20,8 +20,9 @@ export function InputMixin<T extends WithCamera>(Base: T) {
           typeof obj === "string" ||
           obj === undefined ||
           typeof obj === "boolean"
-        )
+        ) {
           return
+        }
         if (typeof obj.curr === "boolean") {
           obj.prev = obj.curr
         } else {
@@ -33,7 +34,9 @@ export function InputMixin<T extends WithCamera>(Base: T) {
         }
       })
 
-      this.userInput.undo = getGlobalEditing().action
+      if (!this.userInput.undo) {
+        this.userInput.undo = getGlobalEditing().action
+      }
       setGlobalEditing("action", undefined)
 
       if (this.state.timers.sinceLastUndoRedo.val > 200) {

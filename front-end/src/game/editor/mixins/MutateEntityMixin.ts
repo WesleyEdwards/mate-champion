@@ -141,7 +141,7 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
     private addEntityToState = () => {
       const shouldAddEntity =
         this.userInput.ctrl.curr &&
-        this.justPutMouseDown() &&
+        // this.justPutMouseDown() &&
         this.hoveringEntities.size === 0 &&
         this.moving === null
 
@@ -152,7 +152,7 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
 
       const toAdd = getGlobalEditing().addingEntity.type ?? "platform"
 
-      const entity = addable[toAdd]
+      const entity = addableEntity(toAdd)
       const pos = this.userInput.mouseUp.curr
 
       const center: Coors = [
@@ -170,18 +170,19 @@ export function MutateEntityMixin<T extends WithCamera>(Base: T) {
   }
 }
 
-const addable: Record<AddableEntity, Entity> = {
-  groog: new Groog({
-    moveSpeed: 0.3,
-    position: [0, 0],
-    timeBetweenJump: 2000,
-    timeBetweenTurn: 3000
-  }),
-  floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
-  platform: new Platform({
-    color: window?.editor?.addingEntity?.baseColor ?? "springgreen",
-    position: [0, 0],
-    dimensions: [300, platformConst.defaultHeight]
-  }),
-  ammo: new Ammo([0, 0])
-}
+const addableEntity = (type: AddableEntity): Entity =>
+  ({
+    groog: new Groog({
+      moveSpeed: 0.3,
+      position: [0, 0],
+      timeBetweenJump: 2000,
+      timeBetweenTurn: 3000
+    }),
+    floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
+    platform: new Platform({
+      color: window?.editor?.addingEntity?.baseColor ?? "springgreen",
+      position: [0, 0],
+      dimensions: [300, platformConst.defaultHeight]
+    }),
+    ammo: new Ammo([0, 0])
+  })[type]
