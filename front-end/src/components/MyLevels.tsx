@@ -5,7 +5,7 @@ import {useLevelContext} from "../hooks/useLevels"
 import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
 import {ListComponent, scrollbarProps} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
-import {LevelInfo} from "../game/loopShared/models"
+import {LevelInfo} from "../api/serverModels"
 import {useAuthContext} from "../hooks/useAuth"
 import {CreateNewLevel} from "./CreateNewLevel"
 

@@ -1,5 +1,5 @@
-import {LevelInfo, LevelMap} from "../game/loopShared/models"
-import {User, LoginBody, Condition, Score} from "../types"
+import {LevelInfo, LevelMap} from "./serverModels"
+import {User, LoginBody, Condition, Score} from "./types"
 import {Api} from "./Api"
 
 export class ApiCache implements Api {

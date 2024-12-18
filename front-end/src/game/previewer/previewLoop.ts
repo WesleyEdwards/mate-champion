@@ -1,5 +1,5 @@
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
-import {LevelMap} from "../loopShared/models"
+import {LevelMap} from "../../api/serverModels"
 import {GamePreviewer} from "./GamePreviewer"
 
 export function enterGameLoopPreview(level: LevelMap) {

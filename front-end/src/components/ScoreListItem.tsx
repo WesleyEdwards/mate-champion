@@ -1,6 +1,6 @@
 import {FC} from "react"
 import {Stack, Typography} from "@mui/joy"
-import {TopScore} from "../types"
+import {TopScore} from "../api/types"
 
 export const ScoreListItem: FC<{
   score: TopScore

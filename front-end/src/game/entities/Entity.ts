@@ -1,6 +1,6 @@
 import {toCurrAndPrev} from "../helpers"
-import {PlayStats} from "../loopShared/models"
 import {generateRandomInt} from "../loopShared/utils"
+import {PlayStats} from "../state/models"
 import {EntityType, CurrAndPrev, Coors, Constructor} from "./entityTypes"
 
 export type BaseEntityProps = {
@@ -30,7 +30,6 @@ export interface Entity {
 }
 
 export type EntityConstructor = Constructor<BaseEntity>
-
 
 export class BaseEntity {
   id: string

@@ -1,5 +1,5 @@
 import {abortController, resetAbortController} from "../editor/eventListeners"
-import {Keys} from "./models"
+import {Keys} from "../state/models"
 
 const initialKeyStatus: Keys = {
   up: false,

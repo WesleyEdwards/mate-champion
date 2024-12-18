@@ -1,4 +1,4 @@
-import {LevelMap} from "../loopShared/models"
+import {LevelMap} from "../../api/serverModels"
 import {GameStateProps} from "../entities/entityTypes"
 import {initGameState, levelToEntities} from "../helpers"
 import {renderBg} from "../render/background"

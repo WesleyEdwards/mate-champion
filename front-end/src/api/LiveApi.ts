@@ -1,5 +1,5 @@
-import {LevelInfo, LevelMap} from "../game/loopShared/models"
-import {User, LoginBody, Condition, Score, TopScore} from "../types"
+import {LevelInfo, LevelMap} from "./serverModels"
+import {User, LoginBody, Condition, Score, TopScore} from "./types"
 import {Api} from "./Api"
 import {localStorageManager} from "./localStorageManager"
 

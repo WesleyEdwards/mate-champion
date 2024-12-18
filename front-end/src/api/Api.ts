@@ -1,4 +1,4 @@
-import {LevelInfo, LevelMap} from "../game/loopShared/models"
+import {LevelInfo, LevelMap} from "./serverModels"
 import {
   User,
   LoginBody,
@@ -6,7 +6,7 @@ import {
   Score,
   TopScore,
   LoginResponse
-} from "../types"
+} from "./types"
 
 export interface Api {
   type: "cache" | "server" | "unauth"

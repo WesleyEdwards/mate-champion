@@ -1,7 +1,7 @@
 import {FC, useEffect, useState} from "react"
 import {ScoreListItem} from "./ScoreListItem"
 import {Alert, Divider, Skeleton, Stack, Typography} from "@mui/joy"
-import {TopScore} from "../types"
+import {TopScore} from "../api/types"
 import {useAuthContext} from "../hooks/useAuth"
 import {localStorageManager} from "../api/localStorageManager"
 import {PageStack, ScreenProps} from "./GameEntry"

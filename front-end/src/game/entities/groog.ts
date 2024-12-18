@@ -8,7 +8,7 @@ import {
 import {TimerUp, TimerDown, emptyTime, updateTimers} from "../state/timeHelpers"
 import {Champ} from "./champ/champ"
 import {GRAVITY} from "../loopShared/constants"
-import {GroogInfo} from "../loopShared/models"
+import {GroogInfo} from "../../api/serverModels"
 import {BaseEntity, Entity} from "./Entity"
 import {WithVelocity} from "./VelocityMixin"
 import {Coors} from "./entityTypes"

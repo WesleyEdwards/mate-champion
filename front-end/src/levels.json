@@ -7,17 +7,17 @@
     "floors": [
       {
         "x": -500,
-        "width": 7000,
-        "color": "green"
+        "width": 7000
       }
     ],
     "platforms": [
       {
         "dimensions": [300, 270],
         "position": [630, 350],
-        "color": "springgreen"
+        "color": "green"
       }
     ],
-    "champInitPos": [400, 400]
+    "champInitPos": [400, 400],
+    "platformColor": "green"
   }
 ]

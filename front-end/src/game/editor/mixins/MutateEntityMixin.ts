@@ -3,9 +3,9 @@ import {Ammo} from "../../entities/Ammo"
 import {Entity} from "../../entities/Entity"
 import {Coors} from "../../entities/entityTypes"
 import {Groog} from "../../entities/groog"
-import {Floor, Platform, floorConst} from "../../entities/platform"
+import {Floor, Platform} from "../../entities/platform"
 import {toCurrAndPrev} from "../../helpers"
-import {platformConst} from "../../loopShared/constants"
+import {floorConst, platformConst} from "../../loopShared/constants"
 import {
   areEqual,
   differenceBetween,
@@ -178,7 +178,7 @@ const addableEntity = (type: AddableEntity): Entity =>
       timeBetweenJump: 2000,
       timeBetweenTurn: 3000
     }),
-    floor: new Floor({color: "springgreen", startX: 0, width: 1000}),
+    floor: new Floor({startX: 0, width: 1000}),
     platform: new Platform({
       color: window?.editor?.addingEntity?.baseColor ?? "springgreen",
       position: [0, 0],

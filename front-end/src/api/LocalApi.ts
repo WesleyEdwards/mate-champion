@@ -1,5 +1,5 @@
 import {MyLevels} from "../components/MyLevels"
-import {LevelInfo, LevelMap} from "../game/loopShared/models"
+import {LevelInfo, LevelMap} from "./serverModels"
 import {Api} from "./Api"
 import {LocalStorageKeys} from "./localStorageManager"
 
@@ -63,7 +63,7 @@ export class LocalApi implements Api {
         champInitPos: [400, 400],
         packages: [],
         groog: [],
-        floors: [{x: -500, width: 7000, color: "green"}],
+        floors: [{x: -500, width: 7000}],
         platformColor: "springgreen",
         platforms: []
       })

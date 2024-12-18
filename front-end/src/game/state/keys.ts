@@ -1,5 +1,5 @@
-import {Keys} from "../loopShared/models"
 import {Champ} from "../entities/champ/champ"
+import {Keys} from "./models"
 
 export const updateKeys = (keys: Keys, player: Champ) => {
   if (keys.jump || keys.toJump > 0) {

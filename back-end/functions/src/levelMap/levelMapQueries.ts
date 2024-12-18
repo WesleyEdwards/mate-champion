@@ -36,8 +36,7 @@ export const levelMapSchema = createDbObject((z) =>
     floors: z
       .object({
         x: z.number(),
-        width: z.number(),
-        color: z.string()
+        width: z.number()
       })
       .array()
       .default([])

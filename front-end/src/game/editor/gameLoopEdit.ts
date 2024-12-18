@@ -1,6 +1,6 @@
 import {arraysAreSame} from "../../components/GameEdit/CourseBuilderSettings"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
-import {LevelMap} from "../loopShared/models"
+import {LevelMap} from "../../api/serverModels"
 import {getGlobalEditing, setGlobalEditing} from "./editHelpers"
 import {GameEdit} from "./GameEdit"
 

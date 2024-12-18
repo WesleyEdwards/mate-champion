@@ -1,6 +1,7 @@
-import {LevelMap, PlayStats} from "../loopShared/models"
+import {LevelMap} from "../../api/serverModels"
 import {abortController} from "../editor/eventListeners"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
+import {PlayStats} from "../state/models"
 import {GamePlay} from "./GamePlay"
 
 export type PlayLoopParams = {

@@ -1,5 +1,5 @@
 import {addEventListeners} from "./loopShared/eventListeners"
-import {LevelMap} from "./loopShared/models"
+import {LevelMap} from "../api/serverModels"
 import {Ammo} from "./entities/Ammo"
 import {Coors, CurrAndPrev, GameStateProps} from "./entities/entityTypes"
 import {Groog} from "./entities/groog"
@@ -48,7 +48,7 @@ export const levelToEntities = (level: LevelMap): Entity[] => {
     )
   })
   level.floors.forEach((f) => {
-    entities.push(new Floor({color: f.color, startX: f.x, width: f.width}))
+    entities.push(new Floor({startX: f.x, width: f.width}))
   })
 
   level.groog.forEach((g) => {

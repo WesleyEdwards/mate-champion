@@ -1,4 +1,4 @@
-import {LevelMap} from "../loopShared/models"
+import {LevelMap} from "../../api/serverModels"
 import {Coors, Id} from "../entities/entityTypes"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {Entity} from "../entities/Entity"

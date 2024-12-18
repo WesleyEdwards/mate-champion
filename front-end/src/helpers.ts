@@ -1,5 +1,5 @@
 import _ from "lodash"
-import {LevelMap} from "./game/loopShared/models"
+import {LevelMap} from "./api/serverModels"
 
 export function camelCaseToTitleCase(str: string) {
   return str.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {

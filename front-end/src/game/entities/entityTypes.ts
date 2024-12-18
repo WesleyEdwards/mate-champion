@@ -1,4 +1,4 @@
-import {Keys, PlayStats, WinState} from "../loopShared/models"
+import {Keys, WinState} from "../state/models"
 import {TimerDown, TimerUp} from "../state/timeHelpers"
 import {Ammo} from "./Ammo"
 import {Bullet} from "./bullet"

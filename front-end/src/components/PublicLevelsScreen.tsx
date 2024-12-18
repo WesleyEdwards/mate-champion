@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react"
 import {ScreenProps} from "./GameEntry"
-import {LevelInfo} from "../game/loopShared/models"
+import {LevelInfo} from "../api/serverModels"
 import {Card, IconButton, Stack, Typography} from "@mui/joy"
 import {PlayArrow} from "@mui/icons-material"
 import {useLevelContext} from "../hooks/useLevels"

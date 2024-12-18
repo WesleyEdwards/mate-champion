@@ -18,7 +18,7 @@ import {MCModal} from "./MCModal"
 import {SignInButton} from "./SignInButton"
 import {Construction} from "@mui/icons-material"
 import {gameLoopEdit} from "../game/editor/gameLoopEdit"
-import {LevelMap} from "../game/loopShared/models"
+import {LevelMap} from "../api/serverModels"
 import {useToast} from "../hooks/Toaster"
 
 export const EditLevelDetail: FC = () => {

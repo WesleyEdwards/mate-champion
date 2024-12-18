@@ -14,7 +14,7 @@ import {HomeScreen} from "./HomeScreen"
 import {subHeaders} from "./ViewHeader"
 import {LevelEditorHome} from "./LevelEditorHome"
 import {useNavigator} from "../hooks/UseNavigator"
-import {PlayStats} from "../game/loopShared/models"
+import {PlayStats} from "../game/state/models"
 
 export type MCScreen =
   | "play"

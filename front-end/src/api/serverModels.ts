@@ -1,18 +1,4 @@
-import {Coors} from "../entities/entityTypes"
-
-export type Keys = {
-  up: boolean
-  right: boolean
-  left: boolean
-  down: boolean
-  jump: boolean
-  shoot: boolean
-  shank: boolean
-  toJump: 0 | 1
-  toShoot: 0 | 1
-  toShank: 0 | 1
-  mostRecentX: "left" | "right"
-}
+import {Coors} from "../game/entities/entityTypes"
 
 export type GroogInfo = {
   position: Coors
@@ -36,7 +22,6 @@ export type LevelMap = {
   floors: {
     x: number
     width: number
-    color: string
   }[]
 }
 
@@ -47,13 +32,4 @@ export type LevelInfo = {
   public: boolean
   creatorName: string
   name: string
-}
-
-export type WinState = "lose" | "playing" | "initial" | "nextLevel" | "loseLife"
-
-export type PlayStats = {
-  score: number
-  lives: number
-  level: number
-  ammo: number
 }

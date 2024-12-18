@@ -1,11 +1,11 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react"
 import {Api} from "../api/Api"
-import {LoginBody, User} from "../types"
+import {LoginBody, User} from "../api/types"
 import {LocalStorageKeys, localStorageManager} from "../api/localStorageManager"
 import {LiveApi} from "../api/LiveApi"
 import {ApiCache} from "../api/ApiCache"
 import {LocalApi, StoreItem} from "../api/LocalApi"
-import {LevelInfo, LevelMap} from "../game/loopShared/models"
+import {LevelInfo, LevelMap} from "../api/serverModels"
 
 export type GameMode = "play" | "edit" | "test" | "idle"
 

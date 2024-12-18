@@ -165,7 +165,6 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
           }),
         floor: (old) =>
           new Floor({
-            color: old.color,
             startX: old.posLeft,
             width: old.width
           }),

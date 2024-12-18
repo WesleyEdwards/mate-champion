@@ -6,9 +6,9 @@ import {localStorageManager} from "../api/localStorageManager"
 import {MCScreen} from "./GameEntry"
 import levelsInfo from "../levels.json"
 import {usePauseModalContext} from "../hooks/PauseModalContext"
-import {useLevelContext} from "../hooks/useLevels"
 import {playLoop} from "../game/play/playLoop"
-import {LevelMap, PlayStats} from "../game/loopShared/models"
+import {PlayStats} from "../game/state/models"
+import {LevelMap} from "../api/serverModels"
 
 export const PlayScreen: FC<{
   modifyStats: (newStats: Partial<PlayStats>) => void

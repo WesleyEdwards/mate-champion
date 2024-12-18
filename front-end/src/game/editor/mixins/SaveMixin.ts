@@ -1,6 +1,6 @@
 import {Groog} from "../../entities/groog"
 import {Floor, Platform} from "../../entities/platform"
-import {LevelMap} from "../../loopShared/models"
+import {LevelMap} from "../../../api/serverModels"
 import {WithEvents} from "../GameEdit"
 
 export function SaveMixin<T extends WithEvents>(Base: T) {
@@ -27,8 +27,7 @@ export function SaveMixin<T extends WithEvents>(Base: T) {
           .filter((e) => e.typeId === "floor")
           .map((f) => ({
             x: f.posLeft,
-            width: f.width,
-            color: (f as Floor).color
+            width: f.width
           })),
         platformColor: this.state.prevBaseColor,
         platforms: this.entities

@@ -54,7 +54,7 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
         packages: [],
         groog: [],
         platformColor: "springgreen",
-        floors: [{x: -500, width: 7000, color: "green"}],
+        floors: [{x: -500, width: 7000}],
         platforms: []
       })
     }
