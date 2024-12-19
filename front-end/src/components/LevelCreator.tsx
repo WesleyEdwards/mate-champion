@@ -22,7 +22,7 @@ export const LevelCreator: FC = () => {
   }
 
   return (
-    <Stack justifyContent="flex-start" height="748px" width="300px">
+    <Stack justifyContent="flex-start" height="900px" width="300px">
       <Button
         color="neutral"
         variant="outlined"

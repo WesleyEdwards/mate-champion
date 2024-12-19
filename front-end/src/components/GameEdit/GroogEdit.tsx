@@ -5,13 +5,14 @@ import {
   Stack,
   Option,
   Typography,
-  FormControl,
-  Checkbox
+  Divider,
+  FormHelperText
 } from "@mui/joy"
 import {FC} from "react"
 import grogImg from "../../assets/grog/enemy_walking_single.png"
 import {Groog, groogConst} from "../../game/entities/groog"
 import {MCSlider, NumberInput, SizeControl} from "./helpers"
+import {TimedEvent} from "../../api/serverModels"
 
 export const GroogEdit: FC<{
   groog: Groog
@@ -23,18 +24,16 @@ export const GroogEdit: FC<{
     <Card>
       <CardContent>
         <img
+          src={grogImg}
           style={{
             maxWidth: "50px",
             maxHeight: "50px",
-            width: "100%",
-            marginBottom: "1rem"
+            position: "absolute",
+            marginInline: "190px"
           }}
-          src={grogImg}
         />
-
+        <Typography level="title-lg">Facing</Typography>
         <Stack direction="row" gap="1rem" alignItems="center">
-          <Typography>Facing: </Typography>
-
           <Select
             defaultValue={facing}
             onChange={(e, value) => {
@@ -52,6 +51,9 @@ export const GroogEdit: FC<{
           </Select>
         </Stack>
 
+        {/* <Divider sx={{m: 3}} /> */}
+        <div style={{height: "1rem"}}></div>
+
         <MCSlider
           title="Speed"
           setValue={(value) => {
@@ -65,57 +67,95 @@ export const GroogEdit: FC<{
           max={100}
         />
 
-        <Stack direction="row" alignItems="center" gap="10px">
-          <Typography>Jump every:</Typography>
-          <NumberInput
-            roundTo={0.25}
-            disabled={
-              groog.state.timeBetweenJump === groogConst.noJumpFrequency
+        {/* <Divider sx={{m: 3}} /> */}
+        <div style={{height: "1rem"}}></div>
+
+        <TimedEventEditor
+          timedEvent={groog.state.timeBetweenJump}
+          onChange={(value) => {
+            groog.state.timeBetweenJump = {
+              ...groog.state.timeBetweenJump,
+              ...value
             }
-            num={groog.state.timeBetweenJump / 1000}
-            setNum={(n) => {
-              groog.state.timeBetweenJump = n * 1000
-              return editGroog(groog)
-            }}
-          />
-          <Typography>s</Typography>
-        </Stack>
-        <FormControl>
-          <Checkbox
-            label="Don't jump"
-            checked={groog.state.timeBetweenJump === groogConst.noJumpFrequency}
-            sx={{alignSelf: "end", m: 1}}
-            onChange={(e) => {
-              const p = e.target.checked
-              if (p) {
-                groog.state.timeBetweenJump = groogConst.noJumpFrequency
-              } else {
-                groog.state.timeBetweenJump = 3000
-              }
-              return editGroog(groog)
-            }}
-          />
-        </FormControl>
-        <Stack direction="row" alignItems="center" gap="10px">
-          <Typography>Turn every:</Typography>
-          <NumberInput
-            roundTo={0.25}
-            num={
-              groog.state.timeBetweenTurn === groogConst.noJumpFrequency
-                ? 0
-                : groog.state.timeBetweenTurn === groogConst.minJumpFrequency
-                  ? 0
-                  : groog.state.timeBetweenTurn / 1000
+            editGroog(groog)
+          }}
+          labels={{
+            title: "Jump behavior",
+            frequencyDescription: {
+              Time: `Jump every ${(groog.state.timeBetweenJump.time / 1000).toFixed(0)} s`,
+              Random: "Jump at a random interval",
+              None: "Don't jump"
+            }[groog.state.timeBetweenJump.type]
+          }}
+        />
+
+        {/* <Divider sx={{m: 3}} /> */}
+        <div style={{height: "1rem"}}></div>
+
+        <TimedEventEditor
+          timedEvent={groog.state.timeBetweenTurn}
+          onChange={(value) => {
+            groog.state.timeBetweenTurn = {
+              ...groog.state.timeBetweenTurn,
+              ...value
             }
-            setNum={(n) => {
-              const actual = n === 0 ? groogConst.minJumpFrequency / 1000 : n
-              groog.state.timeBetweenTurn = actual * 1000
-              return editGroog(groog)
-            }}
-          />
-          <Typography>s</Typography>
-        </Stack>
+            editGroog(groog)
+          }}
+          labels={{
+            title: "Turn behavior",
+            frequencyDescription: {
+              Time: `Turn every ${(groog.state.timeBetweenTurn.time / 1000).toFixed(0)} s`,
+              Random: "Turn at a random interval",
+              None: "Don't Turn"
+            }[groog.state.timeBetweenTurn.type]
+          }}
+        />
       </CardContent>
     </Card>
+  )
+}
+
+const TimedEventEditor = ({
+  timedEvent,
+  onChange,
+  labels
+}: {
+  timedEvent: TimedEvent
+  onChange: (c: Partial<TimedEvent>) => void
+  labels: {
+    title: string
+    frequencyDescription: string
+  }
+}) => {
+  return (
+    <>
+      <Typography level="title-lg">{labels.title}</Typography>
+
+      <Stack direction="row" gap="5px" alignItems={"center"}>
+        <Select
+          sx={{width: "10rem"}}
+          defaultValue={timedEvent.type}
+          onChange={(_, value) => {
+            if (value) {
+              onChange({type: value})
+            }
+          }}
+        >
+          <Option value="Time">Timed</Option>
+          <Option value="Random">Random</Option>
+          <Option value="None">None</Option>
+        </Select>
+        <NumberInput
+          roundTo={0.25}
+          disabled={timedEvent.type !== "Time"}
+          num={timedEvent.time / 1000}
+          setNum={(n) => {
+            onChange({time: n * 1000})
+          }}
+        />
+        <Typography>s</Typography>
+      </Stack>
+      <FormHelperText>{labels.frequencyDescription}</FormHelperText>
+    </>
   )
 }

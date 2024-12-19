@@ -2,16 +2,18 @@ import {Condition} from "../simpleServer/condition/condition"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {coors, Infer} from "../types"
 import {
+  baseObjectSchema,
   checkPartialValidation,
-  createDbObject,
   createSchema,
   isParseError
 } from "../simpleServer/validation"
 import {buildMCQuery} from "../controllers/serverBuilders"
+import {z} from "zod"
 
 export type LevelMap = Infer<typeof levelMapSchema>
-export const levelMapSchema = createDbObject((z) =>
-  z.object({
+
+export const levelMapSchema = z
+  .object({
     champInitPos: coors.default([400, 400]),
     packages: coors.array().default([]),
     endPosition: z.number().default(4500),
@@ -19,8 +21,14 @@ export const levelMapSchema = createDbObject((z) =>
       .object({
         position: coors,
         moveSpeed: z.number(),
-        timeBetweenJump: z.number().optional().default(2000),
-        timeBetweenTurn: z.number().optional().default(3000)
+        timeBetweenJump: z.object({
+          time: z.number().default(2000),
+          type: z.enum(["None", "Time", "Random"]).default("Time")
+        }),
+        timeBetweenTurn: z.object({
+          time: z.number().default(3000),
+          type: z.enum(["None", "Time", "Random"]).default("Time")
+        })
       })
       .array()
       .default([]),
@@ -41,7 +49,7 @@ export const levelMapSchema = createDbObject((z) =>
       .array()
       .default([])
   })
-)
+  .merge(baseObjectSchema)
 
 export const getLevelMap = buildMCQuery({
   fun: async ({req, res, db, auth}) => {

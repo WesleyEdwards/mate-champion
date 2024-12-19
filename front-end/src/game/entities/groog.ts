@@ -1,4 +1,4 @@
-import {toCurrAndPrev, calcPlatEntityCollision, areTouching1} from "../helpers"
+import {calcPlatEntityCollision, areTouching1} from "../helpers"
 import {renderGroog} from "../render/groog"
 import {
   GroogAction,
@@ -8,19 +8,19 @@ import {
 import {TimerUp, TimerDown, emptyTime, updateTimers} from "../state/timeHelpers"
 import {Champ} from "./champ/champ"
 import {GRAVITY} from "../loopShared/constants"
-import {GroogInfo} from "../../api/serverModels"
+import {GroogInfo, TimedEvent} from "../../api/serverModels"
 import {BaseEntity, Entity} from "./Entity"
 import {WithVelocity} from "./VelocityMixin"
 import {Coors} from "./entityTypes"
 
 export type GroogState = {
-  timeBetweenTurn: number
-  timeBetweenJump: number
+  timeBetweenTurn:TimedEvent
+  timeBetweenJump: TimedEvent
   timers: {
     sprite: TimerUp
     dyingTimer: TimerDown
-    turnX: TimerUp
-    jump: TimerUp
+    turnX: TimerDown
+    jump: TimerDown
   }
   render: {
     curr: GroogAssetDes
@@ -31,6 +31,7 @@ export type GroogState = {
 class GroogBase extends BaseEntity {
   velocity: Coors
   state: GroogState
+
   constructor(g: GroogInfo) {
     super({
       typeId: "groog",
@@ -45,8 +46,14 @@ class GroogBase extends BaseEntity {
       timers: {
         sprite: emptyTime("up"),
         dyingTimer: emptyTime("down"),
-        turnX: emptyTime("up"),
-        jump: emptyTime("up")
+        turnX: {
+          count: "down",
+          val: nextTurnXTime(g.timeBetweenTurn)
+        },
+        jump: {
+          count: "down",
+          val: nextJumpTime(g.timeBetweenJump)
+        }
       },
       render: {
         curr: "walk"
@@ -55,7 +62,6 @@ class GroogBase extends BaseEntity {
     }
   }
 }
-
 export class Groog extends WithVelocity(GroogBase) implements Entity {
   modifyStatsOnDeath = {score: 10}
 
@@ -68,20 +74,18 @@ export class Groog extends WithVelocity(GroogBase) implements Entity {
     ) {
       this.dead = true
     }
-    if (
-      this.state.render.curr !== "die" &&
-      this.state.timers.turnX.val > this.state.timeBetweenTurn
-    ) {
-      this.state.timers.turnX.val = 0
+    if (this.state.render.curr !== "die" && this.state.timers.turnX.val <= 0) {
+      this.state.timers.turnX.val = nextTurnXTime(this.state.timeBetweenTurn)
       processGroogActionRaw(this, {
         name: "setFacingX",
         dir: this.velocity[0] > 0 ? "left" : "right"
       })
     }
-    if (
-      this.state.timers.jump.val > Math.max(this.state.timeBetweenJump, 700)
-    ) {
-      this.state.timers.jump.val = 0
+    if (this.state.timers.jump.val <= 0) {
+      this.state.timers.jump.val = Math.max(
+        nextJumpTime(this.state.timeBetweenJump),
+        700
+      )
       processGroogActionRaw(this, {name: "jump"})
     }
 
@@ -145,9 +149,22 @@ export const groogConst = {
   killChampDist: 70,
   pointsGainByKilling: 10,
   jumpSpeed: -1.2,
-  dieTimer: 500,
-  minJumpFrequency: 820,
-  noJumpFrequency: 100_000_000
+  dieTimer: 500
 } as const
+
+const nextTurnXTime = (timeBetweenTurn: TimedEvent) => {
+  return {
+    Time: timeBetweenTurn.time,
+    Random: Math.random() * 4000,
+    None: 100_000_000
+  }[timeBetweenTurn.type]
+}
+const nextJumpTime = (timeBetweenJump: TimedEvent) => {
+  return {
+    Time: timeBetweenJump.time,
+    Random: Math.random() * 6000,
+    None: 100_000_000
+  }[timeBetweenJump.type]
+}
 
 export type GroogAssetDes = "walk" | "die" | "rising" | "falling"

@@ -139,7 +139,7 @@ export const MCSlider: FC<{
 }> = ({title, value, setValue: onChange, min, max, incrementBy}) => {
   return (
     <Stack>
-      <Typography level="body-sm">{title}</Typography>
+      <Typography level="title-lg">{title}</Typography>
       <Stack
         direction="row"
         px="10px"

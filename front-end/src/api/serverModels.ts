@@ -1,10 +1,15 @@
 import {Coors} from "../game/entities/entityTypes"
 
+
+export type TimedEvent = {
+  time: number
+  type: "Time" | "None" | "Random"
+}
 export type GroogInfo = {
   position: Coors
   moveSpeed: number
-  timeBetweenJump: number
-  timeBetweenTurn: number
+  timeBetweenJump: TimedEvent
+  timeBetweenTurn: TimedEvent
 }
 
 export type LevelMap = {
