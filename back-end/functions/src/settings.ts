@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 
-dotenv.config({path: `.env.${process.env.NODE_ENV || "prod"}`})
+dotenv.config({path: `.env.${process.env.NODE_ENV || "production"}`})
 
 console.log("NODE_ENV is", process.env.NODE_ENV)
 
