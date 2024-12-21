@@ -7,6 +7,7 @@ import {
 } from "./migrations/groogJumpFrequency"
 import {groogJumpRandomMigration} from "./migrations/groogJumpRandom"
 import {groogJumpNoneMigration} from "./migrations/groogJumpNone"
+import {platformPosY} from "./migrations/platformPosY"
 
 export type MigrationFun = (db: Db) => Promise<unknown>
 
@@ -19,6 +20,7 @@ export async function runMigrations(db: Db): Promise<unknown> {
   await migrationFun("groogJumpFrequencyCleanup", db, groogJumpFrequencyCleanup)
   await migrationFun("groogJumpRandomMigration", db, groogJumpRandomMigration)
   await migrationFun("groogJumpNoneMigration", db, groogJumpNoneMigration)
+  await migrationFun("platformPosY", db, platformPosY)
   return true
 }
 
