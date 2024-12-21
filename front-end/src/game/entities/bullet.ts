@@ -11,11 +11,11 @@ export const mBulletConst = {
   dimensions: [24, 24],
   drawDimensions: [42, 24],
   speed: 0.9,
-  distUntilDud: 800,
+  distUntilDud: 1200,
   distFromOppHit: 40
 } as const
 
-class BulletBase extends (BaseEntity) {
+class BulletBase extends BaseEntity {
   velocity: Coors
   initPos: Coors
 
@@ -30,7 +30,7 @@ class BulletBase extends (BaseEntity) {
   }
 }
 
-export class Bullet extends WithVelocity(BulletBase) {
+export class Bullet extends WithVelocity(BulletBase) implements Entity {
   timers: {timeAlive: TimerUp} = {timeAlive: emptyTime("up")}
 
   step: Entity["step"] = (deltaT) => {
@@ -38,7 +38,7 @@ export class Bullet extends WithVelocity(BulletBase) {
     if (
       distBetween(this.initPos, this.position.curr) > mBulletConst.distUntilDud
     ) {
-      this.dead = true
+      this.dead = {count: "down", val: 0}
     }
   }
 
@@ -83,7 +83,7 @@ export class Bullet extends WithVelocity(BulletBase) {
         if (e.state.render.curr === "die") continue
         if (areEntitiesTouching(this, e)) {
           e.state.queueActions.push({name: "die"})
-          this.dead = true
+          this.dead = emptyTime("down", 0)
         }
       }
     }

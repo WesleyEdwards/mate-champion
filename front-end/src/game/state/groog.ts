@@ -1,6 +1,7 @@
 import {GRAVITY} from "../loopShared/constants"
 import {Groog, GroogState, groogConst} from "../entities/groog"
 import {ActionMap, UpdateFun} from "./helpers"
+import { emptyTime } from "./timeHelpers"
 
 type GroogDirX = "left" | "right"
 
@@ -15,7 +16,7 @@ const processActionMap: ActionMap<GroogAction, Groog> = {
   die: (g, _) => {
     if (g.state.render.curr === "die") return
     g.state.render.curr = "die"
-    g.state.timers.dyingTimer.val = groogConst.dieTimer
+    g.dead = emptyTime("down")
     g.state.timers.sprite.val = 0
   },
   jump: (g, _) => {

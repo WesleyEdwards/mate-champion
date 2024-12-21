@@ -1,9 +1,51 @@
 [
   {
-    "_id": "19af854a-3b5b-4100-b1d7-2513359dd00b",
+    "_id": "beee5726-599e-41f2-b8d5-f2e3f43ad82b",
+    "champInitPos": [420, 610],
     "endPosition": 4500,
-    "packages": [],
-    "groog": [],
+    "packages": [
+      [690, 450],
+      [830, 450]
+    ],
+    "groog": [
+      {
+        "position": [890, 590],
+        "moveSpeed": 0.15,
+        "timeBetweenJump": {
+          "time": 1000,
+          "type": "Time"
+        },
+        "timeBetweenTurn": {
+          "time": 2000,
+          "type": "Time"
+        }
+      },
+      {
+        "position": [2010, 570],
+        "moveSpeed": 0.3,
+        "timeBetweenJump": {
+          "time": 2000,
+          "type": "Time"
+        },
+        "timeBetweenTurn": {
+          "time": 3000,
+          "type": "Time"
+        }
+      },
+      {
+        "position": [2160, 580],
+        "moveSpeed": 0.3,
+        "timeBetweenJump": {
+          "time": 4000,
+          "type": "Time"
+        },
+        "timeBetweenTurn": {
+          "time": 3000,
+          "type": "Time"
+        }
+      }
+    ],
+    "platformColor": "springgreen",
     "floors": [
       {
         "x": -500,
@@ -12,12 +54,20 @@
     ],
     "platforms": [
       {
-        "dimensions": [300, 270],
-        "position": [630, 350],
-        "color": "green"
+        "dimensions": [230, 40],
+        "position": [1050, 520],
+        "color": "springgreen"
+      },
+      {
+        "dimensions": [300, 40],
+        "position": [1330, 420],
+        "color": "springgreen"
+      },
+      {
+        "dimensions": [300, 40],
+        "position": [1470, 310],
+        "color": "springgreen"
       }
-    ],
-    "champInitPos": [400, 400],
-    "platformColor": "green"
+    ]
   }
 ]

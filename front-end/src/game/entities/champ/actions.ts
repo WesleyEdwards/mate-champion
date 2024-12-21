@@ -4,6 +4,7 @@ import {ActionMap} from "../../state/helpers"
 import {Coors} from "../entityTypes"
 import {mBulletConst} from "../bullet"
 import {WithVelType} from "../VelocityMixin"
+import { emptyTime } from "../../state/timeHelpers"
 
 export type ChampAction =
   | {name: "moveX"; dir: "left" | "right"}
@@ -94,6 +95,6 @@ export const processActionMap: ActionMap<
     p.position.curr[0] = act.x
   },
   kill: (p, act) => {
-    p.dead = true
+    p.dead = emptyTime("down", 0)
   }
 }

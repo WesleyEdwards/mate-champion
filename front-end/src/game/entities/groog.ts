@@ -14,11 +14,11 @@ import {WithVelocity} from "./VelocityMixin"
 import {Coors} from "./entityTypes"
 
 export type GroogState = {
-  timeBetweenTurn:TimedEvent
+  timeBetweenTurn: TimedEvent
   timeBetweenJump: TimedEvent
   timers: {
     sprite: TimerUp
-    dyingTimer: TimerDown
+    // dyingTimer: TimerDown
     turnX: TimerDown
     jump: TimerDown
   }
@@ -45,7 +45,7 @@ class GroogBase extends BaseEntity {
       timeBetweenJump: g.timeBetweenJump,
       timers: {
         sprite: emptyTime("up"),
-        dyingTimer: emptyTime("down"),
+        // dyingTimer: emptyTime("down"),
         turnX: {
           count: "down",
           val: nextTurnXTime(g.timeBetweenTurn)
@@ -68,12 +68,12 @@ export class Groog extends WithVelocity(GroogBase) implements Entity {
   step: Entity["step"] = (deltaT) => {
     updateTimers(this.state.timers, deltaT)
     this.move(deltaT)
-    if (
-      this.state.render.curr === "die" &&
-      this.state.timers.dyingTimer.val <= 0
-    ) {
-      this.dead = true
-    }
+    // if (
+    //   this.state.render.curr === "die" &&
+    //   this.state.timers.dyingTimer.val <= 0
+    // ) {
+    //   this.dead = true
+    // }
     if (this.state.render.curr !== "die" && this.state.timers.turnX.val <= 0) {
       this.state.timers.turnX.val = nextTurnXTime(this.state.timeBetweenTurn)
       processGroogActionRaw(this, {
@@ -116,15 +116,9 @@ export class Groog extends WithVelocity(GroogBase) implements Entity {
             y: top,
             onEntity: true
           })
-          if (this.posRight > entity.posRight) {
-            this.velocity[0] = -Math.abs(this.velocity[0])
-          }
-          if (this.posLeft < entity.posLeft) {
-            this.velocity[0] = Math.abs(this.velocity[0])
-          }
         }
       }
-      if (this.state.timers.dyingTimer.val > 0) {
+      if (!!this.dead) {
         continue
       }
       if (entity.typeId === "player") {
@@ -153,11 +147,13 @@ export const groogConst = {
 } as const
 
 const nextTurnXTime = (timeBetweenTurn: TimedEvent) => {
-  return {
+  const map = {
     Time: timeBetweenTurn.time,
     Random: Math.random() * 4000,
     None: 100_000_000
-  }[timeBetweenTurn.type]
+  }
+
+  return map[timeBetweenTurn.type]
 }
 const nextJumpTime = (timeBetweenJump: TimedEvent) => {
   return {

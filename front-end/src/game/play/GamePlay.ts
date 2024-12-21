@@ -8,6 +8,7 @@ import {
   gameStateConst,
   initGameState,
   levelToEntities,
+  toCurrAndPrev,
   uiIsDirty,
   updateStats
 } from "../helpers"
@@ -16,6 +17,7 @@ import {updateTime} from "../state/helpers"
 import {EndGate} from "../entities/endGate"
 import {PlayLoopParams} from "./playLoop"
 import {Entity} from "../entities/Entity"
+import {createInfoTextFromStats, InfoText} from "../entities/infoText"
 
 export class GamePlay {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])
@@ -82,14 +84,27 @@ export class GamePlay {
 
     if (this.state.entities.some((e) => e.dead)) {
       const dead = this.state.entities.filter((e) => e.dead)
-      this.state.entities = this.state.entities.filter((e) => !e.dead)
-      for (const d of dead) {
-        if (d.modifyStatsOnDeath) {
-          for (const [k, v] of Object.entries(d.modifyStatsOnDeath)) {
-            if (v) this.state.stats[k].curr += v
+      this.state.entities = this.state.entities.filter((e) => {
+        return e.dead === false || e.dead.val > 0
+      })
+      for (const dying of dead) {
+        if (dying.dead) {
+          dying.dead.val -= this.state.time.deltaT
+        }
+        if (dying.modifyStatsOnDeath) {
+          const mod = dying.modifyStatsOnDeath
+          dying.modifyStatsOnDeath = undefined
+          for (const [k, v] of Object.entries(mod)) {
+            if (v) {
+              this.state.stats[k].curr += v
+              const params = createInfoTextFromStats(k, v, dying)
+              this.state.entities.push(
+                new InfoText(params)
+              )
+            }
           }
         }
-        this.gridHash.removeClient(d)
+        this.gridHash.removeClient(dying)
       }
     }
   }

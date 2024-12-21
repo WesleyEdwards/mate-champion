@@ -6,10 +6,10 @@ export type TimerDown = {count: "down"; val: number}
 export type Timer = TimerUp | TimerDown
 
 export function emptyTime(count: "up"): TimerUp
-export function emptyTime(count: "down"): TimerDown
+export function emptyTime(count: "down", value?: number): TimerDown
 
-export function emptyTime(count: "up" | "down"): Timer {
-  return {count: count, val: 0}
+export function emptyTime(count: "up" | "down", value?: number): Timer {
+  return {count: count, val: value ?? 0}
 }
 
 /**

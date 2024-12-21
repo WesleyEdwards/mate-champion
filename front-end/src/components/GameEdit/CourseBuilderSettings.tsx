@@ -12,9 +12,15 @@ import {FloorEditor} from "./FloorEdit"
 import {Entity} from "../../game/entities/Entity"
 import {getGlobalEditing} from "../../game/editor/editHelpers"
 
-export type EditableEntity = Exclude<EntityType, "player" | "bullet">
+export type EditableEntity = Exclude<
+  EntityType,
+  "player" | "bullet" | "infoText"
+>
 
-export type AddableEntity = Exclude<EntityType, "player" | "bullet" | "endGate">
+export type AddableEntity = Exclude<
+  EntityType,
+  "player" | "bullet" | "endGate" | "infoText"
+>
 
 export type Adding = {
   type: AddableEntity | undefined

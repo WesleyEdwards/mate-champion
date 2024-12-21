@@ -1,7 +1,7 @@
 import _ from "lodash"
 import {champConst, ChampBase} from "./champ"
 import {Entity} from "../Entity"
-import {updateTimers} from "../../state/timeHelpers"
+import {emptyTime, updateTimers} from "../../state/timeHelpers"
 import {getChampSpritesInfo} from "./spriteInfo"
 import {ChampAction, processActionMap} from "./actions"
 import {WithVelType} from "../VelocityMixin"
@@ -33,7 +33,7 @@ export function StepChamp<TBase extends WithVelType<ChampBase>>(Base: TBase) {
       }
 
       if (this.position.curr[1] > 1000) {
-        this.dead = true
+        this.dead = emptyTime("down", 0)
       }
 
       this.handleChampActions()

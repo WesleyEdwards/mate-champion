@@ -6,6 +6,7 @@ import {Champ} from "./champ/champ"
 import {EndGate} from "./endGate"
 import {Entity} from "./Entity"
 import {Groog} from "./groog"
+import {InfoText} from "./infoText"
 import {Floor, Platform} from "./platform"
 
 export type GameStateProps = {
@@ -36,6 +37,7 @@ export type EntityType =
   | "bullet"
   | "ammo"
   | "endGate"
+  | "infoText"
 
 export type EntityOfType = {
   player: Champ
@@ -45,6 +47,7 @@ export type EntityOfType = {
   bullet: Bullet
   ammo: Ammo
   endGate: EndGate
+  infoText: InfoText
 }
 
 export type Constructor<T = {}> = new (...args: any[]) => T

@@ -1,6 +1,7 @@
 import {toCurrAndPrev} from "../helpers"
 import {generateRandomInt} from "../loopShared/utils"
 import {PlayStats} from "../state/models"
+import { TimerDown } from "../state/timeHelpers"
 import {EntityType, CurrAndPrev, Coors, Constructor} from "./entityTypes"
 
 export type BaseEntityProps = {
@@ -14,7 +15,9 @@ export interface Entity {
   typeId: EntityType
   position: CurrAndPrev
   dimensions: Coors
-  dead: boolean
+  // Start a timer counting down. Once it reaches 0, remove from game play
+  // This way, it can still be rendered while dying.
+  dead: false | TimerDown
 
   posLeft: number
   posRight: number
@@ -36,7 +39,7 @@ export class BaseEntity {
   typeId: EntityType
   position: CurrAndPrev
   dimensions: Coors
-  dead = false
+  dead: false | TimerDown = false
 
   constructor(params: BaseEntityProps) {
     this.id = `${params.typeId}-${generateRandomInt(0, 10000)}`

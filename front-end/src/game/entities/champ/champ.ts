@@ -134,7 +134,7 @@ export class Champ
       }
       if (entity instanceof Ammo) {
         if (areTouching1(this.position.curr, entity.position.curr, 100)) {
-          entity.dead = true
+          entity.dead = emptyTime("down", 0)
         }
       }
     }

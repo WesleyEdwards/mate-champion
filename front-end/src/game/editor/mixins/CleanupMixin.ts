@@ -148,6 +148,7 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
         e.typeId === "endGate" ||
         e.typeId === "player" ||
         e.typeId === "floor" ||
+        e.typeId === "infoText" ||
         e.typeId === "bullet"
       ) {
         return undefined
