@@ -1,6 +1,6 @@
 import {z, ZodIssue, ZodObject, ZodRawShape} from "zod"
 import {v4 as uuidv4} from "uuid"
-import { MaybeError } from "./DbClient"
+import {MaybeError} from "./DbClient"
 
 export const baseObjectSchema = z.object({
   _id: z.string().uuid().default(uuidv4)
@@ -17,16 +17,16 @@ export const createSchema = <T extends ZodRawShape>(
 export type ParseError = {error: Partial<ZodIssue>}
 
 export type SafeParsable<T> = {
-  safeParse: (
-    obj: any
-  ) => MaybeError<T>
+  safeParse: (obj: any) => MaybeError<T>
 }
 
 export function checkValidSchema<T>(
   body: any,
   schema: SafeParsable<T>
 ): T | ParseError {
+  console.log("Schema", schema)
   const result = schema.safeParse(body)
+  console.log("result", result)
   if (result.success) return result.data
   return {
     error: result.error?.issues?.at(0) ?? {

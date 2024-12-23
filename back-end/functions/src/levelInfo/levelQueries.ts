@@ -6,8 +6,12 @@ import {LevelInfo, levelSchema} from "./level_controller"
 export const importLevels = buildMCQuery({
   validator: createSchema((z) =>
     z.object({
-      levels: z.array(levelSchema),
-      maps: z.array(levelMapSchema)
+      toImport: z
+        .object({
+          level: levelSchema,
+          map: levelMapSchema
+        })
+        .array()
     })
   ),
   fun: async ({req, res, db, auth}) => {
@@ -17,13 +21,13 @@ export const importLevels = buildMCQuery({
       return res.json(404).json({error: "User not found"})
     }
 
-    const updateLevels: LevelInfo[] = body.levels.map((level) => ({
-      ...level,
+    const updateLevels: LevelInfo[] = body.toImport.map((level) => ({
+      ...level.level,
       creatorName: creator.data.name,
       owner: creator.data._id
     }))
-    const updateMaps: LevelMap[] = body.maps.map((map) => ({
-      ...map
+    const updateMaps: LevelMap[] = body.toImport.map((map) => ({
+      ...map.map
     }))
 
     let successes = 0

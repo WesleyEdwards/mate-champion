@@ -1,17 +1,19 @@
-import {ArrowBack} from "@mui/icons-material"
-import {Stack, Divider, Button, Input, Alert, Typography} from "@mui/joy"
+import {Button, Input, Alert, Typography} from "@mui/joy"
 import {FC, useState} from "react"
 import {useAuthContext} from "../hooks/useAuth"
-import {MCScreen, PageStack, ScreenProps} from "./GameEntry"
+import {PageStack, ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
+import {useLocalStorage} from "../hooks/useLocalStorageValue"
+import {useToast} from "../hooks/Toaster"
 
 export const Login: FC<ScreenProps> = () => {
   const {login, api} = useAuthContext()
-  const {resetStack} = useNavigator()
+  const {resetStack, navigateTo} = useNavigator()
 
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useLocalStorage("user-email", "")
   const [identifier, setIdentifier] = useState("")
   const [code, setCode] = useState("")
+  const toast = useToast()
 
   const [error, setError] = useState<string>("")
 
@@ -20,15 +22,28 @@ export const Login: FC<ScreenProps> = () => {
   const submit = async () => {
     if (identifier && email && code) {
       setSubmitting(true)
-      await login({email, code})
+      try {
+        await login({email, code: code.trim()})
+        resetStack()
+        toast({
+          message: "Successfully logged in",
+          color: "success"
+        })
+      } catch {
+        setError("Invalid code, try again")
+      }
       setSubmitting(false)
-      resetStack()
       return
     }
-    if (email) {
-      api.auth.sendAuthCode({email}).then((res) => {
-        setIdentifier(res.identifier)
-      })
+    if (email && !identifier) {
+      api.auth
+        .sendAuthCode({email})
+        .then((res) => {
+          setIdentifier(res.identifier)
+        })
+        .catch(() => {
+          navigateTo("createAccount", true)
+        })
     }
   }
 
@@ -68,7 +83,11 @@ export const Login: FC<ScreenProps> = () => {
             </>
           )
         })()}
-        <Button loading={submitting} type="submit">
+        <Button
+          loading={submitting}
+          type="submit"
+          disabled={identifier ? !code : !email}
+        >
           {identifier ? "Submit" : "Send Code"}
         </Button>
 
@@ -77,52 +96,3 @@ export const Login: FC<ScreenProps> = () => {
     </form>
   )
 }
-// export const Login: FC<ScreenProps> = () => {
-//   const {login} = useAuthContext()
-//   const {resetStack} = useNavigator()
-
-//   const [email, setEmail] = useState("")
-//   const [password, setPassword] = useState("")
-//   const [error, setError] = useState<string>("")
-
-//   const [submitting, setSubmitting] = useState<boolean>(false)
-
-//   const submit = async () => {
-//     if (!email || !password) {
-//       setError("Please enter a username and password")
-//       return
-//     }
-//     setSubmitting(true)
-//     await login({email, password})
-//     setSubmitting(false)
-//     resetStack()
-//   }
-
-//   return (
-//     <form
-//       onSubmit={(e) => {
-//         e.preventDefault()
-//         return submit()
-//       }}
-//     >
-//       <PageStack>
-//         <Input
-//           placeholder="Email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//         />
-//         <Input
-//           placeholder="Password"
-//           type="password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//         />
-//         <Button loading={submitting} type="submit">
-//           Login
-//         </Button>
-
-//         {error && <Alert color="danger">{error}</Alert>}
-//       </PageStack>
-//     </form>
-//   )
-// }

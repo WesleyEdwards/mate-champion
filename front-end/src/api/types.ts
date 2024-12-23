@@ -10,6 +10,13 @@ export type LoginBody = {
   email: string
   code: string
 }
+
+export type CreateAccount = {
+  email: string
+  name?: string
+  highScore?: number
+}
+
 export type LoginResponse = {
   user: User
   token: string

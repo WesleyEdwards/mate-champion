@@ -104,7 +104,7 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
 
 export const PageStack: FC<{children: ReactNode}> = ({children}) => {
   return (
-    <Stack gap="1rem" mb={2}>
+    <Stack gap="2rem" mb={2}>
       {children}
     </Stack>
   )

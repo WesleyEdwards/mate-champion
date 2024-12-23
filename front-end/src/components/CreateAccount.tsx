@@ -1,20 +1,20 @@
 import {FC, useState} from "react"
-import {Alert, Button, Input, Stack, Tooltip, Typography} from "@mui/joy"
-import {useAuthContext} from "../hooks/useAuth"
-import {ArrowBack, Help, Info, InfoOutlined} from "@mui/icons-material"
+import {Alert, Button, Input, Stack, Typography} from "@mui/joy"
 import {ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
-import {AlreadyHaveAccountButton} from "./SignInButton"
+import {useAuthContext} from "../hooks/useAuth"
+import {useLocalStorage} from "../hooks/useLocalStorageValue"
 
 export const CreateAccount: FC<ScreenProps> = ({score}) => {
-  const {createAccount} = useAuthContext()
-  const {resetStack} = useNavigator()
+  const {navigateTo} = useNavigator()
+  const {api} = useAuthContext()
 
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  // const [password, setPassword] = useState("")
+  const [email, setEmail] = useLocalStorage("user-email", "")
+
+  const initialEmail = !!localStorage.getItem("user-email")
 
   const handleSubmitNew = async () => {
     if (!email.includes("@") || !email.includes(".")) {
@@ -30,15 +30,9 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
       return setSubmitting(false)
     }
     try {
-      await createAccount({
-        _id: crypto.randomUUID(),
-        name,
-        email: email === "" ? undefined : email,
-        highScore: score ?? 0,
-        userType: "User"
-      })
+      await api.auth.createAccount({name, email, highScore: score ?? 0})
 
-      return resetStack()
+      return navigateTo("login")
     } catch (e) {
       setSubmitting(false)
       const error = await e
@@ -67,6 +61,13 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
             <Typography>To save your score, create an account</Typography>
           </Stack>
         )}
+        {initialEmail && (
+          <Stack>
+            <Typography>
+              We didn't recognize that email, enter a name to create an account
+            </Typography>
+          </Stack>
+        )}
         <Input
           placeholder="Name"
           value={name}
@@ -79,16 +80,8 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {/* <Tooltip title="Your email can be used to reset your password">
-            <InfoOutlined />
-          </Tooltip> */}
         </Stack>
-        {/* <Input
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        /> */}
+
         {error && <Alert color="danger">{error}</Alert>}
         <Button
           disabled={[name, email].some((v) => !v)}
@@ -97,7 +90,7 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
         >
           Create Account
         </Button>
-        <AlreadyHaveAccountButton />
+        {/* <AlreadyHaveAccountButton /> */}
       </Stack>
     </form>
   )

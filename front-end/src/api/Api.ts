@@ -5,13 +5,14 @@ import {
   Condition,
   Score,
   TopScore,
-  LoginResponse
+  LoginResponse,
+  CreateAccount
 } from "./types"
 
 export interface Api {
   type: "cache" | "server" | "unauth"
   readonly auth: {
-    createAccount: (body: User) => Promise<User>
+    createAccount: (body: CreateAccount) => Promise<{identifier: string}>
     signIn: (body: LoginBody) => Promise<LoginResponse>
     sendAuthCode: (body: {email: string}) => Promise<{identifier: string}>
     submitAuthCode: (body: {
@@ -38,8 +39,10 @@ export interface Api {
     levelMapDetail: (id: string) => Promise<LevelMap>
     modifyMap: (id: string, mod: Partial<LevelMap>) => Promise<LevelMap>
     importMap: (importInfo: {
-      levels: LevelInfo[]
-      maps: LevelMap[]
+      toImport: {
+        level: LevelInfo
+        map: LevelMap
+      }[]
     }) => Promise<number>
   }
   readonly score: {

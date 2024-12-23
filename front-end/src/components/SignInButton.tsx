@@ -9,7 +9,7 @@ export const SignInButton = () => {
       size="lg"
       endDecorator={<LoginRounded />}
       onClick={() => {
-        navigateTo("createAccount")
+        navigateTo("login")
       }}
       sx={{alignSelf: "center", minWidth: "12rem"}}
     >

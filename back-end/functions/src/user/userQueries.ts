@@ -66,19 +66,16 @@ export const loginWithPassword = buildMCQuery({
   }
 })
 
-export const sendAuthCode = buildMCQuery({
+export const createAccount = buildMCQuery({
   validator: createSchema((z) =>
     z.object({
       email: z.string().email({message: "Invalid email"}),
-      name: z.string().optional()
+      name: z.string().optional(),
+      highScore: z.number().optional()
     })
   ),
   fun: async ({db, email, req, res}) => {
     const {body} = req
-    const code = {
-      code: randomCode(),
-      email: body.email
-    }
     const user = await db.user.findOne({email: {Equal: body.email}})
 
     if (!user.success) {
@@ -86,14 +83,50 @@ export const sendAuthCode = buildMCQuery({
         name: body.name ?? body.email,
         email: body.email,
         passwordHash: undefined,
-        highScore: 0,
+        highScore: body.highScore ?? 0,
         userType: "User",
         _id: uuidv4()
       }
       await db.user.insertOne(newUser)
     }
 
-    const authCode = checkValidSchema(code, authCodeSchema)
+    const authCode = checkValidSchema(
+      {code: randomCode(), email: body.email},
+      authCodeSchema
+    )
+    if (isParseError(authCode)) {
+      return res.status(400).json(authCode)
+    }
+
+    db.authCode.insertOne(authCode)
+
+    await email.send({
+      html: `Your verification code is <b>${authCode.code}</b>`,
+      subject: "Mate Champion Verification",
+      to: body.email
+    })
+    return res.status(200).json({identifier: authCode._id})
+  }
+})
+
+export const sendAuthCode = buildMCQuery({
+  validator: createSchema((z) =>
+    z.object({
+      email: z.string().email({message: "Invalid email"})
+    })
+  ),
+  fun: async ({db, email, req, res}) => {
+    const {body} = req
+    const user = await db.user.findOne({email: {Equal: body.email}})
+
+    if (!user.success) {
+      return res.status(400).json({message: "No user found"})
+    }
+
+    const authCode = checkValidSchema(
+      {code: randomCode(), email: body.email},
+      authCodeSchema
+    )
     if (isParseError(authCode)) {
       return res.status(400).json(authCode)
     }

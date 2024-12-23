@@ -4,6 +4,7 @@ import {ifNotAdmin} from "../levelInfo/level_controller"
 import {baseObjectSchema} from "../simpleServer/validation"
 import {Infer} from "../types"
 import {
+  createAccount,
   getSelf,
   loginWithPassword,
   sendAuthCode,
@@ -41,6 +42,12 @@ export const authController: Route<Clients>[] = [
     path: "/login",
     method: "post",
     endpointBuilder: loginWithPassword,
+    skipAuth: true
+  },
+  {
+    path: "/create",
+    method: "post",
+    endpointBuilder: createAccount,
     skipAuth: true
   },
   {

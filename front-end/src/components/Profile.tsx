@@ -46,7 +46,7 @@ export const Profile: FC<ScreenProps> = () => {
       ) : (
         <Stack my="2rem" gap="2rem">
           <SignInButton />
-          <AlreadyHaveAccountButton />
+          {/* <AlreadyHaveAccountButton /> */}
         </Stack>
       )}
     </PageStack>

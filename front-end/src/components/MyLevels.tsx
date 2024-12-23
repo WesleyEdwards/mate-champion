@@ -85,7 +85,7 @@ export const MyLevels: FC<ScreenProps> = () => {
 
 export const VisibilityIcon = ({publicLevel}: {publicLevel: boolean}) => {
   return (
-    <Tooltip title={publicLevel ? "Public" : "Only you can see this level"}>
+    <Tooltip title={publicLevel ? "Public" : "Right now, only you can see this level"}>
       <Stack style={{minHeight: "1rem"}} justifyContent="center">
         {publicLevel ? (
           <Visibility sx={{height: "15px"}} />
