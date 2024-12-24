@@ -24,9 +24,7 @@ export function checkValidSchema<T>(
   body: any,
   schema: SafeParsable<T>
 ): T | ParseError {
-  console.log("Schema", schema)
   const result = schema.safeParse(body)
-  console.log("result", result)
   if (result.success) return result.data
   return {
     error: result.error?.issues?.at(0) ?? {

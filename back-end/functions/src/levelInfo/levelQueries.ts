@@ -1,10 +1,10 @@
+import {z} from "zod"
 import {buildMCQuery} from "../controllers/serverBuilders"
 import {LevelMap, levelMapSchema} from "../levelMap/levelMapQueries"
-import {createSchema} from "../simpleServer/validation"
 import {LevelInfo, levelSchema} from "./level_controller"
 
 export const importLevels = buildMCQuery({
-  validator: createSchema((z) =>
+  validator: z.lazy(() =>
     z.object({
       toImport: z
         .object({
