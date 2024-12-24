@@ -19,7 +19,12 @@ export class StoreItem<T> {
     this.items = i
   }
 }
-
+/**
+ * This is to be used when the user is not logged in. Levels
+ * are saved to local storage until they make an account. Upon
+ * creating an account, the levels in local storage will be uploaded
+ * to the database.
+ */
 export class LocalApi implements Api {
   type = "cache" as const
 
@@ -72,7 +77,7 @@ export class LocalApi implements Api {
     modify: async (id, mod) => {
       this.local.myLevels.items = this.local.myLevels.items.map((c) => {
         if (c._id === id) {
-          return {...c, mod}
+          return {...c, ...mod}
         }
         return c
       })

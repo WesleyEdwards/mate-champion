@@ -130,7 +130,7 @@ const EditLevelDetailHeader: FC = () => {
             <IconButton
               onClick={() => {
                 api.level.modify(editingLevel._id, {name: editingName})
-                toast({message: "Name successfully changed"})
+                toast({message: "Level name successfully changed"})
                 updateEditingLevel({name: editingName})
                 setEditingName(undefined)
               }}
