@@ -17,16 +17,3 @@ export const SignInButton = () => {
     </Button>
   )
 }
-
-export const AlreadyHaveAccountButton = () => {
-  const {navigateTo} = useNavigator()
-  return (
-    <Button
-      sx={{alignSelf: "center"}}
-      variant="plain"
-      onClick={() => navigateTo("login")}
-    >
-      Already have an account?
-    </Button>
-  )
-}

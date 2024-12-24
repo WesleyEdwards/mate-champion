@@ -5,14 +5,14 @@ import {PageStack, ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
 import {useAuthContext} from "../hooks/useAuth"
 import {EditField} from "./EditField"
-import {AlreadyHaveAccountButton, SignInButton} from "./SignInButton"
+import {SignInButton} from "./SignInButton"
 
 export const Profile: FC<ScreenProps> = () => {
   const {resetStack, navigateTo} = useNavigator()
   const {user, logout, modifyUser, api} = useAuthContext()
 
   return (
-    <PageStack>
+    <Stack gap="2rem" mb={2}>
       {user ? (
         <Stack gap="2rem">
           <EditField
@@ -46,9 +46,8 @@ export const Profile: FC<ScreenProps> = () => {
       ) : (
         <Stack my="2rem" gap="2rem">
           <SignInButton />
-          {/* <AlreadyHaveAccountButton /> */}
         </Stack>
       )}
-    </PageStack>
+    </Stack>
   )
 }

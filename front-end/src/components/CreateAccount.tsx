@@ -4,6 +4,7 @@ import {ScreenProps} from "./GameEntry"
 import {useNavigator} from "../hooks/UseNavigator"
 import {useAuthContext} from "../hooks/useAuth"
 import {useLocalStorage} from "../hooks/useLocalStorageValue"
+import {LabeledInput} from "./Login"
 
 export const CreateAccount: FC<ScreenProps> = ({score}) => {
   const {navigateTo} = useNavigator()
@@ -17,7 +18,7 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
   const initialEmail = !!localStorage.getItem("user-email")
 
   const handleSubmitNew = async () => {
-    if (!email.includes("@") || !email.includes(".")) {
+    if (!emailIsValid(email)) {
       setError("Invalid email")
       return
     }
@@ -63,24 +64,29 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
         )}
         {initialEmail && (
           <Stack>
-            <Typography>
-              We didn't recognize that email, enter a name to create an account
+            <Typography fontWeight={600} textAlign={"center"}>
+              We didn't recognize that email, <br />
+              enter a name to create an account
             </Typography>
           </Stack>
         )}
-        <Input
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Stack direction="row" alignItems={"center"} gap="12px">
+
+        <LabeledInput label="Name">
+          <Input
+            placeholder="Enter Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </LabeledInput>
+
+        <LabeledInput label="Email">
           <Input
             sx={{flexGrow: "1", mb: 2}}
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </Stack>
+        </LabeledInput>
 
         {error && <Alert color="danger">{error}</Alert>}
         <Button
@@ -90,8 +96,12 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
         >
           Create Account
         </Button>
-        {/* <AlreadyHaveAccountButton /> */}
       </Stack>
     </form>
   )
+}
+
+export const emailIsValid = (email: string) => {
+  const re = /[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}/g
+  return !!email.match(re)
 }
