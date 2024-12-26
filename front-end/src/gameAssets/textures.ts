@@ -15,6 +15,8 @@ export type TextureMap = {
   background: {
     clouds: HTMLImageElement
     cloudsTop: HTMLImageElement
+    instructions1: HTMLImageElement
+    instructions2: HTMLImageElement
   }
   bullet: HTMLImageElement
   endGate: HTMLImageElement
@@ -53,6 +55,8 @@ export const initializeTextures = async () => {
 
     clouds,
     cloudsTop,
+    instructions1,
+    instructions2,
 
     bullet,
     endGate,
@@ -73,6 +77,8 @@ export const initializeTextures = async () => {
 
       "background/clouds-bg.jpg",
       "background/clouds-bg-2.jpg",
+      "background/controls-1.png",
+      "background/controls-2.png",
 
       "mate_bullet.png",
 
@@ -100,7 +106,10 @@ export const initializeTextures = async () => {
     },
     background: {
       clouds,
-      cloudsTop
+      cloudsTop,
+      instructions1,
+      instructions2,
+
     },
     bullet,
     endGate,

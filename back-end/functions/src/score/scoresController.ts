@@ -37,11 +37,11 @@ const basicEndpoints = createBasicMCEndpoints({
 })
 
 export const scoresController: Route<Clients>[] = [
-  ...basicEndpoints,
   {
     path: "/top-scores",
     method: "get",
     endpointBuilder: getTopScores,
     skipAuth: true
-  }
+  },
+  ...basicEndpoints
 ]

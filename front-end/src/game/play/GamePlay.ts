@@ -1,4 +1,8 @@
-import {displayNextLevel, renderBg} from "../render/background"
+import {
+  displayKeyControls,
+  displayNextLevel,
+  renderBg
+} from "../render/background"
 import {accountForPosition} from "../render/helpers"
 import {SpacialHashGrid} from "../spacialHashGrid"
 import {reconcileActions} from "../state/reconcileActions"
@@ -8,7 +12,6 @@ import {
   gameStateConst,
   initGameState,
   levelToEntities,
-  toCurrAndPrev,
   uiIsDirty,
   updateStats
 } from "../helpers"
@@ -98,9 +101,7 @@ export class GamePlay {
             if (v) {
               this.state.stats[k].curr += v
               const params = createInfoTextFromStats(k, v, dying)
-              this.state.entities.push(
-                new InfoText(params)
-              )
+              this.state.entities.push(new InfoText(params))
             }
           }
         }
@@ -169,6 +170,9 @@ export class GamePlay {
     cxt.translate(-camPos[0], camPos[1])
 
     renderBg(this.state.camera, cxt)
+    if (this.state.stats.level.curr === 1) {
+      displayKeyControls(cxt)
+    }
 
     for (const entity of this.state.entities) {
       cxt.save()

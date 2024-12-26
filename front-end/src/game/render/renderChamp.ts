@@ -1,6 +1,6 @@
 import {Textures} from "../../gameAssets/textures"
 import {ChampAssetDes, champConst, ChampBase} from "../entities/champ/champ"
-import {Entity, EntityConstructor} from "../entities/Entity"
+import {Entity} from "../entities/Entity"
 import {Constructor} from "../entities/entityTypes"
 import {SpriteAssetInfo} from "./helpers"
 

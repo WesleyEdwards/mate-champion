@@ -13,7 +13,7 @@ export const renderBg = (
 
   cxt.save()
 
-  const pos = [
+  const camPosition = [
     canvasDimensions[0] * spacesToRight,
     canvasDimensions[1] * spacesUp
   ]
@@ -21,8 +21,8 @@ export const renderBg = (
   for (let i = 0; i < 2; i++) {
     cxt.drawImage(
       Textures().background.clouds,
-      pos[0],
-      pos[1],
+      camPosition[0],
+      camPosition[1],
       canvasDimensions[0],
       canvasDimensions[1]
     )
@@ -31,8 +31,8 @@ export const renderBg = (
       const dy = canvasDimensions[1] * j
       cxt.drawImage(
         Textures().background.cloudsTop,
-        pos[0],
-        pos[1] - dy,
+        camPosition[0],
+        camPosition[1] - dy,
         canvasDimensions[0],
         canvasDimensions[1]
       )
@@ -42,6 +42,31 @@ export const renderBg = (
   }
 
   cxt.restore()
+}
+
+export const displayKeyControls = (cxt: CanvasRenderingContext2D) => {
+  const imgWidth = MAX_CANVAS_WIDTH * 0.5
+
+  const instructions1 = Textures().background.instructions1
+  const instructions2 = Textures().background.instructions2
+
+  // Instructions for moving
+  cxt.drawImage(
+    instructions1,
+    0,
+    0,
+    imgWidth,
+    (imgWidth * instructions1.height) / instructions1.width
+  )
+
+  // Instructions for shooting and slashing
+  cxt.drawImage(
+    instructions2,
+    2000,
+    0,
+    imgWidth,
+    (imgWidth * instructions2.height) / instructions2.width
+  )
 }
 
 export const displayNextLevel = (

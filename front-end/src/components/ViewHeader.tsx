@@ -356,7 +356,6 @@ export const subHeaders: Record<MCScreen, JSX.Element> = {
   levelEditor: <LevelsHeader />,
   highScores: <ViewHeaderSubScreen title="High Scores" />,
   personalHigh: <ViewHeaderSubScreen title="Personal High" />,
-  controls: <ViewHeaderSubScreen title="Controls" />,
   login: <ViewHeaderSubScreen title="Login" />,
   createAccount: <ViewHeaderSubScreen title="Create Account" />,
   profile: <ViewHeaderSubScreen title="Profile" />,

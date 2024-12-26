@@ -4,7 +4,6 @@ import {emptyStats} from "../game/loopShared/utils"
 import HighScores from "./HighScores"
 import Settings from "./Settings"
 import StatsDiv from "./StatsDiv"
-import Controls from "./Controls"
 import {Profile} from "./Profile"
 import {Login} from "./Login"
 import {CreateAccount} from "./CreateAccount"
@@ -24,7 +23,6 @@ export type MCScreen =
   | "home"
   | "highScores"
   | "personalHigh"
-  | "controls"
   | "login"
   | "createAccount"
   | "profile"
@@ -92,7 +90,6 @@ const getCurrentScreen = (screen: MCScreen): FC<ScreenProps> => {
     levelEditor: LevelEditorHome,
     highScores: HighScores,
     personalHigh: PersonalHighScore,
-    controls: Controls,
     login: Login,
     createAccount: CreateAccount,
     profile: Profile,

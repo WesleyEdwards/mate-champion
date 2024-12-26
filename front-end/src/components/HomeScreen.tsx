@@ -7,7 +7,7 @@ import {useAuthContext} from "../hooks/useAuth"
 import {PersonalHigh} from "./PersonalHigh"
 import {useNavigator} from "../hooks/UseNavigator"
 import mateSingle from "../assets/champ/mate-single.png"
-import {Construction} from "@mui/icons-material"
+import {Construction, Gamepad, Person, BarChart} from "@mui/icons-material"
 
 export const HomeScreen: FC<ScreenProps> = ({modifyStats}) => {
   const {user} = useAuthContext()
@@ -32,29 +32,25 @@ export const HomeScreen: FC<ScreenProps> = ({modifyStats}) => {
         direction="row"
         width="100%"
         justifyContent="center"
-        gap="1rem"
+        gap="1.5rem"
         mb={4}
       >
         <Button
           variant="outlined"
           sx={{width: "10rem"}}
           onClick={() => navigateTo("highScores")}
+          endDecorator={<BarChart />}
         >
           High Scores
         </Button>
-        <Button
-          variant="outlined"
-          sx={{width: "10rem"}}
-          onClick={() => navigateTo("controls")}
-        >
-          Controls
-        </Button>
+
         <Button
           variant="outlined"
           sx={{width: "10rem"}}
           onClick={() => navigateTo("profile")}
+          endDecorator={<Person />}
         >
-          Profile
+          My Profile
         </Button>
       </Stack>
 

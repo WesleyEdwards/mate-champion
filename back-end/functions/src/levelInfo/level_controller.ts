@@ -71,10 +71,10 @@ export function ifNotAdmin<T extends HasId>(
 }
 
 export const levelsController: Route<Clients>[] = [
-  ...levelBaseEndpoints,
   {
     path: "/import-map",
     method: "post",
     endpointBuilder: importLevels
-  }
+  },
+  ...levelBaseEndpoints
 ]

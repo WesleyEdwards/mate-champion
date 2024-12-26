@@ -29,6 +29,7 @@ export function controller<C extends SInfo>(
   ) => {
     const router = express.Router()
     routes.forEach((route) => {
+      console.log(`path: ${route.path}`)
       router.use(route.path, (req, res, next) => {
         const sameMethod = req.method.toLowerCase() === route.method
         if (!sameMethod) {
