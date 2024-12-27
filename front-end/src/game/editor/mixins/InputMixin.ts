@@ -159,7 +159,10 @@ export function InputMixin<T extends WithCamera>(Base: T) {
         }
       }
 
-      if (this.moving && mp.curr) {
+      const shouldMoveCamWithMouse =
+        this.sizableEntity?.state === "drag" || !!this.moving
+
+      if (shouldMoveCamWithMouse && mp.curr) {
         const proposedPos: Coors = [...this.camera.position]
 
         const distToMoveCanvas = 3
@@ -177,8 +180,11 @@ export function InputMixin<T extends WithCamera>(Base: T) {
           proposedPos[1] -= distToMoveCanvas
         }
         const moved = this.attemptToMoveCam(proposedPos)
-        this.moving.delta[0] -= moved[0]
-        this.moving.delta[1] += moved[1]
+
+        if (this.moving) {
+          this.moving.delta[0] -= moved[0]
+          this.moving.delta[1] += moved[1]
+        }
       }
     }
 

@@ -66,7 +66,7 @@ export class LiveApi implements Api {
   readonly score: Api["score"] = {
     detail: (id) => this.get(`score/${id}`),
     query: (filter) => this.post("score/query", filter),
-    create: (body) => this.post("score/create", body),
+    create: (body) => this.post("score/insert", body),
     update: (id, body) => this.put(`score/${id}`, body),
     delete: (id) => this.del(`score/${id}`),
     self: () => this.get(`score/self`),

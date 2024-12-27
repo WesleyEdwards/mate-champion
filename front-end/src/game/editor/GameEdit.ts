@@ -21,6 +21,7 @@ import {CleanupMixin} from "./mixins/CleanupMixin"
 import {levelToEntities} from "../helpers"
 import {CommandStackMixin} from "./CommandMixin"
 import {CameraMixin} from "./mixins/CameraMixin"
+import {ResizeMixin} from "./mixins/ResizeMixin"
 
 export type BaseThing = Constructor<GameEditAll>
 
@@ -89,7 +90,11 @@ export class GameEditAll {
 export class GameEdit extends RenderMixin(
   CleanupMixin(
     SaveMixin(
-      MutateEntityMixin(InputMixin(CameraMixin(CommandStackMixin(GameEditAll))))
+      ResizeMixin(
+        MutateEntityMixin(
+          InputMixin(CameraMixin(CommandStackMixin(GameEditAll)))
+        )
+      )
     )
   )
 ) {}

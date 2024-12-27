@@ -14,13 +14,13 @@ export const ScoreStats: FC<{
         direction="row"
         alignItems="center"
         justifyContent="center"
-        gap="5px"
+        gap="12px"
       >
         <img src={bullet} alt="bullet" width="40px" />
         <Typography>{ammo}</Typography>
       </Stack>
-      <Typography>Level: {level}</Typography>
       <Typography>Score: {score}</Typography>
+      <Typography>Level: {level}</Typography>
     </>
   )
 }

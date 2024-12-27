@@ -1,4 +1,4 @@
-import {Stack, Typography} from "@mui/joy"
+import {Stack} from "@mui/joy"
 import {FC, ReactNode, useMemo, useState} from "react"
 import {emptyStats} from "../game/loopShared/utils"
 import HighScores from "./HighScores"
