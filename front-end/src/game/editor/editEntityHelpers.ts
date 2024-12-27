@@ -13,7 +13,6 @@ export const copyEntity = (
   if (
     e.typeId === "endGate" ||
     e.typeId === "player" ||
-    e.typeId === "floor" ||
     e.typeId === "infoText" ||
     e.typeId === "bullet"
   ) {
