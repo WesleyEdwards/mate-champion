@@ -68,12 +68,6 @@ export class Groog extends WithVelocity(GroogBase) implements Entity {
   step: Entity["step"] = (deltaT) => {
     updateTimers(this.state.timers, deltaT)
     this.move(deltaT)
-    // if (
-    //   this.state.render.curr === "die" &&
-    //   this.state.timers.dyingTimer.val <= 0
-    // ) {
-    //   this.dead = true
-    // }
     if (this.state.render.curr !== "die" && this.state.timers.turnX.val <= 0) {
       this.state.timers.turnX.val = nextTurnXTime(this.state.timeBetweenTurn)
       processGroogActionRaw(this, {

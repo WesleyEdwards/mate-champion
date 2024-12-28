@@ -8,7 +8,7 @@ import {updateCamera} from "../state/camera"
 import {updateTime} from "../state/helpers"
 import {reconcileActions} from "../state/reconcileActions"
 import {updateTimers} from "../state/timeHelpers"
-import { Entity } from "../entities/Entity"
+import {Entity} from "../entities/Entity"
 
 export class GamePreviewer {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])
@@ -34,10 +34,8 @@ export class GamePreviewer {
       }
       entity.step(this.state.time.deltaT)
       if (entity.typeId === "player") {
-        if (
-          entity.posLeft > this.level.endPosition ||
-          entity.dead
-        ) {
+        // entity.dead = false
+        if (entity.posLeft > this.level.endPosition || entity.dead) {
           this.startLevel()
         }
       }

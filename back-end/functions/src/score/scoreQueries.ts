@@ -5,13 +5,15 @@ import {Score} from "./scoresController"
 export const getTopScores = buildMCQuery({
   fun: async ({res, db}) => {
     const scores = await db.score.findMany({})
-    
+
     const userIds = [...new Set(scores.map((score) => score.userId))]
     const queryUsers = await db.user.findMany({_id: {Inside: userIds}})
 
     const usersAndScores = scores.reduce<{user: User; score: Score}[]>(
       (acc, score) => {
-        const user = queryUsers.find((user) => user._id === score.userId)!
+        const user = queryUsers.find((user) => user._id === score.userId)
+        if (!user) return acc
+
         const exists = acc.find(
           (userAndScore) => userAndScore.user._id === user._id
         )
