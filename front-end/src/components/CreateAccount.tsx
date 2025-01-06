@@ -1,13 +1,16 @@
 import {FC, useState} from "react"
 import {Alert, Button, Input, Stack, Typography} from "@mui/joy"
-import {ScreenProps} from "./GameEntry"
-import {useNavigator} from "../hooks/UseNavigator"
 import {useAuthContext} from "../hooks/useAuth"
 import {useLocalStorage} from "../hooks/useLocalStorageValue"
 import {LabeledInput} from "./Login"
+import {ViewHeaderSubScreen} from "./ViewHeader"
+import {useNavigate, useParams} from "react-router-dom"
+import {MScreen} from "./Layout"
 
-export const CreateAccount: FC<ScreenProps> = ({score}) => {
-  const {navigateTo} = useNavigator()
+export const CreateAccount = () => {
+  const navigate = useNavigate()
+  const {score: rawScore} = useParams<{score: string}>()
+  const score = isNaN(parseInt(rawScore ?? "")) ? 0 : parseInt(rawScore ?? "")
   const {api} = useAuthContext()
 
   const [error, setError] = useState<string | null>(null)
@@ -33,7 +36,7 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
     try {
       await api.auth.createAccount({name, email, highScore: score ?? 0})
 
-      return navigateTo("login")
+      return navigate("/login")
     } catch (e) {
       setSubmitting(false)
       const error = await e
@@ -46,58 +49,61 @@ export const CreateAccount: FC<ScreenProps> = ({score}) => {
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        return handleSubmitNew()
-      }}
-    >
-      <Stack direction="row" justifyContent="space-between">
-        {score > 0 && <Typography level="h2">Score: {score}</Typography>}
-      </Stack>
-      <Stack sx={{gap: "1rem", my: "1rem"}}>
-        {score !== undefined && score !== 0 && (
-          <Stack>
-            <Typography>That&apos;s a new record for you!</Typography>
-            <Typography>To save your score, create an account</Typography>
-          </Stack>
-        )}
-        {initialEmail && (
-          <Stack>
-            <Typography fontWeight={600} textAlign={"center"}>
-              We didn't recognize that email, <br />
-              enter a name to create an account
-            </Typography>
-          </Stack>
-        )}
+    <MScreen>
+      <ViewHeaderSubScreen title="Create Account" />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          return handleSubmitNew()
+        }}
+      >
+        <Stack direction="row" justifyContent="space-between">
+          {score > 0 && <Typography level="h2">Score: {score}</Typography>}
+        </Stack>
+        <Stack sx={{gap: "1rem", my: "1rem"}}>
+          {score !== undefined && score !== 0 && (
+            <Stack>
+              <Typography>That&apos;s a new record for you!</Typography>
+              <Typography>To save your score, create an account</Typography>
+            </Stack>
+          )}
+          {initialEmail && (
+            <Stack>
+              <Typography fontWeight={600} textAlign={"center"}>
+                We didn't recognize that email, <br />
+                enter a name to create an account
+              </Typography>
+            </Stack>
+          )}
 
-        <LabeledInput label="Name">
-          <Input
-            placeholder="Enter Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </LabeledInput>
+          <LabeledInput label="Name">
+            <Input
+              placeholder="Enter Your Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </LabeledInput>
 
-        <LabeledInput label="Email">
-          <Input
-            sx={{flexGrow: "1", mb: 2}}
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </LabeledInput>
+          <LabeledInput label="Email">
+            <Input
+              sx={{flexGrow: "1", mb: 2}}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </LabeledInput>
 
-        {error && <Alert color="danger">{error}</Alert>}
-        <Button
-          disabled={[name, email].some((v) => !v)}
-          loading={submitting}
-          type="submit"
-        >
-          Create Account
-        </Button>
-      </Stack>
-    </form>
+          {error && <Alert color="danger">{error}</Alert>}
+          <Button
+            disabled={[name, email].some((v) => !v)}
+            loading={submitting}
+            type="submit"
+          >
+            Create Account
+          </Button>
+        </Stack>
+      </form>
+    </MScreen>
   )
 }
 

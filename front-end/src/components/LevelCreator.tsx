@@ -1,23 +1,37 @@
 import {Button, Stack} from "@mui/joy"
-import {FC} from "react"
+import {FC, useMemo} from "react"
 import {usePauseModalContext} from "../hooks/PauseModalContext"
 import {CourseBuilderSettings} from "./GameEdit/CourseBuilderSettings"
 import {useLevelContext} from "../hooks/useLevels"
-import {useNavigator} from "../hooks/UseNavigator"
 import {useAuthContext} from "../hooks/useAuth"
+import {useLocation} from "react-router-dom"
 
 export const LevelCreator: FC = () => {
   const {setModal} = usePauseModalContext()
   const {editingLevel} = useLevelContext()
-  const {currentScreen} = useNavigator()
   const {user} = useAuthContext()
+  // const location = useLocation()
 
-  if (currentScreen !== "test" && currentScreen !== "edit") {
-    return null
-  }
-  if (editingLevel === "loading") return null
-  if (!editingLevel) return null
-  if (user && user._id !== editingLevel.owner) {
+  const isEditing = useMemo(() => {
+    console.log("Calculating", location.pathname)
+    if (editingLevel === "loading") {
+      console.log("a")
+      return false
+    }
+    if (!editingLevel) {
+      console.log("b")
+      return false
+    }
+    if (user && user._id !== editingLevel.owner) {
+      console.log("c")
+      return false
+    }
+    return (
+      location.pathname.includes("test") || location.pathname.includes("edit")
+    )
+  }, [location.pathname, editingLevel, user])
+
+  if (!isEditing) {
     return null
   }
 

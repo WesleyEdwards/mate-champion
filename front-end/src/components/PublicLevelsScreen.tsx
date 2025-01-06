@@ -1,28 +1,22 @@
 import {FC, useEffect, useState} from "react"
-import {ScreenProps} from "./GameEntry"
 import {LevelInfo} from "../api/serverModels"
 import {Card, IconButton, Stack, Typography} from "@mui/joy"
 import {PlayArrow} from "@mui/icons-material"
 import {useLevelContext} from "../hooks/useLevels"
 import {ListComponent} from "./LevelEditorHome"
-import {useNavigator} from "../hooks/UseNavigator"
-import {enterGameLoopPreview} from "../game/previewer/previewLoop"
 import {useAuthContext} from "../hooks/useAuth"
 import {SignInButton} from "./SignInButton"
+import {useNavigate} from "react-router-dom"
 
-export const PublicLevelsScreen: FC<ScreenProps> = ({modifyStats}) => {
+export const PublicLevelsScreen = () => {
   const {api, user} = useAuthContext()
   const {setEditingLevel} = useLevelContext()
-  const {navigateTo} = useNavigator()
+  const navigate = useNavigate()
   const [levels, setLevels] = useState<LevelInfo[]>()
 
   const handleEnterGamePlay = async (levelId: string) => {
-    const fullLevel = await api.level.levelMapDetail(levelId)
-
-    navigateTo("preview")
-
-    setEditingLevel(fullLevel._id)
-    enterGameLoopPreview(fullLevel)
+    navigate(`/levels/${levelId}/preview`)
+    setEditingLevel(levelId)
   }
 
   useEffect(() => {

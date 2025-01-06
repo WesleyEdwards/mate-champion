@@ -1,15 +1,15 @@
 import {Button} from "@mui/joy"
-import {useNavigator} from "../hooks/UseNavigator"
 import {LoginRounded} from "@mui/icons-material"
+import {useNavigate} from "react-router-dom"
 
 export const SignInButton = () => {
-  const {navigateTo} = useNavigator()
+  const navigate = useNavigate()
   return (
     <Button
       size="lg"
       endDecorator={<LoginRounded />}
       onClick={() => {
-        navigateTo("login")
+        navigate("/login")
       }}
       sx={{alignSelf: "center", minWidth: "12rem"}}
     >

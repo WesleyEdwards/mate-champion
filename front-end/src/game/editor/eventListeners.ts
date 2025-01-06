@@ -97,6 +97,7 @@ export const resetAbortController = () => {
 }
 export let abortController: AbortController = new AbortController()
 export let abortGame = () => {
+  console.log("Aborting game")
   window.stopLoop = true
   abortController.abort()
 }

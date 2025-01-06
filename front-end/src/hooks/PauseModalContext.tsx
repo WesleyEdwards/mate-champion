@@ -4,25 +4,25 @@ import {
   DialogTitle,
   Modal,
   ModalDialog,
-  Stack,
-  Typography
+  Stack
 } from "@mui/joy"
 import {createContext, useContext, useEffect, useState} from "react"
-import {MCScreen} from "../components/GameEntry"
-import {useLevelContext} from "./useLevels"
-import {useNavigator} from "./UseNavigator"
+import {emptyStats} from "../game/loopShared/utils"
+import {PlayStats} from "../game/state/models"
 
 type ModalOption = "save" | "pause" | "help"
 
 type PauseModalContextType = {
   setModal: (modal: ModalOption | null) => void
+  modifyStats: (newStats: Partial<PlayStats>) => void
+  stats: PlayStats
 }
 
 const PauseModalContext = createContext({} as PauseModalContextType)
 
 export const PauseModalProvider = (props: {children: React.ReactNode}) => {
-  const {navigateTo} = useNavigator()
   const [open, setOpen] = useState<ModalOption | null>(null)
+  const [stats, modifyStats] = useState<PlayStats>({...emptyStats})
 
   const handleSetModal = (modal: ModalOption | null) => {
     setOpen(modal)
@@ -33,7 +33,13 @@ export const PauseModalProvider = (props: {children: React.ReactNode}) => {
   }, [open])
 
   return (
-    <PauseModalContext.Provider value={{setModal: handleSetModal}}>
+    <PauseModalContext.Provider
+      value={{
+        setModal: handleSetModal,
+        modifyStats: (s) => modifyStats((prev) => ({...prev, ...s})),
+        stats
+      }}
+    >
       {props.children}
 
       <Modal open={open === "pause"} onClose={() => {}}>
@@ -50,7 +56,8 @@ export const PauseModalProvider = (props: {children: React.ReactNode}) => {
               </Button>
               <Button
                 onClick={() => {
-                  navigateTo("home")
+                  window.location.assign("/landing")
+                  // navigate("/home")
                   setOpen(null)
                 }}
               >

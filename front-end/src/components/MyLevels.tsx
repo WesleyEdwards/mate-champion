@@ -1,18 +1,17 @@
 import {FC, useEffect, useState} from "react"
-import {ScreenProps} from "./GameEntry"
 import {Stack, Typography, Card, Tooltip} from "@mui/joy"
 import {useLevelContext} from "../hooks/useLevels"
 import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
-import {ListComponent, scrollbarProps} from "./LevelEditorHome"
-import {useNavigator} from "../hooks/UseNavigator"
+import {ListComponent} from "./LevelEditorHome"
 import {LevelInfo} from "../api/serverModels"
 import {useAuthContext} from "../hooks/useAuth"
 import {CreateNewLevel} from "./CreateNewLevel"
+import {useNavigate} from "react-router-dom"
 
-export const MyLevels: FC<ScreenProps> = () => {
+export const MyLevels = () => {
   const {api, user} = useAuthContext()
   const {setEditingLevel} = useLevelContext()
-  const {navigateTo} = useNavigator()
+  const navigate = useNavigate()
 
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>()
 
@@ -33,7 +32,7 @@ export const MyLevels: FC<ScreenProps> = () => {
             }}
             onClick={() => {
               setEditingLevel(level._id)
-              navigateTo("editorDetail")
+              navigate(level._id)
             }}
           >
             <Stack
@@ -85,7 +84,9 @@ export const MyLevels: FC<ScreenProps> = () => {
 
 export const VisibilityIcon = ({publicLevel}: {publicLevel: boolean}) => {
   return (
-    <Tooltip title={publicLevel ? "Public" : "Right now, only you can see this level"}>
+    <Tooltip
+      title={publicLevel ? "Public" : "Right now, only you can see this level"}
+    >
       <Stack style={{minHeight: "1rem"}} justifyContent="center">
         {publicLevel ? (
           <Visibility sx={{height: "15px"}} />

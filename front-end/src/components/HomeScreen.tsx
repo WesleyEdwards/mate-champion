@@ -1,82 +1,83 @@
 import {FC} from "react"
-import {ScreenProps} from "./GameEntry"
 import {Button, Stack, Typography} from "@mui/joy"
 import Instructions from "./Instructions"
-import {PlayScreen} from "./PlayScreen"
 import {useAuthContext} from "../hooks/useAuth"
 import {PersonalHigh} from "./PersonalHigh"
-import {useNavigator} from "../hooks/UseNavigator"
 import mateSingle from "../assets/champ/mate-single.png"
-import {Construction, Gamepad, Person, BarChart} from "@mui/icons-material"
+import {Construction, Person, BarChart} from "@mui/icons-material"
+import {useNavigate} from "react-router-dom"
+import {MScreen} from "./Layout"
 
-export const HomeScreen: FC<ScreenProps> = ({modifyStats}) => {
+export const HomeScreen: FC = () => {
   const {user} = useAuthContext()
-  const {navigateTo} = useNavigator()
+  const navigate = useNavigate()
+
   return (
-    <Stack width="100%" alignItems={"center"} sx={{width: "722px"}}>
-      <Typography level="h1">Mate Champion</Typography>
-      <Instructions />
-      <img
-        style={{
-          margin: "4px auto 24px",
-          width: "80px"
-        }}
-        src={mateSingle}
-      />
-      <PlayScreen
-        modifyStats={modifyStats}
-        screen={"home"}
-        setScreen={navigateTo}
-      />
-      <Stack
-        direction="row"
-        width="100%"
-        justifyContent="center"
-        gap="1.5rem"
-        mb={4}
-      >
+    <MScreen>
+      <Stack width="100%" alignItems={"center"} sx={{width: "722px"}}>
+        <Typography level="h1">Mate Champion</Typography>
+        <Instructions />
+        <img
+          style={{
+            margin: "4px auto 24px",
+            width: "80px"
+          }}
+          src={mateSingle}
+        />
         <Button
-          variant="outlined"
-          sx={{width: "10rem"}}
-          onClick={() => navigateTo("highScores")}
-          endDecorator={<BarChart />}
+          sx={{width: "11rem", mb: "2rem"}}
+          onClick={() => {
+            navigate("/play")
+          }}
         >
-          High Scores
+          Play
         </Button>
+        <Stack
+          direction="row"
+          width="100%"
+          justifyContent="center"
+          gap="1.5rem"
+          mb={4}
+        >
+          <Button
+            variant="outlined"
+            sx={{width: "10rem"}}
+            onClick={() => navigate("/highScores")}
+            endDecorator={<BarChart />}
+          >
+            High Scores
+          </Button>
+
+          <Button
+            variant="outlined"
+            sx={{width: "10rem"}}
+            onClick={() => navigate("/profile")}
+            endDecorator={<Person />}
+          >
+            My Profile
+          </Button>
+        </Stack>
+
+        <Typography mb={4}>Or</Typography>
 
         <Button
-          variant="outlined"
-          sx={{width: "10rem"}}
-          onClick={() => navigateTo("profile")}
-          endDecorator={<Person />}
+          variant="solid"
+          sx={{
+            width: "24rem",
+            backgroundColor: "#0b6bcb",
+            "&:hover": {
+              backgroundColor: "#084989"
+            }
+          }}
+          onClick={() => {
+            navigate("/levels")
+          }}
+          endDecorator={<Construction />}
         >
-          My Profile
+          {user ? "Level Editor" : "Create a level"}
         </Button>
+        <PersonalHigh />
       </Stack>
-
-      <Typography mb={4}>Or</Typography>
-
-      <Button
-        variant="solid"
-        sx={{
-          width: "24rem",
-          backgroundColor: "#0b6bcb",
-          "&:hover": {
-            backgroundColor: "#084989"
-          }
-        }}
-        onClick={() => {
-          if (user) {
-            return navigateTo("levelEditor")
-          } else {
-            navigateTo("levelEditor")
-          }
-        }}
-        endDecorator={<Construction />}
-      >
-        {user ? "Level Editor" : "Create a level"}
-      </Button>
-      <PersonalHigh />
-    </Stack>
+    </MScreen>
   )
 }

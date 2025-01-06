@@ -11,6 +11,8 @@ export type GameMode = "play" | "edit" | "test" | "idle"
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User>()
+  const [loadingAuth, setLoadingAuth] = useState(true)
+
   const api: Api = useMemo(() => {
     const liveApi = new LiveApi(localStorageManager.get("token"))
     if (user === undefined) {
@@ -21,9 +23,23 @@ export const useAuth = (): AuthContextType => {
   }, [user])
 
   useEffect(() => {
-    if (localStorageManager.get("token")) {
-      api.auth.getSelf().then(setUser)
-    }
+    ;(async () => {
+      const token = localStorageManager.get("token")
+      console.log("Token", token)
+      if (token) {
+        try {
+          const u = await api.auth.getSelf()
+          // console.log("user is", u)
+          setUser(u)
+          console.log("set laoding to false")
+          setLoadingAuth(false)
+        } catch {
+          // setLoadingAuth(false)
+        }
+      } else {
+        // setLoadingAuth(false)
+      }
+    })()
   }, [])
 
   const importLevels = async (liveApi: Api) => {
@@ -67,7 +83,7 @@ export const useAuth = (): AuthContextType => {
     api,
     user,
     login,
-    // createAccount,
+    loadingAuth,
     logout,
     modifyUser
   }
@@ -76,7 +92,7 @@ export const useAuth = (): AuthContextType => {
 type AuthContextType = {
   api: Api
   login: (body: LoginBody) => Promise<unknown>
-  // createAccount: (body: User) => Promise<unknown>
+  loadingAuth: boolean
   user?: User
   logout: () => void
   modifyUser: (body: Partial<User>) => void

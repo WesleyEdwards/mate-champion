@@ -25,7 +25,7 @@ export type TextureMap = {
 }
 
 const loadTexture = (path: string): Promise<HTMLImageElement> => {
-  const basePath = import.meta.env.DEV ? "./src/assets" : "./assets"
+  const basePath = import.meta.env.DEV ? "/src/assets" : "/assets"
   const src = `${basePath}/${path}`
 
   const texture = new Image()

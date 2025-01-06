@@ -1,15 +1,13 @@
-import {FC, useEffect, useRef, useState} from "react"
+import {FC, useState} from "react"
 import {Button, Input} from "@mui/joy"
 import {Add} from "@mui/icons-material"
 import {useAuthContext} from "../hooks/useAuth"
-import {useLevelContext} from "../hooks/useLevels"
-import {useNavigator} from "../hooks/UseNavigator"
 import {MCModal} from "./MCModal"
+import {useNavigate} from "react-router-dom"
 
 export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
   const {user, api} = useAuthContext()
-  const {setEditingLevel} = useLevelContext()
-  const {navigateTo} = useNavigator()
+  const navigate = useNavigate()
 
   const [makingNew, setMakingNew] = useState<string>()
 
@@ -22,7 +20,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
       public: false,
       name: name
     })
-    setEditingLevel(createdLevel._id)
+    navigate(`/levels/${createdLevel._id}`)
   }
 
   return (
@@ -39,7 +37,6 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
             backgroundColor: "#084989"
           }
         }}
-        // loading={creating} // Color on loading state
         endDecorator={<Add />}
       >
         {text}
@@ -51,7 +48,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
         onClose={() => setMakingNew(undefined)}
         onConfirm={() => {
           createLevel(makingNew ?? "").then(() => {
-            navigateTo("editorDetail")
+            navigate("/editorDetail")
           })
         }}
         disableConfirm={!makingNew}

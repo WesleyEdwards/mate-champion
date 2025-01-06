@@ -3,6 +3,7 @@ import {LevelMap} from "../../api/serverModels"
 import {GamePreviewer} from "./GamePreviewer"
 
 export function enterGameLoopPreview(level: LevelMap) {
+  console.log("Entering for the first time.")
   const {canvas, context} = getCanvasContext()
 
   const game = new GamePreviewer(level)

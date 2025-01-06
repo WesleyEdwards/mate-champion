@@ -1,16 +1,22 @@
 import {FC} from "react"
-import {CreateAccount} from "./CreateAccount"
 import {Button, Stack, Typography} from "@mui/joy"
 import {useAuthContext} from "../hooks/useAuth"
-import {MCScreen, ScreenProps} from "./GameEntry"
-import {useNavigator} from "../hooks/UseNavigator"
+import {ViewHeaderSubScreen} from "./ViewHeader"
+import {useNavigate, useParams} from "react-router-dom"
 
-export const PersonalHighScore: FC<ScreenProps> = ({score, modifyStats}) => {
+export const PersonalHighScore = () => {
   const {user} = useAuthContext()
-  const {navigateTo} = useNavigator()
+  const navigate = useNavigate()
+  const {score: rawScore} = useParams<{score: string}>()
+  const score = isNaN(parseInt(rawScore ?? "")) ? 0 : parseInt(rawScore ?? "")
 
-  if (user) {
-    return (
+  if (!user) {
+    navigate(`/createAccount?score=${score}`)
+  }
+
+  return (
+    <>
+      <ViewHeaderSubScreen title="Personal High" />
       <Stack gap="2rem" sx={{width: "722px"}}>
         <Typography level="h2">
           You got a personal high score of {score}!
@@ -18,14 +24,12 @@ export const PersonalHighScore: FC<ScreenProps> = ({score, modifyStats}) => {
         <Button
           style={{maxWidth: "12rem", alignSelf: "center"}}
           onClick={() => {
-            navigateTo("highScores")
+            navigate("/highScores")
           }}
         >
           View Scores
         </Button>
       </Stack>
-    )
-  }
-
-  return <CreateAccount score={score} modifyStats={modifyStats} />
+    </>
+  )
 }

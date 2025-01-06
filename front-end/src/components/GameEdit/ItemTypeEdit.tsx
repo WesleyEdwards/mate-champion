@@ -5,7 +5,6 @@ import packageImg from "../../assets/mate-package.png"
 import platformImg from "../../assets/platform.png"
 import {capitalize} from "lodash"
 import {ColorPicker} from "./ColorPicker"
-import {useNavigator} from "../../hooks/UseNavigator"
 import {camelCaseToTitleCase} from "../../helpers"
 import {getGlobalEditing, setGlobalEditing} from "../../game/editor/editHelpers"
 
@@ -16,7 +15,6 @@ export const AddingEntity = ({
   edit: Adding
   setEdit: React.Dispatch<React.SetStateAction<Adding>>
 }) => {
-  const {currentScreen} = useNavigator()
   const handleSetEditingItem = (params: Partial<Adding>) => {
     setGlobalEditing("addingEntity", {
       ...getGlobalEditing().addingEntity,
@@ -27,7 +25,8 @@ export const AddingEntity = ({
 
   if (!edit.type) return null
 
-  const disabled = currentScreen === "test"
+  const disabled = location.pathname.includes("test")
+
   return (
     <Card style={{padding: "12px"}}>
       <Stack>
