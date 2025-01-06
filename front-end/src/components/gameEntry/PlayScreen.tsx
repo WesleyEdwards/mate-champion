@@ -10,7 +10,7 @@ import {LevelMap} from "../../api/serverModels"
 import {useNavigate} from "react-router-dom"
 import {PlayHeader} from "../ViewHeader"
 import StatsDiv from "../StatsDiv"
-import {MScreen} from "../Layout"
+import {MScreen} from "../AuthSwitch"
 
 export const PlayScreen = () => {
   const {setModal, stats, modifyStats} = usePauseModalContext()

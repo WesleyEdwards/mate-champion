@@ -11,7 +11,7 @@ import {
 import {MyLevels} from "./MyLevels"
 import {PublicLevelsScreen} from "./PublicLevelsScreen"
 import {localStorageManager} from "../api/localStorageManager"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 import {LevelsHeader} from "./ViewHeader"
 
 export const LevelEditorHome = () => {

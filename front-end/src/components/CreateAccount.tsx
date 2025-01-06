@@ -5,7 +5,7 @@ import {useLocalStorage} from "../hooks/useLocalStorageValue"
 import {LabeledInput} from "./Login"
 import {ViewHeaderSubScreen} from "./ViewHeader"
 import {useNavigate, useParams} from "react-router-dom"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 
 export const CreateAccount = () => {
   const navigate = useNavigate()

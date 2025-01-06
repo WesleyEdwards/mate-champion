@@ -5,7 +5,7 @@ import {useLocalStorage} from "../hooks/useLocalStorageValue"
 import {useToast} from "../hooks/Toaster"
 import {emailIsValid} from "./CreateAccount"
 import {ViewHeaderSubScreen} from "./ViewHeader"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 import {useNavigate} from "react-router-dom"
 
 export const Login = () => {

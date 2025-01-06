@@ -20,7 +20,7 @@ import {SignInButton} from "./SignInButton"
 import {ArrowBack, Check, Construction, Edit, Undo} from "@mui/icons-material"
 import {useToast} from "../hooks/Toaster"
 import {useNavigate, useParams} from "react-router-dom"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 import {abortGame} from "../game/editor/eventListeners"
 import {LevelInfo} from "../api/serverModels"
 

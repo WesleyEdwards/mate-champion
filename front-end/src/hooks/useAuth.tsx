@@ -7,9 +7,9 @@ import {ApiCache} from "../api/ApiCache"
 import {LocalApi, StoreItem} from "../api/LocalApi"
 import {LevelInfo, LevelMap} from "../api/serverModels"
 
-export type GameMode = "play" | "edit" | "test" | "idle"
-
-export const useAuth = (): AuthContextType => {
+export const useAuth = ():
+  | {loadingAuth: true}
+  | {loadingAuth: false; authContext: AuthContextType} => {
   const [user, setUser] = useState<User>()
   const [loadingAuth, setLoadingAuth] = useState(true)
 
@@ -29,15 +29,14 @@ export const useAuth = (): AuthContextType => {
       if (token) {
         try {
           const u = await api.auth.getSelf()
-          // console.log("user is", u)
           setUser(u)
           console.log("set laoding to false")
           setLoadingAuth(false)
         } catch {
-          // setLoadingAuth(false)
+          setLoadingAuth(false)
         }
       } else {
-        // setLoadingAuth(false)
+        setLoadingAuth(false)
       }
     })()
   }, [])
@@ -79,20 +78,25 @@ export const useAuth = (): AuthContextType => {
     setUser((prev) => (prev ? {...prev, ...partial} : prev))
   }
 
+  if (loadingAuth) {
+    return {loadingAuth: true}
+  }
+
   return {
-    api,
-    user,
-    login,
-    loadingAuth,
-    logout,
-    modifyUser
+    authContext: {
+      api,
+      user,
+      login,
+      logout,
+      modifyUser
+    },
+    loadingAuth: false
   }
 }
 
 type AuthContextType = {
   api: Api
   login: (body: LoginBody) => Promise<unknown>
-  loadingAuth: boolean
   user?: User
   logout: () => void
   modifyUser: (body: Partial<User>) => void

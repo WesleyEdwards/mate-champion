@@ -6,8 +6,7 @@ import {
   extendTheme
 } from "@mui/joy"
 import {mateTheme} from "./theme"
-import {AuthContext, useAuth} from "./hooks/useAuth"
-import {Layout} from "./components/Layout"
+import {AuthSwitch} from "./components/AuthSwitch"
 import {initializeTextures} from "./gameAssets/textures"
 import {Adding} from "./components/GameEdit/CourseBuilderSettings"
 import {ToastProvider} from "./hooks/Toaster"
@@ -44,16 +43,12 @@ window.debounceLog = debounceLog
 const theme: Theme = extendTheme(mateTheme)
 
 function App() {
-  const authInfo = useAuth()
-
   return (
     <CssVarsProvider defaultMode="dark" theme={theme}>
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <ToastProvider>
-          <AuthContext.Provider value={authInfo}>
-            <Layout />
-          </AuthContext.Provider>
+          <AuthSwitch />
         </ToastProvider>
       </ThemeProvider>
     </CssVarsProvider>

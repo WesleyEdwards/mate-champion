@@ -6,7 +6,7 @@ import {PersonalHigh} from "./PersonalHigh"
 import mateSingle from "../assets/champ/mate-single.png"
 import {Construction, Person, BarChart} from "@mui/icons-material"
 import {useNavigate} from "react-router-dom"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 
 export const HomeScreen: FC = () => {
   const {user} = useAuthContext()

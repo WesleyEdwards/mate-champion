@@ -1,7 +1,7 @@
 import {FC, useEffect, useState} from "react"
 import {useAuthContext} from "../../hooks/useAuth"
 import {useNavigate, useParams} from "react-router-dom"
-import {MScreen} from "../Layout"
+import {MScreen} from "../AuthSwitch"
 import {abortGame} from "../../game/editor/eventListeners"
 import {LevelInfo, LevelMap} from "../../api/serverModels"
 import {gameLoopEdit} from "../../game/editor/gameLoopEdit"

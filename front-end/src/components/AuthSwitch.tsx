@@ -2,11 +2,11 @@ import {CircularProgress, Sheet, Stack} from "@mui/joy"
 import {routes} from "./Routes"
 import {PauseModalProvider} from "../hooks/PauseModalContext"
 import {RouterProvider} from "react-router-dom"
-import {useAuthContext} from "../hooks/useAuth"
+import {AuthContext, useAuth} from "../hooks/useAuth"
 
-export const Layout = () => {
-  const {loadingAuth} = useAuthContext()
-  if (loadingAuth) {
+export const AuthSwitch = () => {
+  const authInfo = useAuth()
+  if (authInfo.loadingAuth) {
     return (
       <div
         style={{
@@ -23,7 +23,9 @@ export const Layout = () => {
 
   return (
     <PauseModalProvider>
-      <RouterProvider router={routes} />
+      <AuthContext.Provider value={authInfo.authContext}>
+        <RouterProvider router={routes} />
+      </AuthContext.Provider>
     </PauseModalProvider>
   )
 }

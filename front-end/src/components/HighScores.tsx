@@ -5,7 +5,7 @@ import {TopScore} from "../api/types"
 import {useAuthContext} from "../hooks/useAuth"
 import {localStorageManager} from "../api/localStorageManager"
 import {useParams} from "react-router-dom"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 import {ArrowBack} from "@mui/icons-material"
 import {ViewHeaderSubScreen} from "./ViewHeader"
 

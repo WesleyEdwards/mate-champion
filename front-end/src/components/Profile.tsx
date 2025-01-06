@@ -4,7 +4,7 @@ import {useAuthContext} from "../hooks/useAuth"
 import {EditField} from "./EditField"
 import {SignInButton} from "./SignInButton"
 import {ViewHeaderSubScreen} from "./ViewHeader"
-import {MScreen} from "./Layout"
+import {MScreen} from "./AuthSwitch"
 import { useNavigate } from "react-router-dom"
 
 export const Profile = () => {
