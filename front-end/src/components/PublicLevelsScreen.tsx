@@ -2,7 +2,6 @@ import {FC, useEffect, useState} from "react"
 import {LevelInfo} from "../api/serverModels"
 import {Card, IconButton, Stack, Typography} from "@mui/joy"
 import {PlayArrow} from "@mui/icons-material"
-import {useLevelContext} from "../hooks/useLevels"
 import {ListComponent} from "./LevelEditorHome"
 import {useAuthContext} from "../hooks/useAuth"
 import {SignInButton} from "./SignInButton"
@@ -10,14 +9,8 @@ import {useNavigate} from "react-router-dom"
 
 export const PublicLevelsScreen = () => {
   const {api, user} = useAuthContext()
-  const {setEditingLevel} = useLevelContext()
   const navigate = useNavigate()
   const [levels, setLevels] = useState<LevelInfo[]>()
-
-  const handleEnterGamePlay = async (levelId: string) => {
-    navigate(`/levels/${levelId}/preview`)
-    setEditingLevel(levelId)
-  }
 
   useEffect(() => {
     setLevels(undefined)
@@ -37,7 +30,7 @@ export const PublicLevelsScreen = () => {
             actionButton={
               <IconButton
                 onClick={() => {
-                  handleEnterGamePlay(level._id)
+                  navigate(`/levels/${level._id}/preview`)
                 }}
                 color="success"
               >

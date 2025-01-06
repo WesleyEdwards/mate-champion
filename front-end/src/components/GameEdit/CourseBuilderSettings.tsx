@@ -1,7 +1,6 @@
-import {CircularProgress, Stack} from "@mui/joy"
+import {Stack} from "@mui/joy"
 import {useState, useEffect, FC} from "react"
 import {EntityType} from "../../game/entities/entityTypes"
-import {useLevelContext} from "../../hooks/useLevels"
 import {AddingEntity} from "./ItemTypeEdit"
 import {Floor, Platform} from "../../game/entities/platform"
 import {PlatformEditor} from "./PlatformEdit"
@@ -11,6 +10,7 @@ import {Groog} from "../../game/entities/groog"
 import {FloorEditor} from "./FloorEdit"
 import {Entity} from "../../game/entities/Entity"
 import {getGlobalEditing} from "../../game/editor/editHelpers"
+import {LevelMap} from "../../api/serverModels"
 
 export type EditableEntity = Exclude<
   EntityType,
@@ -29,7 +29,6 @@ export type Adding = {
 }
 
 export const CourseBuilderSettings = () => {
-  const {editingLevel} = useLevelContext()
   const [adding, setAdding] = useState<Adding>({
     type: undefined,
     color: undefined,
@@ -58,10 +57,6 @@ export const CourseBuilderSettings = () => {
     }, 100)
     return () => clearInterval(interval)
   })
-
-  if (editingLevel === "loading" || editingLevel === undefined) {
-    return <CircularProgress />
-  }
 
   return (
     <Stack gap="2rem">

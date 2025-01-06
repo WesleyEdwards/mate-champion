@@ -7,7 +7,6 @@ import {
 } from "@mui/joy"
 import {mateTheme} from "./theme"
 import {AuthContext, useAuth} from "./hooks/useAuth"
-import {LevelsContext, useLevels} from "./hooks/useLevels"
 import {Layout} from "./components/Layout"
 import {initializeTextures} from "./gameAssets/textures"
 import {Adding} from "./components/GameEdit/CourseBuilderSettings"
@@ -46,7 +45,6 @@ const theme: Theme = extendTheme(mateTheme)
 
 function App() {
   const authInfo = useAuth()
-  const levelManager = useLevels({api: authInfo.api, user: authInfo.user})
 
   return (
     <CssVarsProvider defaultMode="dark" theme={theme}>
@@ -54,9 +52,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <ToastProvider>
           <AuthContext.Provider value={authInfo}>
-            <LevelsContext.Provider value={levelManager}>
-              <Layout />
-            </LevelsContext.Provider>
+            <Layout />
           </AuthContext.Provider>
         </ToastProvider>
       </ThemeProvider>

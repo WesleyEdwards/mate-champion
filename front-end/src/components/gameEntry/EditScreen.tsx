@@ -3,9 +3,9 @@ import {useAuthContext} from "../../hooks/useAuth"
 import {useNavigate, useParams} from "react-router-dom"
 import {MScreen} from "../Layout"
 import {abortGame} from "../../game/editor/eventListeners"
-import {LevelMap} from "../../api/serverModels"
+import {LevelInfo, LevelMap} from "../../api/serverModels"
 import {gameLoopEdit} from "../../game/editor/gameLoopEdit"
-import {useLevelContext} from "../../hooks/useLevels"
+import {useLevels} from "../../hooks/useLevels"
 import {
   Button,
   IconButton,
@@ -18,29 +18,34 @@ import {usePauseModalContext} from "../../hooks/PauseModalContext"
 import {CourseBuilderSettings} from "../GameEdit/CourseBuilderSettings"
 import {Undo, Redo, PlayArrow, Sync, CheckCircle} from "@mui/icons-material"
 import {setGlobalEditing} from "../../game/editor/editHelpers"
-import {enterGameLoopPreview} from "../../game/previewer/previewLoop"
 import {BackButton} from "../ViewHeader"
 
 export const EditScreen = () => {
   const {id} = useParams<{id: string}>()
 
-  const {updateLevelMap} = useLevelContext()
   const {setModal} = usePauseModalContext()
 
   const {api} = useAuthContext()
 
-  const [fullLevel, setFullLevel] = useState<LevelMap>()
+  const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null)
+  const [level, setLevel] = useState<LevelMap | null>(null)
+
+  const {updateLevelMap, isDirty, saveIfDirty} = useLevels({
+    level: levelInfo,
+    setLevel: setLevelInfo
+  })
 
   useEffect(() => {
     if (id) {
-      api.level.levelMapDetail(id).then(setFullLevel)
+      api.level.detail(id).then(setLevelInfo)
+      api.level.levelMapDetail(id).then(setLevel)
     }
-  }, [])
+  }, [id])
 
   useEffect(() => {
-    if (fullLevel) {
+    if (level) {
       gameLoopEdit({
-        level: fullLevel,
+        level: level,
         modifyLevel: (level: Partial<LevelMap>) => {
           updateLevelMap(level)
         }
@@ -50,7 +55,7 @@ export const EditScreen = () => {
     return () => {
       abortGame()
     }
-  }, [fullLevel])
+  }, [level])
 
   return (
     <div
@@ -61,7 +66,11 @@ export const EditScreen = () => {
     >
       <div style={{flex: 1}}>
         <MScreen>
-          <EditHeader />
+          <EditHeader
+            levelInfo={levelInfo ?? undefined}
+            isDirty={isDirty}
+            saveIfDirty={saveIfDirty}
+          />
           <canvas style={{borderRadius: "10px"}} id="canvas"></canvas>
         </MScreen>
       </div>
@@ -90,12 +99,18 @@ export const EditScreen = () => {
   )
 }
 
-export const EditHeader: FC = () => {
-  const {editingLevel, isDirty, saveIfDirty} = useLevelContext()
-  const {api} = useAuthContext()
+export const EditHeader = ({
+  levelInfo,
+  isDirty,
+  saveIfDirty
+}: {
+  levelInfo: LevelInfo | undefined
+  isDirty: boolean
+  saveIfDirty: () => Promise<unknown>
+}) => {
   const navigate = useNavigate()
 
-  if (editingLevel === "loading") {
+  if (!levelInfo) {
     return <Skeleton height="40px" variant="rectangular" />
   }
 
@@ -111,7 +126,7 @@ export const EditHeader: FC = () => {
         }}
         level="h1"
       >
-        Editing {editingLevel?.name}
+        Editing {levelInfo.name}
       </Typography>
 
       <div style={{flex: 1}}></div>
@@ -133,17 +148,10 @@ export const EditHeader: FC = () => {
           variant="outlined"
           endDecorator={<PlayArrow />}
           onClick={() => {
-            if (!editingLevel) return
+            if (!levelInfo) return
             abortGame()
             saveIfDirty().then(() => {
-              navigate("/test")
-
-              setTimeout(() => {
-                // To ensure that the game loop was ended
-                api.level
-                  .levelMapDetail(editingLevel._id)
-                  .then(enterGameLoopPreview)
-              }, 100)
+              navigate(`/levels/${levelInfo._id}/test`, {replace: true})
             })
           }}
         >

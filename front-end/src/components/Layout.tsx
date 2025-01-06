@@ -1,6 +1,5 @@
 import {CircularProgress, Sheet, Stack} from "@mui/joy"
 import {routes} from "./Routes"
-import {LevelCreator} from "./LevelCreator"
 import {PauseModalProvider} from "../hooks/PauseModalContext"
 import {RouterProvider} from "react-router-dom"
 import {useAuthContext} from "../hooks/useAuth"
@@ -25,7 +24,6 @@ export const Layout = () => {
   return (
     <PauseModalProvider>
       <RouterProvider router={routes} />
-      {/* <LevelCreator /> */}
     </PauseModalProvider>
   )
 }

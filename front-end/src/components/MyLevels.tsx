@@ -1,6 +1,5 @@
 import {FC, useEffect, useState} from "react"
 import {Stack, Typography, Card, Tooltip} from "@mui/joy"
-import {useLevelContext} from "../hooks/useLevels"
 import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
 import {ListComponent} from "./LevelEditorHome"
 import {LevelInfo} from "../api/serverModels"
@@ -10,7 +9,6 @@ import {useNavigate} from "react-router-dom"
 
 export const MyLevels = () => {
   const {api, user} = useAuthContext()
-  const {setEditingLevel} = useLevelContext()
   const navigate = useNavigate()
 
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>()
@@ -31,7 +29,6 @@ export const MyLevels = () => {
               }
             }}
             onClick={() => {
-              setEditingLevel(level._id)
               navigate(level._id)
             }}
           >
