@@ -78,12 +78,15 @@ export const PauseModalProvider = (props: {children: React.ReactNode}) => {
           <DialogTitle>Level Creator</DialogTitle>
           <DialogContent>
             <ul>
-              <li>Drag an item to move it</li>Ctrl
+              <li>Drag an item to move it</li>
               <li>Ctrl + click to select multiple items</li>
-              <li>Drag + click to select multiple items</li>
+              <li>Shift + Drag to select multiple items</li>
               <li>Ctrl + click to add an item</li>
               <li>Ctrl + D to duplicate item(s)</li>
               <li>'Delete' to delete item(s)</li>
+              <li>Ctrl + Z to undo</li>
+              <li>Ctrl + Shift +Z to redo</li>
+              <li>Drag corner of platform to resize</li>
             </ul>
           </DialogContent>
         </ModalDialog>
