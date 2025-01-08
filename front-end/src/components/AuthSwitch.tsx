@@ -6,6 +6,7 @@ import {AuthContext, useAuth} from "../hooks/useAuth"
 
 export const AuthSwitch = () => {
   const authInfo = useAuth()
+
   if (authInfo.loadingAuth) {
     return (
       <div

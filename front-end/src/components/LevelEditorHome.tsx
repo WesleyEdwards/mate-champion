@@ -1,4 +1,4 @@
-import {CSSProperties, FC, useState} from "react"
+import {CSSProperties, FC, useMemo, useState} from "react"
 import {
   Stack,
   Tab,
@@ -13,21 +13,31 @@ import {PublicLevelsScreen} from "./PublicLevelsScreen"
 import {localStorageManager} from "../api/localStorageManager"
 import {MScreen} from "./AuthSwitch"
 import {LevelsHeader} from "./ViewHeader"
+import {useSearchParams} from "react-router-dom"
 
 export const LevelEditorHome = () => {
-  const [value, setValue] = useState<number>(
-    +localStorageManager.get("level-tab")
+  const [params, setParams] = useSearchParams()
+
+  const tab = useMemo(
+    () => (params.get("view") === "public" ? 1 : 0),
+    [params]
   )
+
+  const setTab = (v: number) => {
+    params.set("view", v === 0 ? "mine" : "public")
+    setParams(params, {replace: true})
+  }
+
   return (
     <MScreen>
       <LevelsHeader />
       <Stack maxHeight="calc(100vh - 8rem)">
         <Tabs
-          value={value}
+          value={tab}
           onChange={(_, v) => {
             if (typeof v === "number") {
               localStorageManager.set("level-tab", v)
-              setValue(v)
+              setTab(v)
             }
           }}
         >

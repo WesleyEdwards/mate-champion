@@ -47,9 +47,7 @@ export const CreateNewLevel: FC<{text?: string}> = ({text = "Create"}) => {
         open={makingNew !== undefined}
         onClose={() => setMakingNew(undefined)}
         onConfirm={() => {
-          createLevel(makingNew ?? "").then(() => {
-            navigate("/editorDetail")
-          })
+          createLevel(makingNew ?? "")
         }}
         disableConfirm={!makingNew}
         confirmLabel="Create"

@@ -69,7 +69,7 @@ export class ApiCache implements Api {
       this.cacheRequest(`level.query.${JSON.stringify(filter)}`, () =>
         this.basedOn.level.query(filter)
       ),
-    create: (body) => this.basedOn.level.create(body),
+    create: (body) => this.withEviction(this.basedOn.level.create(body)),
     modify: (id, mod) => this.withEviction(this.basedOn.level.modify(id, mod)),
     delete: (id) => this.withEviction(this.basedOn.level.delete(id)),
     generate: (ids) =>

@@ -64,7 +64,7 @@ export const EditScreen = () => {
         justifyContent: "center"
       }}
     >
-      <div style={{flex: 1}}>
+      <div style={{}}>
         <MScreen>
           <EditHeader
             levelInfo={levelInfo ?? undefined}
@@ -74,8 +74,8 @@ export const EditScreen = () => {
           <canvas style={{borderRadius: "10px"}} id="canvas"></canvas>
         </MScreen>
       </div>
-      <div style={{flex: 0.5, marginTop: "13rem"}}>
-        <Stack justifyContent="flex-start" width="300px">
+      <div style={{marginTop: "13rem"}}>
+        <Stack justifyContent="flex-start" maxWidth="275px">
           <Button
             color="neutral"
             variant="outlined"

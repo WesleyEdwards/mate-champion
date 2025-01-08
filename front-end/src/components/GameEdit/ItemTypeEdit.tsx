@@ -103,7 +103,7 @@ export const AddingEntity = ({
               </Card>
             ))}
             <Typography level="body-sm">
-              Ctrl + Click to add a{edit.type === "ammo" ? "n" : ""}{" "}
+              Ctrl+Click to add a{edit.type === "ammo" ? "n" : ""}{" "}
               {capitalize(edit.type)}.
             </Typography>
           </Stack>
