@@ -32,9 +32,9 @@ export const PlayScreen = () => {
         modifyUser({highScore: score})
         modifyStats({score})
       }
-      return navigate("/personalHigh")
+      return navigate(`/highScores?personal-high=true`, {replace: true})
     }
-    return navigate("/highScores")
+    return navigate("/highScores", {replace: true})
   }
 
   useEffect(() => {

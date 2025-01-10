@@ -44,7 +44,7 @@ export const MCModal: FC<{
     <Modal open={open} onClose={onClose} disableRestoreFocus>
       {/* <form onSubmit={onConfirm}> */}
       <ModalDialog variant="outlined" role="alertdialog">
-        <ModalClose />
+        <ModalClose sx={{zIndex: 8}} />
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <Stack gap="2rem" mt="1rem">

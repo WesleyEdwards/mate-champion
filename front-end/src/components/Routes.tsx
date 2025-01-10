@@ -3,7 +3,6 @@ import {HighScores} from "./HighScores"
 import {Profile} from "./Profile"
 import {Login} from "./Login"
 import {CreateAccount} from "./CreateAccount"
-import {PersonalHighScore} from "./PersonalHighScore"
 import {EditLevelDetail} from "./EditLevelDetail"
 import {HomeScreen} from "./HomeScreen"
 import {LevelEditorHome} from "./LevelEditorHome"
@@ -21,7 +20,6 @@ export const routes = createBrowserRouter([
   {path: "levels/:id/preview", Component: PreviewScreen},
   {path: "levels", Component: LevelEditorHome},
   {path: "highScores", Component: HighScores},
-  {path: "personalHigh", Component: PersonalHighScore},
   {path: "login", Component: Login},
   {path: "profile", Component: Profile},
   {path: "createAccount,", Component: CreateAccount},
