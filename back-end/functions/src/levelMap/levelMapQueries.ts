@@ -1,11 +1,7 @@
 import {Condition} from "simply-served"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {coors, Infer} from "../types"
-import {
-  baseObjectSchema,
-  checkPartialValidation,
-  isParseError
-} from "simply-served"
+import {baseObjectSchema, isParseError} from "simply-served"
 import {buildMCQuery} from "../controllers/serverBuilders"
 import {z} from "zod"
 import {createSchema} from "../helpers"
@@ -91,14 +87,8 @@ export const modifyLevelMap = buildMCQuery({
     if (isParseError(level)) {
       return res.status(404).json("Level map not found")
     }
-    const levelMapPartial = checkPartialValidation(
-      {...body, level: params.id},
-      levelMapSchema
-    )
-    if (isParseError(levelMapPartial))
-      return res.status(400).json(levelMapPartial)
 
-    const updatedLevel = await db.levelMap.updateOne(params.id, levelMapPartial)
+    const updatedLevel = await db.levelMap.updateOne(params.id, body)
     if (updatedLevel.success === false) {
       return res.status(400).json(updatedLevel.error)
     }

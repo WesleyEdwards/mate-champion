@@ -25,12 +25,10 @@ export const useAuth = ():
   useEffect(() => {
     ;(async () => {
       const token = localStorageManager.get("token")
-      console.log("Token", token)
       if (token) {
         try {
           const u = await api.auth.getSelf()
           setUser(u)
-          console.log("set laoding to false")
           setLoadingAuth(false)
         } catch {
           setLoadingAuth(false)
@@ -48,7 +46,7 @@ export const useAuth = ():
     ) {
       const levels = new StoreItem<LevelInfo>("unauth-level-info")
       const maps = new StoreItem<LevelMap>("unauth-level-map")
-      console.log("Importing: ", {levels: levels.items, maps: maps.items})
+      console.info("Importing: ", {levels: levels.items, maps: maps.items})
       await liveApi.level.importMap({
         toImport: levels.items.map((level) => ({
           level: level,

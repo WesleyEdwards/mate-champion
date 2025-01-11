@@ -1,6 +1,6 @@
 import {baseObjectSchema, BuilderParams, HasId} from "simply-served"
 import {ZodRawShape, z, ZodObject} from "zod"
-import {Clients} from "./controllers/appClients"
+import {MServerCtx} from "./controllers/appClients"
 
 export const createDbObject = <T extends ZodRawShape>(
   fun: (zod: typeof z) => ZodObject<T>
@@ -11,7 +11,7 @@ export const createSchema = <T extends ZodRawShape>(
 ) => fun(z).merge(baseObjectSchema)
 
 export const permsIfNotAdmin = <T extends HasId>(
-  params: BuilderParams<Clients, T>["permissions"]
+  params: BuilderParams<MServerCtx, T>["permissions"]
 ) => ({
   read: ifNotAdmin<T>(params.create),
   delete: ifNotAdmin<T>(params.delete),
@@ -20,8 +20,8 @@ export const permsIfNotAdmin = <T extends HasId>(
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<Clients, T>["permissions"]["create"]
-): BuilderParams<Clients, T>["permissions"]["create"] {
+  fun: BuilderParams<MServerCtx, T>["permissions"]["create"]
+): BuilderParams<MServerCtx, T>["permissions"]["create"] {
   return (c) => {
     if (c.auth?.userType === "Admin") return {Always: true}
     return fun(c)

@@ -1,4 +1,4 @@
-import {Clients} from "../controllers/appClients"
+import {MServerCtx} from "../controllers/appClients"
 import {modelRestEndpoints, Route} from "simply-served"
 import {Infer} from "../types"
 import {getTopScores} from "./scoreQueries"
@@ -14,7 +14,7 @@ export const scoreSchema = createDbObject((z) =>
 export type Score = Infer<typeof scoreSchema>
 
 const basicEndpoints = modelRestEndpoints({
-  endpoint: (db) => db.score,
+  collection: (db) => db.score,
   validator: scoreSchema,
   skipAuth: {
     get: true,
@@ -28,7 +28,7 @@ const basicEndpoints = modelRestEndpoints({
   })
 })
 
-export const scoresController: Route<Clients>[] = [
+export const scoresController: Route<MServerCtx>[] = [
   {
     path: "/top-scores",
     method: "get",

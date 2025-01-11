@@ -8,7 +8,7 @@ import {
   sendAuthCode,
   submitAuthCode
 } from "./userQueries"
-import {Clients} from "../controllers/appClients"
+import {MServerCtx} from "../controllers/appClients"
 import {Route} from "simply-served"
 import {permsIfNotAdmin} from "../helpers"
 
@@ -20,7 +20,7 @@ export const authCodeSchema = z
 
 const authEndpoints = modelRestEndpoints({
   validator: authCodeSchema,
-  endpoint: (db) => db.authCode,
+  collection: (db) => db.authCode,
   permissions: permsIfNotAdmin<AuthCode>({
     read: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}}),
     delete: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}}),
@@ -29,7 +29,7 @@ const authEndpoints = modelRestEndpoints({
   })
 })
 
-export const authController: Route<Clients>[] = [
+export const authController: Route<MServerCtx>[] = [
   {path: "/self", method: "get", endpointBuilder: getSelf},
   {
     path: "/login",

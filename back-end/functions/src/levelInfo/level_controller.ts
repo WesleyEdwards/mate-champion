@@ -1,5 +1,5 @@
 import {importLevels} from "./levelQueries"
-import {Clients} from "../controllers/appClients"
+import {MServerCtx} from "../controllers/appClients"
 import {z} from "zod"
 import {modelRestEndpoints, Route} from "simply-served"
 import {permsIfNotAdmin} from "../helpers"
@@ -17,7 +17,7 @@ export type LevelInfo = z.infer<typeof levelSchema>
 
 const levelBaseEndpoints = modelRestEndpoints({
   validator: levelSchema,
-  endpoint: (db) => db.level,
+  collection: (db) => db.level,
   permissions: permsIfNotAdmin<LevelInfo>({
     read: ({auth}) => ({
       Or: [{owner: {Equal: auth?.userId ?? ""}}, {public: {Equal: true}}]
@@ -50,7 +50,7 @@ const levelBaseEndpoints = modelRestEndpoints({
   }
 })
 
-export const levelsController: Route<Clients>[] = [
+export const levelsController: Route<MServerCtx>[] = [
   {
     path: "/import-map",
     method: "post",

@@ -16,7 +16,7 @@ const userSchema = createDbObject((z) =>
 
 export const usersController = modelRestEndpoints({
   validator: userSchema,
-  endpoint: (db) => db.user,
+  collection: (db) => db.user,
   permissions: permsIfNotAdmin<User>({
     read: () => ({Always: true}),
     delete: ({auth}) => ({

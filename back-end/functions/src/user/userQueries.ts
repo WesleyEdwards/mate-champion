@@ -6,7 +6,7 @@ import {User} from "./user_controller"
 import {authCodeSchema} from "./auth_controller"
 import {checkValidSchema, isParseError} from "simply-served"
 import {buildMCQuery} from "../controllers/serverBuilders"
-import {Clients} from "../controllers/appClients"
+import {MServerCtx} from "../controllers/appClients"
 import {buildQuery} from "simply-served"
 import {createSchema} from "../helpers"
 
@@ -171,7 +171,7 @@ export const submitAuthCode = buildMCQuery({
   }
 })
 
-export const getSelf = buildQuery<Clients>({
+export const getSelf = buildQuery<MServerCtx>({
   fun: async ({res, db, auth}) => {
     const user = await db.user.findOne({
       _id: {Equal: auth?.userId || ""}
