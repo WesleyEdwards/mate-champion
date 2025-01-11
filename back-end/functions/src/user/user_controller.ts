@@ -1,35 +1,32 @@
-import {z} from "zod"
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {ifNotAdmin} from "../levelInfo/level_controller"
-import {maskKeys} from "../simpleServer/server/mask"
-import {baseObjectSchema} from "../simpleServer/validation"
+import {maskKeys, modelRestEndpoints} from "simply-served"
 import {Infer, userTypeSchema} from "../types"
+import {createDbObject, permsIfNotAdmin} from "../helpers"
 
 export type User = Infer<typeof userSchema>
 
-const userSchema = z
-  .object({
+const userSchema = createDbObject((z) =>
+  z.object({
     name: z.string({required_error: "Name is required"}),
     email: z.string().email({message: "Invalid email"}),
     passwordHash: z.string().optional(),
     highScore: z.number().default(0),
     userType: userTypeSchema.default("User")
   })
-  .merge(baseObjectSchema)
+)
 
-export const usersController = createBasicMCEndpoints({
+export const usersController = modelRestEndpoints({
   validator: userSchema,
   endpoint: (db) => db.user,
-  permissions: {
+  permissions: permsIfNotAdmin<User>({
     read: () => ({Always: true}),
-    delete: ifNotAdmin<User>(({auth}) => ({
+    delete: ({auth}) => ({
       _id: {Equal: auth?.userId ?? ""}
-    })),
-    create: ifNotAdmin<User>(() => ({Never: true})),
-    modify: ifNotAdmin<User>(({auth}) => ({
+    }),
+    create: () => ({Never: true}),
+    modify: ({auth}) => ({
       _id: {Equal: auth?.userId ?? ""}
-    }))
-  },
+    })
+  }),
   actions: {
     prepareResponse: maskKeys(["passwordHash"])
   }

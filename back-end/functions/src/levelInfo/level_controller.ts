@@ -1,42 +1,31 @@
 import {importLevels} from "./levelQueries"
-import {Infer} from "../types"
-import {BuilderParams} from "../simpleServer/server/requestBuilders"
-import {baseObjectSchema} from "../simpleServer/validation"
-import {HasId} from "../simpleServer/DbClient"
 import {Clients} from "../controllers/appClients"
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
 import {z} from "zod"
-import {Route} from "../simpleServer/server/controller"
+import {modelRestEndpoints, Route} from "simply-served"
+import {permsIfNotAdmin} from "../helpers"
 
-export const levelSchema = z
-  .object({
-    owner: z.string(),
-    public: z.boolean().default(false),
-    name: z.string(),
-    description: z.string().nullable().default(null),
-    creatorName: z.string().default("")
-  })
-  .merge(baseObjectSchema)
+export const levelSchema = z.object({
+  owner: z.string(),
+  public: z.boolean().default(false),
+  name: z.string(),
+  description: z.string().nullable().default(null),
+  creatorName: z.string().default(""),
+  _id: z.string()
+})
 
-export type LevelInfo = Infer<typeof levelSchema>
+export type LevelInfo = z.infer<typeof levelSchema>
 
-const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
+const levelBaseEndpoints = modelRestEndpoints({
   validator: levelSchema,
   endpoint: (db) => db.level,
-  permissions: {
-    read: ifNotAdmin<LevelInfo>(({auth}) => ({
+  permissions: permsIfNotAdmin<LevelInfo>({
+    read: ({auth}) => ({
       Or: [{owner: {Equal: auth?.userId ?? ""}}, {public: {Equal: true}}]
-    })),
-    delete: ifNotAdmin<LevelInfo>(({auth}) => ({
-      owner: {Equal: auth?.userId ?? ""}
-    })),
-    create: ifNotAdmin<LevelInfo>(({auth}) => ({
-      owner: {Equal: auth?.userId ?? ""}
-    })),
-    modify: ifNotAdmin<LevelInfo>(({auth}) => ({
-      owner: {Equal: auth?.userId ?? ""}
-    }))
-  },
+    }),
+    delete: ({auth}) => ({owner: {Equal: auth?.userId ?? ""}}),
+    create: ({auth}) => ({owner: {Equal: auth?.userId ?? ""}}),
+    modify: ({auth}) => ({owner: {Equal: auth?.userId ?? ""}})
+  }),
   actions: {
     postDelete: async (item, {db}) => {
       await db.levelMap.deleteOne(item._id)
@@ -60,15 +49,6 @@ const levelBaseEndpoints = createBasicMCEndpoints<LevelInfo>({
     }
   }
 })
-
-export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<Clients, T>["permissions"]["create"]
-): BuilderParams<Clients, T>["permissions"]["create"] {
-  return (c) => {
-    if (c.auth?.userType === "Admin") return {Always: true}
-    return fun(c)
-  }
-}
 
 export const levelsController: Route<Clients>[] = [
   {

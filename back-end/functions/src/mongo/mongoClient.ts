@@ -5,11 +5,11 @@ import {
   MongoClient,
   OptionalUnlessRequiredId
 } from "mongodb"
-import {DbQueries, HasId} from "../simpleServer/DbClient"
+import {DbQueries, HasId} from "simply-served"
 import {runMigrations} from "./mongoMigrations"
 import {DbClient} from "../controllers/appClients"
-import {Condition} from "../simpleServer/condition/condition"
-import {conditionToFilter} from "../simpleServer/mongo/conditionToFilter"
+import {Condition} from "simply-served"
+import {conditionToFilter} from "simply-served"
 
 export const mongoClient = (mongoUri: string, dbPath: string): DbClient => {
   const mClient: MongoClient = new MongoClient(mongoUri)

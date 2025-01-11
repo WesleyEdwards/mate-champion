@@ -1,5 +1,5 @@
 import {Clients} from "../controllers/appClients"
-import {Route} from "../simpleServer/server/controller"
+import {Route} from "simply-served"
 import {modifyLevelMap, getLevelMap, generateLevels} from "./levelMapQueries"
 
 export const levelMapController: Route<Clients>[] = [

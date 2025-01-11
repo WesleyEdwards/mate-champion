@@ -1,7 +1,5 @@
 import {z} from "zod"
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {ifNotAdmin} from "../levelInfo/level_controller"
-import {baseObjectSchema} from "../simpleServer/validation"
+import {baseObjectSchema, modelRestEndpoints} from "simply-served"
 import {Infer} from "../types"
 import {
   createAccount,
@@ -11,7 +9,8 @@ import {
   submitAuthCode
 } from "./userQueries"
 import {Clients} from "../controllers/appClients"
-import {Route} from "../simpleServer/server/controller"
+import {Route} from "simply-served"
+import {permsIfNotAdmin} from "../helpers"
 
 export type AuthCode = Infer<typeof authCodeSchema>
 
@@ -19,21 +18,15 @@ export const authCodeSchema = z
   .object({code: z.string(), email: z.string()})
   .merge(baseObjectSchema)
 
-const authEndpoints = createBasicMCEndpoints({
+const authEndpoints = modelRestEndpoints({
   validator: authCodeSchema,
   endpoint: (db) => db.authCode,
-  permissions: {
-    read: ifNotAdmin<AuthCode>(({auth}) => ({
-      _id: {Equal: auth?.userId ?? ""}
-    })),
-    delete: ifNotAdmin<AuthCode>(({auth}) => ({
-      _id: {Equal: auth?.userId ?? ""}
-    })),
-    create: ifNotAdmin<AuthCode>(() => ({Never: true})),
-    modify: ifNotAdmin<AuthCode>(({auth}) => ({
-      _id: {Equal: auth?.userId ?? ""}
-    }))
-  }
+  permissions: permsIfNotAdmin<AuthCode>({
+    read: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}}),
+    delete: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}}),
+    create: () => ({Never: true}),
+    modify: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}})
+  })
 })
 
 export const authController: Route<Clients>[] = [

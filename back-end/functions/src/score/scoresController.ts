@@ -1,10 +1,8 @@
 import {Clients} from "../controllers/appClients"
-import {createBasicMCEndpoints} from "../controllers/serverBuilders"
-import {ifNotAdmin} from "../levelInfo/level_controller"
-import {Route} from "../simpleServer/server/controller"
-import {createDbObject} from "../simpleServer/validation"
+import {modelRestEndpoints, Route} from "simply-served"
 import {Infer} from "../types"
 import {getTopScores} from "./scoreQueries"
+import {createDbObject, permsIfNotAdmin} from "../helpers"
 
 export const scoreSchema = createDbObject((z) =>
   z.object({
@@ -15,25 +13,19 @@ export const scoreSchema = createDbObject((z) =>
 
 export type Score = Infer<typeof scoreSchema>
 
-const basicEndpoints = createBasicMCEndpoints({
+const basicEndpoints = modelRestEndpoints({
   endpoint: (db) => db.score,
   validator: scoreSchema,
   skipAuth: {
     get: true,
     query: true
   },
-  permissions: {
+  permissions: permsIfNotAdmin<Score>({
     read: () => ({Always: true}),
-    delete: ifNotAdmin<Score>(({auth}) => {
-      return {userId: {Equal: auth?.userId ?? ""}}
-    }),
-    create: ifNotAdmin<Score>(({auth}) => {
-      return {userId: {Equal: auth?.userId ?? ""}}
-    }),
-    modify: ifNotAdmin<Score>(({auth}) => {
-      return {userId: {Equal: auth?.userId ?? ""}}
-    })
-  }
+    delete: ({auth}) => ({userId: {Equal: auth?.userId ?? ""}}),
+    create: ({auth}) => ({userId: {Equal: auth?.userId ?? ""}}),
+    modify: ({auth}) => ({userId: {Equal: auth?.userId ?? ""}})
+  })
 })
 
 export const scoresController: Route<Clients>[] = [

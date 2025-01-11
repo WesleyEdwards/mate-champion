@@ -1,14 +1,14 @@
-import {Condition} from "../simpleServer/condition/condition"
+import {Condition} from "simply-served"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {coors, Infer} from "../types"
 import {
   baseObjectSchema,
   checkPartialValidation,
-  createSchema,
   isParseError
-} from "../simpleServer/validation"
+} from "simply-served"
 import {buildMCQuery} from "../controllers/serverBuilders"
 import {z} from "zod"
+import {createSchema} from "../helpers"
 
 export type LevelMap = Infer<typeof levelMapSchema>
 

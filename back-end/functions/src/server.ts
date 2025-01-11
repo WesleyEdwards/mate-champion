@@ -5,16 +5,15 @@ import {usersController} from "./user/user_controller"
 import {levelsController} from "./levelInfo/level_controller"
 import {levelMapController} from "./levelMap/level_map_controller"
 import {scoresController} from "./score/scoresController"
-import {ExpressType, SimplyServer} from "./simpleServer/server/simpleServer"
+import {ExpressType, SimplyServer} from "simply-served"
 
 export class MateServer extends SimplyServer<Clients> {
   db: Clients["db"]
   email: Clients["email"]
   constructor(params: {db: Clients["db"]; email: EmailClient}) {
-    super()
+    super(middleware(params))
     this.db = params.db
     this.email = params.email
-    this.middleware = middleware({db: this.db, email: this.email})
   }
 
   controllers = {
@@ -25,7 +24,7 @@ export class MateServer extends SimplyServer<Clients> {
     score: scoresController
   }
 
-  endpoints = (app: ExpressType) => {
+  beforeGenerateEndpoints = (app: ExpressType) => {
     app.get("/situate", async (_, res) => {
       try {
         await this.db.runMigrations()

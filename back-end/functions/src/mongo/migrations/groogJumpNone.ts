@@ -1,7 +1,7 @@
 import {z} from "zod"
 import {coors} from "../../types"
 import {MigrationFun} from "../mongoMigrations"
-import {baseObjectSchema} from "../../simpleServer/validation"
+import {baseObjectSchema} from "simply-served"
 
 const oldLevelMapSchema = z
   .object({

@@ -4,14 +4,11 @@ import jwt from "jsonwebtoken"
 import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
 import {authCodeSchema} from "./auth_controller"
-import {
-  checkValidSchema,
-  createSchema,
-  isParseError
-} from "../simpleServer/validation"
+import {checkValidSchema, isParseError} from "simply-served"
 import {buildMCQuery} from "../controllers/serverBuilders"
 import {Clients} from "../controllers/appClients"
-import {buildQuery} from "../simpleServer/server/buildQuery"
+import {buildQuery} from "simply-served"
+import {createSchema} from "../helpers"
 
 function createUserToken(user: User) {
   const body: JWTBody = {

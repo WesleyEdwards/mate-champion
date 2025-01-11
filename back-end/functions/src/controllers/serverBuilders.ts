@@ -1,13 +1,9 @@
 import {Clients} from "./appClients"
-import {HasId} from "../simpleServer/DbClient"
-import {
-  BuilderParams,
-  createBasicEndpoints
-} from "../simpleServer/server/requestBuilders"
-import {EndpointBuilderType} from "../simpleServer/server/controller"
-import {buildQuery} from "../simpleServer/server/buildQuery"
+import {} from "simply-served"
+import {EndpointBuilderType} from "simply-served"
+import {buildQuery} from "simply-served"
 import {JWTBody} from "../auth/middleware"
-import {SafeParsable} from "../simpleServer/validation"
+import {SafeParsable} from "simply-served"
 
 export type MCAuth = {jwtBody?: JWTBody}
 
@@ -16,9 +12,4 @@ export function buildMCQuery<T>(params: {
   fun: EndpointBuilderType<Clients, T>
 }) {
   return buildQuery<Clients, T>(params)
-}
-export function createBasicMCEndpoints<T extends HasId>(
-  params: BuilderParams<Clients, T>
-) {
-  return createBasicEndpoints<Clients, T>(params)
 }
