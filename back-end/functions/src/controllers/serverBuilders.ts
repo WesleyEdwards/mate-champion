@@ -1,9 +1,8 @@
 import {MServerCtx} from "./appClients"
 import {} from "simply-served"
 import {EndpointBuilderType} from "simply-served"
-import {buildQuery} from "simply-served"
-import {JWTBody} from "../auth/middleware"
-import {SafeParsable} from "simply-served"
+import {SafeParsable, buildQuery} from "simply-served"
+import {JWTBody} from "../types"
 
 export type MCAuth = {jwtBody?: JWTBody}
 

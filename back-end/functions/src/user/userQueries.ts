@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt"
-import {JWTBody} from "../auth/middleware"
 import jwt from "jsonwebtoken"
 import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
@@ -9,6 +8,7 @@ import {buildMCQuery} from "../controllers/serverBuilders"
 import {MServerCtx} from "../controllers/appClients"
 import {buildQuery} from "simply-served"
 import {createSchema} from "../helpers"
+import {JWTBody} from "../types"
 
 function createUserToken(user: User) {
   const body: JWTBody = {
