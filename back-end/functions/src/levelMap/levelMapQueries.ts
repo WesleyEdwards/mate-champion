@@ -1,10 +1,10 @@
-import {Condition} from "simply-served"
+import {buildQuery, Condition} from "simply-served"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {coors, Infer} from "../types"
 import {baseObjectSchema, isParseError} from "simply-served"
-import {buildMCQuery} from "../controllers/serverBuilders"
 import {z} from "zod"
 import {createSchema} from "../helpers"
+import {MServerCtx, requireAuth} from "../controllers/appClients"
 
 export type LevelMap = Infer<typeof levelMapSchema>
 
@@ -47,7 +47,8 @@ export const levelMapSchema = z
   })
   .merge(baseObjectSchema)
 
-export const getLevelMap = buildMCQuery({
+export const getLevelMap = buildQuery<MServerCtx>({
+  authOptions: requireAuth,
   fun: async ({req, res, db, auth}) => {
     const {params} = req
     if (!params.id || typeof params.id !== "string") {
@@ -56,8 +57,8 @@ export const getLevelMap = buildMCQuery({
     const level = await db.level.findOne({_id: {Equal: params.id}})
     if (!level.success) return res.status(404).json("Not found")
     if (
-      level.data.owner !== auth?.userId &&
-      auth?.userType !== "Admin" &&
+      level.data.owner !== auth.userId &&
+      auth.userType !== "Admin" &&
       !level.data.public
     ) {
       return res.status(404).json("Cant access")
@@ -70,18 +71,16 @@ export const getLevelMap = buildMCQuery({
   }
 })
 
-export const modifyLevelMap = buildMCQuery({
+export const modifyLevelMap = buildQuery<MServerCtx>({
   validator: levelMapSchema.partial(),
+  authOptions: requireAuth,
   fun: async ({req, res, db, auth}) => {
     const {params, body} = req
     const condition: Condition<LevelInfo> =
       auth?.userType === "Admin"
         ? {_id: {Equal: params.id}}
         : {
-            And: [
-              {_id: {Equal: params.id}},
-              {owner: {Equal: auth?.userId ?? ""}}
-            ]
+            And: [{_id: {Equal: params.id}}, {owner: {Equal: auth.userId}}]
           }
     const level = await db.level.findOne(condition)
     if (isParseError(level)) {
@@ -97,7 +96,8 @@ export const modifyLevelMap = buildMCQuery({
   }
 })
 
-export const generateLevels = buildMCQuery({
+export const generateLevels = buildQuery<MServerCtx>({
+  authOptions: requireAuth,
   validator: createSchema((z) =>
     z.object({
       levels: z.array(z.string())

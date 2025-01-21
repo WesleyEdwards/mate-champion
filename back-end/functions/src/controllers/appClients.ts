@@ -23,4 +23,8 @@ export type EmailClient = {
   }) => Promise<unknown>
 }
 
-export type MServerCtx = {db: DbClient; email: EmailClient; auth?: JWTBody}
+export type MServerCtx = {db: DbClient; email: EmailClient; auth: JWTBody}
+
+export const requireAuth = {
+  auth: () => ({Always: true} as const)
+}

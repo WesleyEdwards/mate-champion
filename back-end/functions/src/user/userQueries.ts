@@ -1,10 +1,9 @@
-import bcrypt from "bcrypt"
+import {z} from "zod"
 import jwt from "jsonwebtoken"
 import {v4 as uuidv4} from "uuid"
 import {User} from "./user_controller"
 import {authCodeSchema} from "./auth_controller"
 import {checkValidSchema, isParseError} from "simply-served"
-import {buildMCQuery} from "../controllers/serverBuilders"
 import {MServerCtx} from "../controllers/appClients"
 import {buildQuery} from "simply-served"
 import {createSchema} from "../helpers"
@@ -28,49 +27,20 @@ const sendUserBody = (user: User, self: JWTBody | undefined) => {
   return userWithoutPassword
 }
 
-export const loginWithPassword = buildMCQuery({
-  validator: createSchema((z) =>
-    z.object({email: z.string(), password: z.string()})
-  ),
-  fun: async ({req, res, db}) => {
-    const {body} = req
+const createAccountSchema = createSchema((z) =>
+  z.object({
+    email: z.string().email({message: "Invalid email"}),
+    name: z.string().optional(),
+    highScore: z.number().optional()
+  })
+)
 
-    const findUser = await db.user.findOne({
-      email: {Equal: body.email}
-    })
-
-    if (!findUser.success) {
-      return res.status(404).json({message: "Invalid credentials"})
-    }
-    const {data: user} = findUser
-
-    if (!user.passwordHash) {
-      return res.status(404).json({message: "No password for this user."})
-    }
-
-    const isValidPassword = await bcrypt.compare(
-      body.password,
-      user.passwordHash
-    )
-    if (!isValidPassword) {
-      return res.status(404).json({message: "Invalid credentials"})
-    }
-
-    return res.json({
-      user: sendUserBody(user, {userId: user._id, userType: user.userType}),
-      token: createUserToken(user)
-    })
-  }
-})
-
-export const createAccount = buildMCQuery({
-  validator: createSchema((z) =>
-    z.object({
-      email: z.string().email({message: "Invalid email"}),
-      name: z.string().optional(),
-      highScore: z.number().optional()
-    })
-  ),
+export const createAccount = buildQuery<
+  MServerCtx,
+  z.infer<typeof createAccountSchema>
+>({
+  validator: createAccountSchema,
+  authOptions: {skipAuth: true},
   fun: async ({db, email, req, res}) => {
     const {body} = req
     const user = await db.user.findOne({email: {Equal: body.email}})
@@ -106,12 +76,13 @@ export const createAccount = buildMCQuery({
   }
 })
 
-export const sendAuthCode = buildMCQuery({
+export const sendAuthCode = buildQuery<MServerCtx, {email: string}>({
   validator: createSchema((z) =>
     z.object({
       email: z.string().email({message: "Invalid email"})
     })
   ),
+  authOptions: {skipAuth: true},
   fun: async ({db, email, req, res}) => {
     const {body} = req
     const user = await db.user.findOne({email: {Equal: body.email}})
@@ -139,10 +110,14 @@ export const sendAuthCode = buildMCQuery({
   }
 })
 
-export const submitAuthCode = buildMCQuery({
+export const submitAuthCode = buildQuery<
+  MServerCtx,
+  {email: string; code: string}
+>({
   validator: createSchema((z) =>
     z.object({email: z.string(), code: z.string()})
   ),
+  authOptions: {skipAuth: true},
   fun: async ({db, req, res}) => {
     const {body} = req
     const code = await db.authCode.findOne({
@@ -171,10 +146,13 @@ export const submitAuthCode = buildMCQuery({
   }
 })
 
-export const getSelf = buildQuery<MServerCtx>({
+export const getSelf = buildQuery<MServerCtx, User>({
+  authOptions: {
+    auth: () => ({Always: true})
+  },
   fun: async ({res, db, auth}) => {
     const user = await db.user.findOne({
-      _id: {Equal: auth?.userId || ""}
+      _id: {Equal: auth.userId}
     })
     if (!user.success) return res.status(404).json("Not found")
     return res.json(sendUserBody(user.data, auth))
@@ -191,3 +169,38 @@ function randomCode() {
   }
   return result
 }
+
+// export const loginWithPassword = buildMCQuery({
+//   validator: createSchema((z) =>
+//     z.object({email: z.string(), password: z.string()})
+//   ),
+//   fun: async ({req, res, db}) => {
+//     const {body} = req
+
+//     const findUser = await db.user.findOne({
+//       email: {Equal: body.email}
+//     })
+
+//     if (!findUser.success) {
+//       return res.status(404).json({message: "Invalid credentials"})
+//     }
+//     const {data: user} = findUser
+
+//     if (!user.passwordHash) {
+//       return res.status(404).json({message: "No password for this user."})
+//     }
+
+//     const isValidPassword = await bcrypt.compare(
+//       body.password,
+//       user.passwordHash
+//     )
+//     if (!isValidPassword) {
+//       return res.status(404).json({message: "Invalid credentials"})
+//     }
+
+//     return res.json({
+//       user: sendUserBody(user, {userId: user._id, userType: user.userType}),
+//       token: createUserToken(user)
+//     })
+//   }
+// })

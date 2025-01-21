@@ -5,8 +5,9 @@ import {levelsController} from "./levelInfo/level_controller"
 import {levelMapController} from "./levelMap/level_map_controller"
 import {scoresController} from "./score/scoresController"
 import {ExpressType, createSimplyServer, verifyAuth} from "simply-served"
+import {WithoutAuth} from "simply-served/build/endpoints/types"
 
-export const createMateServer = (context: MServerCtx) =>
+export const createMateServer = (context: WithoutAuth<MServerCtx>) =>
   createSimplyServer({
     initContext: context,
     middleware: verifyAuth(process.env.ENCRYPTION_KEY!),

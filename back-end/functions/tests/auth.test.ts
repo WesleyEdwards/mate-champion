@@ -21,7 +21,7 @@ describe("Submit Auth code", () => {
       highScore: 100,
       name: "Wesley",
       userType: "User"
-    })
+    })  
     expect(response.body.token).toBeTruthy()
   })
 

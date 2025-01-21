@@ -4,7 +4,6 @@ import {Infer} from "../types"
 import {
   createAccount,
   getSelf,
-  loginWithPassword,
   sendAuthCode,
   submitAuthCode
 } from "./userQueries"
@@ -18,42 +17,33 @@ export const authCodeSchema = z
   .object({code: z.string(), email: z.string()})
   .merge(baseObjectSchema)
 
-const authEndpoints = modelRestEndpoints({
+const authEndpoints = modelRestEndpoints<MServerCtx, AuthCode>({
   validator: authCodeSchema,
   collection: (db) => db.authCode,
   permissions: permsIfNotAdmin<AuthCode>({
-    read: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}}),
-    delete: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}}),
-    create: () => ({Never: true}),
-    modify: ({auth}) => ({_id: {Equal: auth?.userId ?? ""}})
+    read: {userAuth: ({Never: true})},
+    delete: {userAuth: ({Never: true})},
+    create: {userAuth: ({Never: true})},
+    modify: {userAuth: ({Never: true})}
   })
 })
 
 export const authController: Route<MServerCtx>[] = [
   {path: "/self", method: "get", endpointBuilder: getSelf},
   {
-    path: "/login",
-    method: "post",
-    endpointBuilder: loginWithPassword,
-    skipAuth: true
-  },
-  {
     path: "/create",
     method: "post",
-    endpointBuilder: createAccount,
-    skipAuth: true
+    endpointBuilder: createAccount
   },
   {
     path: "/sendAuthCode",
     method: "post",
-    endpointBuilder: sendAuthCode,
-    skipAuth: true
+    endpointBuilder: sendAuthCode
   },
   {
     path: "/submitAuthCode",
     method: "post",
-    endpointBuilder: submitAuthCode,
-    skipAuth: true
+    endpointBuilder: submitAuthCode
   },
   ...authEndpoints
 ]

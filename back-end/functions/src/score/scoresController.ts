@@ -16,15 +16,17 @@ export type Score = Infer<typeof scoreSchema>
 const basicEndpoints = modelRestEndpoints({
   collection: (db) => db.score,
   validator: scoreSchema,
-  skipAuth: {
-    get: true,
-    query: true
-  },
   permissions: permsIfNotAdmin<Score>({
-    read: () => ({Always: true}),
-    delete: ({auth}) => ({userId: {Equal: auth?.userId ?? ""}}),
-    create: ({auth}) => ({userId: {Equal: auth?.userId ?? ""}}),
-    modify: ({auth}) => ({userId: {Equal: auth?.userId ?? ""}})
+    read: {skipAuth: {Always: true}},
+    delete: {
+      modelAuth: (auth) => ({userId: {Equal: auth.userId}})
+    },
+    create: {
+      modelAuth: (auth) => ({userId: {Equal: auth.userId}})
+    },
+    modify: {
+      modelAuth: (auth) => ({userId: {Equal: auth.userId}})
+    }
   })
 })
 
@@ -32,8 +34,7 @@ export const scoresController: Route<MServerCtx>[] = [
   {
     path: "/top-scores",
     method: "get",
-    endpointBuilder: getTopScores,
-    skipAuth: true
+    endpointBuilder: getTopScores
   },
   ...basicEndpoints
 ]

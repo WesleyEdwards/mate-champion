@@ -2,7 +2,7 @@ import {importLevels} from "./levelQueries"
 import {MServerCtx} from "../controllers/appClients"
 import {z} from "zod"
 import {modelRestEndpoints, Route} from "simply-served"
-import {permsIfNotAdmin} from "../helpers"
+import {ifNotAdmin} from "../helpers"
 
 export const levelSchema = z.object({
   owner: z.string(),
@@ -18,14 +18,22 @@ export type LevelInfo = z.infer<typeof levelSchema>
 const levelBaseEndpoints = modelRestEndpoints({
   validator: levelSchema,
   collection: (db) => db.level,
-  permissions: permsIfNotAdmin<LevelInfo>({
-    read: ({auth}) => ({
-      Or: [{owner: {Equal: auth?.userId ?? ""}}, {public: {Equal: true}}]
+  permissions: {
+    read: ifNotAdmin<LevelInfo>({
+      modelAuth: (auth) => ({
+        Or: [{owner: {Equal: auth.userId}}, {public: {Equal: true}}]
+      })
     }),
-    delete: ({auth}) => ({owner: {Equal: auth?.userId ?? ""}}),
-    create: ({auth}) => ({owner: {Equal: auth?.userId ?? ""}}),
-    modify: ({auth}) => ({owner: {Equal: auth?.userId ?? ""}})
-  }),
+    delete: ifNotAdmin<LevelInfo>({
+      modelAuth: (auth) => ({owner: {Equal: auth.userId}})
+    }),
+    create: ifNotAdmin<LevelInfo>({
+      modelAuth: (auth) => ({owner: {Equal: auth.userId}})
+    }),
+    modify: ifNotAdmin<LevelInfo>({
+      modelAuth: (auth) => ({owner: {Equal: auth.userId}})
+    })
+  },
   actions: {
     postDelete: async (item, {db}) => {
       await db.levelMap.deleteOne(item._id)

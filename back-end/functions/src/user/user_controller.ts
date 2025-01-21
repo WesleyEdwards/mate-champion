@@ -1,4 +1,4 @@
-import {maskKeys, modelRestEndpoints} from "simply-served"
+import {maskKeysBasedOnPerms, modelRestEndpoints} from "simply-served"
 import {Infer, userTypeSchema} from "../types"
 import {createDbObject, permsIfNotAdmin} from "../helpers"
 
@@ -18,16 +18,24 @@ export const usersController = modelRestEndpoints({
   validator: userSchema,
   collection: (db) => db.user,
   permissions: permsIfNotAdmin<User>({
-    read: () => ({Always: true}),
-    delete: ({auth}) => ({
-      _id: {Equal: auth?.userId ?? ""}
-    }),
-    create: () => ({Never: true}),
-    modify: ({auth}) => ({
-      _id: {Equal: auth?.userId ?? ""}
-    })
+    read: {userAuth: {Always: true}},
+    delete: {
+      modelAuth: (auth) => ({_id: {Equal: auth.userId}})
+    },
+    create: {userAuth: {Never: true}},
+    modify: {
+      modelAuth: (auth) => ({_id: {Equal: auth.userId}})
+    }
   }),
   actions: {
-    prepareResponse: maskKeys(["passwordHash"])
+    prepareResponse: maskKeysBasedOnPerms((user, {auth}) => {
+      if (!auth) return {passwordHash: true}
+      const canViewAccess =
+        auth.userType === "Admin" || user._id === auth.userId
+      if (canViewAccess) {
+        return {passwordHash: true}
+      }
+      return {passwordHash: true, userType: true}
+    })
   }
 })

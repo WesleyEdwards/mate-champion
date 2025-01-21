@@ -1,8 +1,10 @@
-import {buildMCQuery} from "../controllers/serverBuilders"
+import {buildQuery} from "simply-served"
 import {User} from "../user/user_controller"
 import {Score} from "./scoresController"
+import {MServerCtx} from "../controllers/appClients"
 
-export const getTopScores = buildMCQuery({
+export const getTopScores = buildQuery<MServerCtx>({
+  authOptions: {skipAuth: true},
   fun: async ({res, db}) => {
     const scores = await db.score.findMany({})
 

@@ -1,9 +1,13 @@
 import {z} from "zod"
-import {buildMCQuery} from "../controllers/serverBuilders"
 import {LevelMap, levelMapSchema} from "../levelMap/levelMapQueries"
 import {LevelInfo, levelSchema} from "./level_controller"
+import {MServerCtx} from "../controllers/appClients"
+import {buildQuery} from "simply-served"
 
-export const importLevels = buildMCQuery({
+export const importLevels = buildQuery<
+  MServerCtx,
+  {toImport: {level: LevelInfo; map: LevelMap}[]}
+>({
   validator: z.lazy(() =>
     z.object({
       toImport: z
@@ -14,9 +18,12 @@ export const importLevels = buildMCQuery({
         .array()
     })
   ),
+  authOptions: {
+    auth: () => ({Always: true})
+  },
   fun: async ({req, res, db, auth}) => {
     const {body} = req
-    const creator = await db.user.findOne({_id: {Equal: auth?.userId ?? ""}})
+    const creator = await db.user.findOne({_id: {Equal: auth.userId}})
     if (!creator.success) {
       return res.status(404).json({error: "User not found"})
     }
@@ -26,7 +33,7 @@ export const importLevels = buildMCQuery({
       creatorName: creator.data.name,
       owner: creator.data._id
     }))
-    const updateMaps: LevelMap[] = body.toImport.map((map) => (map.map))
+    const updateMaps: LevelMap[] = body.toImport.map((map) => map.map)
 
     let successes = 0
     for (const level of updateLevels) {

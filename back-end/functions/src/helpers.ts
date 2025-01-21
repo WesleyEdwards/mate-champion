@@ -1,4 +1,9 @@
-import {baseObjectSchema, BuilderParams, HasId} from "simply-served"
+import {
+  baseObjectSchema,
+  BuilderParams,
+  HasId,
+  ModelPermOption
+} from "simply-served"
 import {ZodRawShape, z, ZodObject} from "zod"
 import {MServerCtx} from "./controllers/appClients"
 
@@ -10,9 +15,12 @@ export const createSchema = <T extends ZodRawShape>(
   fun: (zod: typeof z) => ZodObject<T>
 ) => fun(z).merge(baseObjectSchema)
 
-export const permsIfNotAdmin = <T extends HasId>(
-  params: BuilderParams<MServerCtx, T>["permissions"]
-) => ({
+export const permsIfNotAdmin = <T extends HasId>(params: {
+  [K in keyof BuilderParams<MServerCtx, T>["permissions"]]: ModelPermOption<
+    MServerCtx,
+    T
+  >
+}) => ({
   read: ifNotAdmin<T>(params.create),
   delete: ifNotAdmin<T>(params.delete),
   create: ifNotAdmin<T>(params.create),
@@ -20,10 +28,13 @@ export const permsIfNotAdmin = <T extends HasId>(
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: BuilderParams<MServerCtx, T>["permissions"]["create"]
-): BuilderParams<MServerCtx, T>["permissions"]["create"] {
-  return (c) => {
-    if (c.auth?.userType === "Admin") return {Always: true}
-    return fun(c)
+  fun: ModelPermOption<MServerCtx, T>
+): ModelPermOption<MServerCtx, T> {
+  return {
+    ...fun,
+    userAuth: fun.userAuth
+      ? {Or: [fun.userAuth, {userType: {Equal: "Admin"}}]}
+      : {userType: {Equal: "Admin"}}
   }
+  // return [{userAuth: {userType: {Equal: "Admin"}}}, fun]
 }
