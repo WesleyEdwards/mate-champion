@@ -17,6 +17,8 @@ The level editor allows users to create, move, and customize entities, including
 - Enemies (Change Speed, Jump behavior & Turn behavior)
 - Ammo (Move)
 
+![Screenshot from 2025-01-28 20-29-15](https://github.com/user-attachments/assets/139be27c-b002-49ec-a58f-b03feaf21817)
+
 ## Game Design
 
 Mate Champion follows the Entity-Component-System (ECS) Architecture, which has proved to provide needed flexibility and cleanliness.
