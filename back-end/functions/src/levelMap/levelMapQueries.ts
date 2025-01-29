@@ -71,17 +71,15 @@ export const getLevelMap = buildQuery<MServerCtx>({
   }
 })
 
-export const modifyLevelMap = buildQuery<MServerCtx>({
+export const modifyLevelMap = buildQuery<MServerCtx, Partial<LevelMap>>({
   validator: levelMapSchema.partial(),
   authOptions: requireAuth,
   fun: async ({req, res, db, auth}) => {
     const {params, body} = req
     const condition: Condition<LevelInfo> =
-      auth?.userType === "Admin"
+      auth.userType === "Admin"
         ? {_id: {Equal: params.id}}
-        : {
-            And: [{_id: {Equal: params.id}}, {owner: {Equal: auth.userId}}]
-          }
+        : {And: [{_id: {Equal: params.id}}, {owner: {Equal: auth.userId}}]}
     const level = await db.level.findOne(condition)
     if (isParseError(level)) {
       return res.status(404).json("Level map not found")

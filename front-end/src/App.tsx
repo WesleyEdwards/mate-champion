@@ -11,6 +11,7 @@ import {initializeTextures} from "./gameAssets/textures"
 import {Adding} from "./components/GameEdit/CourseBuilderSettings"
 import {ToastProvider} from "./hooks/Toaster"
 import {Entity} from "./game/entities/Entity"
+import {GitHub} from "@mui/icons-material"
 
 export type EditGlobal = {
   editingEntities: Entity[]
@@ -48,6 +49,17 @@ function App() {
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <ToastProvider>
+          <a
+            href="https://github.com/WesleyEdwards/mate-champion"
+            target="_blank"
+            style={{
+              position: "absolute",
+              top: 12,
+              right: 12
+            }}
+          >
+            <GitHub sx={{fontSize: "40px"}} />
+          </a>
           <AuthSwitch />
         </ToastProvider>
       </ThemeProvider>

@@ -4,7 +4,7 @@ import {usersController} from "./user/user_controller"
 import {levelsController} from "./levelInfo/level_controller"
 import {levelMapController} from "./levelMap/level_map_controller"
 import {scoresController} from "./score/scoresController"
-import {ExpressType, createSimplyServer, verifyAuth} from "simply-served"
+import {createSimplyServer, verifyAuth} from "simply-served"
 import {WithoutAuth} from "simply-served/build/endpoints/types"
 
 export const createMateServer = (context: WithoutAuth<MServerCtx>) =>
@@ -18,7 +18,7 @@ export const createMateServer = (context: WithoutAuth<MServerCtx>) =>
       "level-map": levelMapController,
       score: scoresController
     },
-    beforeGenerateEndpoints: (app: ExpressType, ctx) => {
+    beforeGenerateEndpoints: (app, ctx) => {
       app.get("/situate", async (_, res) => {
         try {
           await ctx.db.runMigrations()

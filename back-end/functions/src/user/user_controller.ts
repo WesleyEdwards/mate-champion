@@ -1,6 +1,7 @@
 import {maskKeysBasedOnPerms, modelRestEndpoints} from "simply-served"
 import {Infer, userTypeSchema} from "../types"
 import {createDbObject, permsIfNotAdmin} from "../helpers"
+import {MServerCtx} from "../controllers/appClients"
 
 export type User = Infer<typeof userSchema>
 
@@ -14,11 +15,13 @@ const userSchema = createDbObject((z) =>
   })
 )
 
-export const usersController = modelRestEndpoints({
+export const usersController = modelRestEndpoints<MServerCtx, User>({
   validator: userSchema,
   collection: (db) => db.user,
   permissions: permsIfNotAdmin<User>({
-    read: {userAuth: {Always: true}},
+    read: {
+      modelAuth: (auth) => ({_id: {Equal: auth.userId}})
+    },
     delete: {
       modelAuth: (auth) => ({_id: {Equal: auth.userId}})
     },

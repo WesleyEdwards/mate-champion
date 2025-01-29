@@ -15,6 +15,9 @@ export const createSchema = <T extends ZodRawShape>(
   fun: (zod: typeof z) => ZodObject<T>
 ) => fun(z).merge(baseObjectSchema)
 
+/**
+ * Modifies a `ModelPermOption` object so that admins always have permission over everything,
+ */
 export const permsIfNotAdmin = <T extends HasId>(params: {
   [K in keyof BuilderParams<MServerCtx, T>["permissions"]]: ModelPermOption<
     MServerCtx,
@@ -28,13 +31,16 @@ export const permsIfNotAdmin = <T extends HasId>(params: {
 })
 
 export function ifNotAdmin<T extends HasId>(
-  fun: ModelPermOption<MServerCtx, T>
+  permissionOptions: ModelPermOption<MServerCtx, T>
 ): ModelPermOption<MServerCtx, T> {
   return {
-    ...fun,
-    userAuth: fun.userAuth
-      ? {Or: [fun.userAuth, {userType: {Equal: "Admin"}}]}
+    skipAuth: undefined,
+    modelAuth: (auth) =>
+      auth.userType === "Admin"
+        ? {Always: true}
+        : permissionOptions.modelAuth?.(auth) ?? {Never: true},
+    userAuth: permissionOptions.userAuth
+      ? {Or: [permissionOptions.userAuth, {userType: {Equal: "Admin"}}]}
       : {userType: {Equal: "Admin"}}
   }
-  // return [{userAuth: {userType: {Equal: "Admin"}}}, fun]
 }
