@@ -6,7 +6,7 @@ Yes, this is a game. A pretty standard platformer. But Mate Champion also includ
 
 ## Level Editor
 
-👉[Create your own level](http://localhost:3000/levels?view=mine)!
+👉[Create your own level](https://mate-champion.web.app/levels?view=mine)!
 
 The Mate Champion level editor is available to everyone, you don't even need to create an account to try it out.
 
