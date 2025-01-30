@@ -24,6 +24,7 @@ export const EditScreen = () => {
   const {id} = useParams<{id: string}>()
 
   const {setModal} = usePauseModalContext()
+  const navigate = useNavigate()
 
   const {api} = useAuthContext()
 
@@ -37,8 +38,14 @@ export const EditScreen = () => {
 
   useEffect(() => {
     if (id) {
-      api.level.detail(id).then(setLevelInfo)
-      api.level.levelMapDetail(id).then(setLevel)
+      api.level
+        .detail(id)
+        .then(setLevelInfo)
+        .catch(() => navigate("/levels"))
+      api.level
+        .levelMapDetail(id)
+        .then(setLevel)
+        .catch(() => navigate("/levels"))
     }
   }, [id])
 

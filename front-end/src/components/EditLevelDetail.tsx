@@ -34,7 +34,10 @@ export const EditLevelDetail = () => {
 
   useEffect(() => {
     if (id) {
-      api.level.detail(id).then(setLevelInfo)
+      api.level
+        .detail(id)
+        .then(setLevelInfo)
+        .catch(() => navigate("/levels"))
     }
   }, [id])
 

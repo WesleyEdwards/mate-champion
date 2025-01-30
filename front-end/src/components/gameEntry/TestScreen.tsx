@@ -13,14 +13,21 @@ export const TestScreen = () => {
   const {id} = useParams<{id: string}>()
 
   const {api} = useAuthContext()
+  const navigate = useNavigate()
 
   const [levelInfo, setLevelInfo] = useState<LevelInfo>()
   const [fullLevel, setFullLevel] = useState<LevelMap>()
 
   useEffect(() => {
     if (id) {
-      api.level.detail(id).then(setLevelInfo)
-      api.level.levelMapDetail(id).then(setFullLevel)
+      api.level
+        .detail(id)
+        .then(setLevelInfo)
+        .catch(() => navigate("/levels"))
+      api.level
+        .levelMapDetail(id)
+        .then(setFullLevel)
+        .catch(() => navigate("/levels"))
     }
   }, [id])
 
