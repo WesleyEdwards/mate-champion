@@ -6,7 +6,7 @@ Yes, this is a game. A pretty standard platformer. But Mate Champion also includ
 
 ## Level Editor
 
-👉[Create your own level](http://localhost:3000/levels?view=mine)!
+👉[Create your own level](https://mate-champion.web.app/levels?view=mine)!
 
 The Mate Champion level editor is available to everyone, you don't even need to create an account to try it out.
 
@@ -16,6 +16,8 @@ The level editor allows users to create, move, and customize entities, including
 - Platforms (Resize & Change Color)
 - Enemies (Change Speed, Jump behavior & Turn behavior)
 - Ammo (Move)
+
+![Screenshot from 2025-01-28 20-29-15](https://github.com/user-attachments/assets/139be27c-b002-49ec-a58f-b03feaf21817)
 
 ## Game Design
 
