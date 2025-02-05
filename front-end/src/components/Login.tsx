@@ -7,6 +7,7 @@ import {emailIsValid} from "./CreateAccount"
 import {ViewHeaderSubScreen} from "./ViewHeader"
 import {MScreen} from "./AuthSwitch"
 import {useNavigate} from "react-router-dom"
+import {catchError} from "../helpers"
 
 export const Login = () => {
   const {login, api} = useAuthContext()
@@ -27,28 +28,27 @@ export const Login = () => {
     }
     if (identifier && email && code) {
       setSubmitting(true)
-      try {
-        await login({email, code: code.trim()})
+      const [error] = await catchError(login({email, code: code.trim()}))
+      if (error) {
+        Error("Invalid code, try again")
+        return
+      } else {
         toast({
           message: "Successfully logged in",
           color: "success"
         })
         navigate("/landing")
-      } catch {
-        setError("Invalid code, try again")
       }
       setSubmitting(false)
       return
     }
     if (email && !identifier) {
-      api.auth
-        .sendAuthCode({email})
-        .then((res) => {
-          setIdentifier(res.identifier)
-        })
-        .catch(() => {
-          navigate("/createAccount")
-        })
+      const [error, res] = await catchError(api.auth.sendAuthCode({email}))
+      if (error) {
+        navigate("/createAccount")
+      } else {
+        setIdentifier(res.identifier)
+      }
     }
   }
 

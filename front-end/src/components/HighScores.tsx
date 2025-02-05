@@ -17,7 +17,6 @@ import {MScreen} from "./AuthSwitch"
 import mateMan from "../assets/champ/mate-single.png"
 import {ViewHeaderSubScreen} from "./ViewHeader"
 import {MCModal} from "./MCModal"
-import {SignInButton} from "./SignInButton"
 
 export const HighScores = () => {
   const [highScores, setHighScores] = useState<TopScore[]>()
@@ -26,6 +25,7 @@ export const HighScores = () => {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const myScore = localStorageManager.get("high-score")
+
   useEffect(() => {
     api.score
       .topScores()

@@ -22,7 +22,7 @@ export const routes = createBrowserRouter([
   {path: "highScores", Component: HighScores},
   {path: "login", Component: Login},
   {path: "profile", Component: Profile},
-  {path: "createAccount,", Component: CreateAccount},
+  {path: "createAccount", Component: CreateAccount},
 
   {path: "*", element: <Navigate to="/landing" replace />}
 ])

@@ -28,3 +28,18 @@ export const objectsAreDifferent = <T>(a: T, b: T) => {
   const areDiff = !_.isEqual(a, b)
   return !_.isEqual(a, b)
 }
+
+
+export async function catchError<T>(
+  promise: Promise<T>
+): Promise<[undefined, T] | [Error]> {
+  return promise
+    .then((res) => [undefined, res] satisfies [undefined, T])
+    .catch(async (error) => {
+      if (error instanceof Response) {
+        const errorJson = await error.json()
+        return [new Error(errorJson.message)]
+      }
+      return [error]
+    })
+}
