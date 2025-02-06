@@ -13,7 +13,7 @@ import StatsDiv from "../StatsDiv"
 import {MScreen} from "../AuthSwitch"
 
 export const PlayScreen = () => {
-  const {setModal, stats, modifyStats} = usePauseModalContext()
+  const {stats, modifyStats} = usePauseModalContext()
   const navigate = useNavigate()
   const {user, api, modifyUser} = useAuthContext()
 
@@ -42,8 +42,7 @@ export const PlayScreen = () => {
     playLoop({
       setUI: {
         modifyStats,
-        handleLose,
-        handlePause: (pause) => setModal(pause ? "pause" : null)
+        handleLose
       },
       levels: levelsInfo as unknown as LevelMap[]
     })

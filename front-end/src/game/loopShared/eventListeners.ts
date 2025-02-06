@@ -15,7 +15,7 @@ const initialKeyStatus: Keys = {
   mostRecentX: "right"
 }
 
-export function addEventListeners(togglePause: () => void): Keys {
+export function addEventListeners(): Keys {
   resetAbortController()
   const keys = {...initialKeyStatus}
   window.addEventListener(
@@ -99,9 +99,6 @@ export function addEventListeners(togglePause: () => void): Keys {
           break
         case "KeyK":
           keys.shank = false
-          break
-        case "Escape":
-          togglePause()
           break
       }
     },

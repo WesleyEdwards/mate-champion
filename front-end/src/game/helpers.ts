@@ -30,9 +30,7 @@ export const initGameState = (): GameStateProps => ({
     ammo: {curr: 20, prev: 20}
   },
   entities: [],
-  keys: addEventListeners(() => {
-    window.pause = !window.pause
-  })
+  keys: addEventListeners()
 })
 
 export const levelToEntities = (level: LevelMap): Entity[] => {

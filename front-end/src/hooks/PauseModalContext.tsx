@@ -28,10 +28,6 @@ export const PauseModalProvider = (props: {children: React.ReactNode}) => {
     setOpen(modal)
   }
 
-  useEffect(() => {
-    window.pause = !!open
-  }, [open])
-
   return (
     <PauseModalContext.Provider
       value={{
@@ -57,7 +53,6 @@ export const PauseModalProvider = (props: {children: React.ReactNode}) => {
               <Button
                 onClick={() => {
                   window.location.assign("/landing")
-                  // navigate("/home")
                   setOpen(null)
                 }}
               >

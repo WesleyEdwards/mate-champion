@@ -35,10 +35,6 @@ export const MCModal: FC<{
   hideActions,
   children
 }) => {
-  useEffect(() => {
-    window.pause = open
-  }, [open])
-
   // https://stackoverflow.com/questions/75644447/autofocus-not-working-on-open-form-dialog-with-button-component-in-material-ui-v
   return (
     <Modal open={open} onClose={onClose} disableRestoreFocus>

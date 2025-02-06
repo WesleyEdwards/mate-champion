@@ -23,15 +23,14 @@ export const Login = () => {
   const [submitting, setSubmitting] = useState<boolean>(false)
 
   const submit = async () => {
+    setSubmitting(true)
     if (!emailIsValid(email)) {
       return setError("Please enter a valid email")
     }
     if (identifier && email && code) {
-      setSubmitting(true)
       const [error] = await catchError(login({email, code: code.trim()}))
       if (error) {
-        Error("Invalid code, try again")
-        return
+        setError("Invalid code, try again")
       } else {
         toast({
           message: "Successfully logged in",
@@ -49,6 +48,7 @@ export const Login = () => {
       } else {
         setIdentifier(res.identifier)
       }
+      setSubmitting(false)
     }
   }
 

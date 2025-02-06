@@ -8,7 +8,6 @@ export type PlayLoopParams = {
   setUI: {
     modifyStats: (stats: Partial<PlayStats>) => void
     handleLose: (score: number) => void
-    handlePause: (pause: boolean) => void
   }
   levels: LevelMap[]
 }

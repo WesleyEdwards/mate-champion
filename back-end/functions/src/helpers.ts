@@ -24,7 +24,7 @@ export const permsIfNotAdmin = <T extends HasId>(params: {
     T
   >
 }) => ({
-  read: ifNotAdmin<T>(params.create),
+  read: ifNotAdmin<T>(params.read),
   delete: ifNotAdmin<T>(params.delete),
   create: ifNotAdmin<T>(params.create),
   modify: ifNotAdmin<T>(params.modify)

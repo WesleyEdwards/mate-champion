@@ -26,7 +26,7 @@ export const StatsDiv: FC<{stats: PlayStats}> = ({stats}) => {
       </Stack>
       <ScoreStats level={level} score={score} ammo={ammo} />
       <div style={{flexGrow: 1}}></div>
-      <Typography>'Esc' to pause</Typography>
+      {/* <Typography>'Esc' to pause</Typography> */}
     </Stack>
   )
 }
