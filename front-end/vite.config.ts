@@ -6,9 +6,7 @@ function relativePath() {
   return {
     name: "relativePathChange",
     transformIndexHtml(html: string) {
-      return html
-        .replace("/favicon.ico", "./favicon.ico")
-        .replace("/assets/", "./assets/")
+      return html.replace("/mate-single.png", "/assets/mate-single.png")
     }
   }
 }
@@ -22,8 +20,8 @@ export default defineConfig(({command, mode}) => {
   const assetsDir = mode === "production" ? "assets" : "mate-champion/assets"
   const plugins =
     mode === "production"
-      ? [react(), checker({typescript: true})]
-      : [react(), checker({typescript: true}), relativePath()]
+      ? [react(), checker({typescript: true}), relativePath()]
+      : [react(), checker({typescript: true})]
 
   return {
     plugins,

@@ -60,11 +60,20 @@ export const useAuth = ():
 
   const login = async (body: LoginBody) => {
     const res = await api.auth.submitAuthCode(body)
-    localStorageManager.set("high-score", res.user.highScore)
+    const newApi = new LiveApi(res.token)
+    const myScore = +localStorageManager.get("high-score")
+    if (myScore && res.user) {
+      await newApi.score.create({
+        _id: crypto.randomUUID(),
+        score: myScore,
+        userId: res.user._id
+      })
+      localStorageManager.remove("high-score")
+    }
     localStorageManager.set("token", res.token)
 
     importLevels(new LiveApi(res.token))
-    setUser(res.user)
+    setUser({...res.user, highScore: Math.max(res.user.highScore, myScore)})
   }
 
   const logout = () => {

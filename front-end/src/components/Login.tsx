@@ -72,6 +72,7 @@ export const Login = () => {
 
                   <LabeledInput label="Code">
                     <Input
+                      size="lg"
                       placeholder="Verification code"
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
@@ -87,6 +88,7 @@ export const Login = () => {
                 </Typography>
                 <LabeledInput label="Email">
                   <Input
+                    size="lg"
                     placeholder="Enter Your Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

@@ -1,19 +1,20 @@
 import {Typography} from "@mui/joy"
-import {FC} from "react"
+import {FC, useEffect, useMemo, useState} from "react"
 import {useAuthContext} from "../hooks/useAuth"
 import {localStorageManager} from "../api/localStorageManager"
 
 export const PersonalHigh: FC = () => {
   const {user} = useAuthContext()
-  const highScore = (() => {
+  const [high, setHigh] = useState(0)
+
+  const highScore = useMemo(() => {
+    if (user?.highScore) {
+      return user.highScore
+    }
     if (localStorageManager.get("high-score")) {
       return parseInt(localStorageManager.get("high-score") ?? "0")
     }
-    if (user?.highScore) {
-      localStorageManager.set("high-score", user.highScore.toString())
-      return user?.highScore
-    }
-  })()
+  }, [])
   if (highScore) {
     return (
       <Typography level="h4" sx={{mt: "2rem"}}>

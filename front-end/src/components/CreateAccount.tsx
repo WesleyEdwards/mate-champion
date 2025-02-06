@@ -78,6 +78,7 @@ export const CreateAccount = () => {
 
           <LabeledInput label="Name">
             <Input
+              size="lg"
               placeholder="Enter Your Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -86,6 +87,7 @@ export const CreateAccount = () => {
 
           <LabeledInput label="Email">
             <Input
+              size="lg"
               sx={{flexGrow: "1", mb: 2}}
               placeholder="Email"
               value={email}

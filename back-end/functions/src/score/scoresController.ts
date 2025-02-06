@@ -16,6 +16,14 @@ export type Score = Infer<typeof scoreSchema>
 const basicEndpoints = modelRestEndpoints({
   collection: (db) => db.score,
   validator: scoreSchema,
+  actions: {
+    postCreate: async (score, {db}) => {
+      const high = await db.score.findMany({userId: {Equal: score.userId}})
+      await db.user.updateOne(score.userId, {
+        highScore: Math.max(...high.map((h) => h.score))
+      })
+    }
+  },
   permissions: permsIfNotAdmin<Score>({
     read: {skipAuth: {Always: true}},
     delete: {
