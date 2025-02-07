@@ -10,7 +10,6 @@ import {
 } from "@mui/joy"
 import {MyLevels} from "./MyLevels"
 import {PublicLevelsScreen} from "./PublicLevelsScreen"
-import {localStorageManager} from "../api/localStorageManager"
 import {MScreen} from "./AuthSwitch"
 import {LevelsHeader} from "./ViewHeader"
 import {useSearchParams} from "react-router-dom"
@@ -18,10 +17,7 @@ import {useSearchParams} from "react-router-dom"
 export const LevelEditorHome = () => {
   const [params, setParams] = useSearchParams()
 
-  const tab = useMemo(
-    () => (params.get("view") === "public" ? 1 : 0),
-    [params]
-  )
+  const tab = useMemo(() => (params.get("view") === "public" ? 1 : 0), [params])
 
   const setTab = (v: number) => {
     params.set("view", v === 0 ? "mine" : "public")
@@ -36,7 +32,6 @@ export const LevelEditorHome = () => {
           value={tab}
           onChange={(_, v) => {
             if (typeof v === "number") {
-              localStorageManager.set("level-tab", v)
               setTab(v)
             }
           }}

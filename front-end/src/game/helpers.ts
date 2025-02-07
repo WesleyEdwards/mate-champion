@@ -1,5 +1,4 @@
 import {addEventListeners} from "./loopShared/eventListeners"
-import {LevelMap} from "../api/serverModels"
 import {Ammo} from "./entities/Ammo"
 import {Coors, CurrAndPrev, GameStateProps} from "./entities/entityTypes"
 import {Groog} from "./entities/groog"
@@ -8,6 +7,7 @@ import {emptyTime} from "./state/timeHelpers"
 import {EndGate} from "./entities/endGate"
 import {Champ} from "./entities/champ/champ"
 import {BaseEntity, Entity} from "./entities/Entity"
+import {LevelMap} from "../api/types"
 
 export const initGameState = (): GameStateProps => ({
   currStateOfGame: "nextLevel",

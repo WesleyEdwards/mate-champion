@@ -5,9 +5,9 @@ import {BackButton} from "../ViewHeader"
 import {MScreen} from "../AuthSwitch"
 import {enterGameLoopPreview} from "../../game/previewer/previewLoop"
 import {abortGame} from "../../game/editor/eventListeners"
-import {LevelInfo, LevelMap} from "../../api/serverModels"
 import {Button, Skeleton, Stack, Typography} from "@mui/joy"
 import {Construction} from "@mui/icons-material"
+import {LevelInfo, LevelMap} from "../../api/types"
 
 export const TestScreen = () => {
   const {id} = useParams<{id: string}>()

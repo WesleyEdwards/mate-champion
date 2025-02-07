@@ -175,6 +175,7 @@ const addableEntity = (type: AddableEntity): Entity =>
     groog: new Groog({
       moveSpeed: 0.3,
       position: [0, 0],
+      facingRight: true,
       timeBetweenJump: {
         time: 2000,
         type: "Time"

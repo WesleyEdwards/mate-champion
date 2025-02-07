@@ -16,7 +16,8 @@ export const levelMapSchema = z
     groog: z
       .object({
         position: coors,
-        moveSpeed: z.number(),
+        moveSpeed: z.number().gte(0).default(0.3),
+        facingRight: z.boolean().default(true),
         timeBetweenJump: z.object({
           time: z.number().default(2000),
           type: z.enum(["None", "Time", "Random"]).default("Time")

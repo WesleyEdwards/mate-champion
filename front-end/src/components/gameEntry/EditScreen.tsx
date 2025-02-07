@@ -3,7 +3,6 @@ import {useAuthContext} from "../../hooks/useAuth"
 import {useNavigate, useParams} from "react-router-dom"
 import {MScreen} from "../AuthSwitch"
 import {abortGame} from "../../game/editor/eventListeners"
-import {LevelInfo, LevelMap} from "../../api/serverModels"
 import {gameLoopEdit} from "../../game/editor/gameLoopEdit"
 import {useLevels} from "../../hooks/useLevels"
 import {
@@ -19,6 +18,7 @@ import {CourseBuilderSettings} from "../GameEdit/CourseBuilderSettings"
 import {Undo, Redo, PlayArrow, Sync, CheckCircle} from "@mui/icons-material"
 import {setGlobalEditing} from "../../game/editor/editHelpers"
 import {BackButton} from "../ViewHeader"
+import {LevelInfo, LevelMap} from "../../api/types"
 
 export const EditScreen = () => {
   const {id} = useParams<{id: string}>()

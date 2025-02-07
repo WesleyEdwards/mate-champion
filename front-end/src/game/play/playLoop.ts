@@ -1,4 +1,4 @@
-import {LevelMap} from "../../api/serverModels"
+import {LevelMap} from "../../api/types"
 import {abortController} from "../editor/eventListeners"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
 import {PlayStats} from "../state/models"

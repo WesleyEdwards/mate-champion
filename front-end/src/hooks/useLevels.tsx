@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react"
-import {LevelInfo, LevelMap} from "../api/serverModels"
 import {getLevelDiff, objectsAreDifferent} from "../helpers"
 import {useAuthContext} from "./useAuth"
+import {LevelInfo, LevelMap} from "../api/types"
 
 export const useLevels: (params: {
   level: LevelInfo | null

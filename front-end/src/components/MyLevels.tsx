@@ -2,10 +2,10 @@ import {FC, useEffect, useState} from "react"
 import {Stack, Typography, Card, Tooltip} from "@mui/joy"
 import {Edit, Visibility, VisibilityOff} from "@mui/icons-material"
 import {ListComponent} from "./LevelEditorHome"
-import {LevelInfo} from "../api/serverModels"
 import {useAuthContext} from "../hooks/useAuth"
 import {CreateNewLevel} from "./CreateNewLevel"
 import {useNavigate} from "react-router-dom"
+import {LevelInfo} from "../api/types"
 
 export const MyLevels = () => {
   const {api, user} = useAuthContext()

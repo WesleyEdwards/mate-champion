@@ -1,7 +1,6 @@
-import {MyLevels} from "../components/MyLevels"
-import {LevelInfo, LevelMap} from "./serverModels"
 import {Api} from "./Api"
 import {LocalStorageKeys} from "./localStorageManager"
+import {LevelInfo, LevelMap} from "./types"
 
 export class StoreItem<T> {
   constructor(private key: LocalStorageKeys) {}

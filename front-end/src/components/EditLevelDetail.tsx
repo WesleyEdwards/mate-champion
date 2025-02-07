@@ -22,7 +22,7 @@ import {useToast} from "../hooks/Toaster"
 import {useNavigate, useParams} from "react-router-dom"
 import {MScreen} from "./AuthSwitch"
 import {abortGame} from "../game/editor/eventListeners"
-import {LevelInfo} from "../api/serverModels"
+import {LevelInfo} from "../api/types"
 
 export const EditLevelDetail = () => {
   const {api, user} = useAuthContext()

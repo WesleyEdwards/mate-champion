@@ -1,11 +1,10 @@
 import {createContext, useContext, useEffect, useMemo, useState} from "react"
 import {Api} from "../api/Api"
-import {LoginBody, User} from "../api/types"
+import {LevelInfo, LevelMap, LoginBody, User} from "../api/types"
 import {localStorageManager} from "../api/localStorageManager"
 import {LiveApi} from "../api/LiveApi"
 import {ApiCache} from "../api/ApiCache"
 import {LocalApi, StoreItem} from "../api/LocalApi"
-import {LevelInfo, LevelMap} from "../api/serverModels"
 
 export const useAuth = ():
   | {loadingAuth: true}

@@ -10,15 +10,15 @@ import {
 } from "@mui/joy"
 import {FC} from "react"
 import grogImg from "../../assets/grog/enemy_walking_single.png"
-import {Groog, groogConst} from "../../game/entities/groog"
-import {MCSlider, NumberInput, SizeControl} from "./helpers"
-import {TimedEvent} from "../../api/serverModels"
+import {Groog} from "../../game/entities/groog"
+import {MCSlider, NumberInput} from "./helpers"
+import {TimedEvent} from "../../api/types"
 
 export const GroogEdit: FC<{
   groog: Groog
   editGroog: (g: Groog) => void
 }> = ({groog, editGroog}) => {
-  const facing = groog.velocity[0] > 0 ? "right" : "left"
+  const facing = groog.info.facingRight ? "right" : "left"
 
   return (
     <Card>
@@ -37,12 +37,7 @@ export const GroogEdit: FC<{
           <Select
             defaultValue={facing}
             onChange={(e, value) => {
-              const abs = Math.abs(groog.velocity[0])
-              if (value === "left") {
-                groog.velocity[0] = -abs
-              } else {
-                groog.velocity[0] = abs
-              }
+              groog.info.facingRight = value === "right"
               editGroog(groog)
             }}
           >
@@ -51,14 +46,12 @@ export const GroogEdit: FC<{
           </Select>
         </Stack>
 
-        {/* <Divider sx={{m: 3}} /> */}
         <div style={{height: "1rem"}}></div>
 
         <MCSlider
           title="Speed"
           setValue={(value) => {
-            const accountForDir = groog.velocity[0] > 0 ? value : -value
-            groog.velocity[0] = accountForDir / 100
+            groog.velocity[0] = value / 100
             return editGroog(groog)
           }}
           value={Math.abs(Math.floor(groog.velocity[0] * 100))}
@@ -67,14 +60,13 @@ export const GroogEdit: FC<{
           max={100}
         />
 
-        {/* <Divider sx={{m: 3}} /> */}
         <div style={{height: "1rem"}}></div>
 
         <TimedEventEditor
-          timedEvent={groog.state.timeBetweenJump}
+          timedEvent={groog.info.timeBetweenJump}
           onChange={(value) => {
-            groog.state.timeBetweenJump = {
-              ...groog.state.timeBetweenJump,
+            groog.info.timeBetweenJump = {
+              ...groog.info.timeBetweenJump,
               ...value
             }
             editGroog(groog)
@@ -82,21 +74,20 @@ export const GroogEdit: FC<{
           labels={{
             title: "Jump behavior",
             frequencyDescription: {
-              Time: `Jump every ${(groog.state.timeBetweenJump.time / 1000).toFixed(0)} s`,
+              Time: `Jump every ${(groog.info.timeBetweenJump.time / 1000).toFixed(0)} s`,
               Random: "Jump at a random interval",
               None: "Don't jump"
-            }[groog.state.timeBetweenJump.type]
+            }[groog.info.timeBetweenJump.type]
           }}
         />
 
-        {/* <Divider sx={{m: 3}} /> */}
         <div style={{height: "1rem"}}></div>
 
         <TimedEventEditor
-          timedEvent={groog.state.timeBetweenTurn}
+          timedEvent={groog.info.timeBetweenTurn}
           onChange={(value) => {
-            groog.state.timeBetweenTurn = {
-              ...groog.state.timeBetweenTurn,
+            groog.info.timeBetweenTurn = {
+              ...groog.info.timeBetweenTurn,
               ...value
             }
             editGroog(groog)
@@ -104,10 +95,10 @@ export const GroogEdit: FC<{
           labels={{
             title: "Turn behavior",
             frequencyDescription: {
-              Time: `Turn every ${(groog.state.timeBetweenTurn.time / 1000).toFixed(0)} s`,
+              Time: `Turn every ${(groog.info.timeBetweenTurn.time / 1000).toFixed(0)} s`,
               Random: "Turn at a random interval",
               None: "Don't Turn"
-            }[groog.state.timeBetweenTurn.type]
+            }[groog.info.timeBetweenTurn.type]
           }}
         />
       </CardContent>

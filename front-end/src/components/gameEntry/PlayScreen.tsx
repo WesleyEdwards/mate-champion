@@ -6,11 +6,11 @@ import {localStorageManager} from "../../api/localStorageManager"
 import levelsInfo from "../../levels.json"
 import {usePauseModalContext} from "../../hooks/PauseModalContext"
 import {playLoop} from "../../game/play/playLoop"
-import {LevelMap} from "../../api/serverModels"
 import {useNavigate} from "react-router-dom"
 import {PlayHeader} from "../ViewHeader"
 import StatsDiv from "../StatsDiv"
 import {MScreen} from "../AuthSwitch"
+import {LevelMap} from "../../api/types"
 
 export const PlayScreen = () => {
   const {stats, modifyStats} = usePauseModalContext()

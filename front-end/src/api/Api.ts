@@ -1,4 +1,3 @@
-import {LevelInfo, LevelMap} from "./serverModels"
 import {
   User,
   LoginBody,
@@ -6,7 +5,9 @@ import {
   Score,
   TopScore,
   LoginResponse,
-  CreateAccount
+  CreateAccount,
+  LevelInfo,
+  LevelMap
 } from "./types"
 
 export interface Api {

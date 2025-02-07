@@ -10,7 +10,6 @@ import {Groog} from "../../game/entities/groog"
 import {FloorEditor} from "./FloorEdit"
 import {Entity} from "../../game/entities/Entity"
 import {getGlobalEditing} from "../../game/editor/editHelpers"
-import {LevelMap} from "../../api/serverModels"
 
 export type EditableEntity = Exclude<
   EntityType,

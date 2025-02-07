@@ -1,10 +1,7 @@
 import {Db, Collection} from "mongodb"
 import {z} from "zod"
 import {coors} from "../types"
-import {
-  groogJumpFrequency,
-  groogJumpFrequencyCleanup
-} from "./migrations/groogJumpFrequency"
+import {groogFacing} from "./migrations/groogFacing"
 import {groogJumpRandomMigration} from "./migrations/groogJumpRandom"
 import {groogJumpNoneMigration} from "./migrations/groogJumpNone"
 import {platformPosY} from "./migrations/platformPosY"
@@ -12,12 +9,8 @@ import {platformPosY} from "./migrations/platformPosY"
 export type MigrationFun = (db: Db) => Promise<unknown>
 
 export async function runMigrations(db: Db): Promise<unknown> {
-  // await migrationFun("addLevelMap", db, migrationAddLevelMap)
-  // await migrationFun("levelInfoFields2", db, migrationLevelInfoFields)
-  // await migrationFun("migrateLevelCoors1", db, migrateLevels)
   await migrationFun("addPlayerInitPos", db, addPlayerInitPos)
-  await migrationFun("groogJumpFrequency", db, groogJumpFrequency)
-  await migrationFun("groogJumpFrequencyCleanup", db, groogJumpFrequencyCleanup)
+  await migrationFun("groogFacing", db, groogFacing)
   await migrationFun("groogJumpRandomMigration", db, groogJumpRandomMigration)
   await migrationFun("groogJumpNoneMigration", db, groogJumpNoneMigration)
   await migrationFun("platformPosY", db, platformPosY)

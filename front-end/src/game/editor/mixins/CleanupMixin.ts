@@ -1,5 +1,6 @@
 import {Entity} from "../../entities/Entity"
 import {Coors, CurrAndPrev} from "../../entities/entityTypes"
+import {Groog} from "../../entities/groog"
 import {Platform} from "../../entities/platform"
 import {MAX_CANVAS_HEIGHT, MAX_CANVAS_WIDTH} from "../../loopShared/constants"
 import {copyEntity} from "../editEntityHelpers"
@@ -50,6 +51,15 @@ export function CleanupMixin<T extends WithCamera>(Base: T) {
           .map((e) => copyEntity(e, copyOfWithOffset))
         this.command({type: "add", entities: newEntities})
         this.userInput.copy = false
+      }
+      for (const e of this.entities) {
+        if (e instanceof Groog) {
+          e.info.moveSpeed = Math.abs(e.velocity[0])
+          
+          e.velocity[0] = e.info.facingRight
+            ? Math.abs(e.velocity[0])
+            : -Math.abs(e.velocity[0])
+        }
       }
 
       this.userInput.mouseUp.prev = this.userInput.mouseUp.curr

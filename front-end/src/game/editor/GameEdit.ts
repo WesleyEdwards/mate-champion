@@ -1,4 +1,3 @@
-import {LevelMap} from "../../api/serverModels"
 import {Coors, CurrAndPrev, Constructor, Id} from "../entities/entityTypes"
 import {updateTime} from "../state/helpers"
 import {updateTimers} from "../state/timeHelpers"
@@ -22,6 +21,7 @@ import {levelToEntities} from "../helpers"
 import {CommandStackMixin} from "./CommandMixin"
 import {CameraMixin} from "./mixins/CameraMixin"
 import {ResizeMixin} from "./mixins/ResizeMixin"
+import {LevelMap} from "../../api/types"
 
 export type BaseThing = Constructor<GameEditAll>
 

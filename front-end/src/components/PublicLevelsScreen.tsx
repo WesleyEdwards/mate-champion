@@ -1,11 +1,11 @@
 import {FC, useEffect, useState} from "react"
-import {LevelInfo} from "../api/serverModels"
 import {Card, IconButton, Stack, Typography} from "@mui/joy"
 import {PlayArrow} from "@mui/icons-material"
 import {ListComponent} from "./LevelEditorHome"
 import {useAuthContext} from "../hooks/useAuth"
 import {SignInButton} from "./SignInButton"
 import {useNavigate} from "react-router-dom"
+import {LevelInfo} from "../api/types"
 
 export const PublicLevelsScreen = () => {
   const {api, user} = useAuthContext()

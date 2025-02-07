@@ -8,14 +8,12 @@ import {
 import {TimerUp, TimerDown, emptyTime, updateTimers} from "../state/timeHelpers"
 import {Champ} from "./champ/champ"
 import {GRAVITY} from "../loopShared/constants"
-import {GroogInfo, TimedEvent} from "../../api/serverModels"
 import {BaseEntity, Entity} from "./Entity"
 import {WithVelocity} from "./VelocityMixin"
 import {Coors} from "./entityTypes"
+import {TimedEvent, GroogInfo} from "../../api/types"
 
 export type GroogState = {
-  timeBetweenTurn: TimedEvent
-  timeBetweenJump: TimedEvent
   timers: {
     sprite: TimerUp
     // dyingTimer: TimerDown
@@ -30,6 +28,7 @@ export type GroogState = {
 
 class GroogBase extends BaseEntity {
   velocity: Coors
+  info: GroogInfo
   state: GroogState
 
   constructor(g: GroogInfo) {
@@ -39,13 +38,11 @@ class GroogBase extends BaseEntity {
       position: g.position
     })
 
-    this.velocity = [g.moveSpeed, 0]
+    this.velocity = [g.facingRight ? g.moveSpeed : -g.moveSpeed, 0]
+    this.info = g
     this.state = {
-      timeBetweenTurn: g.timeBetweenTurn,
-      timeBetweenJump: g.timeBetweenJump,
       timers: {
         sprite: emptyTime("up"),
-        // dyingTimer: emptyTime("down"),
         turnX: {
           count: "down",
           val: nextTurnXTime(g.timeBetweenTurn)
@@ -69,7 +66,7 @@ export class Groog extends WithVelocity(GroogBase) implements Entity {
     updateTimers(this.state.timers, deltaT)
     this.move(deltaT)
     if (this.state.render.curr !== "die" && this.state.timers.turnX.val <= 0) {
-      this.state.timers.turnX.val = nextTurnXTime(this.state.timeBetweenTurn)
+      this.state.timers.turnX.val = nextTurnXTime(this.info.timeBetweenTurn)
       processGroogActionRaw(this, {
         name: "setFacingX",
         dir: this.velocity[0] > 0 ? "left" : "right"
@@ -77,7 +74,7 @@ export class Groog extends WithVelocity(GroogBase) implements Entity {
     }
     if (this.state.timers.jump.val <= 0) {
       this.state.timers.jump.val = Math.max(
-        nextJumpTime(this.state.timeBetweenJump),
+        nextJumpTime(this.info.timeBetweenJump),
         700
       )
       processGroogActionRaw(this, {name: "jump"})

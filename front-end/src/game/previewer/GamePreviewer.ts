@@ -1,4 +1,3 @@
-import {LevelMap} from "../../api/serverModels"
 import {GameStateProps} from "../entities/entityTypes"
 import {initGameState, levelToEntities} from "../helpers"
 import {renderBg} from "../render/background"
@@ -9,6 +8,7 @@ import {updateTime} from "../state/helpers"
 import {reconcileActions} from "../state/reconcileActions"
 import {updateTimers} from "../state/timeHelpers"
 import {Entity} from "../entities/Entity"
+import {LevelMap} from "../../api/types"
 
 export class GamePreviewer {
   gridHash: SpacialHashGrid = new SpacialHashGrid([-100, 4000], [20, 20])

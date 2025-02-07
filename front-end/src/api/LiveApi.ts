@@ -1,5 +1,4 @@
-import {LevelInfo, LevelMap} from "./serverModels"
-import {User, LoginBody, Condition, Score, TopScore} from "./types"
+import {LoginBody} from "./types"
 import {Api} from "./Api"
 import {localStorageManager} from "./localStorageManager"
 

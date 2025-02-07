@@ -12,7 +12,7 @@ export const renderGroog = (g: Groog, cxt: CanvasRenderingContext2D) => {
   const whichSprite =
     Math.floor(g.state.timers.sprite.val / asset.cycleTime()) % asset.imgCount
 
-  if (g.velocity[0] < 0) {
+  if (g.velocity[0] < 0 || (g.velocity[0] === 0 && !g.info.facingRight)) {
     cxt.translate(g.width, 0)
     cxt.scale(-1, 1)
   }

@@ -1,5 +1,4 @@
-import {LevelInfo, LevelMap} from "./serverModels"
-import {User, LoginBody, Condition, Score} from "./types"
+import {User, Condition, Score, LevelMap} from "./types"
 import {Api} from "./Api"
 
 export class ApiCache implements Api {

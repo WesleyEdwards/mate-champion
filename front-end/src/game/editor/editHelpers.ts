@@ -1,9 +1,9 @@
-import {LevelMap} from "../../api/serverModels"
 import {Coors, Id} from "../entities/entityTypes"
 import {emptyTime, TimerUp} from "../state/timeHelpers"
 import {Entity} from "../entities/Entity"
 import {Adding} from "../../components/GameEdit/CourseBuilderSettings"
 import {EditGlobal} from "../../App"
+import {LevelMap} from "../../api/types"
 
 export const incrementPosition = (curr: Coors, increment: Coors) => {
   curr[0] += increment[0]

@@ -1,6 +1,6 @@
+import {LevelMap} from "../../../api/types"
 import {Groog} from "../../entities/groog"
-import {Floor, Platform} from "../../entities/platform"
-import {LevelMap} from "../../../api/serverModels"
+import {Platform} from "../../entities/platform"
 import {WithEvents} from "../GameEdit"
 
 export function SaveMixin<T extends WithEvents>(Base: T) {
@@ -41,9 +41,10 @@ export function SaveMixin<T extends WithEvents>(Base: T) {
           .filter((e) => e.typeId === "groog")
           .map((g) => ({
             position: [...g.position.curr],
-            moveSpeed: (g as Groog).velocity[0],
-            timeBetweenJump: (g as Groog).state.timeBetweenJump,
-            timeBetweenTurn: (g as Groog).state.timeBetweenTurn
+            moveSpeed: Math.abs((g as Groog).velocity[0]),
+            facingRight: (g as Groog).info.facingRight,
+            timeBetweenJump: (g as Groog).info.timeBetweenJump,
+            timeBetweenTurn: (g as Groog).info.timeBetweenTurn
           })),
         packages: this.entities
           .filter((e) => e.typeId === "ammo")

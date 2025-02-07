@@ -26,10 +26,11 @@ export const copyEntity = (
   } = {
     groog: (old) =>
       new Groog({
-        moveSpeed: old.velocity[0],
-        position: copyOfWithOffset?.(old.position) ?? old.position.curr,
-        timeBetweenJump: old.state.timeBetweenJump,
-        timeBetweenTurn: old.state.timeBetweenTurn
+        moveSpeed: old.info.moveSpeed,
+        facingRight: old.info.facingRight,
+        timeBetweenJump: old.info.timeBetweenJump,
+        timeBetweenTurn: old.info.timeBetweenTurn,
+        position: copyOfWithOffset?.(old.position) ?? old.position.curr
       }),
     floor: (old) =>
       new Floor({
