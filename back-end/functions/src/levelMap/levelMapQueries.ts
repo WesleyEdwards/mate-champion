@@ -1,13 +1,12 @@
-import {buildQuery, Condition} from "simply-served"
+import {buildQuery, Condition, NotFoundError} from "simply-served"
 import {LevelInfo} from "../levelInfo/level_controller"
 import {coors, Infer} from "../types"
-import {baseObjectSchema, isParseError} from "simply-served"
+import {baseObjectSchema} from "simply-served"
 import {z} from "zod"
 import {createSchema} from "../helpers"
-import {MServerCtx, requireAuth} from "../controllers/appClients"
+import {MServerCtx} from "../controllers/appClients"
 
 export type LevelMap = Infer<typeof levelMapSchema>
-
 export const levelMapSchema = z
   .object({
     champInitPos: coors.default([400, 400]),
@@ -49,32 +48,28 @@ export const levelMapSchema = z
   .merge(baseObjectSchema)
 
 export const getLevelMap = buildQuery<MServerCtx>({
-  authOptions: requireAuth,
+  authOptions: {type: "authenticated"},
   fun: async ({req, res, db, auth}) => {
     const {params} = req
     if (!params.id || typeof params.id !== "string") {
       return res.status(400).json("Bad request")
     }
     const level = await db.level.findOne({_id: {Equal: params.id}})
-    if (!level.success) return res.status(404).json("Not found")
     if (
-      level.data.owner !== auth.userId &&
+      level.owner !== auth.userId &&
       auth.userType !== "Admin" &&
-      !level.data.public
+      !level.public
     ) {
       return res.status(404).json("Cant access")
     }
     const levelMap = await db.levelMap.findOne({_id: {Equal: params.id}})
-    if (levelMap.success === false) {
-      return res.status(400).json(levelMap.error)
-    }
-    return res.json(levelMap.data)
+    return res.json(levelMap)
   }
 })
 
 export const modifyLevelMap = buildQuery<MServerCtx, Partial<LevelMap>>({
   validator: levelMapSchema.partial(),
-  authOptions: requireAuth,
+  authOptions: {type: "authenticated"},
   fun: async ({req, res, db, auth}) => {
     const {params, body} = req
     const condition: Condition<LevelInfo> =
@@ -82,21 +77,17 @@ export const modifyLevelMap = buildQuery<MServerCtx, Partial<LevelMap>>({
         ? {_id: {Equal: params.id}}
         : {And: [{_id: {Equal: params.id}}, {owner: {Equal: auth.userId}}]}
     const level = await db.level.findOne(condition)
-    if (isParseError(level)) {
-      return res.status(404).json("Level map not found")
+    if (!level) {
+      throw new NotFoundError("Level not found")
     }
-
     const updatedLevel = await db.levelMap.updateOne(params.id, body)
-    if (updatedLevel.success === false) {
-      return res.status(400).json(updatedLevel.error)
-    }
 
-    return res.json(updatedLevel.data)
+    return res.json(updatedLevel)
   }
 })
 
 export const generateLevels = buildQuery<MServerCtx>({
-  authOptions: requireAuth,
+  authOptions: {type: "authenticated"},
   validator: createSchema((z) =>
     z.object({
       levels: z.array(z.string())

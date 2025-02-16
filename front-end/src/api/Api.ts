@@ -1,13 +1,13 @@
 import {
   User,
   LoginBody,
-  Condition,
   Score,
   TopScore,
   LoginResponse,
   CreateAccount,
   LevelInfo,
-  LevelMap
+  LevelMap,
+  Query
 } from "./types"
 
 export interface Api {
@@ -25,14 +25,14 @@ export interface Api {
 
   readonly user: {
     detail: (id: string) => Promise<User>
-    query: (filter: Condition<User>) => Promise<User[]>
+    query: (filter: Query<User>) => Promise<User[]>
     create: (body: User) => Promise<User>
     modify: (id: string, mod: Partial<User>) => Promise<User>
     delete: (id: string) => Promise<User>
   }
   readonly level: {
     detail: (id: string) => Promise<LevelInfo>
-    query: (filter: Condition<LevelInfo>) => Promise<LevelInfo[]>
+    query: (filter: Query<LevelInfo>) => Promise<LevelInfo[]>
     create: (body: LevelInfo) => Promise<LevelInfo>
     modify: (id: string, mod: Partial<LevelInfo>) => Promise<LevelInfo>
     delete: (id: string) => Promise<number>
@@ -48,7 +48,7 @@ export interface Api {
   }
   readonly score: {
     detail: (id: string) => Promise<Score>
-    query: (filter: Condition<Score>) => Promise<Score[]>
+    query: (filter: Query<Score>) => Promise<Score[]>
     create: (body: Score) => Promise<Score>
     update: (id: string, body: Partial<Score>) => Promise<Score>
     delete: (id: string) => Promise<number>

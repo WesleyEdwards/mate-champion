@@ -33,14 +33,18 @@ export const permsIfNotAdmin = <T extends HasId>(params: {
 export function ifNotAdmin<T extends HasId>(
   permissionOptions: ModelPermOption<MServerCtx, T>
 ): ModelPermOption<MServerCtx, T> {
-  return {
-    skipAuth: undefined,
-    modelAuth: (auth) =>
-      auth.userType === "Admin"
-        ? {Always: true}
-        : permissionOptions.modelAuth?.(auth) ?? {Never: true},
-    userAuth: permissionOptions.userAuth
-      ? {Or: [permissionOptions.userAuth, {userType: {Equal: "Admin"}}]}
-      : {userType: {Equal: "Admin"}}
+  if (permissionOptions.type === "modelAuth") {
+    return {
+      type: "modelAuth",
+      check: (a) =>
+        a.userType === "Admin" ? {Always: true} : permissionOptions.check(a)
+    }
   }
+  if (permissionOptions.type === "notAllowed") {
+    return {
+      type: "modelAuth",
+      check: (a) => (a.userType === "Admin" ? {Always: true} : {Never: true})
+    }
+  }
+  return permissionOptions
 }

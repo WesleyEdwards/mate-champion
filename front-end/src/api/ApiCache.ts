@@ -1,4 +1,4 @@
-import {User, Condition, Score, LevelMap} from "./types"
+import {User, Score, LevelMap, Query} from "./types"
 import {Api} from "./Api"
 
 export class ApiCache implements Api {
@@ -49,7 +49,7 @@ export class ApiCache implements Api {
       this.cacheRequest(`user.detail.${id}`, () =>
         this.basedOn.user.detail(id)
       ),
-    query: (filter: Condition<User>) =>
+    query: (filter: Query<User>) =>
       this.cacheRequest(`user.query.${JSON.stringify(filter)}`, () =>
         this.basedOn.user.query(filter)
       ),
@@ -89,7 +89,7 @@ export class ApiCache implements Api {
       this.cacheRequest(`score.detail.${id}`, () =>
         this.basedOn.score.detail(id)
       ),
-    query: (filter: Condition<Score>) =>
+    query: (filter: Query<Score>) =>
       this.cacheRequest(`score.query.${JSON.stringify(filter)}`, () =>
         this.basedOn.score.query(filter)
       ),

@@ -34,6 +34,11 @@ export type HasId = {
   _id: string
 }
 
+
+export type Query<T> = {
+  condition: Condition<T>
+}
+
 export type Condition<T> =
   | {Equal: T}
   | {Assign: T}

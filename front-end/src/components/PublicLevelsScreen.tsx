@@ -17,7 +17,7 @@ export const PublicLevelsScreen = () => {
     if (!user) {
       return setLevels([])
     }
-    api.level.query({public: {Equal: true}}).then(setLevels)
+    api.level.query({condition: {public: {Equal: true}}}).then(setLevels)
   }, [])
 
   return (

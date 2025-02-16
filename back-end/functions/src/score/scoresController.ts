@@ -25,15 +25,18 @@ const basicEndpoints = modelRestEndpoints({
     }
   },
   permissions: permsIfNotAdmin<Score>({
-    read: {skipAuth: {Always: true}},
+    read: {type: "publicAccess"},
     delete: {
-      modelAuth: (auth) => ({userId: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({userId: {Equal: auth.userId}})
     },
     create: {
-      modelAuth: (auth) => ({userId: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({userId: {Equal: auth.userId}})
     },
     modify: {
-      modelAuth: (auth) => ({userId: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({userId: {Equal: auth.userId}})
     }
   })
 })

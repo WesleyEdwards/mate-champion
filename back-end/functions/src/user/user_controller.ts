@@ -20,15 +20,12 @@ export const usersController = modelRestEndpoints<MServerCtx, User>({
   collection: (db) => db.user,
   permissions: permsIfNotAdmin<User>({
     read: {
-      modelAuth: (auth) => ({_id: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({_id: {Equal: auth.userId}})
     },
-    delete: {
-      modelAuth: (auth) => ({_id: {Equal: auth.userId}})
-    },
-    create: {userAuth: {Never: true}},
-    modify: {
-      modelAuth: (auth) => ({_id: {Equal: auth.userId}})
-    }
+    delete: {type: "modelAuth", check: (auth) => ({_id: {Equal: auth.userId}})},
+    create: {type: "notAllowed"},
+    modify: {type: "modelAuth", check: (auth) => ({_id: {Equal: auth.userId}})}
   }),
   actions: {
     prepareResponse: maskKeysBasedOnPerms((user, {auth}) => {

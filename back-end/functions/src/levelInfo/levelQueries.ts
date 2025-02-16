@@ -19,19 +19,16 @@ export const importLevels = buildQuery<
     })
   ),
   authOptions: {
-    auth: () => ({Always: true})
+    type: "authenticated"
   },
   fun: async ({req, res, db, auth}) => {
     const {body} = req
     const creator = await db.user.findOne({_id: {Equal: auth.userId}})
-    if (!creator.success) {
-      return res.status(404).json({error: "User not found"})
-    }
 
     const updateLevels: LevelInfo[] = body.toImport.map((level) => ({
       ...level.level,
-      creatorName: creator.data.name,
-      owner: creator.data._id
+      creatorName: creator.name,
+      owner: creator._id
     }))
     const updateMaps: LevelMap[] = body.toImport.map((map) => map.map)
 

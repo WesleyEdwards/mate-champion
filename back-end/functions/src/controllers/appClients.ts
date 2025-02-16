@@ -4,14 +4,14 @@ import {Score} from "../score/scoresController"
 import {JWTBody} from "../types"
 import {AuthCode} from "../user/auth_controller"
 import {User} from "../user/user_controller"
-import {DbQueries} from "simply-served"
+import {DbMethods} from "simply-served"
 
 export type DbClient = {
-  user: DbQueries<User>
-  level: DbQueries<LevelInfo>
-  score: DbQueries<Score>
-  levelMap: DbQueries<LevelMap>
-  authCode: DbQueries<AuthCode>
+  user: DbMethods<User>
+  level: DbMethods<LevelInfo>
+  score: DbMethods<Score>
+  levelMap: DbMethods<LevelMap>
+  authCode: DbMethods<AuthCode>
   runMigrations: () => Promise<unknown>
 }
 
@@ -24,7 +24,3 @@ export type EmailClient = {
 }
 
 export type MServerCtx = {db: DbClient; email: EmailClient; auth: JWTBody}
-
-export const requireAuth = {
-  auth: () => ({Always: true} as const)
-}

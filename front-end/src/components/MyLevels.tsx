@@ -14,7 +14,9 @@ export const MyLevels = () => {
   const [ownedLevels, setOwnedLevels] = useState<LevelInfo[] | undefined>()
 
   useEffect(() => {
-    api.level.query({owner: {Equal: user?._id ?? ""}}).then(setOwnedLevels)
+    api.level
+      .query({condition: {owner: {Equal: user?._id ?? ""}}})
+      .then(setOwnedLevels)
   }, [])
 
   return (

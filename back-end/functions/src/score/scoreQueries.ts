@@ -4,7 +4,7 @@ import {Score} from "./scoresController"
 import {MServerCtx} from "../controllers/appClients"
 
 export const getTopScores = buildQuery<MServerCtx>({
-  authOptions: {skipAuth: true},
+  authOptions: {type: "publicAccess"},
   fun: async ({res, db}) => {
     const scores = await db.score.findMany({})
 

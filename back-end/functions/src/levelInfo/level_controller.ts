@@ -20,18 +20,22 @@ const levelBaseEndpoints = modelRestEndpoints({
   collection: (db) => db.level,
   permissions: permsIfNotAdmin<LevelInfo>({
     read: {
-      modelAuth: (auth) => ({
+      type: "modelAuth",
+      check: (auth) => ({
         Or: [{owner: {Equal: auth.userId}}, {public: {Equal: true}}]
       })
     },
     delete: {
-      modelAuth: (auth) => ({owner: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({owner: {Equal: auth.userId}})
     },
     create: {
-      modelAuth: (auth) => ({owner: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({owner: {Equal: auth.userId}})
     },
     modify: {
-      modelAuth: (auth) => ({owner: {Equal: auth.userId}})
+      type: "modelAuth",
+      check: (auth) => ({owner: {Equal: auth.userId}})
     }
   }),
   actions: {
@@ -40,8 +44,8 @@ const levelBaseEndpoints = modelRestEndpoints({
     },
     interceptCreate: async (item, {db}) => {
       const user = await db.user.findOne({_id: {Equal: item.owner}})
-      if (!user.success) throw new Error("User not found")
-      return {...item, creatorName: user.data.name} satisfies LevelInfo
+      if (!user) throw new Error("User not found")
+      return {...item, creatorName: user.name} satisfies LevelInfo
     },
     postCreate: async (level, {db}) => {
       await db.levelMap.insertOne({
