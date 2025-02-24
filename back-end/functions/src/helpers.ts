@@ -5,7 +5,7 @@ import {
   ModelPermOption
 } from "simply-served"
 import {ZodRawShape, z, ZodObject} from "zod"
-import {MServerCtx} from "./controllers/appClients"
+import {MServerCtx} from "./appClients"
 
 export const createDbObject = <T extends ZodRawShape>(
   fun: (zod: typeof z) => ZodObject<T>

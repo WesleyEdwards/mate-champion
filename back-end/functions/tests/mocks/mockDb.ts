@@ -1,10 +1,10 @@
 import {LocalCollection} from "simply-served"
-import {DbClient} from "../../src/controllers/appClients"
+import {DbClient} from "../../src/appClients"
 import {mockAuthCodes} from "./authCodes"
 import {mockUserList} from "./users"
-import {LevelInfo} from "../../src/levelInfo/level_controller"
-import {LevelMap} from "../../src/levelMap/levelMapQueries"
-import {Score} from "../../src/score/scoresController"
+import {LevelInfo} from "../../src/controllers/level_controller"
+import {Score} from "../../src/controllers/scoresController"
+import {LevelMap} from "../../src/controllers/level_map_controller"
 
 export const mockDatabase: DbClient = {
   authCode: new LocalCollection(mockAuthCodes),

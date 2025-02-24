@@ -1,7 +1,7 @@
 import {maskKeysBasedOnPerms, modelRestEndpoints} from "simply-served"
 import {Infer, userTypeSchema} from "../types"
 import {createDbObject, permsIfNotAdmin} from "../helpers"
-import {MServerCtx} from "../controllers/appClients"
+import {MServerCtx} from "../appClients"
 
 export type User = Infer<typeof userSchema>
 

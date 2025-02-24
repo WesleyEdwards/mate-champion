@@ -1,9 +1,9 @@
-import {MServerCtx} from "./controllers/appClients"
-import {authController} from "./user/auth_controller"
-import {usersController} from "./user/user_controller"
-import {levelsController} from "./levelInfo/level_controller"
-import {levelMapController} from "./levelMap/level_map_controller"
-import {scoresController} from "./score/scoresController"
+import {MServerCtx} from "./appClients"
+import {authController} from "./controllers/auth_controller"
+import {usersController} from "./controllers/user_controller"
+import {levelsController} from "./controllers/level_controller"
+import {levelMapController} from "./controllers/level_map_controller"
+import {scoresController} from "./controllers/scoresController"
 import {createSimplyServer, verifyAuth} from "simply-served"
 import {WithoutAuth} from "simply-served/build/endpoints/types"
 
@@ -11,13 +11,13 @@ export const createMateServer = (context: WithoutAuth<MServerCtx>) =>
   createSimplyServer({
     initContext: context,
     middleware: verifyAuth(process.env.ENCRYPTION_KEY!),
-    controllers: {
-      auth: authController,
-      user: usersController,
-      level: levelsController,
-      "level-map": levelMapController,
-      score: scoresController
-    },
+    controllers: [
+      {path: "/auth", routes: authController},
+      {path: "/user", routes: usersController},
+      {path: "/level", routes: levelsController},
+      {path: "/level-map", routes: levelMapController},
+      {path: "/score", routes: scoresController}
+    ],
     beforeGenerateEndpoints: (app, ctx) => {
       app.get("/situate", async (_, res) => {
         try {

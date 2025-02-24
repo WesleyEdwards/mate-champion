@@ -1,6 +1,6 @@
 import {mongoQueries} from "simply-served"
 import {runMigrations} from "./mongoMigrations"
-import {DbClient} from "../controllers/appClients"
+import {DbClient} from "../appClients"
 import {MongoClient} from "mongodb"
 
 export const mongoClient = (mongoUri: string, dbPath: string): DbClient => {

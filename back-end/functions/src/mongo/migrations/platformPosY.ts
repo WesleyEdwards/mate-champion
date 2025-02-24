@@ -1,5 +1,5 @@
+import {LevelMap} from "../../controllers/level_map_controller"
 import {MigrationFun} from "../mongoMigrations"
-import {LevelMap} from "../../levelMap/levelMapQueries"
 
 export const platformPosY: MigrationFun = async (db) => {
   const levelCollection = db.collection("levelMap")

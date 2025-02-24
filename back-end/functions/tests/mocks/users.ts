@@ -1,4 +1,4 @@
-import {User} from "../../src/user/user_controller"
+import {User} from "../../src/controllers/user_controller"
 
 export const mockUserList: User[] = [
   {

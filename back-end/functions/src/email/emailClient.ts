@@ -1,5 +1,5 @@
 import {MailDataRequired} from "@sendgrid/mail"
-import {EmailClient} from "../controllers/appClients"
+import {EmailClient} from "../appClients"
 
 import sgMail from "@sendgrid/mail"
 
