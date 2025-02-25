@@ -46,14 +46,16 @@ export const authCodeSchema = z
   .merge(baseObjectSchema)
 
 export const authController: Route<MServerCtx>[] = [
-  buildQuery<MServerCtx>({path: "/self", method: "get"})
+  buildQuery<MServerCtx>("get")
+    .path("/self")
     .withAuth({type: "authenticated"})
     .build(async ({res, db, auth}) => {
       const user = await db.user.findOneById(auth.userId)
       return res.json(sendUserBody(user, auth))
     }),
 
-  buildQuery<MServerCtx>({path: "/create", method: "post"})
+  buildQuery<MServerCtx>("post")
+    .path("/create")
     .withBody({validator: createAccountSchema})
     .build(async ({db, email, req, res}) => {
       const {body} = req
@@ -88,7 +90,8 @@ export const authController: Route<MServerCtx>[] = [
       return res.status(200).json({identifier: authCode._id})
     }),
 
-  buildQuery<MServerCtx>({path: "/sendAuthCode", method: "post"})
+  buildQuery<MServerCtx>("post")
+    .path("/sendAuthCode")
     .withBody({
       validator: createSchema((z) =>
         z.object({
@@ -119,7 +122,8 @@ export const authController: Route<MServerCtx>[] = [
       return res.status(200).json({identifier: authCode._id})
     }),
 
-  buildQuery<MServerCtx>({path: "/submitAuthCode", method: "post"})
+  buildQuery<MServerCtx>("post")
+    .path("/submitAuthCode")
     .withBody({
       validator: createSchema((z) =>
         z.object({email: z.string(), code: z.string()})

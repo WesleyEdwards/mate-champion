@@ -53,7 +53,8 @@ export const levelMapSchema = z
   .merge(baseObjectSchema)
 
 export const levelMapController: Route<MServerCtx>[] = [
-  buildQuery<MServerCtx>({path: "/:id", method: "get"})
+  buildQuery<MServerCtx>("get")
+    .idPath()
     .withAuth({type: "authenticated"})
     .build(async ({req, res, db, auth}) => {
       const {params} = req
@@ -71,24 +72,26 @@ export const levelMapController: Route<MServerCtx>[] = [
       const levelMap = await db.levelMap.findOne({_id: {Equal: params.id}})
       return res.json(levelMap)
     }),
-  buildQuery<MServerCtx>({path: "/:id", method: "put"})
+  buildQuery<MServerCtx>("put")
+    .idPath()
     .withAuth({type: "authenticated"})
     .withBody({validator: levelMapSchema.partial()})
-    .build(async ({req, res, db, auth}) => {
-      const {params, body} = req
+    .build(async ({req, res, id, db, auth}) => {
+      const {body} = req
       const condition: Condition<LevelInfo> =
         auth.userType === "Admin"
-          ? {_id: {Equal: params.id}}
-          : {And: [{_id: {Equal: params.id}}, {owner: {Equal: auth.userId}}]}
+          ? {_id: {Equal: id}}
+          : {And: [{_id: {Equal: id}}, {owner: {Equal: auth.userId}}]}
       const level = await db.level.findOne(condition)
       if (!level) {
         throw new NotFoundError("Level not found")
       }
-      const updatedLevel = await db.levelMap.updateOne(params.id, body)
+      const updatedLevel = await db.levelMap.updateOne(id, body)
 
       return res.json(updatedLevel)
     }),
-  buildQuery<MServerCtx>({path: "/generate", method: "post"})
+  buildQuery<MServerCtx>("post")
+    .path("/generate")
     .withAuth({type: "authenticated"})
     .withBody({
       validator: createSchema((z) =>
@@ -107,7 +110,8 @@ export const levelMapController: Route<MServerCtx>[] = [
         levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))
       )
     }),
-  buildQuery<MServerCtx>({path: "/", method: "post"})
+  buildQuery<MServerCtx>("post")
+    .path("/")
     .withAuth({type: "authenticated"})
     .withBody({
       validator: z.object({levels: z.array(z.string())})

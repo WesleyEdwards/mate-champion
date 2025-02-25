@@ -62,7 +62,8 @@ export const levelsController: Route<MServerCtx>[] = [
       }
     }
   }),
-  buildQuery({path: "/import-map", method: "post"})
+  buildQuery("post")
+    .path("/import-map")
     .withAuth({type: "authenticated"})
     .withBody({
       validator: z.lazy(() =>

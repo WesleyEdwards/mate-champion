@@ -26,9 +26,9 @@
     "firebase-admin": "^11.8.0",
     "firebase-functions": "^4.3.1",
     "mongodb": "^6.12.0",
-    "simply-served": "1.0.5",
+    "simply-served": "1.0.6",
     "uuid": "^9.0.1",
-    "zod": "3.21.4"
+    "zod": "3.24.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
