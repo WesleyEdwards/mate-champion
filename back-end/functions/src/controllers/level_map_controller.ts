@@ -1,7 +1,7 @@
 import {MServerCtx} from "../appClients"
 import {
   baseObjectSchema,
-  buildQuery,
+  buildRoute,
   Condition,
   NotFoundError,
   Route
@@ -53,15 +53,11 @@ export const levelMapSchema = z
   .merge(baseObjectSchema)
 
 export const levelMapController: Route<MServerCtx>[] = [
-  buildQuery<MServerCtx>("get")
-    .idPath()
-    .withAuth({type: "authenticated"})
-    .build(async ({req, res, db, auth}) => {
-      const {params} = req
-      if (!params.id || typeof params.id !== "string") {
-        return res.status(400).json("Bad request")
-      }
-      const level = await db.level.findOne({_id: {Equal: params.id}})
+  buildRoute<MServerCtx>("get")
+    .idPath("/:levelId")
+    .withAuth()
+    .build(async ({req, res, db, levelId}, auth) => {
+      const level = await db.level.findOne({_id: {Equal: levelId}})
       if (
         level.owner !== auth.userId &&
         auth.userType !== "Admin" &&
@@ -69,14 +65,14 @@ export const levelMapController: Route<MServerCtx>[] = [
       ) {
         return res.status(404).json("Cant access")
       }
-      const levelMap = await db.levelMap.findOne({_id: {Equal: params.id}})
+      const levelMap = await db.levelMap.findOne({_id: {Equal: levelId}})
       return res.json(levelMap)
     }),
-  buildQuery<MServerCtx>("put")
-    .idPath()
-    .withAuth({type: "authenticated"})
+  buildRoute<MServerCtx>("put")
+    .idPath("/:id")
+    .withAuth()
     .withBody({validator: levelMapSchema.partial()})
-    .build(async ({req, res, id, db, auth}) => {
+    .build(async ({req, res, id, db}, auth) => {
       const {body} = req
       const condition: Condition<LevelInfo> =
         auth.userType === "Admin"
@@ -90,9 +86,9 @@ export const levelMapController: Route<MServerCtx>[] = [
 
       return res.json(updatedLevel)
     }),
-  buildQuery<MServerCtx>("post")
+  buildRoute<MServerCtx>("post")
     .path("/generate")
-    .withAuth({type: "authenticated"})
+    .withAuth()
     .withBody({
       validator: createSchema((z) =>
         z.object({
@@ -110,13 +106,13 @@ export const levelMapController: Route<MServerCtx>[] = [
         levels.sort((a, b) => levelIds.indexOf(a._id) - levelIds.indexOf(b._id))
       )
     }),
-  buildQuery<MServerCtx>("post")
+  buildRoute<MServerCtx>("post")
     .path("/")
-    .withAuth({type: "authenticated"})
+    .withAuth()
     .withBody({
       validator: z.object({levels: z.array(z.string())})
     })
-    .build(async ({req, res, db, auth}) => {
+    .build(async ({req, res, db}, auth) => {
       auth
       return res.json({})
     })

@@ -1,6 +1,6 @@
 import {MServerCtx} from "../appClients"
 import {z} from "zod"
-import {buildQuery, modelRestEndpoints, Route} from "simply-served"
+import {buildRoute, modelRestEndpoints, Route} from "simply-served"
 import {permsIfNotAdmin} from "../helpers"
 import {LevelMap, levelMapSchema} from "./level_map_controller"
 
@@ -62,9 +62,9 @@ export const levelsController: Route<MServerCtx>[] = [
       }
     }
   }),
-  buildQuery("post")
+  buildRoute("post")
     .path("/import-map")
-    .withAuth({type: "authenticated"})
+    .withAuth()
     .withBody({
       validator: z.lazy(() =>
         z.object({
@@ -77,7 +77,7 @@ export const levelsController: Route<MServerCtx>[] = [
         })
       )
     })
-    .build(async ({req, res, db, auth}) => {
+    .build(async ({req, res, db}, auth) => {
       const {body} = req
       const creator = await db.user.findOne({_id: {Equal: auth.userId}})
 

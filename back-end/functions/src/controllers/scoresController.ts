@@ -1,5 +1,5 @@
 import {MServerCtx} from "../appClients"
-import {buildQuery, modelRestEndpoints, Route} from "simply-served"
+import {buildRoute, modelRestEndpoints, Route} from "simply-served"
 import {Infer} from "../types"
 import {createDbObject, permsIfNotAdmin} from "../helpers"
 import {User} from "./user_controller"
@@ -44,7 +44,7 @@ const basicEndpoints = modelRestEndpoints({
 })
 
 export const scoresController: Route<MServerCtx>[] = [
-  buildQuery<MServerCtx>("get")
+  buildRoute<MServerCtx>("get")
     .path("/top-scores")
     .build(async ({res, db}) => {
       const scores = await db.score.findMany({})

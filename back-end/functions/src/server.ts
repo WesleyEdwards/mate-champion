@@ -4,13 +4,13 @@ import {usersController} from "./controllers/user_controller"
 import {levelsController} from "./controllers/level_controller"
 import {levelMapController} from "./controllers/level_map_controller"
 import {scoresController} from "./controllers/scoresController"
-import {createSimplyServer, verifyAuth} from "simply-served"
-import {WithoutAuth} from "simply-served/build/endpoints/types"
+import {bearerTokenAuth, createSimplyServer} from "simply-served"
+import {WithoutAuth} from "simply-served/build/types"
 
 export const createMateServer = (context: WithoutAuth<MServerCtx>) =>
   createSimplyServer({
     initContext: context,
-    middleware: verifyAuth(process.env.ENCRYPTION_KEY!),
+    getAuth: bearerTokenAuth(process.env.ENCRYPTION_KEY!),
     controllers: [
       {path: "/auth", routes: authController},
       {path: "/user", routes: usersController},
