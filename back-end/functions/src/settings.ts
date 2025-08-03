@@ -7,11 +7,13 @@ console.log("NODE_ENV is", process.env.NODE_ENV)
 export type Settings = {
   mongoUri: string
   emailProvider: string
-  emailKey: string
+  emailApiKey: string
+  emailSecretKey: string
 }
 
 export const settings: Settings = {
   mongoUri: process.env.MONGO_URI!,
   emailProvider: process.env.EMAIL_PROVIDER!,
-  emailKey: process.env.SENDGRID_API_KEY!
+  emailApiKey: process.env.MAILJET_API_KEY!,
+  emailSecretKey: process.env.MAILJET_SECRET!
 }

@@ -15,7 +15,7 @@ app.use(cors())
 
 const server = createMateServer({
   db: mongoClient(settings.mongoUri, "mate-db"),
-  email: emailClient(settings.emailProvider ?? "local", settings.emailKey)
+  email: emailClient()
 })
 
 server.generateEndpoints(app)

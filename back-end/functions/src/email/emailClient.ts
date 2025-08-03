@@ -1,37 +1,47 @@
-import {MailDataRequired} from "@sendgrid/mail"
 import {EmailClient} from "../appClients"
+import {Client, SendEmailV3_1, LibraryResponse} from "node-mailjet"
+import {settings} from "../settings"
 
-import sgMail from "@sendgrid/mail"
-
-const msg: MailDataRequired = {
-  from: "westheedwards@gmail.com",
-  html: ""
-}
-
-export const emailClient = (option: string, key?: string): EmailClient => {
-  if (option === "sendgrid" && key) {
-    return sendgridEmail(key)
+export const emailClient = (): EmailClient => {
+  if (settings.emailProvider === "mailjet") {
+    return mailjetClient()
   }
   return localEmail()
 }
 
-const sendgridEmail = (key: string): EmailClient => {
-  sgMail.setApiKey(key)
+const mailjet = new Client({
+  apiKey: settings.emailApiKey,
+  apiSecret: settings.emailSecretKey
+})
+
+const mailjetClient = (): EmailClient => {
   return {
     send: async (params) => {
-      try {
-        const res = await sgMail.send({...msg, ...params})
-        console.log("Email sent", res[0].toString())
-      } catch (error: any) {
-        console.error(error)
+      const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
+        .post("send", {version: "v3.1"})
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: "noreply@wesleyedwards.xyz"
+              },
+              To: [
+                {
+                  Email: params.to
+                }
+              ],
+              Subject: params.subject,
+              HTMLPart: params.html,
+              TextPart: ""
+            }
+          ]
+        })
 
-        if (error.response) {
-          console.error(error.response.body)
-        }
-      }
+      result.body.Messages[0]
     }
   }
 }
+
 const localEmail = (): EmailClient => {
   return {
     send: async (params) => {
