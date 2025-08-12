@@ -1,6 +1,6 @@
 import {MServerCtx} from "../appClients"
 import {z} from "zod"
-import {buildRoute, modelRestEndpoints, Route} from "simply-served"
+import {buildRoute, modelRestEndpoints} from "simply-served"
 import {permsIfNotAdmin} from "../helpers"
 import {LevelMap, levelMapSchema} from "./level_map_controller"
 
@@ -15,7 +15,7 @@ export const levelSchema = z.object({
 
 export type LevelInfo = z.infer<typeof levelSchema>
 
-export const levelsController: Route<MServerCtx>[] = [
+export const levelsController = {
   ...modelRestEndpoints({
     validator: levelSchema,
     collection: (db) => db.level,
@@ -62,7 +62,7 @@ export const levelsController: Route<MServerCtx>[] = [
       }
     }
   }),
-  buildRoute("post")
+  importMap: buildRoute<MServerCtx>("post")
     .path("/import-map")
     .withAuth()
     .withBody({
@@ -77,8 +77,7 @@ export const levelsController: Route<MServerCtx>[] = [
         })
       )
     })
-    .build(async ({req, res, db}, auth) => {
-      const {body} = req
+    .build(async ({body, db}, res, auth) => {
       const creator = await db.user.findOne({_id: {Equal: auth.userId}})
 
       const updateLevels: LevelInfo[] = body.toImport.map((level) => ({
@@ -101,4 +100,4 @@ export const levelsController: Route<MServerCtx>[] = [
 
       return res.json(successes)
     })
-]
+}

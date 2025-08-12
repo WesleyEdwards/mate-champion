@@ -1,52 +1,51 @@
 import {MServerCtx} from "../appClients"
-import {buildRoute, modelRestEndpoints, Route} from "simply-served"
+import {buildRoute, modelRestEndpoints} from "simply-served"
 import {Infer} from "../types"
 import {createDbObject, permsIfNotAdmin} from "../helpers"
 import {User} from "./user_controller"
 
 export const scoreSchema = createDbObject((z) =>
   z.object({
-    userId: z.string({required_error: "User Id required"}),
-    score: z.number({required_error: "Score required"})
+    userId: z.string().min(0, {error: "User Id required"}),
+    score: z.number().min(0, {error: "Score required"})
   })
 )
 
 export type Score = Infer<typeof scoreSchema>
 
-const basicEndpoints = modelRestEndpoints({
-  collection: (db) => db.score,
-  validator: scoreSchema,
-  actions: {
-    postCreate: async (score, {db}) => {
-      const high = await db.score.findMany({
-        condition: {userId: {Equal: score.userId}}
-      })
-      await db.user.updateOne(score.userId, {
-        highScore: Math.max(...high.map((h) => h.score))
-      })
-    }
-  },
-  permissions: permsIfNotAdmin<Score>({
-    read: {type: "publicAccess"},
-    delete: {
-      type: "modelAuth",
-      check: (auth) => ({userId: {Equal: auth.userId}})
+export const scoresController = {
+  ...modelRestEndpoints({
+    collection: (db) => db.score,
+    validator: scoreSchema,
+    actions: {
+      postCreate: async (score, {db}) => {
+        const high = await db.score.findMany({
+          condition: {userId: {Equal: score.userId}}
+        })
+        await db.user.updateOne(score.userId, {
+          highScore: Math.max(...high.map((h) => h.score))
+        })
+      }
     },
-    create: {
-      type: "modelAuth",
-      check: (auth) => ({userId: {Equal: auth.userId}})
-    },
-    modify: {
-      type: "modelAuth",
-      check: (auth) => ({userId: {Equal: auth.userId}})
-    }
-  })
-})
-
-export const scoresController: Route<MServerCtx>[] = [
-  buildRoute<MServerCtx>("get")
+    permissions: permsIfNotAdmin<Score>({
+      read: {type: "publicAccess"},
+      delete: {
+        type: "modelAuth",
+        check: (auth) => ({userId: {Equal: auth.userId}})
+      },
+      create: {
+        type: "modelAuth",
+        check: (auth) => ({userId: {Equal: auth.userId}})
+      },
+      modify: {
+        type: "modelAuth",
+        check: (auth) => ({userId: {Equal: auth.userId}})
+      }
+    })
+  }),
+  topScores: buildRoute<MServerCtx>("get")
     .path("/top-scores")
-    .build(async ({res, db}) => {
+    .build(async ({db}, res) => {
       const scores = await db.score.findMany({})
 
       const userIds = [...new Set(scores.map((score) => score.userId))]
@@ -85,6 +84,5 @@ export const scoresController: Route<MServerCtx>[] = [
         .splice(0, 15)
 
       return res.json(info)
-    }),
-  ...basicEndpoints
-]
+    })
+}

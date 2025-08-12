@@ -10,4 +10,4 @@ node_modules/
 
 .env.*
 
-linkSimply.sh
+*.sh

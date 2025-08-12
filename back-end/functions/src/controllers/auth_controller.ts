@@ -8,7 +8,6 @@ import {
 import {Infer, JWTBody} from "../types"
 import {v4 as uuidv4} from "uuid"
 import {MServerCtx} from "../appClients"
-import {Route} from "simply-served"
 import {createSchema} from "../helpers"
 import jwt from "jsonwebtoken"
 import {User} from "./user_controller"
@@ -45,21 +44,19 @@ export const authCodeSchema = z
   .object({code: z.string(), email: z.string()})
   .merge(baseObjectSchema)
 
-export const authController: Route<MServerCtx>[] = [
-  buildRoute<MServerCtx>("get")
+export const authController = {
+  self: buildRoute<MServerCtx>("get")
     .path("/self")
     .withAuth()
-    .build(async ({res, db}, auth) => {
+    .build(async ({db}, res, auth) => {
       const user = await db.user.findOneById(auth.userId)
       return res.json(sendUserBody(user, auth))
     }),
 
-  buildRoute<MServerCtx>("post")
+  createAccount: buildRoute<MServerCtx>("post")
     .path("/create")
     .withBody({validator: createAccountSchema})
-    .build(async ({db, email, req, res}) => {
-      const {body} = req
-
+    .build(async ({db, email, body}, res) => {
       const [_, user] = await catchError(
         db.user.findOne({email: {Equal: body.email}})
       )
@@ -90,7 +87,7 @@ export const authController: Route<MServerCtx>[] = [
       return res.status(200).json({identifier: authCode._id})
     }),
 
-  buildRoute<MServerCtx>("post")
+  sendAuthCode: buildRoute<MServerCtx>("post")
     .path("/sendAuthCode")
     .withBody({
       validator: createSchema((z) =>
@@ -99,9 +96,7 @@ export const authController: Route<MServerCtx>[] = [
         })
       )
     })
-    .build(async ({db, email, req, res}) => {
-      const {body} = req
-
+    .build(async ({db, email, body}, res) => {
       const user = await db.user.findOne({email: {Equal: body.email}})
       if (!user) {
         return res.status(400).json({message: "No user found"})
@@ -122,15 +117,14 @@ export const authController: Route<MServerCtx>[] = [
       return res.status(200).json({identifier: authCode._id})
     }),
 
-  buildRoute<MServerCtx>("post")
+  submitAuthCode: buildRoute<MServerCtx>("post")
     .path("/submitAuthCode")
     .withBody({
       validator: createSchema((z) =>
         z.object({email: z.string(), code: z.string()})
       )
     })
-    .build(async ({db, req, res}) => {
-      const {body} = req
+    .build(async ({db, body}, res) => {
       const [error, code] = await catchError(
         db.authCode.findOne({
           And: [{email: {Equal: body.email}}, {code: {Equal: body.code}}]
@@ -153,4 +147,4 @@ export const authController: Route<MServerCtx>[] = [
         token: createUserToken(user)
       })
     })
-]
+}

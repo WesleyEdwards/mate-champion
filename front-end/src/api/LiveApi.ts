@@ -44,7 +44,7 @@ export class LiveApi implements Api {
   }
 
   readonly user: Api["user"] = {
-    detail: (id) => this.get(`user/${id}`),
+    detail: (id) => this.get(`user/detail/${id}`),
     query: (filter) => this.post("user", filter),
     create: (body) => this.post("user/create", body),
     modify: (id, mod) => this.put(`user/${id}`, mod),
@@ -52,10 +52,10 @@ export class LiveApi implements Api {
   }
 
   readonly level: Api["level"] = {
-    detail: (id) => this.get(`level/${id}`),
+    detail: (id) => this.get(`level/detail/${id}`),
     query: (filter) => this.post("level/query", filter),
     create: (body) => this.post("level/insert", body),
-    modify: (id, mod) => this.put(`level/${id}`, mod),
+    modify: (id, mod) => this.put(`level/modify/${id}`, mod),
     delete: (id) => this.del(`level/${id}`),
     generate: (ids) => this.post(`level/generate`, ids),
     levelMapDetail: (id) => this.get(`level-map/${id}`),
@@ -63,10 +63,10 @@ export class LiveApi implements Api {
     importMap: (info) => this.post("level/import-map", info)
   }
   readonly score: Api["score"] = {
-    detail: (id) => this.get(`score/${id}`),
+    detail: (id) => this.get(`score/detail/${id}`),
     query: (filter) => this.post("score/query", filter),
     create: (body) => this.post("score/insert", body),
-    update: (id, body) => this.put(`score/${id}`, body),
+    update: (id, body) => this.put(`score/modify/${id}`, body),
     delete: (id) => this.del(`score/${id}`),
     self: () => this.get(`score/self`),
     topScores: () => this.get(`score/top-scores`)

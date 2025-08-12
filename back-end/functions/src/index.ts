@@ -5,7 +5,7 @@ import cors from "cors"
 import {settings} from "./settings"
 import {mongoClient} from "./mongo/mongoClient"
 import {emailClient} from "./email/emailClient"
-import { createMateServer } from "./server"
+import {createMateServer} from "./server"
 
 const app = express()
 
@@ -13,11 +13,9 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 
-const server = createMateServer({
+createMateServer(app, {
   db: mongoClient(settings.mongoUri, "mate-db"),
   email: emailClient()
 })
-
-server.generateEndpoints(app)
 
 export const api = functions.https.onRequest(app)

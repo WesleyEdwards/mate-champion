@@ -26,9 +26,9 @@
     "firebase-functions": "^4.3.1",
     "mongodb": "^6.12.0",
     "node-mailjet": "^6.0.9",
-    "simply-served": "1.0.11",
+    "simply-served": "1.0.17",
     "uuid": "^9.0.1",
-    "zod": "3.24.2"
+    "zod": "4.0.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

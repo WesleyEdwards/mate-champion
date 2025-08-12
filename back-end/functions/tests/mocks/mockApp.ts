@@ -10,14 +10,12 @@ export const getMockApp = () => {
 
   mockApp.use(express.json())
 
-  const mockServer = createMateServer({
+  createMateServer(mockApp, {
     db: mockDatabase,
     email: {
       send: () => Promise.reject("Test has not been set up for emails")
     }
   })
-
-  mockServer.generateEndpoints(mockApp)
 
   return mockApp
 }

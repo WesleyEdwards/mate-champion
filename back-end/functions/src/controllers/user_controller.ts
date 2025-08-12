@@ -7,8 +7,8 @@ export type User = Infer<typeof userSchema>
 
 const userSchema = createDbObject((z) =>
   z.object({
-    name: z.string({required_error: "Name is required"}),
-    email: z.string().email({message: "Invalid email"}),
+    name: z.string().min(1, {error: "Name is required"}),
+    email: z.email({error: "Invalid email"}),
     passwordHash: z.string().optional(),
     highScore: z.number().default(0),
     userType: userTypeSchema.default("User")
