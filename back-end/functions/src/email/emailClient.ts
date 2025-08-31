@@ -17,27 +17,31 @@ const mailjet = new Client({
 const mailjetClient = (): EmailClient => {
   return {
     send: async (params) => {
-      const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
-        .post("send", {version: "v3.1"})
-        .request({
-          Messages: [
-            {
-              From: {
-                Email: "noreply@wesleyedwards.xyz"
-              },
-              To: [
-                {
-                  Email: params.to
-                }
-              ],
-              Subject: params.subject,
-              HTMLPart: params.html,
-              TextPart: ""
-            }
-          ]
-        })
+      try {
+        const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
+          .post("send", {version: "v3.1"})
+          .request({
+            Messages: [
+              {
+                From: {
+                  Email: "noreply@wesleyedwards.xyz"
+                },
+                To: [
+                  {
+                    Email: params.to
+                  }
+                ],
+                Subject: params.subject,
+                HTMLPart: params.html,
+                TextPart: ""
+              }
+            ]
+          })
 
-      result.body.Messages[0]
+        result.body.Messages[0]
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
