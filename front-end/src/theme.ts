@@ -41,39 +41,6 @@ const palette: Partial<Palette> = {
     lightChannel: "118, 255, 123",
     darkChannel: "46, 125, 50"
   }
-  //   neutral: {
-  //     50: "#f5f5f5",
-  //     100: "#eeeeee",
-  //     200: "#e0e0e0",
-  //     300: "#bdbdbd",
-  //     400: "#9e9e9e",
-  //     500: "#757575",
-  //     600: "#616161",
-  //     700: "#424242",
-  //     800: "#212121",
-  //     900: "#1a1a1a",
-  //     plainHoverColor: "#757575",
-  //     outlinedHoverColor: "#757575",
-  //     softHoverColor: "#757575",
-  //   },
-  // danger: {
-  // Define shades of red for the danger palette
-  // },
-  //   success: {
-  //     // Define shades of green for the success palette
-  //   },
-  //   warning: {
-  //     // Define shades of yellow for the warning palette
-  //   },
-  //   background: {
-  //     // Define background colors
-  //   },
-  //   common: {
-  //     // Define common colors
-  //   },
-  //   text: {
-  //     // Define text colors
-  //   },
 }
 
 export const mateTheme: CssVarsThemeOptions = {

@@ -181,13 +181,7 @@ export class GamePlay {
 
       // cxt.strokeStyle = "red";
       // cxt.lineWidth = 2;
-
-      // cxt.strokeRect(
-      //   0,
-      //   0,
-      //   entity.state.width,
-      //   entity.state.height
-      // );
+      // cxt.strokeRect(0, 0, entity.state.width, entity.state.height);
 
       cxt.restore()
     }

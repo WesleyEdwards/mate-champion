@@ -3,6 +3,7 @@ import {Client, SendEmailV3_1, LibraryResponse} from "node-mailjet"
 import {settings} from "../settings"
 
 export const emailClient = (): EmailClient => {
+  console.log("EMAIL: ", settings.emailProvider === "mailjet" ? "Mailjet": "local")
   if (settings.emailProvider === "mailjet") {
     return mailjetClient()
   }

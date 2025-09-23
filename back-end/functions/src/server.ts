@@ -15,9 +15,9 @@ export const createMateServer = (
   app.use(addContext(context))
   app.use(bearerTokenMiddleware(process.env.ENCRYPTION_KEY!))
 
-  addController<MServerCtx>(app, {path: "/auth", routes: authController})
   addController<MServerCtx>(app, {path: "/user", routes: usersController})
   addController<MServerCtx>(app, {path: "/level", routes: levelsController})
+  addController<MServerCtx>(app, {path: "/auth", routes: authController})
   addController<MServerCtx>(app, {
     path: "/level-map",
     routes: levelMapController

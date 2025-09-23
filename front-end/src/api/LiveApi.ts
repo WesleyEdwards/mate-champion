@@ -93,6 +93,10 @@ async function makeRequest(
   }
 
   const result = await fetch(`${baseUrl}/${path}`, options)
+  if (result.status === 401) {
+    localStorageManager.remove("token")
+    window.location.reload()
+  }
   if (result.status !== 200) return Promise.reject(result.json())
   return result.json()
 }
