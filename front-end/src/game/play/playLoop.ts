@@ -1,5 +1,5 @@
 import {LevelMap} from "../../api/types"
-import {abortController} from "../editor/eventListeners"
+import {abortGame} from "../editor/eventListeners"
 import {getCanvasContext, displayCanvas} from "../loopShared/loopHelpers"
 import {PlayStats} from "../state/models"
 import {GamePlay} from "./GamePlay"
@@ -36,7 +36,7 @@ export function playLoop(params: PlayLoopParams) {
   }
 
   function handleLose(score: number) {
-    abortController.abort()
+    abortGame()
     setUI.handleLose(score)
     displayCanvas(false, canvas)
   }

@@ -71,20 +71,7 @@ export const authController = {
           _id: uuidv4()
         })
       }
-
-      const authCode = authCodeSchema.parse({
-        code: generateAuthCode(),
-        email: body.email
-      })
-
-      db.authCode.insertOne(authCode)
-
-      await email.send({
-        html: `Your verification code is <b>${authCode.code}</b>`,
-        subject: "Mate Champion Verification",
-        to: body.email
-      })
-      return res.status(200).json({identifier: authCode._id})
+      return res.status(200).json({})
     }),
 
   sendAuthCode: buildRoute<MServerCtx>("post")
@@ -109,11 +96,15 @@ export const authController = {
 
       db.authCode.insertOne(authCode)
 
-      await email.send({
-        html: `Your verification code is <b>${authCode.code}</b>`,
-        subject: "Mate Champion Verification",
-        to: body.email
-      })
+      try {
+        await email.send({
+          html: `Your verification code is <b>${authCode.code}</b>`,
+          subject: "Mate Champion Verification",
+          to: body.email
+        })
+      } catch (e) {
+        throw res.status(500).json({})
+      }
       return res.status(200).json({identifier: authCode._id})
     }),
 

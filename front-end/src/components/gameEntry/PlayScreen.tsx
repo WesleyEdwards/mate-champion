@@ -1,5 +1,5 @@
-import {Button} from "@mui/joy"
-import {FC, useEffect} from "react"
+import {Stack, Typography} from "@mui/joy"
+import {useEffect} from "react"
 import {useAuthContext} from "../../hooks/useAuth"
 import {emptyStats} from "../../game/loopShared/utils"
 import {localStorageManager} from "../../api/localStorageManager"
@@ -7,10 +7,11 @@ import levelsInfo from "../../levels.json"
 import {usePauseModalContext} from "../../hooks/PauseModalContext"
 import {playLoop} from "../../game/play/playLoop"
 import {useNavigate} from "react-router-dom"
-import {PlayHeader} from "../ViewHeader"
 import StatsDiv from "../StatsDiv"
 import {MScreen} from "../AuthSwitch"
 import {LevelMap} from "../../api/types"
+import {BackButton} from "../ViewHeader"
+import {abortGame} from "../../game/editor/eventListeners"
 
 export const PlayScreen = () => {
   const {stats, modifyStats} = usePauseModalContext()
@@ -46,11 +47,24 @@ export const PlayScreen = () => {
       },
       levels: levelsInfo as unknown as LevelMap[]
     })
+    return () => {
+      abortGame()
+    }
   }, [])
 
   return (
     <MScreen>
-      <PlayHeader />
+      <Stack direction={"row"} height="64px" alignItems={"center"}>
+        <BackButton />
+        <Typography
+          sx={{
+            marginInline: "auto"
+          }}
+          level="h1"
+        >
+          Mate Champion🧉
+        </Typography>
+      </Stack>
       <canvas style={{borderRadius: "10px"}} id="canvas"></canvas>
       <StatsDiv stats={stats} />
     </MScreen>

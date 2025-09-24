@@ -21,21 +21,6 @@ export class ApiCache implements Api {
     return promise
   }
 
-  private async andUpdate<T>(
-    key: string,
-    queryKey: string,
-    promise: Promise<T>
-  ) {
-    this.cache[key] = promise
-
-    for (const [k, v] of Object.entries(this.cache)) {
-      if (k.includes(queryKey)) {
-        this.cache[k] = undefined
-      }
-    }
-    return promise
-  }
-
   readonly auth: Api["auth"] = {
     createAccount: (body) => this.basedOn.auth.createAccount(body),
     signIn: (body) => this.basedOn.auth.signIn(body),

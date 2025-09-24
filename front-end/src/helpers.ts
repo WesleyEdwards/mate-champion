@@ -37,7 +37,7 @@ export async function catchError<T>(
     .catch(async (error) => {
       if (error instanceof Response) {
         const errorJson = await error.json()
-        return [new Error(errorJson.message)]
+        return [error]
       }
       return [error]
     })

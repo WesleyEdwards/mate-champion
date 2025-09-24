@@ -1,11 +1,11 @@
 import {Logout} from "@mui/icons-material"
-import {Button, Stack} from "@mui/joy"
+import {Button, Stack, Typography} from "@mui/joy"
 import {useAuthContext} from "../hooks/useAuth"
 import {EditField} from "./EditField"
 import {SignInButton} from "./SignInButton"
 import {ViewHeaderSubScreen} from "./ViewHeader"
 import {MScreen} from "./AuthSwitch"
-import { useNavigate } from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 
 export const Profile = () => {
   const {user, logout, modifyUser, api} = useAuthContext()
@@ -49,6 +49,10 @@ export const Profile = () => {
           </Stack>
         ) : (
           <Stack my="2rem" gap="2rem">
+            <Typography textAlign={"center"} sx={{maxWidth: "600px"}}>
+              Sign in to save your high score, share levels you've made,
+              and see what levels others have made!
+            </Typography>
             <SignInButton />
           </Stack>
         )}

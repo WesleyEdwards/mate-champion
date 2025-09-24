@@ -43,7 +43,11 @@ export const Login = () => {
     }
     if (email && !identifier) {
       const [error, res] = await catchError(api.auth.sendAuthCode({email}))
-      if (error) {
+      if (error instanceof Response && error.status === 500) {
+        setError(
+          "Unable to send email. If the issue persists contact the developer."
+        )
+      } else if (error) {
         navigate("/createAccount")
       } else {
         setIdentifier(res.identifier)

@@ -11,6 +11,7 @@ import {FC, useState} from "react"
 import {Delete} from "@mui/icons-material"
 import {useAuthContext} from "../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
+import { useNavigateBack } from "../hooks/useSafeGoBack"
 
 export const DeleteLevel: FC<{
   name: string
@@ -19,7 +20,7 @@ export const DeleteLevel: FC<{
 }> = ({name, id, showWordDelete}) => {
   const [deleting, setDeleting] = useState(false)
   const {api} = useAuthContext()
-  const navigate = useNavigate()
+  const navigateBack = useNavigateBack()
   return (
     <>
       {showWordDelete ? (
@@ -56,7 +57,7 @@ export const DeleteLevel: FC<{
               onClick={() => {
                 api.level.delete(id).then(() => {
                   setDeleting(false)
-                  navigate(-1)
+                  navigateBack()
                 })
               }}
             >

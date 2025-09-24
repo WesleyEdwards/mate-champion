@@ -3,7 +3,10 @@ import {Client, SendEmailV3_1, LibraryResponse} from "node-mailjet"
 import {settings} from "../settings"
 
 export const emailClient = (): EmailClient => {
-  console.log("EMAIL: ", settings.emailProvider === "mailjet" ? "Mailjet": "local")
+  console.log(
+    "EMAIL: ",
+    settings.emailProvider === "mailjet" ? "Mailjet" : "local"
+  )
   if (settings.emailProvider === "mailjet") {
     return mailjetClient()
   }
@@ -18,33 +21,60 @@ const mailjet = new Client({
 const mailjetClient = (): EmailClient => {
   return {
     send: async (params) => {
-      try {
-        const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
-          .post("send", {version: "v3.1"})
-          .request({
-            Messages: [
-              {
-                From: {
-                  Email: "noreply@wesleyedwards.xyz"
-                },
-                To: [
-                  {
-                    Email: params.to
-                  }
-                ],
-                Subject: params.subject,
-                HTMLPart: params.html,
-                TextPart: ""
-              }
-            ]
-          })
+      const maxRetries = 3
+      let attempt = 0
+      let lastError: unknown
 
-        result.body.Messages[0]
-      } catch (e) {
-        console.log(e)
+      while (attempt < maxRetries) {
+        try {
+          const result: LibraryResponse<SendEmailV3_1.Response> = await mailjet
+            .post("send", {version: "v3.1"})
+            .request({
+              Messages: [
+                {
+                  From: {
+                    Email: "noreply@wesleyedwards.xyz"
+                  },
+                  To: [
+                    {
+                      Email: params.to
+                    }
+                  ],
+                  Subject: params.subject,
+                  HTMLPart: params.html,
+                  TextPart: ""
+                }
+              ]
+            })
+
+          result
+          return
+        } catch (e: any) {
+          lastError = e
+          attempt++
+
+          const transient =
+            e.code === "ECONNRESET" ||
+            e.code === "ETIMEDOUT" ||
+            e.code === "ECONNREFUSED"
+
+          if (!transient || attempt >= maxRetries) {
+            console.error("Mailjet send failed:", e)
+            throw e
+          }
+
+          const backoff = 500 * 2 * (attempt - 1)
+          console.warn(`Mailjet send failed (attempt ${attempt}/${maxRetries})`)
+          await sleep(backoff)
+        }
       }
+
+      throw lastError
     }
   }
+}
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 const localEmail = (): EmailClient => {

@@ -97,6 +97,6 @@ async function makeRequest(
     localStorageManager.remove("token")
     window.location.reload()
   }
-  if (result.status !== 200) return Promise.reject(result.json())
+  if (result.status !== 200) return Promise.reject(result)
   return result.json()
 }

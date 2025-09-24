@@ -23,6 +23,7 @@ import {useNavigate, useParams} from "react-router-dom"
 import {MScreen} from "./AuthSwitch"
 import {abortGame} from "../game/editor/eventListeners"
 import {LevelInfo} from "../api/types"
+import {useNavigateBack} from "../hooks/useSafeGoBack"
 
 export const EditLevelDetail = () => {
   const {api, user} = useAuthContext()
@@ -148,7 +149,7 @@ const EditLevelDetailHeader = (props: {
   setName: (name: string) => void
 }) => {
   const {editingLevel, setName} = props
-  const navigate = useNavigate()
+  const navigateBack = useNavigateBack()
   const [editingName, setEditingName] = useState<string>()
   const {api} = useAuthContext()
   const toast = useToast()
@@ -165,7 +166,7 @@ const EditLevelDetailHeader = (props: {
         >
           <IconButton
             onClick={() => {
-              navigate(-1)
+              navigateBack()
               abortGame()
             }}
           >
