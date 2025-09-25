@@ -43,9 +43,10 @@
 - Authentication: JWTs
 
 ### Backend
-- Framework: [simply-served](https://www.npmjs.com/package/simply-served) (Node.js)
+- Framework: [Simply Served](https://www.npmjs.com/package/simply-served) (Node.js)
 - Email Service: [Mailjet](https://www.mailjet.com/)
 - Database: [MongoDB](https://www.mongodb.com/)
+- Data Validation: [Zod](https://zod.dev/)
 - Testing: [Jest](https://jestjs.io/)
 
 ### Game Engine
@@ -71,7 +72,7 @@
 - Pure ECS
 - Enhanced Level design
 - More level content, more variation
-- More thought through customization options for the Level Editor
+- More thought-out customization options for the Level Editor
 - Multiplayer option
 
 ## Lessons learned
